@@ -1,7 +1,16 @@
 # lmsservice
 Backend service for LMS 
 
-To build and run the docker container 
+### Prerequisites 
+MYSQL db running with the following specs  
+```
+Server: localhost:3306
+Schema Name: lms
+Username: lmsuser
+Password: <protected>
+```
+
+### To build and run the docker container 
 ```
 cd lmsservice   
 ./graldew clean build
