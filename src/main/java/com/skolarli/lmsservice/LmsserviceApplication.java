@@ -11,6 +11,3 @@ public class LmsserviceApplication {
     }
 
 }
-
-//TODO: Logger
-//TODO:
