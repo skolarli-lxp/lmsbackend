@@ -22,12 +22,12 @@ public class CourseController {
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity<List<Course>> getAllCourses(@RequestBody Course course) {
+    public ResponseEntity<List<Course>> getAllCourses() {
         return new ResponseEntity<List<Course>>(courseService.getAllCourses(),HttpStatus.OK);
     }
 
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
-    public ResponseEntity<Course> getAllCourses(@PathVariable long id) {
+    public ResponseEntity<Course> getCourse(@PathVariable long id) {
         return new ResponseEntity<Course>(courseService.getCourseById(id),HttpStatus.OK);
     }
 

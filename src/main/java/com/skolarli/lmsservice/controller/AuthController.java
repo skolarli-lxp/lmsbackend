@@ -35,7 +35,7 @@ public class AuthController {
                     new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), authenticationRequest.getPassword())
             );
         } catch(Exception e) {
-            throw new Exception("Incorrect username or password", e);
+            throw new Exception(String.format("Incorrect username or password username:{} password:{}", authenticationRequest.getUsername(), authenticationRequest.getPassword()), e);
         }
         final UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
         final String jwt = jwtUtil.generateToken(userDetails);

@@ -7,7 +7,7 @@ import javax.persistence.*;
 @Data
 @Entity
 @Table(name="courses")
-public class Course {
+public class Course extends Tenantable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -16,4 +16,5 @@ public class Course {
     private String name;
 
     private String instructor;
+
 }

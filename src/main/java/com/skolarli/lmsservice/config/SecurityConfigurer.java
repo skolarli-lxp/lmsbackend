@@ -1,6 +1,7 @@
-package com.skolarli.lmsservice.resources;
+package com.skolarli.lmsservice.config;
 
 import com.skolarli.lmsservice.filters.JwtRequestFilter;
+import com.skolarli.lmsservice.filters.TenantAuthorizationFilter;
 import com.skolarli.lmsservice.services.LMSUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -22,6 +23,9 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
     @Autowired
     private JwtRequestFilter jwtRequestFilter;
 
+    @Autowired
+    private TenantAuthorizationFilter tenantAuthorizationFilter;
+
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws  Exception{
         auth.userDetailsService(lmsUserDetailsService);
@@ -30,11 +34,14 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
-                .authorizeHttpRequests().antMatchers("/authenticate", "/gethealthnoauth").permitAll()
+                .authorizeHttpRequests()
+                .antMatchers("/authenticate", "/gethealthnoauth", "/domain")
+                .permitAll()
                 .anyRequest().authenticated()
                 .and().sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(tenantAuthorizationFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
     }
 
     @Override

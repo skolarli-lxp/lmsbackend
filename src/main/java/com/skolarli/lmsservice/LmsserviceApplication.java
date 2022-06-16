@@ -8,6 +8,7 @@ public class LmsserviceApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(LmsserviceApplication.class, args);
+
     }
 
 }
