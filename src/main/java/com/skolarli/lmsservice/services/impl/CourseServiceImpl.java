@@ -4,6 +4,8 @@ import com.skolarli.lmsservice.exception.ResourceNotFoundException;
 import com.skolarli.lmsservice.models.db.Course;
 import com.skolarli.lmsservice.repository.CourseRepository;
 import com.skolarli.lmsservice.services.CourseService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,6 +14,7 @@ import java.util.Optional;
 @Service
 public class CourseServiceImpl implements CourseService {
 
+    Logger logger = LoggerFactory.getLogger(CourseServiceImpl.class);
     private CourseRepository courseRepository;
 
     public CourseServiceImpl(CourseRepository courseRepository) {
@@ -47,7 +50,7 @@ public class CourseServiceImpl implements CourseService {
                                           () -> new ResourceNotFoundException("Course", "Id", id));
         // Update existing Course
         existingCourse.setName(course.getName());
-        existingCourse.setInstructor(course.getInstructor());
+        existingCourse.setOwner(course.getOwner());
         courseRepository.save(existingCourse);
         return existingCourse;
 

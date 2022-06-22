@@ -4,6 +4,8 @@ import com.skolarli.lmsservice.exception.ResourceNotFoundException;
 import com.skolarli.lmsservice.models.db.Tenant;
 import com.skolarli.lmsservice.repository.TenantRepository;
 import com.skolarli.lmsservice.services.TenantService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,6 +13,7 @@ import java.util.Optional;
 
 @Service
 public class TenantServiceImpl implements TenantService {
+    Logger logger = LoggerFactory.getLogger(TenantServiceImpl.class);
     private final TenantRepository tenantRepository;
 
     public TenantServiceImpl(TenantRepository tenantRepository) {
@@ -67,4 +70,22 @@ public class TenantServiceImpl implements TenantService {
         );
         tenantRepository.delete(existingTenant);
     }
+
+    @Override
+    public List<String> getAllDomainNames() {
+        List<String> domainNames = tenantRepository.getAllDomainNames();
+        return domainNames;
+    }
+
+    @Override
+    public Boolean isUniqueDomainName(String domainName) {
+        List<String> domainNames = getAllDomainNames();
+        if (domainNames.contains(domainName)) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+
 }

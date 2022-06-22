@@ -7,6 +7,7 @@ import com.skolarli.lmsservice.utils.JwtUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -15,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.validation.Valid;
 
 @RestController
 public class AuthController {
@@ -27,19 +30,23 @@ public class AuthController {
     @Autowired
     private JwtUtils jwtUtil;
 
-    @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
-    public ResponseEntity<?> authenticate(@RequestBody AuthenticationRequest authenticationRequest) throws  Exception{
-        logger.info("Authentication Controller");
+    @RequestMapping( value = "/authenticate", method = RequestMethod.POST)
+    public ResponseEntity<?> authenticate(@Valid @RequestBody AuthenticationRequest authenticationRequest) throws  Exception{
+        logger.info("Received Authentication Request for User: " + authenticationRequest.getUsername());
+
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), authenticationRequest.getPassword())
             );
         } catch(Exception e) {
-            throw new Exception(String.format("Incorrect username or password username:{} password:{}", authenticationRequest.getUsername(), authenticationRequest.getPassword()), e);
+            logger.error("Authentication failed for user: " + authenticationRequest.getUsername());
+            logger.error(e.getMessage());
+            return new ResponseEntity<>("{\"error\" : \"Incorrect username or password\"}", HttpStatus.UNAUTHORIZED);
         }
         final UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
         final String jwt = jwtUtil.generateToken(userDetails);
 
+        logger.info("Authenticated User: " + userDetails.getUsername());
         return ResponseEntity.ok(new AuthenticationResponse(jwt));
     }
 }

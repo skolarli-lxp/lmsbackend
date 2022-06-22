@@ -1,9 +1,15 @@
 package com.skolarli.lmsservice.filters;
 
+import com.skolarli.lmsservice.authentications.TenantAuthenticationToken;
+import com.skolarli.lmsservice.controller.AuthController;
+import com.skolarli.lmsservice.models.db.Tenant;
 import com.skolarli.lmsservice.services.LMSUserDetailsService;
 import com.skolarli.lmsservice.utils.JwtUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -18,6 +24,8 @@ import java.io.IOException;
 
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
+
+    Logger logger = LoggerFactory.getLogger(TenantAuthorizationFilter.class);
 
     @Autowired
     private LMSUserDetailsService userDetailsService;
@@ -44,7 +52,10 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                 UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
                         userDetails, null, userDetails.getAuthorities());
                 usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                TenantAuthenticationToken tenantAuthenticationToken = (TenantAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+                SecurityContextHolder.getContext().setAuthentication(new TenantAuthenticationToken(username, tenantAuthenticationToken.getTenantId()));
 //                SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+
             }
         }
         chain.doFilter(request, response);

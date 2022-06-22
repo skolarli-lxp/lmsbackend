@@ -1,11 +1,12 @@
 package com.skolarli.lmsservice.models.db;
 
+import com.skolarli.lmsservice.models.NewDomainRequest;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.lang.NonNull;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @Data
 @NoArgsConstructor
@@ -17,17 +18,39 @@ public class Tenant {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @NonNull
-    private String companyName;
-
-    @NonNull
+    @NotNull
     private String domainName;
 
-    private String website;
+    @NotNull
+    private String companyName;
 
-    public Tenant(String domainName, String companyName, String website) {
-        this.domainName = domainName;
-        this.companyName = companyName;
-        this.website = website;
+    @NotNull
+    private String countryCode;
+
+    @NotNull
+    private String phoneNumber;
+
+    @NotNull
+    private String currency;
+
+    private String website;
+    private String address;
+
+    //TODO: Should we persist this? Or just convert to system timezone?
+    //@NotNull
+    //private String timeZone;
+
+    public Tenant(NewDomainRequest newDomainRequest) {
+        this.domainName = newDomainRequest.getDomainName();
+        this.companyName = newDomainRequest.getCompanyName();
+        this.countryCode = newDomainRequest.getCountryCode();
+        this.phoneNumber = newDomainRequest.getPhoneNumber();
+        this.currency = newDomainRequest.getCurrency();
+        if (newDomainRequest.getWebsite() != null) {
+            this.website = newDomainRequest.getWebsite();
+        }
+        if (newDomainRequest.getAddress() != null) {
+            this.address = newDomainRequest.getAddress();
+        }
     }
 }

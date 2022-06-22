@@ -11,5 +11,9 @@ public interface TenantService {
     Tenant updateTenant(Tenant tenant, long id);
     void deleteTenant(long id);
 
+    List<String> getAllDomainNames();
+
+    Boolean isUniqueDomainName(String domainName);
+
     Tenant getTenantByDomainName(String domainName);
 }

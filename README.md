@@ -13,7 +13,7 @@ Password: <protected>
 ### To build and run the docker container 
 ```
 cd lmsservice   
-./graldew clean build
+./gradlew clean build
 
 docker build -t lmsservice:latest .  
 docker images  

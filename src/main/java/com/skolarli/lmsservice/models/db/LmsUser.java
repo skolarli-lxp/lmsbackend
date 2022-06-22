@@ -1,11 +1,18 @@
 package com.skolarli.lmsservice.models.db;
 
-import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.skolarli.lmsservice.models.NewDomainRequest;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import java.util.List;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @Entity
 @Table(name="users", uniqueConstraints = @UniqueConstraint(name= "useremail", columnNames = {"email", "tenantId"}))
@@ -14,23 +21,50 @@ public class LmsUser extends Tenantable{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @NotNull
     private String firstName;
 
+    @NotNull
     private String lastName;
 
+    @NotNull
     private String email;
 
     //TODO: Better password storage
+    @NotNull
+    @JsonProperty( value = "password", access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
+    @NotNull
     private Boolean isAdmin;
 
+    @NotNull
+    private Boolean isInstructor;
 
-    public LmsUser(String firstName, String lastName, String email, String password, Boolean isAdmin) {
+    @NotNull
+    private Boolean isStudent;
+
+    @OneToMany(mappedBy = "owner")
+    @JsonIgnoreProperties("owner") // To avoid infinite recursion during serialization
+    private List<Course> courses;
+
+    public LmsUser(String firstName, String lastName, String email, String password, Boolean isAdmin, Boolean isInstructor, Boolean isStudent) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.password = password;
         this.email = email;
         this.isAdmin = isAdmin;
+        this.isInstructor = isInstructor;
+        this.isStudent = isStudent;
+    }
+
+    public LmsUser(NewDomainRequest newDomainRequest) {
+        this.firstName = newDomainRequest.getFirstName();
+        this.lastName = newDomainRequest.getLastName();
+        this.email = newDomainRequest.getEmail();
+        this.password = newDomainRequest.getPassword();
+        this.isAdmin = true;
+        this.isStudent = false;
+        this.isInstructor = false;
     }
 }

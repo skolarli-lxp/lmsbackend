@@ -1,9 +1,12 @@
 package com.skolarli.lmsservice.services.impl;
 
+import com.skolarli.lmsservice.controller.AuthController;
 import com.skolarli.lmsservice.exception.ResourceNotFoundException;
 import com.skolarli.lmsservice.models.db.LmsUser;
 import com.skolarli.lmsservice.repository.LmsUserRepository;
 import com.skolarli.lmsservice.services.LmsUserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +15,7 @@ import java.util.List;
 @Service
 public class LmsUserServiceImpl implements LmsUserService {
 
+    Logger logger = LoggerFactory.getLogger(LmsUserServiceImpl.class);
     private LmsUserRepository lmsUserRepository;
 
     public LmsUserServiceImpl(LmsUserRepository lmsUserRepository) {

@@ -34,7 +34,7 @@ public class TenantAuthorizationFilter extends OncePerRequestFilter {
 
     private TenantAuthenticationToken getTenantAuthenticationToken(String domainName) {
         Tenant tenant = tenantService.getTenantByDomainName(domainName);
-        return new TenantAuthenticationToken(tenant.getDomainName(), tenant.getId());
+        return new TenantAuthenticationToken("", tenant.getId());
     }
 
 
@@ -42,6 +42,6 @@ public class TenantAuthorizationFilter extends OncePerRequestFilter {
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
 
         String path = request.getServletPath();
-        return path.startsWith("/domain") || path.startsWith("/gethealthnoauth");
+        return path.startsWith("/newdomain") || path.startsWith("/gethealthnoauth");
     }
 }
