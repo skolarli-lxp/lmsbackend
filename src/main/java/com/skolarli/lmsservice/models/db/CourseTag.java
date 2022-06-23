@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Data
 @Entity
@@ -27,5 +28,14 @@ public class CourseTag {
         this.tag = tag;
     }
 
+    // We consider two CourseTags as equal if the tag field is equal irrespective of other values
+    // Used to make sure that duplicate tags are not added while updating a course
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CourseTag courseTag = (CourseTag) o;
+        return  Objects.equals(tag, courseTag.tag);
+    }
 
 }
