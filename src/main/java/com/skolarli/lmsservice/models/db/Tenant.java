@@ -1,5 +1,6 @@
 package com.skolarli.lmsservice.models.db;
 
+import com.skolarli.lmsservice.exception.OperationNotSupportedException;
 import com.skolarli.lmsservice.models.NewDomainRequest;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -51,6 +52,30 @@ public class Tenant {
         }
         if (newDomainRequest.getAddress() != null) {
             this.address = newDomainRequest.getAddress();
+        }
+    }
+
+    public void update(Tenant tenant) {
+        if (tenant.getDomainName() != null && !tenant.getDomainName().equals(this.domainName)) {
+            throw new OperationNotSupportedException("domainName", "Tenant");
+        }
+        if (tenant.getCompanyName() != null && !tenant.getCompanyName().isEmpty()) {
+            this.setCompanyName(tenant.getCompanyName());
+        }
+        if (tenant.getCountryCode() != null && !tenant.getCountryCode().isEmpty()) {
+            this.setCountryCode(tenant.getCountryCode());
+        }
+        if (tenant.getPhoneNumber() != null && !tenant.getPhoneNumber().isEmpty()) {
+            this.setPhoneNumber(tenant.getPhoneNumber());
+        }
+        if (tenant.getCurrency() != null && !tenant.getCurrency().isEmpty()) {
+            this.setCurrency(tenant.getCurrency());
+        }
+        if (tenant.getWebsite() != null && !tenant.getWebsite().isEmpty()) {
+            this.setWebsite(tenant.getWebsite());
+        }
+        if (tenant.getAddress() != null && !tenant.getAddress().isEmpty()) {
+            this.setAddress(tenant.getAddress());
         }
     }
 }

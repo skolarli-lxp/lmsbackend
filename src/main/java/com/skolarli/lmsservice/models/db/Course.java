@@ -7,9 +7,7 @@ import lombok.Setter;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -58,7 +56,7 @@ public class Course extends Tenantable {
     @JsonIgnoreProperties("course")
     private List<CourseTag> courseTagList = new ArrayList<>();
 
-    public void updateCourse(Course course) {
+    public void update(Course course) {
         if (course.getName() != null && !course.getName().isEmpty()) {
             this.setName(course.getName());
         }

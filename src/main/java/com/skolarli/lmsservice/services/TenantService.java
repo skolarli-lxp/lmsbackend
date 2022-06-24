@@ -8,7 +8,7 @@ public interface TenantService {
     Tenant saveTenant(Tenant tenant);
     List<Tenant> getAllTenants();
     Tenant getTenantById(long id);
-    Tenant updateTenant(Tenant tenant, long id);
+    Tenant updateTenant(Tenant tenant);
     void deleteTenant(long id);
 
     List<String> getAllDomainNames();

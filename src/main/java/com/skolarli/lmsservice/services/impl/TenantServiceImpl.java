@@ -1,5 +1,6 @@
 package com.skolarli.lmsservice.services.impl;
 
+import com.skolarli.lmsservice.contexts.TenantContext;
 import com.skolarli.lmsservice.exception.ResourceNotFoundException;
 import com.skolarli.lmsservice.models.db.Tenant;
 import com.skolarli.lmsservice.repository.TenantRepository;
@@ -16,9 +17,12 @@ public class TenantServiceImpl implements TenantService {
     Logger logger = LoggerFactory.getLogger(TenantServiceImpl.class);
     private final TenantRepository tenantRepository;
 
-    public TenantServiceImpl(TenantRepository tenantRepository) {
+    private TenantContext tenantContext;
+
+    public TenantServiceImpl(TenantRepository tenantRepository, TenantContext tenantContext) {
         super();
         this.tenantRepository = tenantRepository;
+        this.tenantContext = tenantContext;
     }
 
     @Override
@@ -53,12 +57,12 @@ public class TenantServiceImpl implements TenantService {
     }
 
     @Override
-    public Tenant updateTenant(Tenant tenant, long id) {
+    public Tenant updateTenant(Tenant tenant) {
+        long id = tenantContext.getTenantId();
         Tenant existingTenant = tenantRepository.findById(id).orElseThrow(
                 () ->  new ResourceNotFoundException("Tenant", "Id", id)
         );
-        existingTenant.setCompanyName(tenant.getCompanyName());
-        existingTenant.setWebsite(tenant.getWebsite());
+        existingTenant.update(tenant);
         tenantRepository.save(existingTenant);
         return existingTenant;
     }

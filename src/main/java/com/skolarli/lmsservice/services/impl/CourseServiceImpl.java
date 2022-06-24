@@ -49,7 +49,7 @@ public class CourseServiceImpl implements CourseService {
         Course existingCourse = courseRepository.findById(id).orElseThrow(
                                           () -> new ResourceNotFoundException("Course", "Id", id));
         // Update existing Course
-        existingCourse.updateCourse(course);
+        existingCourse.update(course);
         courseRepository.save(existingCourse);
         return existingCourse;
 
