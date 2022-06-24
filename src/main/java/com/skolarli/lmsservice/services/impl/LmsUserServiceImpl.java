@@ -76,9 +76,7 @@ public class LmsUserServiceImpl implements LmsUserService {
     public LmsUser updateLmsUser(LmsUser lmsUser, long id) {
         LmsUser existingUser = lmsUserRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("LmsUser", "Id", id));
-        existingUser.setFirstName(lmsUser.getFirstName());
-        existingUser.setLastName(lmsUser.getLastName());
-        existingUser.setIsAdmin(lmsUser.getIsAdmin());
+        existingUser.update(lmsUser);
         lmsUserRepository.save(existingUser);
         return existingUser;
     }

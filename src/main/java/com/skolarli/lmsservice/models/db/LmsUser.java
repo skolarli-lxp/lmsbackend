@@ -67,4 +67,22 @@ public class LmsUser extends Tenantable{
         this.isStudent = false;
         this.isInstructor = false;
     }
+
+    public void update(LmsUser lmsUser) {
+        if (lmsUser.getFirstName() != null && !lmsUser.getFirstName().isEmpty()) {
+            this.setFirstName(lmsUser.getFirstName());
+        }
+        if (lmsUser.getLastName() != null && !lmsUser.getLastName().isEmpty()) {
+            this.setLastName(lmsUser.getLastName());
+        }
+        if (lmsUser.getIsAdmin() != null) {
+            this.setIsAdmin(lmsUser.getIsAdmin());
+        }
+        if (lmsUser.getIsStudent() != null) {
+            this.setIsStudent(lmsUser.getIsStudent());
+        }
+        if (lmsUser.getIsInstructor() != null) {
+            this.setIsInstructor(lmsUser.getIsInstructor());
+        }
+    }
 }
