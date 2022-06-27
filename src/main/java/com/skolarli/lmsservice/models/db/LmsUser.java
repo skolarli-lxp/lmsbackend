@@ -3,6 +3,7 @@ package com.skolarli.lmsservice.models.db;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.skolarli.lmsservice.models.NewDomainRequest;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,6 +14,7 @@ import java.util.List;
 
 @Getter
 @Setter
+@AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name="users", uniqueConstraints = @UniqueConstraint(name= "useremail", columnNames = {"email", "tenantId"}))
@@ -48,15 +50,6 @@ public class LmsUser extends Tenantable{
     @JsonIgnoreProperties("owner") // To avoid infinite recursion during serialization
     private List<Course> courses;
 
-    public LmsUser(String firstName, String lastName, String email, String password, Boolean isAdmin, Boolean isInstructor, Boolean isStudent) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.password = password;
-        this.email = email;
-        this.isAdmin = isAdmin;
-        this.isInstructor = isInstructor;
-        this.isStudent = isStudent;
-    }
 
     public LmsUser(NewDomainRequest newDomainRequest) {
         this.firstName = newDomainRequest.getFirstName();

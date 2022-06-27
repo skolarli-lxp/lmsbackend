@@ -57,7 +57,7 @@ public class Tenant {
 
     public void update(Tenant tenant) {
         if (tenant.getDomainName() != null && !tenant.getDomainName().equals(this.domainName)) {
-            throw new OperationNotSupportedException("domainName", "Tenant");
+            throw new OperationNotSupportedException("Tenant", "domainName");
         }
         if (tenant.getCompanyName() != null && !tenant.getCompanyName().isEmpty()) {
             this.setCompanyName(tenant.getCompanyName());

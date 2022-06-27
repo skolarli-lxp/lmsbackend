@@ -2,11 +2,16 @@ package com.skolarli.lmsservice.services.impl;
 
 import com.skolarli.lmsservice.exception.ResourceNotFoundException;
 import com.skolarli.lmsservice.models.db.Course;
+import com.skolarli.lmsservice.models.db.LmsUser;
 import com.skolarli.lmsservice.repository.CourseRepository;
 import com.skolarli.lmsservice.services.CourseService;
+import com.skolarli.lmsservice.utils.UserUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,9 +22,12 @@ public class CourseServiceImpl implements CourseService {
     Logger logger = LoggerFactory.getLogger(CourseServiceImpl.class);
     private CourseRepository courseRepository;
 
-    public CourseServiceImpl(CourseRepository courseRepository) {
+    private final UserUtils userUtils;
+
+    public CourseServiceImpl(CourseRepository courseRepository, UserUtils userUtils) {
         super();
         this.courseRepository = courseRepository;
+        this.userUtils = userUtils;
     }
 
     @Override

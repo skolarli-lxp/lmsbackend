@@ -1,6 +1,7 @@
 package com.skolarli.lmsservice.models.db;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,13 +14,15 @@ import java.util.List;
 @Setter
 @Entity
 @Table(name = "courses")
+@AllArgsConstructor
 public class Course extends Tenantable {
-    enum DiscountType {
+
+    public enum DiscountType {
         STUDENT,
         PROMOTION,
     }
 
-    enum CourseStatus {
+    public enum CourseStatus {
         PLANNED,
         RUNNING,
         DEPRECATED

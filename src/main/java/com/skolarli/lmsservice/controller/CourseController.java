@@ -4,6 +4,7 @@ import com.skolarli.lmsservice.models.db.Course;
 import com.skolarli.lmsservice.models.db.LmsUser;
 import com.skolarli.lmsservice.services.CourseService;
 import com.skolarli.lmsservice.services.LmsUserService;
+import com.skolarli.lmsservice.utils.UserUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -26,30 +28,46 @@ public class CourseController {
 
     @Autowired
     private LmsUserService lmsUserService;
+    @Autowired
+    private UserUtils userUtils;
 
    @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<Course> saveCourse(@Valid  @RequestBody Course course) {
+    public ResponseEntity<Course> addCourse(@Valid  @RequestBody Course course) {
        logger.info("Received request for new course courseName: " + course.getName());
        String currentUserEmail = (String)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
        LmsUser currentUser = lmsUserService.getLmsUserByEmail(currentUserEmail);
        course.setOwner(currentUser);
-       Course savedCourse = courseService.saveCourse(course);
-
-        return new ResponseEntity<Course>(savedCourse, HttpStatus.CREATED);
+       try {
+           return new ResponseEntity<Course>(courseService.saveCourse(course), HttpStatus.CREATED);
+       } catch (Exception e) {
+           throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+       }
     }
 
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<List<Course>> getAllCourses() {
-        return new ResponseEntity<List<Course>>(courseService.getAllCourses(),HttpStatus.OK);
+       try {
+           return new ResponseEntity<List<Course>>(courseService.getAllCourses(), HttpStatus.OK);
+       } catch (Exception e) {
+           throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+       }
     }
 
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
     public ResponseEntity<Course> getCourse(@PathVariable long id) {
-        return new ResponseEntity<Course>(courseService.getCourseById(id),HttpStatus.OK);
+       try {
+           return new ResponseEntity<Course>(courseService.getCourseById(id), HttpStatus.OK);
+       } catch (Exception e) {
+           throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+       }
     }
 
     @RequestMapping(value = "{id}", method = RequestMethod.PUT)
     public ResponseEntity<Course> updateCourse(@PathVariable long id, @RequestBody Course course) {
+        LmsUser currentUser = userUtils.getCurrentUser();
+        if (currentUser.getIsAdmin() != true && currentUser != course.getOwner()) {
+            throw new ResponseStatusException( HttpStatus.FORBIDDEN, "");
+        }
         return new ResponseEntity<Course>(courseService.updateCourse(course, id),HttpStatus.OK);
     }
 

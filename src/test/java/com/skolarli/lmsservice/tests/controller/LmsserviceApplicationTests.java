@@ -1,4 +1,4 @@
-package com.skolarli.lmsservice;
+package com.skolarli.lmsservice.tests.controller;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
