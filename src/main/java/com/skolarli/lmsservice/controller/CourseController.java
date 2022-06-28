@@ -65,10 +65,15 @@ public class CourseController {
     @RequestMapping(value = "{id}", method = RequestMethod.PUT)
     public ResponseEntity<Course> updateCourse(@PathVariable long id, @RequestBody Course course) {
         LmsUser currentUser = userUtils.getCurrentUser();
-        if (currentUser.getIsAdmin() != true && currentUser != course.getOwner()) {
+        Course existingCourse = courseService.getCourseById(id);
+        if (currentUser.getIsAdmin() != true && currentUser != existingCourse.getOwner()) {
             throw new ResponseStatusException( HttpStatus.FORBIDDEN, "");
         }
-        return new ResponseEntity<Course>(courseService.updateCourse(course, id),HttpStatus.OK);
+        try {
+            return new ResponseEntity<Course>(courseService.updateCourse(course, id), HttpStatus.OK);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
     }
 
     // Delete should do a soft delete
