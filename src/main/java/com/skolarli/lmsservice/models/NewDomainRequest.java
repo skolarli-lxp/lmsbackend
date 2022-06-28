@@ -1,11 +1,13 @@
 package com.skolarli.lmsservice.models;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 
 @Data
+@AllArgsConstructor
 public class NewDomainRequest {
 
     //Company Data - Mandatory

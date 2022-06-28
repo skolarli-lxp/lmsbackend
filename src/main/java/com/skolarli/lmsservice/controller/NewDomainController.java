@@ -13,7 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
 
@@ -38,18 +40,28 @@ public class NewDomainController {
         logger.info("Received new domain request. DomainName: "
                 + newDomainRequest.getDomainName()
                 + " Email: " + newDomainRequest.getEmail());
+        Tenant savedTenant;
+        LmsUser savedLmsUser;
 
         Tenant tenant = new Tenant(newDomainRequest);
-        Tenant savedTenant = tenantService.saveTenant(tenant);
+        try {
+            savedTenant = tenantService.saveTenant(tenant);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
         logger.info("Added new tenant DomainName: " + savedTenant.getDomainName());
 
         LmsUser lmsUser = new LmsUser(newDomainRequest);
         SecurityContextHolder.getContext().setAuthentication(
                 new TenantAuthenticationToken(newDomainRequest.getEmail(), savedTenant.getId()));
-        LmsUser savedLmsUser = lmsUserService.saveLmsUser(lmsUser);
+        try {
+            savedLmsUser = lmsUserService.saveLmsUser(lmsUser);
+        } catch (Exception e){
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
         logger.info("Added new user Email: " + savedLmsUser.getEmail());
 
-        return new ResponseEntity<NewDomainResponse> (new NewDomainResponse(savedTenant, savedLmsUser),HttpStatus.CREATED );
+        return new ResponseEntity<NewDomainResponse>(new NewDomainResponse(savedTenant, savedLmsUser), HttpStatus.CREATED);
     }
 
 
@@ -60,8 +72,12 @@ public class NewDomainController {
         if (domainName == null || domainName.isEmpty()) {
             return new ResponseEntity<String>("{\"error\" : \"domainName cannot be null\"}", HttpStatus.BAD_REQUEST);
         }
-        String result = tenantService.isUniqueDomainName(domainName).toString();
-        String responseString = "{ \n \"result\" : \"" + result + "\" \n}";
-        return new ResponseEntity<String>( responseString, HttpStatus.OK);
+        try {
+            String result = tenantService.isUniqueDomainName(domainName).toString();
+            String responseString = "{ \n \"result\" : \"" + result + "\" \n}";
+            return new ResponseEntity<String>( responseString, HttpStatus.OK);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
     }
 }
