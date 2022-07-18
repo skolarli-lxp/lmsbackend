@@ -7,8 +7,9 @@ import javax.persistence.*;
 @Data
 @Entity
 @Table(name="attendance")
-public class Schedule {
+public class BatchSchedule {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 }
+
