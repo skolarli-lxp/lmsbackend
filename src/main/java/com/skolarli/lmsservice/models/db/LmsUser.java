@@ -50,6 +50,10 @@ public class LmsUser extends Tenantable{
     @JsonIgnoreProperties("owner") // To avoid infinite recursion during serialization
     private List<Course> courses;
 
+    @OneToMany(mappedBy = "instructor")
+    @JsonIgnoreProperties("instructor")
+    private List<Batch> batches;
+
 
     public LmsUser(NewDomainRequest newDomainRequest) {
         this.firstName = newDomainRequest.getFirstName();
