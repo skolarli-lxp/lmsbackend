@@ -61,6 +61,11 @@ public class Course extends Tenantable {
     @JsonIgnoreProperties("course")
     private List<CourseTag> courseTagList = new ArrayList<>();
 
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name="course_id")
+    @JsonIgnoreProperties("course")
+    private List<Batch> batches = new ArrayList<>();
+
     public void update(Course course) {
         if (course.getName() != null && !course.getName().isEmpty()) {
             this.setName(course.getName());

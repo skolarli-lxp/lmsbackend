@@ -58,24 +58,24 @@ class CourseControllerTests {
     @BeforeEach
     public  void setup() throws Exception {
         lmsUser = new LmsUser(1, "Jaya", "Nair", "testuser@email.com",
-                "mymockpassword", true, false, false, null);
+                "mymockpassword", true, false, false, null, null);
 
         lmsUserNonAdmin = new LmsUser(1, "Jaya", "Nair", "nonadminuser@email.com",
-                "mymockpassword", false, false, false, null);
+                "mymockpassword", false, false, false, null, null);
 
         courseTagList = List.of(new CourseTag("tag1"), new CourseTag("tag2"));
 
         newCourse = new Course(1, "mycoursename", 100, null,
                 0, 0, null, Course.CourseStatus.PLANNED,
-                null, courseTagList);
+                null, courseTagList, null);
 
         updatedCourse = new Course(1, "mycoursename", 100, null,
                 20, 500, lmsUser, Course.CourseStatus.PLANNED,
-                null, courseTagList);
+                null, courseTagList, null);
 
         existingCourse = new Course(1, "myoldcoursename", 100, null,
                 20, 500, lmsUserNonAdmin, Course.CourseStatus.PLANNED,
-                null, courseTagList);
+                null, courseTagList, null);
 
 
         SecurityContextHolder.getContext().setAuthentication(

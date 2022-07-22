@@ -5,6 +5,7 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @Entity
@@ -15,12 +16,19 @@ public class Batch {
     private long id;
 
     @ManyToOne
-    @JoinColumn(name = "owner_user_id")
-    @JsonIgnoreProperties("courses") // TO avoid infinite recursion during serialization
-    private Course courseId;
+    @JoinColumn(name = "course_id")
+    @JsonIgnoreProperties("batches") // TO avoid infinite recursion during serialization
+    private Course course;
 
-    private long instructor;
+    @ManyToOne
+    @JoinColumn(name="instructor_id")
+    @JsonIgnoreProperties("batches")
+    private LmsUser instructor;
 
-    private long schedule;
+    @OneToMany
+    @JsonIgnoreProperties("batch")
+    private List<BatchSchedule> batchSchedules;
 
+    public void updateBatch(Batch newBatch) {
+    }
 }
