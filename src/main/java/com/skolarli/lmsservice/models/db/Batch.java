@@ -28,4 +28,7 @@ public class Batch {
     @OneToMany
     @JsonIgnoreProperties("batch")
     private List<BatchSchedule> batchSchedules;
+
+    public void updateBatch(Batch newBatch) {
+    }
 }
