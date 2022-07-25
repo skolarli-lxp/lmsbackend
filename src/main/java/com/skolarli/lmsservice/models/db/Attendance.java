@@ -19,9 +19,9 @@ public class Attendance {
     @JsonIgnoreProperties("attendanceList")
     private BatchSchedule batchSchedule;
 
-    @ManyToOne
-    @JoinColumn(name = "student_id")
-    private LmsUser lmsUser;
+//    @ManyToOne
+//    @JoinColumn(name = "student_id")
+//    private LmsUser lmsUser;
 
     private Boolean attended;
     private Date startDateTime;

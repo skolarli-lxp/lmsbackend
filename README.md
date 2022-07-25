@@ -20,3 +20,10 @@ docker images
 docker run -p 8080:8080 lmsservice:latest
 ```
 
+### To push docker image to Digital Ocean Docker Registry
+```
+doctl registry login 
+docker tag lmsservice:latest registry.digitalocean.com/skolarli/lmssservice:latest
+docker push registry.digitalocean.com/skolarli/lmssservice:latest
+```
+
