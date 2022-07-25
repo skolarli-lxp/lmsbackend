@@ -25,7 +25,7 @@ public class Batch {
     @JsonIgnoreProperties("batches")
     private LmsUser instructor;
 
-    @OneToMany
+    @OneToMany(mappedBy = "batch")
     @JsonIgnoreProperties("batch")
     private List<BatchSchedule> batchSchedules;
 

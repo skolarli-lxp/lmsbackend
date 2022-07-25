@@ -10,7 +10,7 @@ import java.util.List;
 
 @Data
 @Entity
-@Table(name="attendance")
+@Table(name="batch_schedules")
 public class BatchSchedule {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,7 +24,7 @@ public class BatchSchedule {
     private Date startDateTime;
     private Date endDateTime;
 
-    @OneToMany
+    @OneToMany(mappedBy = "batchSchedule")
     @JsonIgnoreProperties("batchSchedule")
     private List<Attendance> attendanceList;
 }
