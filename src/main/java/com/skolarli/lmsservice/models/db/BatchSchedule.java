@@ -1,8 +1,8 @@
 package com.skolarli.lmsservice.models.db;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.w3c.dom.stylesheets.LinkStyle;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -11,7 +11,7 @@ import java.util.List;
 @Data
 @Entity
 @Table(name="batch_schedules")
-public class BatchSchedule {
+public class BatchSchedule extends Tenantable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;

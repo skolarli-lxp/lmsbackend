@@ -10,7 +10,7 @@ import java.util.List;
 @Data
 @Entity
 @Table(name="batches")
-public class Batch {
+public class Batch extends  Tenantable{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;

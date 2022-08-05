@@ -54,6 +54,13 @@ public class LmsUser extends Tenantable{
     @JsonIgnoreProperties("instructor")
     private List<Batch> batches;
 
+    @OneToMany(mappedBy = "student")
+    @JsonIgnoreProperties("student")
+    private List<Attendance> attendanceList;
+
+    @OneToMany(mappedBy = "student")
+    @JsonIgnoreProperties("student")
+    private List<Enrollment> enrollments;
 
     public LmsUser(NewDomainRequest newDomainRequest) {
         this.firstName = newDomainRequest.getFirstName();

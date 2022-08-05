@@ -11,7 +11,7 @@ import java.util.Objects;
 @Entity
 @NoArgsConstructor
 @Table(name="course_tags")
-public class CourseTag {
+public class CourseTag extends Tenantable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

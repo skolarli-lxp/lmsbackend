@@ -1,0 +1,109 @@
+package com.skolarli.lmsservice.controller;
+
+import com.skolarli.lmsservice.models.NewAttendanceRequest;
+import com.skolarli.lmsservice.models.db.Attendance;
+import com.skolarli.lmsservice.models.db.BatchSchedule;
+import com.skolarli.lmsservice.models.db.Course;
+import com.skolarli.lmsservice.models.db.LmsUser;
+import com.skolarli.lmsservice.services.AttendanceService;
+import com.skolarli.lmsservice.services.BatchScheduleService;
+import com.skolarli.lmsservice.services.LmsUserService;
+import com.skolarli.lmsservice.utils.UserUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
+
+import javax.validation.Valid;
+import java.util.List;
+
+@RestController
+@RequestMapping("/attendance")
+public class AttendanceController {
+    Logger logger = LoggerFactory.getLogger(AttendanceController.class);
+    final
+    AttendanceService attendanceService;
+    final BatchScheduleService batchScheduleService;
+    final LmsUserService lmsUserService;
+    final UserUtils userUtils;
+
+    public AttendanceController(AttendanceService attendanceService, BatchScheduleService batchScheduleService,
+                                LmsUserService lmsUserService, UserUtils userUtils) {
+        this.attendanceService = attendanceService;
+        this.batchScheduleService = batchScheduleService;
+        this.lmsUserService = lmsUserService;
+        this.userUtils = userUtils;
+    }
+
+    @RequestMapping(method = RequestMethod.GET)
+    public ResponseEntity<List<Attendance>> getAllAttendances() {
+        try {
+            return new ResponseEntity<>(attendanceService.getAllAttendance(), HttpStatus.OK);
+        } catch (Exception e) {
+            logger.error("Error in getAllAttendances: " + e.getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "{id}")
+    public ResponseEntity<Attendance> getAttendance(@PathVariable long id) {
+        try {
+            return new ResponseEntity<>(attendanceService.getAttendance(id), HttpStatus.OK);
+        } catch (Exception e) {
+            logger.error("Error in getAttendance: " + e.getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+    }
+
+    @RequestMapping(method = RequestMethod.POST)
+    public ResponseEntity<Attendance> addAttendance(@Valid @RequestBody NewAttendanceRequest request) {
+        BatchSchedule batchSchedule = batchScheduleService.getBatchSchedule(request.getBatchScheduleId());
+        LmsUser currentUser = userUtils.getCurrentUser();
+        if (currentUser.getIsAdmin() != true && currentUser != batchSchedule.getBatch().getInstructor()) {
+            throw new ResponseStatusException( HttpStatus.FORBIDDEN, "");
+        }
+
+        Attendance attendance = request.toAttendance();
+        try {
+            return new ResponseEntity<>(attendanceService.saveAttendance(attendance), HttpStatus.OK);
+        } catch (Exception e) {
+            logger.error("Error in addAttendance: " + e.getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+    }
+
+    @RequestMapping(method = RequestMethod.PUT, value = "{id}")
+    public ResponseEntity<Attendance> updateAttendance(@PathVariable long id, @Valid @RequestBody NewAttendanceRequest request) {
+        Attendance attendance = attendanceService.getAttendance(id);
+        BatchSchedule batchSchedule = batchScheduleService.getBatchSchedule(request.getBatchScheduleId());
+        LmsUser currentUser = userUtils.getCurrentUser();
+        if (currentUser.getIsAdmin() != true && currentUser != batchSchedule.getBatch().getInstructor()) {
+            throw new ResponseStatusException( HttpStatus.FORBIDDEN, "");
+        }
+        attendance =  request.updateAttendance(attendance);
+        try {
+            return new ResponseEntity<>(attendanceService.updateAttendance(attendance), HttpStatus.OK);
+        } catch (Exception e) {
+            logger.error("Error in updateAttendance: " + e.getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+    }
+
+    @RequestMapping(method = RequestMethod.DELETE, value = "{id}")
+    public ResponseEntity<String> deleteAttendance(@PathVariable long id) {
+        Attendance attendance = attendanceService.getAttendance(id);
+        LmsUser currentUser = userUtils.getCurrentUser();
+        if (currentUser.getIsAdmin() != true) {
+            throw new ResponseStatusException( HttpStatus.FORBIDDEN, "");
+        }
+        try {
+            attendanceService.deleteAttendance(id);
+            return new ResponseEntity<>("Attendance Deleted!",HttpStatus.OK);
+        } catch (Exception e) {
+            logger.error("Error in deleteAttendance: " + e.getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+    }
+}

@@ -26,7 +26,7 @@ public class BatchScheduleServiceImpl implements BatchScheduleService {
     }
 
     @Override
-    public BatchSchedule updateBatchSchedule(BatchSchedule batchSchedule) {
+    public BatchSchedule updateBatchSchedule(BatchSchedule batchSchedule, long id) {
         return null;
     }
 

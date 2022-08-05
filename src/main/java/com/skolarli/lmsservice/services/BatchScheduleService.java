@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface BatchScheduleService {
     BatchSchedule saveBatchSchedule(BatchSchedule batchSchedule);
-    BatchSchedule updateBatchSchedule(BatchSchedule batchSchedule);
+    BatchSchedule updateBatchSchedule(BatchSchedule batchSchedule, long id);
     BatchSchedule getBatchSchedule(long id);
     List<BatchSchedule> getAllBatchSchedules();
     List<BatchSchedule> getSchedulesForBatch(long batchId);
