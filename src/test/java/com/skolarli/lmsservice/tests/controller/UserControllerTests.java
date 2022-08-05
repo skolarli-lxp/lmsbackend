@@ -47,10 +47,10 @@ class UserControllerTests {
     @BeforeEach
     public  void setup() throws Exception {
         currentUser1 = new LmsUser(1, "Jaya", "Nair", "jaya@skolarli.com",
-                "mymockpassword", true, false, false, null, null);
+                "mymockpassword", true, false, false, null, null, null, null);
 
         currentUser2 = new LmsUser(2, "Jaya", "Nair", "jaya@skolarli.com",
-                "mymockpassword", false, false, false, null, null);
+                "mymockpassword", false, false, false, null, null, null, null);
 
         existingTenant = new Tenant(1, "mydomainname",
                 "MyAwesomeCompany", "+91",

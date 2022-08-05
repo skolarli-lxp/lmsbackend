@@ -57,7 +57,7 @@ class NewDomainControllerTests {
                 "1234561234", "INR", null, "myawesomewebsite.com", "Jaya",
                 "Nair", "jaya@skolarli.com", "mymockpassword" );
         lmsUser = new LmsUser(1, "Jaya", "Nair", "jaya@skolarli.com",
-                "mymockpassword", true, false, false, null, null);
+                "mymockpassword", true, false, false, null, null, null, null);
         tenant = new Tenant(1, "mydomainname",
                 "MyAwesomeCompany", "+91",
                 "1234561234", "INR", "myawesomewebsite.com",null);

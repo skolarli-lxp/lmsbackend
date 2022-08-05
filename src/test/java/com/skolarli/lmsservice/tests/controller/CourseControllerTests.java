@@ -58,10 +58,10 @@ class CourseControllerTests {
     @BeforeEach
     public  void setup() throws Exception {
         lmsUser = new LmsUser(1, "Jaya", "Nair", "testuser@email.com",
-                "mymockpassword", true, false, false, null, null);
+                "mymockpassword", true, false, false, null, null, null, null);
 
         lmsUserNonAdmin = new LmsUser(1, "Jaya", "Nair", "nonadminuser@email.com",
-                "mymockpassword", false, false, false, null, null);
+                "mymockpassword", false, false, false, null, null ,null, null);
 
         courseTagList = List.of(new CourseTag("tag1"), new CourseTag("tag2"));
 
