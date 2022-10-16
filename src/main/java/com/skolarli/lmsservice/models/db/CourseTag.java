@@ -1,6 +1,8 @@
 package com.skolarli.lmsservice.models.db;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -10,6 +12,7 @@ import java.util.Objects;
 @Data
 @Entity
 @NoArgsConstructor
+@AllArgsConstructor
 @Table(name="course_tags")
 public class CourseTag extends Tenantable {
 
@@ -28,8 +31,10 @@ public class CourseTag extends Tenantable {
         this.tag = tag;
     }
 
-    // We consider two CourseTags as equal if the tag field is equal irrespective of other values
-    // Used to make sure that duplicate tags are not added while updating a course
+    /* 
+    We consider two CourseTags as equal if the tag field is equal irrespective of other values
+    Used to make sure that duplicate tags are not added while updating a course
+    */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

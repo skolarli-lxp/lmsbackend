@@ -20,12 +20,22 @@ import java.util.List;
 public class Course extends Tenantable {
 
     public enum DiscountType {
-        STUDENT,
-        PROMOTION,
+        NONE,
+        PERCENTAGE,
+        FIXED
+    }
+
+    public enum DeliveryFormat {
+        PHYSICAL_CLASSROOM,
+        VIRTUAL_CLASSROOM,
+        ONLINE_INSTRUCTOR_LED,
+        SELF_PACED,
+        MIXED_DELIVERY
     }
 
     public enum CourseStatus {
         PLANNED,
+        SCHEDULED,
         RUNNING,
         DEPRECATED
     }
@@ -38,12 +48,12 @@ public class Course extends Tenantable {
     @Column(name = "course_name", nullable = false)
     private String name;
 
+    @NotNull
+    private String courseDescription;
+
     private int courseFees;
 
     private DiscountType discountType;
-
-    private int discountPercentage;
-
     private int discountAmount;
 
     //TODO: should not accept this in input json -- don't try to translate it
@@ -56,6 +66,27 @@ public class Course extends Tenantable {
 
     private String courseCategory;
 
+    private DeliveryFormat deliveryFormat;
+
+    private Boolean isPrivateCourse;
+
+    private String customJs;
+
+    private Boolean seoAllowComments;
+
+    private Boolean seoAllowRatings;
+
+    private String seoTitleTag;
+
+    private  String seoDescription;
+
+    private String metaTagKeywords;
+
+    private String courseCoverImage;
+
+    private String courseThumbImage;
+
+
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "course_id")
     @JsonIgnoreProperties("course")
@@ -66,18 +97,28 @@ public class Course extends Tenantable {
     @JsonIgnoreProperties("course")
     private List<Batch> batches = new ArrayList<>();
 
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name="course_id")
+    @JsonIgnoreProperties("course")
+    private List<Chapter> chapters = new ArrayList<>();
+
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name="course_id")
+    @JsonIgnoreProperties("course")
+    private List<Lesson> lessons = new ArrayList<>();
+
     public void update(Course course) {
         if (course.getName() != null && !course.getName().isEmpty()) {
             this.setName(course.getName());
+        }
+        if (course.getCourseDescription() != null && !course.getCourseDescription().isEmpty()) {
+            this.setCourseDescription(course.getCourseDescription());
         }
         if (course.getCourseFees() != 0) {
             this.setCourseFees(course.getCourseFees());
         }
         if (course.getDiscountType() != null) {
             this.setDiscountType(course.getDiscountType());
-        }
-        if (course.getDiscountPercentage() != 0) {
-            this.setDiscountPercentage(course.getDiscountPercentage());
         }
         if (course.getDiscountAmount() != 0) {
             this.setDiscountAmount(course.getDiscountAmount());
@@ -88,6 +129,37 @@ public class Course extends Tenantable {
         if (course.getCourseCategory() != null && !course.getCourseCategory().isEmpty()) {
             this.setCourseCategory(course.getCourseCategory());
         }
+        if (course.getDeliveryFormat() != null) {
+            this.setDeliveryFormat(course.getDeliveryFormat());
+        }
+        if (course.getIsPrivateCourse() != null) {
+            this.setIsPrivateCourse(course.getIsPrivateCourse());
+        }
+        if (course.getCustomJs() != null && !course.getCustomJs().isEmpty()) {
+            this.setCustomJs(course.getCustomJs());
+        }
+        if (course.getSeoAllowComments() != null) {
+            this.setSeoAllowComments(course.getSeoAllowComments());
+        }
+        if (course.getSeoAllowRatings() != null) {
+            this.setSeoAllowRatings(course.getSeoAllowRatings());
+        }
+        if (course.getSeoTitleTag() != null && !course.getSeoTitleTag().isEmpty()) {
+            this.setSeoTitleTag(course.getSeoTitleTag());
+        }
+        if (course.getSeoDescription() != null && !course.getSeoDescription().isEmpty()) {
+            this.setSeoDescription(course.getSeoDescription());
+        }
+        if (course.getMetaTagKeywords() != null && !course.getMetaTagKeywords().isEmpty()) {
+            this.setMetaTagKeywords(course.getMetaTagKeywords());
+        }
+        if (course.getCourseCoverImage() != null && !course.getCourseCoverImage().isEmpty()) {
+            this.setCourseCoverImage(course.getCourseCoverImage());
+        }
+        if (course.getCourseThumbImage() != null && !course.getCourseThumbImage().isEmpty()) {
+            this.setCourseThumbImage(course.getCourseThumbImage());
+        }
+    
         if (!course.getCourseTagList().isEmpty()) {
             course.getCourseTagList().forEach(
                     (currentTag) -> {

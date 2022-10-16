@@ -3,12 +3,14 @@ package com.skolarli.lmsservice.models.db;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.Date;
 
 @Data
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor

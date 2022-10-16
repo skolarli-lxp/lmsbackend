@@ -65,17 +65,37 @@ class CourseControllerTests {
 
         courseTagList = List.of(new CourseTag("tag1"), new CourseTag("tag2"));
 
-        newCourse = new Course(1, "mycoursename", 100, null,
-                0, 0, null, Course.CourseStatus.PLANNED,
-                null, courseTagList, null);
+        newCourse = new Course();
+        newCourse.setId(1);
+        newCourse.setName("mycoursename");
+        newCourse.setCourseDescription("mycoursedescription");
 
-        updatedCourse = new Course(1, "mycoursename", 100, null,
-                20, 500, lmsUser, Course.CourseStatus.PLANNED,
-                null, courseTagList, null);
+        updatedCourse = new Course();
+        updatedCourse.setId(1);
+        updatedCourse.setName("mycoursename");
+        newCourse.setCourseDescription("mycoursedescription");
+        newCourse.setOwner(lmsUser);
 
-        existingCourse = new Course(1, "myoldcoursename", 100, null,
-                20, 500, lmsUserNonAdmin, Course.CourseStatus.PLANNED,
-                null, courseTagList, null);
+
+        existingCourse = new Course();
+        existingCourse.setId(1);
+        existingCourse.setName("myoldcoursename");
+        existingCourse.setCourseDescription("mycoursedescription");
+        existingCourse.setOwner(lmsUserNonAdmin);
+
+
+        
+        // newCourse = new Course(1, "mycoursename", 100, null,
+        //         0, 0, null, Course.CourseStatus.PLANNED,
+        //         null, courseTagList, null);
+
+        // updatedCourse = new Course(1, "mycoursename", 100, null,
+        //         20, 500, lmsUser, Course.CourseStatus.PLANNED,
+        //         null, courseTagList, null);
+
+        // existingCourse = new Course(1, "myoldcoursename", 100, null,
+        //         20, 500, lmsUserNonAdmin, Course.CourseStatus.PLANNED,
+        //         null, courseTagList, null);
 
 
         SecurityContextHolder.getContext().setAuthentication(
