@@ -57,7 +57,7 @@ public class BatchScheduleController {
     public ResponseEntity<BatchSchedule> addBatchSchedule(@Valid @RequestBody NewBatchScheduleRequest request) {
         Batch batch = batchService.getBatch(request.getBatchId());
         LmsUser currentUser = userUtils.getCurrentUser();
-        if (currentUser.getIsAdmin() != true && currentUser != batch.getCourse().getOwner()) {
+        if (currentUser.getIsAdmin() != true && currentUser != batch.getCourse().getCourseOwner()) {
             throw new ResponseStatusException( HttpStatus.FORBIDDEN, "");
         }
         BatchSchedule batchSchedule = new BatchSchedule();
@@ -78,7 +78,7 @@ public class BatchScheduleController {
         BatchSchedule batchSchedule = batchScheduleService.getBatchSchedule(id);
         Batch batch = batchService.getBatch(request.getBatchId());
         LmsUser currentUser = userUtils.getCurrentUser();
-        if (currentUser.getIsAdmin() != true && currentUser != batch.getCourse().getOwner()) {
+        if (currentUser.getIsAdmin() != true && currentUser != batch.getCourse().getCourseOwner()) {
             throw new ResponseStatusException( HttpStatus.FORBIDDEN, "");
         }
         batchSchedule.setBatch(batch);
@@ -96,7 +96,7 @@ public class BatchScheduleController {
     public ResponseEntity<String> deleteBatchSchedule(@PathVariable long id) {
         BatchSchedule batchSchedule = batchScheduleService.getBatchSchedule(id);
         LmsUser currentUser = userUtils.getCurrentUser();
-        if (currentUser.getIsAdmin() != true && currentUser != batchSchedule.getBatch().getCourse().getOwner()) {
+        if (currentUser.getIsAdmin() != true && currentUser != batchSchedule.getBatch().getCourse().getCourseOwner()) {
             throw new ResponseStatusException( HttpStatus.FORBIDDEN, "");
         }
         try {

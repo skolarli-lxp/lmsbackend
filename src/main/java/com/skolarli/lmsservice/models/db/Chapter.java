@@ -34,7 +34,7 @@ public class Chapter extends Tenantable{
 
     @ManyToOne
     @JoinColumn(name="course_id")
-    @JsonIgnoreProperties("chapters")
+    @JsonIgnoreProperties("courseChapters")
     private Course course;
 
     public void update(Chapter chapter) {

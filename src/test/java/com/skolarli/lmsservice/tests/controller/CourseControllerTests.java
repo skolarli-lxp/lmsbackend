@@ -67,21 +67,21 @@ class CourseControllerTests {
 
         newCourse = new Course();
         newCourse.setId(1);
-        newCourse.setName("mycoursename");
+        newCourse.setCourseName("mycoursename");
         newCourse.setCourseDescription("mycoursedescription");
 
         updatedCourse = new Course();
         updatedCourse.setId(1);
-        updatedCourse.setName("mycoursename");
+        updatedCourse.setCourseName("mycoursename");
         newCourse.setCourseDescription("mycoursedescription");
-        newCourse.setOwner(lmsUser);
+        newCourse.setCourseOwner(lmsUser);
 
 
         existingCourse = new Course();
         existingCourse.setId(1);
-        existingCourse.setName("myoldcoursename");
+        existingCourse.setCourseName("myoldcoursename");
         existingCourse.setCourseDescription("mycoursedescription");
-        existingCourse.setOwner(lmsUserNonAdmin);
+        existingCourse.setCourseOwner(lmsUserNonAdmin);
 
 
         
@@ -163,14 +163,14 @@ class CourseControllerTests {
                         .content(requestJson)
                         .accept(MediaType.APPLICATION_JSON)
         ).andExpect(status().isOk())
-                .andExpect(jsonPath("name", is("mycoursename")));
+                .andExpect(jsonPath("courseName", is("mycoursename")));
         Mockito.verify(courseService).updateCourse(newCourse, 1);
     }
 
     @Test
     void updateCourseTestFailurePermissionDenied() throws Exception{
         when(userUtils.getCurrentUser()).thenReturn(lmsUserNonAdmin);
-        existingCourse.setOwner(lmsUser);
+        existingCourse.setCourseOwner(lmsUser);
         when(courseService.getCourseById(1)).thenReturn(existingCourse);
         String requestJson = mapper.writeValueAsString(newCourse);
 
@@ -208,7 +208,7 @@ class CourseControllerTests {
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
         ).andExpect(status().isOk())
-                        .andExpect(jsonPath("$[0].name", is("myoldcoursename")));
+                        .andExpect(jsonPath("$[0].courseName", is("myoldcoursename")));
         Mockito.verify(courseService).getAllCourses();
     }
 
@@ -234,7 +234,7 @@ class CourseControllerTests {
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
         ).andExpect(status().isOk())
-                        .andExpect(jsonPath("name", is("myoldcoursename")));
+                        .andExpect(jsonPath("courseName", is("myoldcoursename")));
         Mockito.verify(courseService).getCourseById(1);
     }
 

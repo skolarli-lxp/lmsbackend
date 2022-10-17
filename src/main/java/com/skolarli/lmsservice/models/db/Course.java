@@ -46,41 +46,41 @@ public class Course extends Tenantable {
 
     @NotNull
     @Column(name = "course_name", nullable = false)
-    private String name;
+    private String courseName;
 
     @NotNull
     private String courseDescription;
 
     private int courseFees;
 
-    private DiscountType discountType;
-    private int discountAmount;
+    private DiscountType courseDiscountType;
+    private int courseDiscountAmount;
 
     //TODO: should not accept this in input json -- don't try to translate it
     @ManyToOne
     @JoinColumn(name = "owner_user_id")
     @JsonIgnoreProperties("courses") // TO avoid infinite recursion during serialization
-    private LmsUser owner;
+    private LmsUser courseOwner;
 
     private CourseStatus courseStatus;
 
     private String courseCategory;
 
-    private DeliveryFormat deliveryFormat;
+    private DeliveryFormat courseDeliveryFormat;
 
-    private Boolean isPrivateCourse;
+    private Boolean courseIsPrivate;
 
-    private String customJs;
+    private String courseCustomJs;
 
-    private Boolean seoAllowComments;
+    private Boolean courseSeoAllowComments;
 
-    private Boolean seoAllowRatings;
+    private Boolean courseSeoAllowRatings;
 
-    private String seoTitleTag;
+    private String courseSeoTitleTag;
 
-    private  String seoDescription;
+    private  String courseSeoDescription;
 
-    private String metaTagKeywords;
+    private String courseMetaTagKeywords;
 
     private String courseCoverImage;
 
@@ -95,21 +95,21 @@ public class Course extends Tenantable {
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name="course_id")
     @JsonIgnoreProperties("course")
-    private List<Batch> batches = new ArrayList<>();
+    private List<Batch> courseBatches = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name="course_id")
     @JsonIgnoreProperties("course")
-    private List<Chapter> chapters = new ArrayList<>();
+    private List<Chapter> courseChapters = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name="course_id")
     @JsonIgnoreProperties("course")
-    private List<Lesson> lessons = new ArrayList<>();
+    private List<Lesson> courseLessons = new ArrayList<>();
 
     public void update(Course course) {
-        if (course.getName() != null && !course.getName().isEmpty()) {
-            this.setName(course.getName());
+        if (course.getCourseName() != null && !course.getCourseName().isEmpty()) {
+            this.setCourseName(course.getCourseName());
         }
         if (course.getCourseDescription() != null && !course.getCourseDescription().isEmpty()) {
             this.setCourseDescription(course.getCourseDescription());
@@ -117,11 +117,11 @@ public class Course extends Tenantable {
         if (course.getCourseFees() != 0) {
             this.setCourseFees(course.getCourseFees());
         }
-        if (course.getDiscountType() != null) {
-            this.setDiscountType(course.getDiscountType());
+        if (course.getCourseDiscountType() != null) {
+            this.setCourseDiscountType(course.getCourseDiscountType());
         }
-        if (course.getDiscountAmount() != 0) {
-            this.setDiscountAmount(course.getDiscountAmount());
+        if (course.getCourseDiscountAmount() != 0) {
+            this.setCourseDiscountAmount(course.getCourseDiscountAmount());
         }
         if (course.getCourseStatus() != null) {
             this.setCourseStatus(course.getCourseStatus());
@@ -129,29 +129,29 @@ public class Course extends Tenantable {
         if (course.getCourseCategory() != null && !course.getCourseCategory().isEmpty()) {
             this.setCourseCategory(course.getCourseCategory());
         }
-        if (course.getDeliveryFormat() != null) {
-            this.setDeliveryFormat(course.getDeliveryFormat());
+        if (course.getCourseDeliveryFormat() != null) {
+            this.setCourseDeliveryFormat(course.getCourseDeliveryFormat());
         }
-        if (course.getIsPrivateCourse() != null) {
-            this.setIsPrivateCourse(course.getIsPrivateCourse());
+        if (course.getCourseIsPrivate() != null) {
+            this.setCourseIsPrivate(course.getCourseIsPrivate());
         }
-        if (course.getCustomJs() != null && !course.getCustomJs().isEmpty()) {
-            this.setCustomJs(course.getCustomJs());
+        if (course.getCourseCustomJs() != null && !course.getCourseCustomJs().isEmpty()) {
+            this.setCourseCustomJs(course.getCourseCustomJs());
         }
-        if (course.getSeoAllowComments() != null) {
-            this.setSeoAllowComments(course.getSeoAllowComments());
+        if (course.getCourseSeoAllowComments() != null) {
+            this.setCourseSeoAllowComments(course.getCourseSeoAllowComments());
         }
-        if (course.getSeoAllowRatings() != null) {
-            this.setSeoAllowRatings(course.getSeoAllowRatings());
+        if (course.getCourseSeoAllowRatings() != null) {
+            this.setCourseSeoAllowRatings(course.getCourseSeoAllowRatings());
         }
-        if (course.getSeoTitleTag() != null && !course.getSeoTitleTag().isEmpty()) {
-            this.setSeoTitleTag(course.getSeoTitleTag());
+        if (course.getCourseSeoTitleTag() != null && !course.getCourseSeoTitleTag().isEmpty()) {
+            this.setCourseSeoTitleTag(course.getCourseSeoTitleTag());
         }
-        if (course.getSeoDescription() != null && !course.getSeoDescription().isEmpty()) {
-            this.setSeoDescription(course.getSeoDescription());
+        if (course.getCourseSeoDescription() != null && !course.getCourseSeoDescription().isEmpty()) {
+            this.setCourseSeoDescription(course.getCourseSeoDescription());
         }
-        if (course.getMetaTagKeywords() != null && !course.getMetaTagKeywords().isEmpty()) {
-            this.setMetaTagKeywords(course.getMetaTagKeywords());
+        if (course.getCourseMetaTagKeywords() != null && !course.getCourseMetaTagKeywords().isEmpty()) {
+            this.setCourseMetaTagKeywords(course.getCourseMetaTagKeywords());
         }
         if (course.getCourseCoverImage() != null && !course.getCourseCoverImage().isEmpty()) {
             this.setCourseCoverImage(course.getCourseCoverImage());

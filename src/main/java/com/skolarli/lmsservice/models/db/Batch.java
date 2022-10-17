@@ -23,7 +23,7 @@ public class Batch extends  Tenantable{
 
     @ManyToOne
     @JoinColumn(name = "course_id")
-    @JsonIgnoreProperties("batches") // TO avoid infinite recursion during serialization
+    @JsonIgnoreProperties("courseBatches") // TO avoid infinite recursion during serialization
     private Course course;
 
     @ManyToOne

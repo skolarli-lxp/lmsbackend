@@ -46,8 +46,8 @@ public class LmsUser extends Tenantable{
     @NotNull
     private Boolean isStudent;
 
-    @OneToMany(mappedBy = "owner")
-    @JsonIgnoreProperties("owner") // To avoid infinite recursion during serialization
+    @OneToMany(mappedBy = "courseOwner")
+    @JsonIgnoreProperties("courseOwner") // To avoid infinite recursion during serialization
     private List<Course> courses;
 
     @OneToMany(mappedBy = "instructor")

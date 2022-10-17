@@ -33,7 +33,7 @@ public class Lesson extends Tenantable{
 
     @ManyToOne
     @JoinColumn(name="course_id")
-    @JsonIgnoreProperties("lessons")
+    @JsonIgnoreProperties("courseLessons")
     private Course course;
 
     // Lesson Video Related info

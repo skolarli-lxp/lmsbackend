@@ -59,7 +59,7 @@ public class BatchController {
     public ResponseEntity<Batch> addBatch(@Valid @RequestBody NewBatchRequest batchRequest) {
         LmsUser currentUser = userUtils.getCurrentUser();
         Course course = courseService.getCourseById(batchRequest.getCourseId());
-        if (currentUser.getIsAdmin() != true && currentUser != course.getOwner()) {
+        if (currentUser.getIsAdmin() != true && currentUser != course.getCourseOwner()) {
             throw new ResponseStatusException( HttpStatus.FORBIDDEN, "");
         }
 
@@ -68,7 +68,7 @@ public class BatchController {
         batch.setCourse(course);
         batch.setInstructor(user);
 
-        logger.info("Received request for new batch for course" + batch.getCourse().getName());
+        logger.info("Received request for new batch for course" + batch.getCourse().getCourseName());
         try {
             return new ResponseEntity<>(batchService.saveBatch(batch), HttpStatus.CREATED);
         } catch (Exception e) {
@@ -81,14 +81,14 @@ public class BatchController {
     public ResponseEntity<Batch> updateBatch(@PathVariable long id, @Valid @RequestBody NewBatchRequest batchRequest) {
         LmsUser currentUser = userUtils.getCurrentUser();
         Course course = courseService.getCourseById(batchRequest.getCourseId());
-        if (currentUser.getIsAdmin() != true && currentUser != course.getOwner()) {
+        if (currentUser.getIsAdmin() != true && currentUser != course.getCourseOwner()) {
             throw new ResponseStatusException( HttpStatus.FORBIDDEN, "");
         }
         Batch batch = batchService.getBatch(id);
         LmsUser user = lmsUserService.getLmsUserById(batchRequest.getInstructorId());
         batch.setCourse(course);
         batch.setInstructor(user);
-        logger.info("Received request for updating batch for course" + batch.getCourse().getName());
+        logger.info("Received request for updating batch for course" + batch.getCourse().getCourseName());
         try {
             return new ResponseEntity<>(batchService.updateBatch(batch, id), HttpStatus.OK);
         } catch (Exception e) {
@@ -101,10 +101,10 @@ public class BatchController {
     public ResponseEntity<String> deleteBatch(@PathVariable long id) {
         LmsUser currentUser = userUtils.getCurrentUser();
         Batch batch = batchService.getBatch(id);
-        if (currentUser.getIsAdmin() != true && currentUser != batch.getCourse().getOwner()) {
+        if (currentUser.getIsAdmin() != true && currentUser != batch.getCourse().getCourseOwner()) {
             throw new ResponseStatusException( HttpStatus.FORBIDDEN, "");
         }
-        logger.info("Received request for deleting batch for course" + batch.getCourse().getName());
+        logger.info("Received request for deleting batch for course" + batch.getCourse().getCourseName());
         try {
             batchService.deleteBatch(id);
             return new ResponseEntity<>("Batch Deleted !", HttpStatus.OK);

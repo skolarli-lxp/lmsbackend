@@ -33,10 +33,10 @@ public class CourseController {
 
    @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<Course> addCourse(@Valid  @RequestBody Course course) {
-       logger.info("Received request for new course courseName: " + course.getName());
+       logger.info("Received request for new course courseName: " + course.getCourseName());
        String currentUserEmail = (String)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
        LmsUser currentUser = lmsUserService.getLmsUserByEmail(currentUserEmail);
-       course.setOwner(currentUser);
+       course.setCourseOwner(currentUser);
        try {
            return new ResponseEntity<Course>(courseService.saveCourse(course), HttpStatus.CREATED);
        } catch (Exception e) {
@@ -66,7 +66,7 @@ public class CourseController {
     public ResponseEntity<Course> updateCourse(@PathVariable long id, @RequestBody Course course) {
         LmsUser currentUser = userUtils.getCurrentUser();
         Course existingCourse = courseService.getCourseById(id);
-        if (currentUser.getIsAdmin() != true && currentUser != existingCourse.getOwner()) {
+        if (currentUser.getIsAdmin() != true && currentUser != existingCourse.getCourseOwner()) {
             throw new ResponseStatusException( HttpStatus.FORBIDDEN, "");
         }
         try {
