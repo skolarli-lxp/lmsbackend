@@ -8,6 +8,10 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,6 +22,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Course extends Tenantable {
+    // Has to be static to avoid persisting the logger
+    private static final Logger logger = LoggerFactory.getLogger(Course.class);
 
     public enum DiscountType {
         NONE,
@@ -102,12 +108,19 @@ public class Course extends Tenantable {
     @JsonIgnoreProperties("course")
     private List<Chapter> courseChapters = new ArrayList<>();
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name="course_id")
-    @JsonIgnoreProperties("course")
-    private List<Lesson> courseLessons = new ArrayList<>();
-
+    /**
+     * Updates the course with the values in the passed object
+     * All fields except for Id will be updated with the passed value if it is not null
+     * This method does not care about permissions. It is assumed that the caller has already checked for permissions.
+     * Permission should be handled in the service layer.
+     * List of items like batches, lesson etc are only updated with additional values. Existing values are not deleted.
+     * 
+     * @param course
+     */
     public void update(Course course) {
+        if (course.getId() != 0) {
+            logger.error("Course ID is auto generated. Cannot update.");
+        }
         if (course.getCourseName() != null && !course.getCourseName().isEmpty()) {
             this.setCourseName(course.getCourseName());
         }
@@ -165,6 +178,24 @@ public class Course extends Tenantable {
                     (currentTag) -> {
                         if (!this.getCourseTagList().contains(currentTag)) {
                             this.getCourseTagList().add(currentTag);
+                        }
+                    });
+        }
+
+        if (!course.getCourseBatches().isEmpty()) {
+            course.getCourseBatches().forEach(
+                    (currentBatch) -> {
+                        if (!this.getCourseBatches().contains(currentBatch)) {
+                            this.getCourseBatches().add(currentBatch);
+                        }
+                    });
+        }
+
+        if (!course.getCourseChapters().isEmpty()) {
+            course.getCourseChapters().forEach(
+                    (currentChapter) -> {
+                        if (!this.getCourseChapters().contains(currentChapter)) {
+                            this.getCourseChapters().add(currentChapter);
                         }
                     });
         }

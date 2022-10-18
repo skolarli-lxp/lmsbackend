@@ -11,10 +11,14 @@ import javax.persistence.Table;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+@Data
+@EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -32,9 +36,9 @@ public class Lesson extends Tenantable{
     private String lessonDescription;
 
     @ManyToOne
-    @JoinColumn(name="course_id")
-    @JsonIgnoreProperties("courseLessons")
-    private Course course;
+    @JoinColumn(name="chapter_id")
+    @JsonIgnoreProperties("chapterLessons")
+    private Chapter chapter;
 
     // Lesson Video Related info
     private String videoId;
