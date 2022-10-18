@@ -1,7 +1,9 @@
 package com.skolarli.lmsservice.services.impl;
 
+import com.skolarli.lmsservice.exception.OperationNotSupportedException;
 import com.skolarli.lmsservice.exception.ResourceNotFoundException;
 import com.skolarli.lmsservice.models.db.Course;
+import com.skolarli.lmsservice.models.db.LmsUser;
 import com.skolarli.lmsservice.repository.CourseRepository;
 import com.skolarli.lmsservice.services.CourseService;
 import com.skolarli.lmsservice.utils.UserUtils;
@@ -48,10 +50,24 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
+    /**
+     * Update exsiting course with content of course 
+     * Update will proceed only if the current user is an admin user. 
+     * Else throws OperationNotSupportedException 
+     * 
+     * @param course
+     * 
+     * @return updated course
+     * @throws OperationNotSupportedException
+     * @throws ResourceNotFoundException
+     */
     public Course updateCourse(Course course, long id) {
-        // Check if course exists, else throw exception
         Course existingCourse = courseRepository.findById(id).orElseThrow(
                                           () -> new ResourceNotFoundException("Course", "Id", id));
+        LmsUser currentUser = userUtils.getCurrentUser();
+        if (!currentUser.getIsAdmin()) {
+            throw new OperationNotSupportedException("owner", "Course");
+        }
         // Update existing Course
         existingCourse.update(course);
         courseRepository.save(existingCourse);
@@ -61,10 +77,13 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public void deleteCourse(long id) {
+        // TODO: MAke this a soft delete 
+        LmsUser currentUser = userUtils.getCurrentUser();
+        if (!currentUser.getIsAdmin()) {
+            throw new OperationNotSupportedException("owner", "Course");
+        }
         Course existingCourse = courseRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Course", "Id", id));
         courseRepository.delete(existingCourse);
     }
-
-
 }

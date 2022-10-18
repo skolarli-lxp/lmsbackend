@@ -133,6 +133,9 @@ public class Course extends Tenantable {
         if (course.getCourseDiscountType() != null) {
             this.setCourseDiscountType(course.getCourseDiscountType());
         }
+        if (course.getCourseOwner() != null) {
+            this.setCourseOwner(course.getCourseOwner());
+        }
         if (course.getCourseDiscountAmount() != 0) {
             this.setCourseDiscountAmount(course.getCourseDiscountAmount());
         }
