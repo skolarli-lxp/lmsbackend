@@ -16,11 +16,13 @@ import java.util.Optional;
 
 @Service
 public class CourseServiceImpl implements CourseService {
+    // TODO : remove soft deleted courses from fetch 
 
     Logger logger = LoggerFactory.getLogger(CourseServiceImpl.class);
     private CourseRepository courseRepository;
 
     private final UserUtils userUtils;
+
 
     public CourseServiceImpl(CourseRepository courseRepository, UserUtils userUtils) {
         super();
@@ -30,6 +32,9 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public Course saveCourse(Course course) {
+        if (course.getCourseOwner() == null) {
+            course.setCourseOwner(userUtils.getCurrentUser());
+        }
         return courseRepository.save(course);
     }
 
@@ -61,29 +66,44 @@ public class CourseServiceImpl implements CourseService {
      * @throws OperationNotSupportedException
      * @throws ResourceNotFoundException
      */
-    public Course updateCourse(Course course, long id) {
+    public Course updateCourse(Course newCourse, long id) {
         LmsUser currentUser = userUtils.getCurrentUser();
-        if (!currentUser.getIsAdmin()) {
-            throw new OperationNotSupportedException("owner", "Course");
-        }
-
         Course existingCourse = courseRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Course", "Id", id));
+
+        if (currentUser.getIsAdmin() != true && currentUser != existingCourse.getCourseOwner()) {
+            throw new OperationNotSupportedException("owner", "Course");
+        }
+        if (!currentUser.getIsAdmin() && newCourse.getCourseOwner() != null) {
+            logger.error("Only admin can change course owner");
+            newCourse.setCourseOwner(null);
+        }
+        
         // Update existing Course
-        existingCourse.update(course);
+        existingCourse.update(newCourse);
         return courseRepository.save(existingCourse);
 
     }
 
     @Override
     public void deleteCourse(long id) {
-        // TODO: MAke this a soft delete 
         LmsUser currentUser = userUtils.getCurrentUser();
-        if (!currentUser.getIsAdmin()) {
-            throw new OperationNotSupportedException("owner", "Course");
-        }
         Course existingCourse = courseRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Course", "Id", id));
+        if (!currentUser.getIsAdmin() && currentUser != existingCourse.getCourseOwner()) {
+            throw new OperationNotSupportedException("owner", "Course");
+        }
+        existingCourse.setCourseDeleted(true);
+    }
+
+    @Override
+    public void hardDeleteCourse(long id) {
+        LmsUser currentUser = userUtils.getCurrentUser();
+        Course existingCourse = courseRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("Course", "Id", id));
+        if (!currentUser.getIsAdmin() && currentUser != existingCourse.getCourseOwner()) {
+            throw new OperationNotSupportedException("owner", "Course");
+        }
         courseRepository.delete(existingCourse);
     }
 }

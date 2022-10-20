@@ -107,6 +107,7 @@ public class CourseServiceImplTests {
         updatedCourse.setCourseDiscountType(Course.DiscountType.NONE);
 
         when(userUtils.getCurrentUser()).thenReturn(currentUser);
+        when(courseRepository.findById(1L)).thenReturn(Optional.of(newCourse));
 
         assertThrows(OperationNotSupportedException.class, () -> {
             courseService.updateCourse(updatedCourse, 1);
@@ -124,8 +125,6 @@ public class CourseServiceImplTests {
         when(userUtils.getCurrentUser()).thenReturn(currentUser);
 
         courseService.deleteCourse(1);
-
-        verify(courseRepository).delete(newCourse);
     }
 
     @Test
@@ -135,6 +134,7 @@ public class CourseServiceImplTests {
         currentUser.setIsAdmin(false);
 
         when(userUtils.getCurrentUser()).thenReturn(currentUser);
+        when(courseRepository.findById(1L)).thenReturn(Optional.of(newCourse));
 
         assertThrows(OperationNotSupportedException.class, () -> {
             courseService.deleteCourse(1);
@@ -179,5 +179,6 @@ public class CourseServiceImplTests {
             courseService.getAllCourses();
         });
     }
+    
 }
 

@@ -92,6 +92,8 @@ public class Course extends Tenantable {
 
     private String courseThumbImage;
 
+    private Boolean courseDeleted;
+
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "course_id")
@@ -175,6 +177,10 @@ public class Course extends Tenantable {
         if (course.getCourseThumbImage() != null && !course.getCourseThumbImage().isEmpty()) {
             this.setCourseThumbImage(course.getCourseThumbImage());
         }
+        if (course.getCourseDeleted() != null) {
+            this.setCourseDeleted(course.getCourseDeleted());
+        }
+
     
         if (!course.getCourseTagList().isEmpty()) {
             course.getCourseTagList().forEach(

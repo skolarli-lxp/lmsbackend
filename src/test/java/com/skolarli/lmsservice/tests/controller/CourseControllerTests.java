@@ -83,21 +83,6 @@ class CourseControllerTests {
         existingCourse.setCourseDescription("mycoursedescription");
         existingCourse.setCourseOwner(lmsUserNonAdmin);
 
-
-        
-        // newCourse = new Course(1, "mycoursename", 100, null,
-        //         0, 0, null, Course.CourseStatus.PLANNED,
-        //         null, courseTagList, null);
-
-        // updatedCourse = new Course(1, "mycoursename", 100, null,
-        //         20, 500, lmsUser, Course.CourseStatus.PLANNED,
-        //         null, courseTagList, null);
-
-        // existingCourse = new Course(1, "myoldcoursename", 100, null,
-        //         20, 500, lmsUserNonAdmin, Course.CourseStatus.PLANNED,
-        //         null, courseTagList, null);
-
-
         SecurityContextHolder.getContext().setAuthentication(
                 new TenantAuthenticationToken("testuser@email.com", 1));
 
@@ -105,7 +90,6 @@ class CourseControllerTests {
 
     @Test
     void addCourseTestSuccess() throws Exception{
-        when(lmsUserService.getLmsUserByEmail(any())).thenReturn(lmsUserNonAdmin);
         when(courseService.saveCourse(newCourse)).thenReturn(newCourse);
         String requestJson = mapper.writeValueAsString(newCourse);
 
@@ -115,13 +99,11 @@ class CourseControllerTests {
                                 .content(requestJson)
                                 .accept(MediaType.APPLICATION_JSON)
                 ).andExpect(status().isCreated());
-        Mockito.verify(lmsUserService).getLmsUserByEmail("testuser@email.com");
         Mockito.verify(courseService).saveCourse(newCourse);
     }
 
     @Test
     void addCourseTestFailure() throws Exception{
-        when(lmsUserService.getLmsUserByEmail(any())).thenReturn(lmsUser);
         when(courseService.saveCourse(newCourse)).thenThrow(new RuntimeException("Save failed"));
         String requestJson = mapper.writeValueAsString(newCourse);
 
@@ -131,13 +113,11 @@ class CourseControllerTests {
                         .content(requestJson)
                         .accept(MediaType.APPLICATION_JSON)
         ).andExpect(status().isInternalServerError());
-        Mockito.verify(lmsUserService).getLmsUserByEmail("testuser@email.com");
         Mockito.verify(courseService).saveCourse(newCourse);
     }
 
     @Test
     void updateCourseTestSuccessIsAdmin() throws Exception{
-        when(userUtils.getCurrentUser()).thenReturn(lmsUser);
         when(courseService.saveCourse(newCourse)).thenReturn(updatedCourse);
         String requestJson = mapper.writeValueAsString(newCourse);
 
@@ -165,21 +145,6 @@ class CourseControllerTests {
         ).andExpect(status().isOk())
                 .andExpect(jsonPath("courseName", is("mycoursename")));
         Mockito.verify(courseService).updateCourse(newCourse, 1);
-    }
-
-    @Test
-    void updateCourseTestFailurePermissionDenied() throws Exception{
-        when(userUtils.getCurrentUser()).thenReturn(lmsUserNonAdmin);
-        existingCourse.setCourseOwner(lmsUser);
-        when(courseService.getCourseById(1)).thenReturn(existingCourse);
-        String requestJson = mapper.writeValueAsString(newCourse);
-
-        mockMvc.perform(
-                        MockMvcRequestBuilders.put("/courses/{id}","1")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(requestJson)
-                                .accept(MediaType.APPLICATION_JSON)
-                ).andExpect(status().isForbidden());
     }
 
     @Test

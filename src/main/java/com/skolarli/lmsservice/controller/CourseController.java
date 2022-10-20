@@ -34,9 +34,7 @@ public class CourseController {
    @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<Course> addCourse(@Valid  @RequestBody Course course) {
        logger.info("Received request for new course courseName: " + course.getCourseName());
-       String currentUserEmail = (String)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-       LmsUser currentUser = lmsUserService.getLmsUserByEmail(currentUserEmail);
-       course.setCourseOwner(currentUser);
+       
        try {
            return new ResponseEntity<Course>(courseService.saveCourse(course), HttpStatus.CREATED);
        } catch (Exception e) {
@@ -64,11 +62,6 @@ public class CourseController {
 
     @RequestMapping(value = "{id}", method = RequestMethod.PUT)
     public ResponseEntity<Course> updateCourse(@PathVariable long id, @RequestBody Course course) {
-        LmsUser currentUser = userUtils.getCurrentUser();
-        Course existingCourse = courseService.getCourseById(id);
-        if (currentUser.getIsAdmin() != true && currentUser != existingCourse.getCourseOwner()) {
-            throw new ResponseStatusException( HttpStatus.FORBIDDEN, "");
-        }
         try {
             return new ResponseEntity<Course>(courseService.updateCourse(course, id), HttpStatus.OK);
         } catch (Exception e) {
@@ -76,10 +69,13 @@ public class CourseController {
         }
     }
 
-    // Delete should do a soft delete
    @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
     public ResponseEntity<String> deleteCourse(@PathVariable long id) {
-       //TODO: Implementation
+         try {
+              courseService.deleteCourse(id);
+         } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
         return new ResponseEntity<String> ("Course Deleted!", HttpStatus.OK);
     }
 }
