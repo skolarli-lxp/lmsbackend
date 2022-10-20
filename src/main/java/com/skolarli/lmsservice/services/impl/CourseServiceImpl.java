@@ -62,16 +62,16 @@ public class CourseServiceImpl implements CourseService {
      * @throws ResourceNotFoundException
      */
     public Course updateCourse(Course course, long id) {
-        Course existingCourse = courseRepository.findById(id).orElseThrow(
-                                          () -> new ResourceNotFoundException("Course", "Id", id));
         LmsUser currentUser = userUtils.getCurrentUser();
         if (!currentUser.getIsAdmin()) {
             throw new OperationNotSupportedException("owner", "Course");
         }
+
+        Course existingCourse = courseRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("Course", "Id", id));
         // Update existing Course
         existingCourse.update(course);
-        courseRepository.save(existingCourse);
-        return existingCourse;
+        return courseRepository.save(existingCourse);
 
     }
 
