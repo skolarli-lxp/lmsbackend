@@ -135,5 +135,6 @@ public class Lesson extends Tenantable{
         if (lesson.getPdfTitle() != null && !lesson.getPdfTitle().isEmpty()) {
             this.setPdfTitle(lesson.getPdfTitle());
         }
+    
     }
 }

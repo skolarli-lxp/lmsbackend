@@ -25,27 +25,6 @@ public class Course extends Tenantable {
     // Has to be static to avoid persisting the logger
     private static final Logger logger = LoggerFactory.getLogger(Course.class);
 
-    public enum DiscountType {
-        NONE,
-        PERCENTAGE,
-        FIXED
-    }
-
-    public enum DeliveryFormat {
-        PHYSICAL_CLASSROOM,
-        VIRTUAL_CLASSROOM,
-        ONLINE_INSTRUCTOR_LED,
-        SELF_PACED,
-        MIXED_DELIVERY
-    }
-
-    public enum CourseStatus {
-        PLANNED,
-        SCHEDULED,
-        RUNNING,
-        DEPRECATED
-    }
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -59,7 +38,7 @@ public class Course extends Tenantable {
 
     private int courseFees;
 
-    private DiscountType courseDiscountType;
+    private DisountType courseDiscountType;
     private int courseDiscountAmount;
 
     //TODO: should not accept this in input json -- don't try to translate it

@@ -11,8 +11,8 @@ import org.mockito.junit.MockitoJUnitRunner;
 import com.skolarli.lmsservice.models.db.Batch;
 import com.skolarli.lmsservice.models.db.Chapter;
 import com.skolarli.lmsservice.models.db.Course;
-import com.skolarli.lmsservice.models.db.Course.DeliveryFormat;
-import com.skolarli.lmsservice.models.db.Course.DiscountType;
+import com.skolarli.lmsservice.models.db.DisountType;
+import com.skolarli.lmsservice.models.db.DeliveryFormat;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CourseModelTests {
@@ -43,7 +43,7 @@ public class CourseModelTests {
         newCourse.setCourseDescription("Updated Course Description");
         newCourse.setCourseFees(5000);
         course.setCourseDeliveryFormat(DeliveryFormat.PHYSICAL_CLASSROOM);
-        course.setCourseDiscountType(DiscountType.NONE);
+        course.setCourseDiscountType(DisountType.NONE);
 
         Batch batchTwo = new Batch();
         batchTwo.setId(2L);
@@ -66,7 +66,7 @@ public class CourseModelTests {
         assert(course.getCourseDescription().equals("Updated Course Description"));
         assert(course.getCourseFees() == 5000);
         assert(course.getCourseDeliveryFormat().equals(DeliveryFormat.PHYSICAL_CLASSROOM));
-        assert(course.getCourseDiscountType().equals(DiscountType.NONE));
+        assert(course.getCourseDiscountType().equals(DisountType.NONE));
         assert(course.getCourseDiscountAmount() == 0);
         assert(course.getCourseBatches().size() == 2);
         assert(course.getCourseBatches().get(0).getId() == 1L);
@@ -83,7 +83,7 @@ public class CourseModelTests {
         newCourse.setCourseDescription("Updated Course Description");
         newCourse.setCourseFees(5000);
         course.setCourseDeliveryFormat(DeliveryFormat.PHYSICAL_CLASSROOM);
-        course.setCourseDiscountType(DiscountType.NONE);
+        course.setCourseDiscountType(DisountType.NONE);
 
         course.update(newCourse);
         assert(course.getId() == 1L);

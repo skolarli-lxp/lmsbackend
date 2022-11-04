@@ -22,6 +22,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.skolarli.lmsservice.models.db.Course;
+import com.skolarli.lmsservice.models.db.DeliveryFormat;
+import com.skolarli.lmsservice.models.db.DisountType;
 import com.skolarli.lmsservice.repository.CourseRepository;
 import com.skolarli.lmsservice.services.impl.CourseServiceImpl;
 
@@ -45,9 +47,9 @@ public class CourseServiceImplTests {
         newCourse.setCourseName("Test Course");
         newCourse.setCourseDescription("Test Course Description");
         newCourse.setCourseFees(1000);
-        newCourse.setCourseDeliveryFormat(Course.DeliveryFormat.PHYSICAL_CLASSROOM);
+        newCourse.setCourseDeliveryFormat(DeliveryFormat.PHYSICAL_CLASSROOM);
         newCourse.setCourseDiscountAmount(0);
-        newCourse.setCourseDiscountType(Course.DiscountType.NONE);
+        newCourse.setCourseDiscountType(DisountType.NONE);
     }
 
     @Test
@@ -78,8 +80,8 @@ public class CourseServiceImplTests {
         updatedCourse.setId(100L);
         updatedCourse.setCourseName("Updated Course Name");
         updatedCourse.setCourseDescription("Updated Course Description");
-        updatedCourse.setCourseDeliveryFormat(Course.DeliveryFormat.PHYSICAL_CLASSROOM);
-        updatedCourse.setCourseDiscountType(Course.DiscountType.NONE);
+        updatedCourse.setCourseDeliveryFormat(DeliveryFormat.PHYSICAL_CLASSROOM);
+        updatedCourse.setCourseDiscountType(DisountType.NONE);
 
         when(courseRepository.findById(1L)).thenReturn(Optional.of(newCourse));
         when(courseRepository.save(newCourse)).thenReturn(newCourse);
@@ -103,8 +105,8 @@ public class CourseServiceImplTests {
         updatedCourse.setId(100L);
         updatedCourse.setCourseName("Updated Course Name");
         updatedCourse.setCourseDescription("Updated Course Description");
-        updatedCourse.setCourseDeliveryFormat(Course.DeliveryFormat.PHYSICAL_CLASSROOM);
-        updatedCourse.setCourseDiscountType(Course.DiscountType.NONE);
+        updatedCourse.setCourseDeliveryFormat(DeliveryFormat.PHYSICAL_CLASSROOM);
+        updatedCourse.setCourseDiscountType(DisountType.NONE);
 
         when(userUtils.getCurrentUser()).thenReturn(currentUser);
         when(courseRepository.findById(1L)).thenReturn(Optional.of(newCourse));

@@ -35,6 +35,16 @@ public class Batch extends  Tenantable{
     @JsonIgnoreProperties("batch")
     private List<BatchSchedule> batchSchedules;
 
+    private int enrollmentCapacity;
+
+    private String additionalInfo;
+
+    private long batchFees;
+
+
+
+
+
     public void updateBatch(Batch newBatch) {
     }
 }
