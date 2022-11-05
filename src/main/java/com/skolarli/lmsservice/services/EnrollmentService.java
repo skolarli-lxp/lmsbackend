@@ -10,4 +10,6 @@ public interface EnrollmentService {
         Enrollment getEnrollmentById(long id);
         Enrollment updateEnrollment(Enrollment enrollment, long id);
         void deleteEnrollment(long id);
+        void hardDeleteEnrollment(long id);
+
 }

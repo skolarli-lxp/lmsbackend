@@ -161,7 +161,7 @@ public class Course extends Tenantable {
         }
 
     
-        if (!course.getCourseTagList().isEmpty()) {
+        if (course.getCourseTagList() != null &&   !course.getCourseTagList().isEmpty()) {
             course.getCourseTagList().forEach(
                     (currentTag) -> {
                         if (!this.getCourseTagList().contains(currentTag)) {
@@ -170,7 +170,7 @@ public class Course extends Tenantable {
                     });
         }
 
-        if (!course.getCourseBatches().isEmpty()) {
+        if ( course.getCourseBatches() != null &&  !course.getCourseBatches().isEmpty()) {
             course.getCourseBatches().forEach(
                     (currentBatch) -> {
                         if (!this.getCourseBatches().contains(currentBatch)) {
@@ -179,7 +179,7 @@ public class Course extends Tenantable {
                     });
         }
 
-        if (!course.getCourseChapters().isEmpty()) {
+        if (course.getCourseChapters()!= null  && !course.getCourseChapters().isEmpty()) {
             course.getCourseChapters().forEach(
                     (currentChapter) -> {
                         if (!this.getCourseChapters().contains(currentChapter)) {

@@ -11,4 +11,6 @@ public interface BatchScheduleService {
     List<BatchSchedule> getAllBatchSchedules();
     List<BatchSchedule> getSchedulesForBatch(long batchId);
     void deleteBatchSchedule(long id);
+    void hardDeleteBatchSchedule(long id);
+
 }

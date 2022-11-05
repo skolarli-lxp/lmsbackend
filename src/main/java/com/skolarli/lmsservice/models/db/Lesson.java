@@ -85,6 +85,8 @@ public class Lesson extends Tenantable{
     private long downloadablesSize;
     private Boolean downloadablesIsActive;
 
+    private Boolean lessonIsDeleted;
+
 
     public void update(Lesson lesson) {
         if (lesson.getLessonName() != null && !lesson.getLessonName().isEmpty()) {
@@ -135,6 +137,8 @@ public class Lesson extends Tenantable{
         if (lesson.getPdfTitle() != null && !lesson.getPdfTitle().isEmpty()) {
             this.setPdfTitle(lesson.getPdfTitle());
         }
-    
+        if (lesson.getLessonIsDeleted() != null) {
+            this.setLessonIsDeleted(lesson.getLessonIsDeleted());
+        }
     }
 }

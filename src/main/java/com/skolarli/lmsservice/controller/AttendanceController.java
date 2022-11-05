@@ -84,7 +84,7 @@ public class AttendanceController {
         }
         attendance =  request.updateAttendance(attendance);
         try {
-            return new ResponseEntity<>(attendanceService.updateAttendance(attendance), HttpStatus.OK);
+            return new ResponseEntity<>(attendanceService.updateAttendance(attendance, id), HttpStatus.OK);
         } catch (Exception e) {
             logger.error("Error in updateAttendance: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());

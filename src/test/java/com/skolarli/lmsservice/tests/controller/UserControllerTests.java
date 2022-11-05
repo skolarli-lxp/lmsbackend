@@ -92,7 +92,7 @@ class UserControllerTests {
     @Test
     void updateDomainTestFailureUpdateException() throws Exception{
         when(userUtils.getCurrentUser()).thenReturn(currentUser1);
-        when(tenantService.updateTenant(newTenant)).thenThrow(new OperationNotSupportedException("",""));
+        when(tenantService.updateTenant(newTenant)).thenThrow(new OperationNotSupportedException("Operation not supported"));
         String tenantJson = mapper.writeValueAsString(newTenant);
 
         mockMvc.perform(

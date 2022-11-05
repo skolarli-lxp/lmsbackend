@@ -11,4 +11,5 @@ public interface LessonService {
     Lesson getLessonById(long id);
     Lesson updateLesson(Lesson lesson, long id);
     void deleteLesson(long id);
+    void hardDeleteLesson(long id);
 }

@@ -10,9 +10,7 @@ public class OperationNotSupportedException extends RuntimeException {
     private String resourceName;
     private String fieldName;
 
-    public OperationNotSupportedException(String resourceName, String fieldName) {
-        super(String.format("Cannot change field: '%s' in  '%s' object", fieldName, resourceName));
-        this.resourceName = resourceName;
-        this.fieldName = fieldName;
+    public OperationNotSupportedException(String message) {
+        super(message);
     }
 }

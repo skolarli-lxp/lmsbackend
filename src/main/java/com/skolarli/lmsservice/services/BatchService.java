@@ -11,4 +11,5 @@ public interface BatchService {
     List<Batch> getAllBatches();
     List<Batch> getBatchesForCourse(long courseId);
     void deleteBatch(long id);
+    void hardDeleteBatch(long id);
 }

@@ -50,7 +50,8 @@ public class Chapter extends Tenantable{
     @JsonIgnoreProperties("chapter")
     private List<Lesson> chapterLessons = new ArrayList<>();
 
-    
+    private Boolean chapterIsDeleted;
+
     public void update(Chapter chapter) {
         if (chapter.getChapterName() != null && !chapter.getChapterName().isEmpty()) {
             this.setChapterName(chapter.getChapterName());
@@ -70,6 +71,9 @@ public class Chapter extends Tenantable{
                             this.getChapterLessons().add(currentLesson);
                         }
                     });
+        }
+        if (chapter.getChapterIsDeleted() != null) {
+            this.setChapterIsDeleted(chapter.getChapterIsDeleted());
         }
     }
 }
