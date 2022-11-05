@@ -21,6 +21,7 @@ public class BatchServiceImpl implements BatchService {
     private final BatchRepository batchRepository;
     private final UserUtils userUtils;
 
+
     public BatchServiceImpl(BatchRepository batchRepository, UserUtils userUtils) {
         this.batchRepository = batchRepository;
         this.userUtils = userUtils;
@@ -28,6 +29,10 @@ public class BatchServiceImpl implements BatchService {
 
     @Override
     public Batch saveBatch(Batch batch) {
+        LmsUser currentUser = userUtils.getCurrentUser();
+        if (currentUser.getIsAdmin() != true && currentUser != batch.getCourse().getCourseOwner()) {
+            throw new OperationNotSupportedException("Operation not supported");
+        }
         return batchRepository.save(batch);
     }
 

@@ -27,9 +27,12 @@ public class AttendanceServiceImpl implements AttendanceService {
 
     @Override
     public Attendance saveAttendance(Attendance attendance) {
+        if (checkPermission(attendance ) == false) {
+            throw new OperationNotSupportedException("Operation not supported");
+        }
         return attendanceRepository.save(attendance);
     }
-
+    
     private Boolean checkPermission(Attendance attendance) {
         LmsUser currentUser = userUtils.getCurrentUser();
         if (currentUser.getIsAdmin() != true && currentUser != attendance.getBatchSchedule().getBatch().getCourse().getCourseOwner()) {

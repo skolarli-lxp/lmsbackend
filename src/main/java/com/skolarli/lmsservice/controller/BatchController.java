@@ -1,5 +1,6 @@
 package com.skolarli.lmsservice.controller;
 
+import com.skolarli.lmsservice.exception.OperationNotSupportedException;
 import com.skolarli.lmsservice.models.NewBatchRequest;
 import com.skolarli.lmsservice.models.db.Batch;
 import com.skolarli.lmsservice.models.db.BatchSchedule;
@@ -57,21 +58,18 @@ public class BatchController {
 
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<Batch> addBatch(@Valid @RequestBody NewBatchRequest batchRequest) {
-        LmsUser currentUser = userUtils.getCurrentUser();
         Course course = courseService.getCourseById(batchRequest.getCourseId());
-        if (currentUser.getIsAdmin() != true && currentUser != course.getCourseOwner()) {
-            throw new ResponseStatusException( HttpStatus.FORBIDDEN, "");
-        }
-
         Batch batch = new Batch();
         LmsUser user = lmsUserService.getLmsUserById(batchRequest.getInstructorId());
         batch.setCourse(course);
         batch.setInstructor(user);
-
         logger.info("Received request for new batch for course" + batch.getCourse().getCourseName());
+
         try {
             return new ResponseEntity<>(batchService.saveBatch(batch), HttpStatus.CREATED);
-        } catch (Exception e) {
+        }catch (OperationNotSupportedException e){
+            throw new ResponseStatusException( HttpStatus.FORBIDDEN, e.getMessage());
+        }catch (Exception e) {
             logger.error("Error in addBatch: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
@@ -79,19 +77,18 @@ public class BatchController {
 
     @RequestMapping(method = RequestMethod.PUT, value = "{id}")
     public ResponseEntity<Batch> updateBatch(@PathVariable long id, @Valid @RequestBody NewBatchRequest batchRequest) {
-        LmsUser currentUser = userUtils.getCurrentUser();
         Course course = courseService.getCourseById(batchRequest.getCourseId());
-        if (currentUser.getIsAdmin() != true && currentUser != course.getCourseOwner()) {
-            throw new ResponseStatusException( HttpStatus.FORBIDDEN, "");
-        }
         Batch batch = batchService.getBatch(id);
         LmsUser user = lmsUserService.getLmsUserById(batchRequest.getInstructorId());
         batch.setCourse(course);
         batch.setInstructor(user);
         logger.info("Received request for updating batch for course" + batch.getCourse().getCourseName());
+
         try {
             return new ResponseEntity<>(batchService.updateBatch(batch, id), HttpStatus.OK);
-        } catch (Exception e) {
+        }catch (OperationNotSupportedException e){
+            throw new ResponseStatusException( HttpStatus.FORBIDDEN, e.getMessage());
+        }catch (Exception e) {
             logger.error("Error in updateBatch: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
@@ -99,15 +96,14 @@ public class BatchController {
 
     @RequestMapping(method = RequestMethod.DELETE, value = "{id}")
     public ResponseEntity<String> deleteBatch(@PathVariable long id) {
-        LmsUser currentUser = userUtils.getCurrentUser();
         Batch batch = batchService.getBatch(id);
-        if (currentUser.getIsAdmin() != true && currentUser != batch.getCourse().getCourseOwner()) {
-            throw new ResponseStatusException( HttpStatus.FORBIDDEN, "");
-        }
         logger.info("Received request for deleting batch for course" + batch.getCourse().getCourseName());
+
         try {
             batchService.deleteBatch(id);
             return new ResponseEntity<>("Batch Deleted !", HttpStatus.OK);
+        } catch (OperationNotSupportedException e){
+            throw new ResponseStatusException( HttpStatus.FORBIDDEN, e.getMessage());
         } catch (Exception e) {
             logger.error("Error in deleteBatch: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());

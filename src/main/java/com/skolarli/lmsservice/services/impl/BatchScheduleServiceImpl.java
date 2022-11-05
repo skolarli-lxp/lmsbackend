@@ -26,7 +26,10 @@ public class BatchScheduleServiceImpl implements BatchScheduleService {
     }
 
     @Override
-    public BatchSchedule saveBatchSchedule(BatchSchedule batchSchedule) {
+    public BatchSchedule saveBatchSchedule(BatchSchedule batchSchedule)  {
+        if (checkPermissions(batchSchedule) == false) {
+            throw new OperationNotSupportedException("Operation not supported");
+        }
         return batchScheduleRepository.save(batchSchedule);
     }
 

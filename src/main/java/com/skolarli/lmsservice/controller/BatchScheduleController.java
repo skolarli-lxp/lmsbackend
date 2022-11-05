@@ -1,5 +1,6 @@
 package com.skolarli.lmsservice.controller;
 
+import com.skolarli.lmsservice.exception.OperationNotSupportedException;
 import com.skolarli.lmsservice.models.NewBatchScheduleRequest;
 import com.skolarli.lmsservice.models.db.Attendance;
 import com.skolarli.lmsservice.models.db.Batch;
@@ -56,10 +57,6 @@ public class BatchScheduleController {
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<BatchSchedule> addBatchSchedule(@Valid @RequestBody NewBatchScheduleRequest request) {
         Batch batch = batchService.getBatch(request.getBatchId());
-        LmsUser currentUser = userUtils.getCurrentUser();
-        if (currentUser.getIsAdmin() != true && currentUser != batch.getCourse().getCourseOwner()) {
-            throw new ResponseStatusException( HttpStatus.FORBIDDEN, "");
-        }
         BatchSchedule batchSchedule = new BatchSchedule();
         batchSchedule.setBatch(batch);
         batchSchedule.setStartDateTime(request.getStartDateTime());
@@ -67,7 +64,9 @@ public class BatchScheduleController {
 
         try {
             return new ResponseEntity<>(batchScheduleService.saveBatchSchedule(batchSchedule), HttpStatus.OK);
-        } catch (Exception e) {
+        } catch (OperationNotSupportedException e){
+            throw new ResponseStatusException( HttpStatus.FORBIDDEN, e.getMessage());
+        }catch (Exception e) {
             logger.error("Error in addBatchSchedule: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
