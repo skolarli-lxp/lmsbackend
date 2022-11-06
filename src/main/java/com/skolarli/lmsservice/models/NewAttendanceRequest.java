@@ -6,7 +6,6 @@ import com.skolarli.lmsservice.models.db.BatchSchedule;
 import com.skolarli.lmsservice.models.db.LmsUser;
 import com.skolarli.lmsservice.services.BatchScheduleService;
 import com.skolarli.lmsservice.services.LmsUserService;
-import com.skolarli.lmsservice.services.impl.LmsUserServiceImpl;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

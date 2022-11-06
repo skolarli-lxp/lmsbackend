@@ -31,7 +31,9 @@ public class ChapterServiceImpl implements ChapterService {
 
     @Override
     public Chapter saveChapter(Chapter chapter) {
-
+        if (checkPermission(chapter) == false) {
+            throw new OperationNotSupportedException("Operation not supported");
+        }
         return chapterRepository.save(chapter);
     }
 
