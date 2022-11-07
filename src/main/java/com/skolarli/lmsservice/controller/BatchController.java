@@ -4,8 +4,6 @@ import com.skolarli.lmsservice.exception.OperationNotSupportedException;
 import com.skolarli.lmsservice.models.NewBatchRequest;
 import com.skolarli.lmsservice.models.db.Batch;
 import com.skolarli.lmsservice.models.db.BatchSchedule;
-import com.skolarli.lmsservice.models.db.Course;
-import com.skolarli.lmsservice.models.db.LmsUser;
 import com.skolarli.lmsservice.services.BatchService;
 import com.skolarli.lmsservice.services.CourseService;
 import com.skolarli.lmsservice.services.LmsUserService;
@@ -58,11 +56,7 @@ public class BatchController {
 
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<Batch> addBatch(@Valid @RequestBody NewBatchRequest batchRequest) {
-        Course course = courseService.getCourseById(batchRequest.getCourseId());
-        Batch batch = new Batch();
-        LmsUser user = lmsUserService.getLmsUserById(batchRequest.getInstructorId());
-        batch.setCourse(course);
-        batch.setInstructor(user);
+        Batch batch = batchService.toBatch(batchRequest);
         logger.info("Received request for new batch for course" + batch.getCourse().getCourseName());
 
         try {
@@ -77,11 +71,7 @@ public class BatchController {
 
     @RequestMapping(method = RequestMethod.PUT, value = "{id}")
     public ResponseEntity<Batch> updateBatch(@PathVariable long id, @Valid @RequestBody NewBatchRequest batchRequest) {
-        Course course = courseService.getCourseById(batchRequest.getCourseId());
-        Batch batch = batchService.getBatch(id);
-        LmsUser user = lmsUserService.getLmsUserById(batchRequest.getInstructorId());
-        batch.setCourse(course);
-        batch.setInstructor(user);
+        Batch batch = batchService.toBatch(batchRequest);
         logger.info("Received request for updating batch for course" + batch.getCourse().getCourseName());
 
         try {

@@ -93,6 +93,7 @@ public class CourseServiceImpl implements CourseService {
             throw new OperationNotSupportedException("User does not have permission to perform Delete operation");
         }
         existingCourse.setCourseDeleted(true);
+        
         courseRepository.save(existingCourse);
     }
 
