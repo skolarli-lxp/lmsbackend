@@ -2,10 +2,14 @@ package com.skolarli.lmsservice.services.impl;
 
 import com.skolarli.lmsservice.exception.OperationNotSupportedException;
 import com.skolarli.lmsservice.exception.ResourceNotFoundException;
+import com.skolarli.lmsservice.models.NewAttendanceRequest;
 import com.skolarli.lmsservice.models.db.Attendance;
+import com.skolarli.lmsservice.models.db.BatchSchedule;
 import com.skolarli.lmsservice.models.db.LmsUser;
 import com.skolarli.lmsservice.repository.AttendanceRepository;
 import com.skolarli.lmsservice.services.AttendanceService;
+import com.skolarli.lmsservice.services.BatchScheduleService;
+import com.skolarli.lmsservice.services.LmsUserService;
 import com.skolarli.lmsservice.utils.UserUtils;
 
 import org.slf4j.Logger;
@@ -19,10 +23,15 @@ public class AttendanceServiceImpl implements AttendanceService {
 
     final AttendanceRepository attendanceRepository;
     final UserUtils userUtils;
+    final LmsUserService lmsUserService;
+    final BatchScheduleService batchScheduleService;
 
-    public AttendanceServiceImpl(AttendanceRepository attendanceRepository, UserUtils userUtils) {
+    public AttendanceServiceImpl(AttendanceRepository attendanceRepository, UserUtils userUtils,
+                                 LmsUserService lmsUserService, BatchScheduleService batchScheduleService) {
         this.attendanceRepository = attendanceRepository;
         this.userUtils = userUtils;
+        this.lmsUserService = lmsUserService;
+        this.batchScheduleService = batchScheduleService;
     }
 
     @Override
@@ -91,5 +100,18 @@ public class AttendanceServiceImpl implements AttendanceService {
             throw new OperationNotSupportedException("User does not have permission to delete this attendance");
         }
         attendanceRepository.delete(attendance);
+    }
+
+    @Override
+    public Attendance toAttendance(NewAttendanceRequest newAttendanceRequest) {
+        BatchSchedule batchSchedule = batchScheduleService.getBatchSchedule(newAttendanceRequest.getBatchScheduleId());
+        LmsUser student = lmsUserService.getLmsUserById(newAttendanceRequest.getStudentId());
+        Attendance attendance = new Attendance();
+        attendance.setBatchSchedule(batchSchedule);
+        attendance.setStudent(student);
+        attendance.setAttended(newAttendanceRequest.getAttended());
+        attendance.setStartDateTime(newAttendanceRequest.getStartDateTime());
+        attendance.setEndDateTime(newAttendanceRequest.getEndDateTime());
+        return attendance;
     }
 }

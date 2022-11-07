@@ -7,10 +7,13 @@ import org.springframework.stereotype.Service;
 
 import com.skolarli.lmsservice.exception.OperationNotSupportedException;
 import com.skolarli.lmsservice.exception.ResourceNotFoundException;
+import com.skolarli.lmsservice.models.NewChapterRequest;
 import com.skolarli.lmsservice.models.db.Chapter;
+import com.skolarli.lmsservice.models.db.Course;
 import com.skolarli.lmsservice.models.db.LmsUser;
 import com.skolarli.lmsservice.repository.ChapterRepository;
 import com.skolarli.lmsservice.services.ChapterService;
+import com.skolarli.lmsservice.services.CourseService;
 import com.skolarli.lmsservice.utils.UserUtils;
 
 import ch.qos.logback.classic.Logger;
@@ -22,11 +25,13 @@ public class ChapterServiceImpl implements ChapterService {
 
     ChapterRepository chapterRepository;
     UserUtils userUtils;
+    CourseService courseService;
 
-    public ChapterServiceImpl(ChapterRepository chapterRepository, UserUtils userutils) {
+    public ChapterServiceImpl(ChapterRepository chapterRepository, UserUtils userutils, CourseService courseService) {
         super();
         this.chapterRepository = chapterRepository;
         this.userUtils = userutils;
+        this.courseService = courseService;
     }
 
     @Override
@@ -91,5 +96,17 @@ public class ChapterServiceImpl implements ChapterService {
     @Override
     public List<Chapter> getAllChapters() {
         return chapterRepository.findAll();
+    }
+
+    @Override
+    public Chapter toChapter(NewChapterRequest newChapterRequest) {
+        Chapter chapter = new Chapter();
+        chapter.setChapterName(newChapterRequest.getChapterName());
+        chapter.setChapterDescription(newChapterRequest.getChapterDescription());
+        
+        Course course = courseService.getCourseById(newChapterRequest.getCourseId());
+        chapter.setCourse(course);
+
+        return  chapter;
     }
 }

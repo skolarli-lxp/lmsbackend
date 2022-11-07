@@ -47,7 +47,7 @@ public class EnrollmentController {
 
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<Enrollment> addEnrollment(@Valid @RequestBody NewEnrollmentRequest request) {
-        Enrollment enrollment = request.toEnrollment();
+        Enrollment enrollment = enrollmentService.toEnrollment(request);
         try {
             return new ResponseEntity<>(enrollmentService.save(enrollment), HttpStatus.OK);
         } catch (Exception e) {
@@ -58,7 +58,7 @@ public class EnrollmentController {
 
     @RequestMapping(method = RequestMethod.PUT, value = "{id}")
     public ResponseEntity<Enrollment> updateEnrollment(@PathVariable long id, @Valid @RequestBody NewEnrollmentRequest request) {
-        Enrollment newEnrollment = request.toEnrollment();
+        Enrollment newEnrollment = enrollmentService.toEnrollment(request);
         Enrollment existingEnrollment = enrollmentService.getEnrollmentById(id);
         existingEnrollment.update(newEnrollment);
         try {

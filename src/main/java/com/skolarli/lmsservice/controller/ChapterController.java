@@ -50,7 +50,7 @@ public class ChapterController {
 
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<Chapter> addChapter(@RequestBody NewChapterRequest newChapterRequest) {
-        Chapter chapter = newChapterRequest.toChapter();
+        Chapter chapter = chapterService.toChapter(newChapterRequest);
         try {
             return new ResponseEntity<>(chapterService.saveChapter(chapter), HttpStatus.OK);
         } catch (Exception e) {
@@ -61,7 +61,7 @@ public class ChapterController {
 
     @RequestMapping(method = RequestMethod.PUT, value = "{id}")
     public ResponseEntity<Chapter> updateChapter(@RequestBody NewChapterRequest newChapterRequest, @PathVariable long id) {
-        Chapter chapter = newChapterRequest.toChapter();
+        Chapter chapter = chapterService.toChapter(newChapterRequest);
         try {
             return new ResponseEntity<>(chapterService.updateChapter(chapter, id), HttpStatus.OK);
         } catch (Exception e) {

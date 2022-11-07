@@ -2,9 +2,11 @@ package com.skolarli.lmsservice.services;
 
 import java.util.List;
 
+import com.skolarli.lmsservice.models.NewChapterRequest;
 import com.skolarli.lmsservice.models.db.Chapter;
 
 public interface ChapterService {
+    Chapter toChapter(NewChapterRequest newChapterRequest);
     Chapter saveChapter(Chapter chapter);
     Chapter updateChapter(Chapter chapter, long id);
     void deleteChapter(long id);

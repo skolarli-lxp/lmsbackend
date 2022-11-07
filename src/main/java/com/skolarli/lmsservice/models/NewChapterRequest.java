@@ -5,11 +5,7 @@ import javax.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.skolarli.lmsservice.models.db.Chapter;
-import com.skolarli.lmsservice.models.db.Course;
-import com.skolarli.lmsservice.services.ChapterService;
 import com.skolarli.lmsservice.services.CourseService;
-import com.skolarli.lmsservice.utils.UserUtils;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -34,15 +30,4 @@ public class NewChapterRequest {
 
     @NotNull(message = "courseId cannot be empty")
     private long courseId;
-
-    public Chapter toChapter() {
-        Chapter chapter = new Chapter();
-        chapter.setChapterName(this.chapterName);
-        chapter.setChapterDescription(this.chapterDescription);
-        
-        Course course = courseService.getCourseById(this.courseId);
-        chapter.setCourse(course);
-
-        return  chapter;
-    }
 }

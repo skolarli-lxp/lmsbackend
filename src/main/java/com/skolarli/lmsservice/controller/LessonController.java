@@ -49,7 +49,7 @@ public class LessonController {
 
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<Lesson> addLesson(NewLessonRequest newLessonRequest) {
-        Lesson lesson = newLessonRequest.toLesson();
+        Lesson lesson = lessonService.toLesson(newLessonRequest);
         try {
             return new ResponseEntity<>(lessonService.saveLesson(lesson), HttpStatus.OK);
         } catch (Exception e) {
@@ -60,7 +60,7 @@ public class LessonController {
     
     @RequestMapping(method = RequestMethod.PUT, value = "{id}")
     public ResponseEntity<Lesson> updateLesson(@PathVariable long id, NewLessonRequest newLessonRequest) {
-        Lesson lesson = newLessonRequest.toLesson();
+        Lesson lesson = lessonService.toLesson(newLessonRequest);
         try {
             return new ResponseEntity<>(lessonService.updateLesson(lesson, id), HttpStatus.OK);
         } catch (Exception e) {

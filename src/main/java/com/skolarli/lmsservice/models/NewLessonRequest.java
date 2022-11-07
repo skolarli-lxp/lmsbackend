@@ -20,10 +20,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class NewLessonRequest {
-    @JsonIgnore
-    @Autowired
-    ChapterService chapterService;
-
     @NotNull(message = "lessonName is required")
     private String lessonName;
 
@@ -77,58 +73,4 @@ public class NewLessonRequest {
     private long downloadablesSize;
     private Boolean downloadablesIsActive;
 
-    public Lesson toLesson(){
-        Lesson lesson = new Lesson();
-
-        lesson.setLessonName(this.lessonName);
-        lesson.setLessonDescription(this.lessonDescription);
-        lesson.setChapter(this.chapterService.getChapterById(this.chapterId));
-
-        // Lesson Video Related info
-        lesson.setVideoId(this.videoId);
-        lesson.setVideoTitle(this.videoTitle);
-        lesson.setVideoDescription(this.videoDescription);
-        lesson.setVideoUrl(this.videoUrl);
-        lesson.setVideoThumbnailUrl(this.videoThumbnailUrl);
-        lesson.setVideoSize(this.videoSize);
-        lesson.setAllowDownload(this.allowDownload);
-        lesson.setVideoIsActive(this.videoIsActive);
-        
-        // Lesson Text Related info
-        lesson.setTextContent(this.textContent);
-        lesson.setTextTitle(this.textTitle);
-        lesson.setTextDescription(this.textDescription);
-        lesson.setTextUrl(this.textUrl);
-        lesson.setTextIsActive(this.textIsActive);
-
-        // Lesson PDF Related info
-        lesson.setPdfTitle(this.pdfTitle);
-        lesson.setPdfDescription(this.pdfDescription);
-        lesson.setPdfUrl(this.pdfUrl);
-        lesson.setPdfSize(this.pdfSize);
-        lesson.setPdfIsActive(this.pdfIsActive);
-
-        // Lesson Audio Related info
-        lesson.setAudioTitle(this.audioTitle);
-        lesson.setAudioDescription(this.audioDescription);
-        lesson.setAudioUrl(this.audioUrl);
-        lesson.setAudioSize(this.audioSize);
-        lesson.setAudioIsActive(this.audioIsActive);
-
-        // Lesson Presentation Related info
-        lesson.setPresentationTitle(this.presentationTitle);
-        lesson.setPresentationDescription(this.presentationDescription);
-        lesson.setPresentationUrl(this.presentationUrl);
-        lesson.setPresentationSize(this.presentationSize);
-        lesson.setPresentationIsActive(this.presentationIsActive);
-
-        // Lesson Downloadables Related info
-        lesson.setDownloadablesTitle(this.downloadablesTitle);
-        lesson.setDownloadablesDescription(this.downloadablesDescription);
-        lesson.setDownloadablesUrl(this.downloadablesUrl);
-        lesson.setDownloadablesSize(this.downloadablesSize);
-        lesson.setDownloadablesIsActive(this.downloadablesIsActive);
-
-        return lesson;
-    }
 }

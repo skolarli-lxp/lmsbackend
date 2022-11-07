@@ -1,10 +1,12 @@
 package com.skolarli.lmsservice.services;
 
+import com.skolarli.lmsservice.models.NewEnrollmentRequest;
 import com.skolarli.lmsservice.models.db.Enrollment;
 
 import java.util.List;
 
 public interface EnrollmentService {
+        Enrollment toEnrollment(NewEnrollmentRequest request);
         Enrollment save(Enrollment enrollment);
         List<Enrollment> getAllEnrollments();
         Enrollment getEnrollmentById(long id);

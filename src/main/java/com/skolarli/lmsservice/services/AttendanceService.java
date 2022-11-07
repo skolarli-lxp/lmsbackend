@@ -1,10 +1,12 @@
 package com.skolarli.lmsservice.services;
 
+import com.skolarli.lmsservice.models.NewAttendanceRequest;
 import com.skolarli.lmsservice.models.db.Attendance;
 
 import java.util.List;
 
 public interface AttendanceService {
+        Attendance toAttendance(NewAttendanceRequest newAttendanceRequest);
         Attendance saveAttendance(Attendance attendance);
         Attendance updateAttendance(Attendance attendance, long id);
         Attendance getAttendance(long id);

@@ -57,7 +57,7 @@ public class AttendanceController {
 
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<Attendance> addAttendance(@Valid @RequestBody NewAttendanceRequest request) {
-        Attendance attendance = request.toAttendance();
+        Attendance attendance = attendanceService.toAttendance(request);
         try {
             return new ResponseEntity<>(attendanceService.saveAttendance(attendance), HttpStatus.OK);
         } catch (Exception e) {
@@ -68,8 +68,7 @@ public class AttendanceController {
 
     @RequestMapping(method = RequestMethod.PUT, value = "{id}")
     public ResponseEntity<Attendance> updateAttendance(@PathVariable long id, @Valid @RequestBody NewAttendanceRequest request) {
-        Attendance attendance = attendanceService.getAttendance(id);
-        attendance =  request.updateAttendance(attendance);
+        Attendance attendance = attendanceService.toAttendance(request);
         try {
             return new ResponseEntity<>(attendanceService.updateAttendance(attendance, id), HttpStatus.OK);
         }catch (OperationNotSupportedException e) {

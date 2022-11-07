@@ -8,9 +8,11 @@ import org.springframework.stereotype.Service;
 
 import com.skolarli.lmsservice.exception.OperationNotSupportedException;
 import com.skolarli.lmsservice.exception.ResourceNotFoundException;
+import com.skolarli.lmsservice.models.NewLessonRequest;
 import com.skolarli.lmsservice.models.db.Lesson;
 import com.skolarli.lmsservice.models.db.LmsUser;
 import com.skolarli.lmsservice.repository.LessonRepository;
+import com.skolarli.lmsservice.services.ChapterService;
 import com.skolarli.lmsservice.services.LessonService;
 import com.skolarli.lmsservice.utils.UserUtils;
 
@@ -21,12 +23,15 @@ public class LessonServiceImpl implements LessonService {
     
     LessonRepository lessonRepository;
     UserUtils userUtils;
+    ChapterService chapterService;
 
-    public LessonServiceImpl(LessonRepository lessonRepository, UserUtils userUtils) {
+    public LessonServiceImpl(LessonRepository lessonRepository, UserUtils userUtils, ChapterService chapterService) {
         super();
         this.lessonRepository = lessonRepository;
         this.userUtils = userUtils;
+        this.chapterService = chapterService;
     }
+
 
     @Override
     public Lesson saveLesson(Lesson lesson) {
@@ -87,5 +92,61 @@ public class LessonServiceImpl implements LessonService {
             throw new OperationNotSupportedException("User does not have permissions to delete this lesson");
         }
         lessonRepository.delete(existingLesson);
+    }
+
+    @Override
+    public Lesson toLesson(NewLessonRequest newLessonRequest) {
+        Lesson lesson = new Lesson();
+
+        lesson.setLessonName(newLessonRequest.getLessonName());
+        lesson.setLessonDescription(newLessonRequest.getLessonDescription());
+        lesson.setChapter(chapterService.getChapterById(newLessonRequest.getChapterId()));
+
+        // Lesson Video Related info
+        lesson.setVideoId(newLessonRequest.getVideoId());
+        lesson.setVideoTitle(newLessonRequest.getVideoTitle());
+        lesson.setVideoDescription(newLessonRequest.getVideoDescription());
+        lesson.setVideoUrl(newLessonRequest.getVideoUrl());
+        lesson.setVideoThumbnailUrl(newLessonRequest.getVideoThumbnailUrl());
+        lesson.setVideoSize(newLessonRequest.getVideoSize());
+        lesson.setAllowDownload(newLessonRequest.getAllowDownload());
+        lesson.setVideoIsActive(newLessonRequest.getVideoIsActive());
+        
+        // Lesson Text Related info
+        lesson.setTextContent(newLessonRequest.getTextContent());
+        lesson.setTextTitle(newLessonRequest.getTextTitle());
+        lesson.setTextDescription(newLessonRequest.getTextDescription());
+        lesson.setTextUrl(newLessonRequest.getTextUrl());
+        lesson.setTextIsActive(newLessonRequest.getTextIsActive());
+
+        // Lesson PDF Related info
+        lesson.setPdfTitle(newLessonRequest.getPdfTitle());
+        lesson.setPdfDescription(newLessonRequest.getPdfDescription());
+        lesson.setPdfUrl(newLessonRequest.getPdfUrl());
+        lesson.setPdfSize(newLessonRequest.getPdfSize());
+        lesson.setPdfIsActive(newLessonRequest.getPdfIsActive());
+
+        // Lesson Audio Related info
+        lesson.setAudioTitle(newLessonRequest.getAudioTitle());
+        lesson.setAudioDescription(newLessonRequest.getAudioDescription());
+        lesson.setAudioUrl(newLessonRequest.getAudioUrl());
+        lesson.setAudioSize(newLessonRequest.getAudioSize());
+        lesson.setAudioIsActive(newLessonRequest.getAudioIsActive());
+
+        // Lesson Presentation Related info
+        lesson.setPresentationTitle(newLessonRequest.getPresentationTitle());
+        lesson.setPresentationDescription(newLessonRequest.getPresentationDescription());
+        lesson.setPresentationUrl(newLessonRequest.getPresentationUrl());
+        lesson.setPresentationSize(newLessonRequest.getPresentationSize());
+        lesson.setPresentationIsActive(newLessonRequest.getPresentationIsActive());
+
+        // Lesson Downloadables Related info
+        lesson.setDownloadablesTitle(newLessonRequest.getDownloadablesTitle());
+        lesson.setDownloadablesDescription(newLessonRequest.getDownloadablesDescription());
+        lesson.setDownloadablesUrl(newLessonRequest.getDownloadablesUrl());
+        lesson.setDownloadablesSize(newLessonRequest.getDownloadablesSize());
+        lesson.setDownloadablesIsActive(newLessonRequest.getDownloadablesIsActive());
+
+        return lesson;
     }
 }
