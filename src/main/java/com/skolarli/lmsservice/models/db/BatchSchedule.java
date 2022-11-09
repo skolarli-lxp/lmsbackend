@@ -37,7 +37,7 @@ public class BatchSchedule extends Tenantable {
     private Date endDateTime;
 
     @OneToMany(mappedBy = "batchSchedule")
-    @JsonIgnoreProperties("batchSchedule")
+    @JsonIgnoreProperties({"batchSchedule", "student"})
     private List<Attendance> attendanceList;
 
     private Boolean batchScheduleIsDeleted;

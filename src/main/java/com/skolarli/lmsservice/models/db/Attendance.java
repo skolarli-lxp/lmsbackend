@@ -32,6 +32,7 @@ public class Attendance extends Tenantable{
 
     @ManyToOne
     @JoinColumn(name = "student_id")
+    @JsonIgnoreProperties("attendanceList")
     private LmsUser student;
 
     private Boolean attended;

@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -48,7 +49,7 @@ public class LessonController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<Lesson> addLesson(NewLessonRequest newLessonRequest) {
+    public ResponseEntity<Lesson> addLesson(@RequestBody NewLessonRequest newLessonRequest) {
         Lesson lesson = lessonService.toLesson(newLessonRequest);
         try {
             return new ResponseEntity<>(lessonService.saveLesson(lesson), HttpStatus.OK);
@@ -59,7 +60,7 @@ public class LessonController {
     } 
     
     @RequestMapping(method = RequestMethod.PUT, value = "{id}")
-    public ResponseEntity<Lesson> updateLesson(@PathVariable long id, NewLessonRequest newLessonRequest) {
+    public ResponseEntity<Lesson> updateLesson(@PathVariable long id, @RequestBody NewLessonRequest newLessonRequest) {
         Lesson lesson = lessonService.toLesson(newLessonRequest);
         try {
             return new ResponseEntity<>(lessonService.updateLesson(lesson, id), HttpStatus.OK);
