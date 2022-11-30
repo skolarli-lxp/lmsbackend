@@ -1,5 +1,6 @@
 package com.skolarli.lmsservice.controller;
 
+import com.skolarli.lmsservice.contexts.TenantContext;
 import com.skolarli.lmsservice.exception.OperationNotSupportedException;
 import com.skolarli.lmsservice.models.db.LmsUser;
 import com.skolarli.lmsservice.services.LmsUserService;
@@ -26,6 +27,9 @@ public class UserController {
 
     @Autowired
     private LmsUserService lmsUserService;
+
+    @Autowired
+    TenantContext tenantContext;
 
     @PostMapping
     public ResponseEntity<LmsUser> addNewUser(@Valid @RequestBody LmsUser lmsUser) {
@@ -70,5 +74,23 @@ public class UserController {
             throw new ResponseStatusException( HttpStatus.FORBIDDEN, "Permission denied");
         }
         return new ResponseEntity<>(lmsUserService.getLmsUserById(id), HttpStatus.OK);
+    }
+
+    @DeleteMapping(value = "{id}")
+    public ResponseEntity<String> deleteUser(@PathVariable long id) {
+        logger.info("Received Delete User request UserId: " + id);
+        LmsUser currentUser = userUtils.getCurrentUser();
+        if (currentUser.getIsAdmin() != true) {
+            throw new ResponseStatusException( HttpStatus.FORBIDDEN, "Permission denied");
+        }
+        lmsUserService.deleteLmsUser(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping(value = "email/{email}")
+    public ResponseEntity<LmsUser> getUserByEmail(@PathVariable String email) {
+        logger.info("Received Get User request Email: " + email);
+        long tenantId = tenantContext.getTenantId();
+        return new ResponseEntity<>(lmsUserService.getLmsUserByEmailAndTenantId(email, tenantId), HttpStatus.OK);
     }
 }

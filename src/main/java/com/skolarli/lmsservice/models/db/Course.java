@@ -34,6 +34,7 @@ public class Course extends Tenantable {
     private String courseName;
 
     @NotNull
+    @Column(columnDefinition = "TEXT", nullable = false)
     private String courseDescription;
 
     private int courseFees;
