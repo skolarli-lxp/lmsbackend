@@ -57,11 +57,27 @@ class CourseControllerTests {
 
     @BeforeEach
     public  void setup() throws Exception {
-        lmsUser = new LmsUser(1, "Jaya", "Nair", "testuser@email.com",
-                "mymockpassword", true, false, false, null, null, null, null);
+        lmsUser = new LmsUser();
+        lmsUser.setId(1);
+        lmsUser.setFirstName("Jaya");
+        lmsUser.setLastName("Nair");
+        lmsUser.setEmail("testuser@email.com");
+        lmsUser.setPassword("mymockpassword");
+        lmsUser.setIsAdmin(true);
+        lmsUser.setIsInstructor(false);
+        lmsUser.setIsStudent(false);
 
-        lmsUserNonAdmin = new LmsUser(1, "Jaya", "Nair", "nonadminuser@email.com",
-                "mymockpassword", false, false, false, null, null ,null, null);
+        lmsUserNonAdmin = new LmsUser();
+        lmsUserNonAdmin.setId(1);
+        lmsUserNonAdmin.setFirstName("Jaya");
+        lmsUserNonAdmin.setLastName("Nair");
+        lmsUserNonAdmin.setEmail("nonadminuser@email.com");
+        lmsUserNonAdmin.setPassword("mymockpassword");
+        lmsUserNonAdmin.setIsAdmin(false);
+        lmsUserNonAdmin.setIsInstructor(false);
+        lmsUserNonAdmin.setIsStudent(false);
+
+             
 
         courseTagList = List.of(new CourseTag("tag1"), new CourseTag("tag2"));
 

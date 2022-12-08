@@ -13,6 +13,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Where;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -31,6 +32,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name="chapters")
+@Where(clause = "chapter_is_deleted is null or chapter_is_deleted = false")
 public class Chapter extends Tenantable{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

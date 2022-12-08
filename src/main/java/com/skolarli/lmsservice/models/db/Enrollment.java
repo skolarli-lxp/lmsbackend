@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
+import org.hibernate.annotations.Where;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,6 +22,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name="enrollment")
+@Where(clause = "enrollment_is_deleted is null or enrollment_is_deleted = false")
 public class Enrollment extends Tenantable {
     private static final Logger logger = LoggerFactory.getLogger(Enrollment.class);
 

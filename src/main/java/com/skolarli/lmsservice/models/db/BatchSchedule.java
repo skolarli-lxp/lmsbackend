@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
+import org.hibernate.annotations.Where;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,6 +22,7 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name="batch_schedules")
+@Where(clause = "batch_schedule_is_deleted is null or batch_schedule_is_deleted = false")
 public class BatchSchedule extends Tenantable {
     public static final Logger logger = LoggerFactory.getLogger(BatchSchedule.class);
     

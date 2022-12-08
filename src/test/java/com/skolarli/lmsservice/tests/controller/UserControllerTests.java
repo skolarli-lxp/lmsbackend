@@ -46,18 +46,46 @@ class UserControllerTests {
 
     @BeforeEach
     public  void setup() throws Exception {
-        currentUser1 = new LmsUser(1, "Jaya", "Nair", "jaya@skolarli.com",
-                "mymockpassword", true, false, false, null, null, null, null);
+        currentUser1 = new LmsUser();
+        currentUser1.setId(1);
+        currentUser1.setFirstName("Jaya");
+        currentUser1.setLastName("Nair");
+        currentUser1.setEmail("jaya@skolarli.com");
+        currentUser1.setPassword("mymockpassword");
+        currentUser1.setIsAdmin(true);
+        currentUser1.setIsInstructor(false);
+        currentUser1.setIsStudent(false);
 
-        currentUser2 = new LmsUser(2, "Jaya", "Nair", "jaya@skolarli.com",
-                "mymockpassword", false, false, false, null, null, null, null);
+        currentUser2 = new  LmsUser();
+        currentUser2.setId(2);
+        currentUser2.setFirstName("Jaya");
+        currentUser2.setLastName("Nair");
+        currentUser2.setPassword("mymockpassword");
+        currentUser2.setEmail("jaya@skolarli.com");
+        currentUser2.setPassword("mymockpassword");
+        currentUser2.setIsAdmin(false);
+        currentUser2.setIsInstructor(false);
+        currentUser2.setIsStudent(false);
 
-        existingTenant = new Tenant(1, "mydomainname",
-                "MyAwesomeCompany", "+91",
-                "1234561234", "INR", "myawesomewebsite.com",null);
-        newTenant = new Tenant(1, "mydomainname",
-                "MyNewAwesomerCompany", "+91",
-                "1234561234", "INR", "myawesomewebsite.com","my changed address");
+        existingTenant = new Tenant();
+        existingTenant.setId(1);
+        existingTenant.setDomainName("mydomainname");
+        existingTenant.setCompanyName("MyAwesomeCompany");
+        existingTenant.setCountryCode("+91");
+        existingTenant.setPhoneNumber("1234561234");
+        existingTenant.setCurrency("INR");
+        existingTenant.setWebsite("myawesomewebsite.com");
+
+
+        newTenant = new Tenant();
+        newTenant.setId(1);
+        newTenant.setDomainName("mydomainname");
+        newTenant.setCompanyName("MyAwesomeCompany");
+        newTenant.setCountryCode("+91");
+        newTenant.setPhoneNumber("1234561234");
+        newTenant.setCurrency("INR");
+        newTenant.setWebsite("myawesomewebsite.com");
+        newTenant.setAddress("my changed address");
 
     }
 

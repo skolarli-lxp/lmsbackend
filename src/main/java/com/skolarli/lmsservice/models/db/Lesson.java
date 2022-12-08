@@ -8,6 +8,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Where;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.AllArgsConstructor;
@@ -25,6 +27,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name="lessons")
+@Where(clause = "lesson_is_deleted is null or lesson_is_deleted = false")
 public class Lesson extends Tenantable{
 
     @Id

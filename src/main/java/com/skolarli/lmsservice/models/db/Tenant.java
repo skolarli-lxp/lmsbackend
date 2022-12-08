@@ -9,11 +9,14 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.Where;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name="tenants", uniqueConstraints = @UniqueConstraint(name= "domainname", columnNames = "domainName"))
+@Where(clause = "tenant_is_deleted is null or tenant_is_deleted = false")
 public class Tenant {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,6 +39,8 @@ public class Tenant {
 
     private String website;
     private String address;
+
+    private Boolean tenantIsDeleted;
 
     //TODO: Should we persist this? Or just convert to system timezone?
     //@NotNull

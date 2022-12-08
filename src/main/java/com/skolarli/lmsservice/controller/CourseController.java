@@ -76,4 +76,14 @@ public class CourseController {
         }
         return new ResponseEntity<String> ("Course Deleted!", HttpStatus.OK);
     }
+
+    @RequestMapping(value = "harddelete/{id}", method = RequestMethod.DELETE)
+    public ResponseEntity<String> hardDeleteCourse(@PathVariable long id) {
+         try {
+              courseService.hardDeleteCourse(id);
+         } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+        return new ResponseEntity<String> ("Course Deleted!", HttpStatus.OK);
+    }
 }

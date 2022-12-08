@@ -10,6 +10,9 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+
+import org.hibernate.annotations.Where;
+
 import java.util.List;
 
 @Getter
@@ -18,6 +21,7 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 @Table(name="users", uniqueConstraints = @UniqueConstraint(name= "useremail", columnNames = {"email", "tenantId"}))
+@Where(clause = "user_is_deleted is null or user_is_deleted = false")
 public class LmsUser extends Tenantable{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -61,6 +65,8 @@ public class LmsUser extends Tenantable{
     @OneToMany(mappedBy = "student")
     @JsonIgnoreProperties("student")
     private List<Enrollment> enrollments;
+
+    private Boolean userIsDeleted;
 
     public LmsUser(NewDomainRequest newDomainRequest) {
         this.firstName = newDomainRequest.getFirstName();

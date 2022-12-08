@@ -32,37 +32,47 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc(addFilters = false)
 class NewDomainControllerTests {
 
-    @Autowired
-    MockMvc mockMvc;
+        @Autowired
+        MockMvc mockMvc;
 
-    @Autowired
-    private ObjectMapper mapper;
+        @Autowired
+        private ObjectMapper mapper;
 
-    @MockBean
-    TenantService tenantService;
-    @MockBean
-    LmsUserService lmsUserService;
+        @MockBean
+        TenantService tenantService;
+        @MockBean
+        LmsUserService lmsUserService;
 
+        private NewDomainRequest newDomainRequest;
+        private LmsUser lmsUser;
+        private Tenant tenant;
 
+        @BeforeEach
+        public void setup() throws Exception {
+                newDomainRequest = new NewDomainRequest("mydomainname", "MyAwesomeCompany", "+91",
+                                "1234561234", "INR", null, "myawesomewebsite.com", "Jaya",
+                                "Nair", "jaya@skolarli.com", "mymockpassword");
+                lmsUser = new LmsUser();
+                lmsUser.setId(1);
+                lmsUser.setFirstName("Jaya");
+                lmsUser.setLastName("Nair");
+                lmsUser.setEmail("jaya@skolarli.com");
+                lmsUser.setPassword("mymockpassword");
+                lmsUser.setIsAdmin(true);
+                lmsUser.setIsInstructor(false);
+                lmsUser.setIsStudent(false);
 
-    private NewDomainRequest newDomainRequest;
-    private LmsUser lmsUser;
-    private Tenant tenant;
+                tenant = new Tenant();
+                tenant.setId(1);
+                tenant.setDomainName("mydomainname");
+                tenant.setCompanyName("MyAwesomeCompany");
+                tenant.setCountryCode("+91");
+                tenant.setPhoneNumber("1234561234");
+                tenant.setCurrency("INR");
+                tenant.setWebsite("myawesomewebsite.com");
 
+        }
 
-    @BeforeEach
-    public  void setup() throws Exception {
-
-        newDomainRequest = new NewDomainRequest("mydomainname", "MyAwesomeCompany", "+91",
-                "1234561234", "INR", null, "myawesomewebsite.com", "Jaya",
-                "Nair", "jaya@skolarli.com", "mymockpassword" );
-        lmsUser = new LmsUser(1, "Jaya", "Nair", "jaya@skolarli.com",
-                "mymockpassword", true, false, false, null, null, null, null);
-        tenant = new Tenant(1, "mydomainname",
-                "MyAwesomeCompany", "+91",
-                "1234561234", "INR", "myawesomewebsite.com",null);
-
-    }
     @Test
     void newDomainTestSuccess() throws Exception{
         when(tenantService.saveTenant(any())).thenReturn(tenant);
