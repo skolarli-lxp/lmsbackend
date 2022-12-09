@@ -79,4 +79,15 @@ public class EnrollmentController {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
+
+    @RequestMapping(method = RequestMethod.DELETE, value = "hard/{id}")
+    public ResponseEntity<String> hardDeleteEnrollment(@PathVariable long id) {
+        try {
+            enrollmentService.hardDeleteEnrollment(id);
+            return new ResponseEntity<>("Enrollment Deleted!", HttpStatus.OK);
+        } catch (Exception e) {
+            logger.error("Error in deleteEnrollment: " + e.getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+    }
 }

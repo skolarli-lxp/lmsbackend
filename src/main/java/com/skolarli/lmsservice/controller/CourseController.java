@@ -77,7 +77,7 @@ public class CourseController {
         return new ResponseEntity<String> ("Course Deleted!", HttpStatus.OK);
     }
 
-    @RequestMapping(value = "harddelete/{id}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "hard/{id}", method = RequestMethod.DELETE)
     public ResponseEntity<String> hardDeleteCourse(@PathVariable long id) {
          try {
               courseService.hardDeleteCourse(id);

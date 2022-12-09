@@ -107,6 +107,22 @@ public class BatchScheduleController {
         }
     }
 
+    @RequestMapping(method = RequestMethod.DELETE, value = "hard/{id}")
+    public ResponseEntity<String> hardDeleteBatchSchedule(@PathVariable long id) {
+        BatchSchedule batchSchedule = batchScheduleService.getBatchSchedule(id);
+        LmsUser currentUser = userUtils.getCurrentUser();
+        if (currentUser.getIsAdmin() != true && currentUser != batchSchedule.getBatch().getCourse().getCourseOwner()) {
+            throw new ResponseStatusException( HttpStatus.FORBIDDEN, "");
+        }
+        try {
+            batchScheduleService.hardDeleteBatchSchedule(id);
+            return new ResponseEntity<>("Deleted Schedule", HttpStatus.OK);
+        } catch (Exception e) {
+            logger.error("Error in hardDeleteBatchSchedule: " + e.getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+    }
+
     @RequestMapping(method = RequestMethod.GET, value = "{id}/getattendance")
     public ResponseEntity<List<Attendance>> getAttendance(@PathVariable long id) {
         BatchSchedule schedule;

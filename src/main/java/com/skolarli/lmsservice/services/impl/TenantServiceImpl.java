@@ -23,7 +23,7 @@ public class TenantServiceImpl implements TenantService {
     private TenantContext tenantContext;
     private UserUtils userUtils;
 
-    public TenantServiceImpl(TenantRepository tenantRepository, TenantContext tenantContext) {
+    public TenantServiceImpl(TenantRepository tenantRepository, TenantContext tenantContext, UserUtils userUtils) {
         super();
         this.tenantRepository = tenantRepository;
         this.tenantContext = tenantContext;

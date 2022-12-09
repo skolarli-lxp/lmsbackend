@@ -87,6 +87,17 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+    @DeleteMapping(value = "hard/{id}")
+    public ResponseEntity<String> hardDeleteUser(@PathVariable long id) {
+        logger.info("Received Delete User request UserId: " + id);
+        LmsUser currentUser = userUtils.getCurrentUser();
+        if (currentUser.getIsAdmin() != true) {
+            throw new ResponseStatusException( HttpStatus.FORBIDDEN, "Permission denied");
+        }
+        lmsUserService.hardDeleteLmsUser(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
     @GetMapping(value = "email/{email}")
     public ResponseEntity<LmsUser> getUserByEmail(@PathVariable String email) {
         logger.info("Received Get User request Email: " + email);

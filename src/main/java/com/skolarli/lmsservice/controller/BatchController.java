@@ -100,6 +100,22 @@ public class BatchController {
         }
     }
 
+    @RequestMapping(method = RequestMethod.DELETE, value = "hard/{id}")
+    public ResponseEntity<String> hardDeleteBatch(@PathVariable long id) {
+        Batch batch = batchService.getBatch(id);
+        logger.info("Received request for deleting batch for course" + batch.getCourse().getCourseName());
+
+        try {
+            batchService.hardDeleteBatch(id);
+            return new ResponseEntity<>("Batch Deleted !", HttpStatus.OK);
+        } catch (OperationNotSupportedException e){
+            throw new ResponseStatusException( HttpStatus.FORBIDDEN, e.getMessage());
+        } catch (Exception e) {
+            logger.error("Error in deleteBatch: " + e.getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+    }
+
     @RequestMapping(method = RequestMethod.GET, value = "getSchedules/{id}")
     public ResponseEntity<List<BatchSchedule>> getSchedules(@PathVariable long id) {
         try {
