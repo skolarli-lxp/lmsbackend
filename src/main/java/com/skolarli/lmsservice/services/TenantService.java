@@ -10,6 +10,7 @@ public interface TenantService {
     Tenant getTenantById(long id);
     Tenant updateTenant(Tenant tenant);
     void deleteTenant(long id);
+    void hardDeleteTenant(long id);
 
     List<String> getAllDomainNames();
 

@@ -1,10 +1,7 @@
 package com.skolarli.lmsservice.tests.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.skolarli.lmsservice.exception.OperationNotSupportedException;
 import com.skolarli.lmsservice.models.AuthenticationRequest;
-import com.skolarli.lmsservice.models.db.LmsUser;
-import com.skolarli.lmsservice.models.db.Tenant;
 import com.skolarli.lmsservice.services.LMSUserDetailsService;
 import com.skolarli.lmsservice.services.TenantService;
 import com.skolarli.lmsservice.utils.JwtUtils;

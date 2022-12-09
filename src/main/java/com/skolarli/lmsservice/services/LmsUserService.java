@@ -10,6 +10,7 @@ public interface LmsUserService {
     LmsUser getLmsUserById(long id);
     LmsUser updateLmsUser(LmsUser lmsUser, long id);
     void deleteLmsUser(long id);
+    void hardDeleteLmsUser(long id);
     LmsUser getLmsUserByEmailAndTenantId(String email, long tenantId);
     LmsUser getLmsUserByEmail(String email);
 }

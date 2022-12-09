@@ -1,11 +1,17 @@
 package com.skolarli.lmsservice.services.impl;
 
+import com.skolarli.lmsservice.exception.OperationNotSupportedException;
 import com.skolarli.lmsservice.exception.ResourceNotFoundException;
 import com.skolarli.lmsservice.models.db.LmsUser;
 import com.skolarli.lmsservice.repository.LmsUserRepository;
 import com.skolarli.lmsservice.services.LmsUserService;
+import com.skolarli.lmsservice.utils.UserUtils;
+
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,9 +22,15 @@ public class LmsUserServiceImpl implements LmsUserService {
     Logger logger = LoggerFactory.getLogger(LmsUserServiceImpl.class);
     private LmsUserRepository lmsUserRepository;
 
-    public LmsUserServiceImpl(LmsUserRepository lmsUserRepository) {
+
+    public LmsUserServiceImpl( LmsUserRepository lmsUserRepository) {
         super();
         this.lmsUserRepository = lmsUserRepository;
+    }
+
+    private  LmsUser getCurrentUser(){
+        String userName = (String)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return getLmsUserByEmail(userName);
     }
 
     @Override
@@ -84,6 +96,21 @@ public class LmsUserServiceImpl implements LmsUserService {
     public void deleteLmsUser(long id) {
         LmsUser existingUser = lmsUserRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("LmsUser", "Id", id));
+        if (getCurrentUser().getIsAdmin()) {
+            existingUser.setUserIsDeleted(true);
+            lmsUserRepository.save(existingUser);
+        } else {
+            throw new OperationNotSupportedException("User does not have permission to perform Delete operation");
+        }
+    }
+
+    @Override
+    public void hardDeleteLmsUser(long id) {
+        LmsUser existingUser = lmsUserRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("LmsUser", "Id", id));
+        if (!getCurrentUser().getIsAdmin()) {
+            throw new OperationNotSupportedException("User does not have permission to perform Delete operation");
+        }
         lmsUserRepository.delete(existingUser);
     }
 }

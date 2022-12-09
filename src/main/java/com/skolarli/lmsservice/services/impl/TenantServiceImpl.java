@@ -1,10 +1,13 @@
 package com.skolarli.lmsservice.services.impl;
 
 import com.skolarli.lmsservice.contexts.TenantContext;
+import com.skolarli.lmsservice.exception.OperationNotSupportedException;
 import com.skolarli.lmsservice.exception.ResourceNotFoundException;
 import com.skolarli.lmsservice.models.db.Tenant;
 import com.skolarli.lmsservice.repository.TenantRepository;
 import com.skolarli.lmsservice.services.TenantService;
+import com.skolarli.lmsservice.utils.UserUtils;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -18,11 +21,13 @@ public class TenantServiceImpl implements TenantService {
     private final TenantRepository tenantRepository;
 
     private TenantContext tenantContext;
+    private UserUtils userUtils;
 
     public TenantServiceImpl(TenantRepository tenantRepository, TenantContext tenantContext) {
         super();
         this.tenantRepository = tenantRepository;
         this.tenantContext = tenantContext;
+        this.userUtils = userUtils;
     }
 
     @Override
@@ -67,13 +72,7 @@ public class TenantServiceImpl implements TenantService {
         return existingTenant;
     }
 
-    @Override
-    public void deleteTenant(long id) {
-        Tenant existingTenant = tenantRepository.findById(id).orElseThrow(
-                () ->  new ResourceNotFoundException("Tenant", "Id", id)
-        );
-        tenantRepository.delete(existingTenant);
-    }
+    
 
     @Override
     public List<String> getAllDomainNames() {
@@ -91,5 +90,27 @@ public class TenantServiceImpl implements TenantService {
         }
     }
 
+    @Override
+    public void deleteTenant(long id) {
+        Tenant existingTenant = tenantRepository.findById(id).orElseThrow(
+                () ->  new ResourceNotFoundException("Tenant", "Id", id)
+        );
+        if (!userUtils.getCurrentUser().getIsAdmin()) {
+            throw new OperationNotSupportedException("User does not have permission to perform this operation");
+        }
+        existingTenant.setTenantIsDeleted(true);
+        tenantRepository.save(existingTenant);
+    }
+
+    @Override
+    public void hardDeleteTenant(long id) {
+        Tenant existingTenant = tenantRepository.findById(id).orElseThrow(
+                () ->  new ResourceNotFoundException("Tenant", "Id", id)
+        );
+        if (!userUtils.getCurrentUser().getIsAdmin()) {
+            throw new OperationNotSupportedException("User does not have permission to perform this operation");
+        }
+        tenantRepository.delete(existingTenant);
+    }
 
 }
