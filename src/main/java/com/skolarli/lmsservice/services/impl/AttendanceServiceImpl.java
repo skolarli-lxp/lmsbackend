@@ -112,6 +112,7 @@ public class AttendanceServiceImpl implements AttendanceService {
         attendance.setAttended(newAttendanceRequest.getAttended());
         attendance.setStartDateTime(newAttendanceRequest.getStartDateTime());
         attendance.setEndDateTime(newAttendanceRequest.getEndDateTime());
+        attendance.setAttendanceIsDeleted(false);
         return attendance;
     }
 }

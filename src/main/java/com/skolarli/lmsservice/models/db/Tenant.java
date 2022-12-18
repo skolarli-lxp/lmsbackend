@@ -58,6 +58,7 @@ public class Tenant {
         if (newDomainRequest.getAddress() != null) {
             this.address = newDomainRequest.getAddress();
         }
+        this.tenantIsDeleted = false;
     }
 
     public void update(Tenant tenant) {

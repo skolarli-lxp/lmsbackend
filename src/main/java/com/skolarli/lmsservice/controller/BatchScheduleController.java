@@ -78,6 +78,7 @@ public class BatchScheduleController {
         batchSchedule.setBatch(batch);
         batchSchedule.setStartDateTime(request.getStartDateTime());
         batchSchedule.setEndDateTime(request.getEndDateTime());
+        batchSchedule.setBatchScheduleIsDeleted(false);
 
         try {
             return new ResponseEntity<>(batchScheduleService.saveBatchSchedule(batchSchedule), HttpStatus.OK);

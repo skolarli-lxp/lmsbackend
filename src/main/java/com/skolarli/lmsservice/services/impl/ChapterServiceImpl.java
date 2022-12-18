@@ -120,6 +120,7 @@ public class ChapterServiceImpl implements ChapterService {
         
         chapter.setChapterSortOrder(newChapterRequest.getChapterSortOrder());
         chapter.setCourse(courseService.getCourseById(courseId));
+        chapter.setChapterIsDeleted(false);
 
         return  chapter;
     }

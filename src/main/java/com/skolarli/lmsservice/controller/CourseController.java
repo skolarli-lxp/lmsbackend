@@ -50,6 +50,7 @@ public class CourseController {
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<Course> addCourse(@Valid  @RequestBody Course course) {
        logger.info("Received request for new course courseName: " + course.getCourseName());
+       course.setCourseDeleted(false);
        
        try {
            return new ResponseEntity<Course>(courseService.saveCourse(course), HttpStatus.CREATED);

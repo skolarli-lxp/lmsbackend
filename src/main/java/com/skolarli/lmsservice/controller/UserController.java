@@ -65,6 +65,7 @@ public class UserController {
         if (currentUser.getIsAdmin() != true) {
             throw new ResponseStatusException( HttpStatus.FORBIDDEN, "Permission denied");
         }
+        lmsUser.setUserIsDeleted(false);
         return new ResponseEntity<LmsUser>(lmsUserService.saveLmsUser(lmsUser), HttpStatus.CREATED);
     }
 

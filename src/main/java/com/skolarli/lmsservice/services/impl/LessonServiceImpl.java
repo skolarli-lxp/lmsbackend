@@ -147,6 +147,8 @@ public class LessonServiceImpl implements LessonService {
         lesson.setDownloadablesSize(newLessonRequest.getDownloadablesSize());
         lesson.setDownloadablesIsActive(newLessonRequest.getDownloadablesIsActive());
 
+        lesson.setLessonIsDeleted(false);
+
         return lesson;
     }
 }

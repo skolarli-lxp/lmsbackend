@@ -42,11 +42,6 @@ public class Enrollment extends Tenantable {
 
     private Boolean enrollmentIsDeleted;    
 
-    public Enrollment(Batch batch, LmsUser student) {
-        this.batch = batch;
-        this.student = student;
-    }
-
     public void update(Enrollment enrollment) {
         if (enrollment.getId() != 0) {
             logger.error("Cannot update id");

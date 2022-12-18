@@ -102,6 +102,12 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     public Enrollment toEnrollment(NewEnrollmentRequest newEnrollmentRequest) {
         Batch batch = batchService.getBatch(newEnrollmentRequest.getBatchId());
         LmsUser student = lmsUserService.getLmsUserById(newEnrollmentRequest.getStudentId());
-        return new Enrollment(batch, student);
+
+        Enrollment enrollment = new Enrollment();
+        enrollment.setBatch(batch);
+        enrollment.setStudent(student);
+        enrollment.setEnrollmentIsDeleted(false);
+        
+        return enrollment;
     }
 }

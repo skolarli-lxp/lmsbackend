@@ -17,5 +17,4 @@ public class NewBatchRequest {
     private long courseId;
     @NotNull(message = "instructorId cannot be empty")
     private long instructorId;
-
 }
