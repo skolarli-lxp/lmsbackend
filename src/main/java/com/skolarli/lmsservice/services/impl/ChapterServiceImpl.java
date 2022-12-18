@@ -42,7 +42,7 @@ public class ChapterServiceImpl implements ChapterService {
     }
 
     private int getHighestSortOrder(long courseId){
-        return chapterRepository.maxChapterSortOrder(courseId);
+        return chapterRepository.findMaxChapterSortOrder(courseId);
     }
 
     @Override
