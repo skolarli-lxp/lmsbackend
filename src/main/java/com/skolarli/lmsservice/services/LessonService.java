@@ -8,10 +8,14 @@ import com.skolarli.lmsservice.models.db.Lesson;
 
 public interface LessonService {
     Lesson toLesson(NewLessonRequest newLessonRequest);
-    Lesson saveLesson (Lesson lesson);
+
     List<Lesson> getAllLessons ();
     Lesson getLessonById(long id);
+
+    Lesson saveLesson (Lesson lesson);
+   
     Lesson updateLesson(Lesson lesson, long id);
+    
     void deleteLesson(long id);
     void hardDeleteLesson(long id);
 }

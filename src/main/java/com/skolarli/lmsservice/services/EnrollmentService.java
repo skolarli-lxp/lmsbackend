@@ -7,11 +7,14 @@ import java.util.List;
 
 public interface EnrollmentService {
         Enrollment toEnrollment(NewEnrollmentRequest request);
-        Enrollment save(Enrollment enrollment);
+
         List<Enrollment> getAllEnrollments();
         Enrollment getEnrollmentById(long id);
+
+        Enrollment save(Enrollment enrollment);
+        
         Enrollment updateEnrollment(Enrollment enrollment, long id);
+
         void deleteEnrollment(long id);
         void hardDeleteEnrollment(long id);
-
 }

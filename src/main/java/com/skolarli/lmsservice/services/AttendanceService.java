@@ -7,12 +7,17 @@ import java.util.List;
 
 public interface AttendanceService {
         Attendance toAttendance(NewAttendanceRequest newAttendanceRequest);
-        Attendance saveAttendance(Attendance attendance);
-        Attendance updateAttendance(Attendance attendance, long id);
+        //READ
         Attendance getAttendance(long id);
         List<Attendance> getAllAttendance();
         List<Attendance> getAttendanceForSchedule(long batchScheduleId);
+
+        //CREATE
+        Attendance saveAttendance(Attendance attendance);
+        //UPDATE
+        Attendance updateAttendance(Attendance attendance, long id);
+        
+        //DELETE
         void deleteAttendance(long id);
         void hardDeleteAttendance(long id);
-
 }

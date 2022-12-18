@@ -81,5 +81,8 @@ public class Chapter extends Tenantable{
         if (chapter.getChapterIsDeleted() != null) {
             this.setChapterIsDeleted(chapter.getChapterIsDeleted());
         }
+        if (chapter.getChapterSortOrder() != 0) {
+            this.setChapterSortOrder(chapter.getChapterSortOrder());
+        }
     }
 }
