@@ -17,6 +17,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
+
 @Service
 public class AttendanceServiceImpl implements AttendanceService {
     Logger logger = LoggerFactory.getLogger(AttendanceServiceImpl.class);
@@ -34,14 +36,6 @@ public class AttendanceServiceImpl implements AttendanceService {
         this.batchScheduleService = batchScheduleService;
     }
 
-    @Override
-    public Attendance saveAttendance(Attendance attendance) {
-        if (checkPermission(attendance ) == false) {
-            throw new OperationNotSupportedException("Operation not supported");
-        }
-        return attendanceRepository.save(attendance);
-    }
-    
     private Boolean checkPermission(Attendance attendance) {
         LmsUser currentUser = userUtils.getCurrentUser();
         if (currentUser.getIsAdmin() != true && currentUser != attendance.getBatchSchedule().getBatch().getCourse().getCourseOwner()) {
@@ -51,18 +45,17 @@ public class AttendanceServiceImpl implements AttendanceService {
     }
 
     @Override
-    public Attendance updateAttendance(Attendance newAttendance, long id) {
-        Attendance existingAttendance = attendanceRepository.findById(id).orElseThrow(
-                () -> new ResourceNotFoundException("Attendance", "Id", id));
-        if (checkPermission(existingAttendance) == false) {
-            throw new OperationNotSupportedException("User does not have permission to update this attendance");
-        }
-        if (newAttendance.getAttendanceIsDeleted() != null) {
-            logger.error("Cannot change deleted status. Use delete APIs instead");
-            newAttendance.setAttendanceIsDeleted(null);
-        }
-        existingAttendance.updateAttendance(newAttendance);
-        return attendanceRepository.save(existingAttendance);
+    public Attendance toAttendance(NewAttendanceRequest newAttendanceRequest) {
+        BatchSchedule batchSchedule = batchScheduleService.getBatchSchedule(newAttendanceRequest.getBatchScheduleId());
+        LmsUser student = lmsUserService.getLmsUserById(newAttendanceRequest.getStudentId());
+        Attendance attendance = new Attendance();
+        attendance.setBatchSchedule(batchSchedule);
+        attendance.setStudent(student);
+        attendance.setAttended(newAttendanceRequest.getAttended());
+        attendance.setStartDateTime(newAttendanceRequest.getStartDateTime());
+        attendance.setEndDateTime(newAttendanceRequest.getEndDateTime());
+        attendance.setAttendanceIsDeleted(false);
+        return attendance;
     }
 
     @Override
@@ -80,6 +73,30 @@ public class AttendanceServiceImpl implements AttendanceService {
     public List<Attendance> getAttendanceForSchedule(long batchScheduleId) {
         return attendanceRepository.findByBatchSchedule_Id(batchScheduleId);
     }
+
+    @Override
+    public Attendance saveAttendance(Attendance attendance) {
+        if (checkPermission(attendance ) == false) {
+            throw new OperationNotSupportedException("Operation not supported");
+        }
+        return attendanceRepository.save(attendance);
+    }
+
+    @Override
+    public Attendance updateAttendance(Attendance newAttendance, long id) {
+        Attendance existingAttendance = attendanceRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("Attendance", "Id", id));
+        if (checkPermission(existingAttendance) == false) {
+            throw new OperationNotSupportedException("User does not have permission to update this attendance");
+        }
+        if (newAttendance.getAttendanceIsDeleted() != null) {
+            logger.error("Cannot change deleted status. Use delete APIs instead");
+            newAttendance.setAttendanceIsDeleted(null);
+        }
+        existingAttendance.updateAttendance(newAttendance);
+        return attendanceRepository.save(existingAttendance);
+    }
+
 
     @Override
     public void deleteAttendance(long id) {
@@ -100,19 +117,5 @@ public class AttendanceServiceImpl implements AttendanceService {
             throw new OperationNotSupportedException("User does not have permission to delete this attendance");
         }
         attendanceRepository.delete(attendance);
-    }
-
-    @Override
-    public Attendance toAttendance(NewAttendanceRequest newAttendanceRequest) {
-        BatchSchedule batchSchedule = batchScheduleService.getBatchSchedule(newAttendanceRequest.getBatchScheduleId());
-        LmsUser student = lmsUserService.getLmsUserById(newAttendanceRequest.getStudentId());
-        Attendance attendance = new Attendance();
-        attendance.setBatchSchedule(batchSchedule);
-        attendance.setStudent(student);
-        attendance.setAttended(newAttendanceRequest.getAttended());
-        attendance.setStartDateTime(newAttendanceRequest.getStartDateTime());
-        attendance.setEndDateTime(newAttendanceRequest.getEndDateTime());
-        attendance.setAttendanceIsDeleted(false);
-        return attendance;
     }
 }

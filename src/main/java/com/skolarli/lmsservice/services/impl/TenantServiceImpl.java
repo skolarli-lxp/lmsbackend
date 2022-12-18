@@ -30,12 +30,7 @@ public class TenantServiceImpl implements TenantService {
         this.userUtils = userUtils;
     }
 
-    @Override
-    public Tenant saveTenant(Tenant tenant) {
-        tenantRepository.save(tenant);
-        return tenant;
-    }
-
+    
     @Override
     public List<Tenant> getAllTenants() {
         return tenantRepository.findAll();
@@ -62,6 +57,18 @@ public class TenantServiceImpl implements TenantService {
     }
 
     @Override
+    public List<String> getAllDomainNames() {
+        List<String> domainNames = tenantRepository.getAllDomainNames();
+        return domainNames;
+    }
+
+    @Override
+    public Tenant saveTenant(Tenant tenant) {
+        tenantRepository.save(tenant);
+        return tenant;
+    }
+
+    @Override
     public Tenant updateTenant(Tenant tenant) {
         long id = tenantContext.getTenantId();
         Tenant existingTenant = tenantRepository.findById(id).orElseThrow(
@@ -70,24 +77,6 @@ public class TenantServiceImpl implements TenantService {
         existingTenant.update(tenant);
         tenantRepository.save(existingTenant);
         return existingTenant;
-    }
-
-    
-
-    @Override
-    public List<String> getAllDomainNames() {
-        List<String> domainNames = tenantRepository.getAllDomainNames();
-        return domainNames;
-    }
-
-    @Override
-    public Boolean isUniqueDomainName(String domainName) {
-        List<String> domainNames = getAllDomainNames();
-        if (domainNames.contains(domainName)) {
-            return false;
-        } else {
-            return true;
-        }
     }
 
     @Override
@@ -113,4 +102,13 @@ public class TenantServiceImpl implements TenantService {
         tenantRepository.delete(existingTenant);
     }
 
+    @Override
+    public Boolean isUniqueDomainName(String domainName) {
+        List<String> domainNames = getAllDomainNames();
+        if (domainNames.contains(domainName)) {
+            return false;
+        } else {
+            return true;
+        }
+    }
 }

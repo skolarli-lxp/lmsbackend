@@ -43,6 +43,41 @@ public class BatchServiceImpl implements BatchService {
         return true;
     }
 
+    private Boolean checkPermissions (Batch existingBatch) {
+        LmsUser currentUser = userUtils.getCurrentUser();
+        if (currentUser.getIsAdmin() != true && currentUser != existingBatch.getCourse().getCourseOwner()) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public Batch toBatch(NewBatchRequest newBatchRequest) {
+        Batch batch = new Batch();
+        batch.setCourse(courseService.getCourseById(newBatchRequest.getCourseId()));
+        batch.setInstructor(lmsUserService.getLmsUserById(newBatchRequest.getInstructorId()));
+        batch.setBatchIsDeleted(false);
+        return batch;
+    }
+
+    @Override
+    public List<Batch> getAllBatches() {
+        return batchRepository.findAll();
+    }
+
+    @Override
+    public Batch getBatch(long id) {
+        Batch existingBatch = batchRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("Batch", "Id", id));
+        return existingBatch;
+    }
+
+    @Override
+    public List<Batch> getBatchesForCourse(long courseId) {
+        List<Batch> batches = batchRepository.findByCourse_Id(courseId);
+        return batches;
+    }
+
     @Override
     public Batch saveBatch(Batch batch) {
         LmsUser currentUser = userUtils.getCurrentUser();
@@ -75,32 +110,6 @@ public class BatchServiceImpl implements BatchService {
     }
 
     @Override
-    public List<Batch> getAllBatches() {
-        return batchRepository.findAll();
-    }
-
-    @Override
-    public Batch getBatch(long id) {
-        Batch existingBatch = batchRepository.findById(id).orElseThrow(
-                () -> new ResourceNotFoundException("Batch", "Id", id));
-        return existingBatch;
-    }
-
-    @Override
-    public List<Batch> getBatchesForCourse(long courseId) {
-        List<Batch> batches = batchRepository.findByCourse_Id(courseId);
-        return batches;
-    }
-
-    private Boolean checkPermissions (Batch existingBatch) {
-        LmsUser currentUser = userUtils.getCurrentUser();
-        if (currentUser.getIsAdmin() != true && currentUser != existingBatch.getCourse().getCourseOwner()) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
     public void deleteBatch(long id) {
         Batch existingBatch = batchRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Batch", "Id", id));
@@ -121,11 +130,4 @@ public class BatchServiceImpl implements BatchService {
         batchRepository.delete(existingBatch);
     }
 
-    public Batch toBatch(NewBatchRequest newBatchRequest) {
-        Batch batch = new Batch();
-        batch.setCourse(courseService.getCourseById(newBatchRequest.getCourseId()));
-        batch.setInstructor(lmsUserService.getLmsUserById(newBatchRequest.getInstructorId()));
-        batch.setBatchIsDeleted(false);
-        return batch;
-    }
 }

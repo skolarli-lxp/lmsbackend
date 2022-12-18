@@ -35,10 +35,25 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         this.lmsUserService = lmsUserService;
     }
 
+    private Boolean checkPermissions (Enrollment existingEnrollment) {
+        LmsUser currentUser = userUtils.getCurrentUser();
+        if (currentUser.getIsAdmin() != true && currentUser != existingEnrollment.getBatch().getCourse().getCourseOwner()) {
+            return false;
+        }
+        return true;
+    }
 
     @Override
-    public Enrollment save(Enrollment enrollment) {
-        return enrollmentRepository.save(enrollment);
+    public Enrollment toEnrollment(NewEnrollmentRequest newEnrollmentRequest) {
+        Batch batch = batchService.getBatch(newEnrollmentRequest.getBatchId());
+        LmsUser student = lmsUserService.getLmsUserById(newEnrollmentRequest.getStudentId());
+
+        Enrollment enrollment = new Enrollment();
+        enrollment.setBatch(batch);
+        enrollment.setStudent(student);
+        enrollment.setEnrollmentIsDeleted(false);
+        
+        return enrollment;
     }
 
     @Override
@@ -50,6 +65,12 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     public Enrollment getEnrollmentById(long id) {
         return enrollmentRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Enrollment", "Id", id));
+    }
+
+
+    @Override
+    public Enrollment save(Enrollment enrollment) {
+        return enrollmentRepository.save(enrollment);
     }
 
     @Override
@@ -66,14 +87,6 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         existingEnrollment.update(enrollment);
         enrollmentRepository.save(existingEnrollment);
         return existingEnrollment;
-    }
-
-    private Boolean checkPermissions (Enrollment existingEnrollment) {
-        LmsUser currentUser = userUtils.getCurrentUser();
-        if (currentUser.getIsAdmin() != true && currentUser != existingEnrollment.getBatch().getCourse().getCourseOwner()) {
-            return false;
-        }
-        return true;
     }
 
     @Override
@@ -96,18 +109,5 @@ public class EnrollmentServiceImpl implements EnrollmentService {
             throw new OperationNotSupportedException("User does not have permission to perform Delete operation");
         }
         enrollmentRepository.delete(existingEnrollment);
-    }
-
-    @Override
-    public Enrollment toEnrollment(NewEnrollmentRequest newEnrollmentRequest) {
-        Batch batch = batchService.getBatch(newEnrollmentRequest.getBatchId());
-        LmsUser student = lmsUserService.getLmsUserById(newEnrollmentRequest.getStudentId());
-
-        Enrollment enrollment = new Enrollment();
-        enrollment.setBatch(batch);
-        enrollment.setStudent(student);
-        enrollment.setEnrollmentIsDeleted(false);
-        
-        return enrollment;
     }
 }

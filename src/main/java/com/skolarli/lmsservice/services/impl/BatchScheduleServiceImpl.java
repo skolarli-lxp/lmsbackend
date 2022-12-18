@@ -13,6 +13,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
+
 @Service
 public class BatchScheduleServiceImpl implements BatchScheduleService {
     Logger logger = LoggerFactory.getLogger(BatchScheduleServiceImpl.class);
@@ -24,6 +26,33 @@ public class BatchScheduleServiceImpl implements BatchScheduleService {
         this.batchScheduleRepository = batchScheduleRepository;
         this.userUtils = userUtils;
     }
+
+    private Boolean checkPermissions (BatchSchedule existingBatchSchedule) {
+        LmsUser currentUser = userUtils.getCurrentUser();
+        if (currentUser.getIsAdmin() != true && currentUser != existingBatchSchedule.getBatch().getCourse().getCourseOwner()) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public BatchSchedule getBatchSchedule(long id) {
+        BatchSchedule existingBatchSchedule = batchScheduleRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("BatchSchedule", "Id", id));
+        return existingBatchSchedule;
+    }
+
+    @Override
+    public List<BatchSchedule> getAllBatchSchedules() {
+        return batchScheduleRepository.findAll();
+    }
+
+    @Override
+    public List<BatchSchedule> getSchedulesForBatch(long batchId) {
+        List<BatchSchedule> batchSchedules = batchScheduleRepository.findByBatch_Id(batchId);
+        return batchSchedules;
+    }
+
 
     @Override
     public BatchSchedule saveBatchSchedule(BatchSchedule batchSchedule)  {
@@ -48,32 +77,7 @@ public class BatchScheduleServiceImpl implements BatchScheduleService {
         existingBatchSchedule.update(batchSchedule);
         return batchScheduleRepository.save(existingBatchSchedule);
     }
-
-    @Override
-    public BatchSchedule getBatchSchedule(long id) {
-        BatchSchedule existingBatchSchedule = batchScheduleRepository.findById(id).orElseThrow(
-                () -> new ResourceNotFoundException("BatchSchedule", "Id", id));
-        return existingBatchSchedule;
-    }
-
-    @Override
-    public List<BatchSchedule> getAllBatchSchedules() {
-        return batchScheduleRepository.findAll();
-    }
-
-    @Override
-    public List<BatchSchedule> getSchedulesForBatch(long batchId) {
-        List<BatchSchedule> batchSchedules = batchScheduleRepository.findByBatch_Id(batchId);
-        return batchSchedules;
-    }
-
-    private Boolean checkPermissions (BatchSchedule existingBatchSchedule) {
-        LmsUser currentUser = userUtils.getCurrentUser();
-        if (currentUser.getIsAdmin() != true && currentUser != existingBatchSchedule.getBatch().getCourse().getCourseOwner()) {
-            return false;
-        }
-        return true;
-    }
+    
 
     @Override
     public void deleteBatchSchedule(long id) {

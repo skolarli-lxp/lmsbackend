@@ -16,7 +16,6 @@ import java.util.Optional;
 
 @Service
 public class CourseServiceImpl implements CourseService {
-    // TODO : remove soft deleted courses from fetch 
 
     Logger logger = LoggerFactory.getLogger(CourseServiceImpl.class);
     private CourseRepository courseRepository;
@@ -27,14 +26,6 @@ public class CourseServiceImpl implements CourseService {
         super();
         this.courseRepository = courseRepository;
         this.userUtils = userUtils;
-    }
-
-    @Override
-    public Course saveCourse(Course course) {
-        if (course.getCourseOwner() == null) {
-            course.setCourseOwner(userUtils.getCurrentUser());
-        }
-        return courseRepository.save(course);
     }
 
     @Override
@@ -51,6 +42,14 @@ public class CourseServiceImpl implements CourseService {
         else {
             throw new ResourceNotFoundException("Course","Id", id);
         }
+    }
+
+    @Override
+    public Course saveCourse(Course course) {
+        if (course.getCourseOwner() == null) {
+            course.setCourseOwner(userUtils.getCurrentUser());
+        }
+        return courseRepository.save(course);
     }
 
     @Override

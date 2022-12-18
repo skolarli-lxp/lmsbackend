@@ -33,20 +33,60 @@ public class ChapterServiceImpl implements ChapterService {
         this.courseService = courseService;
     }
 
-    @Override
-    public Chapter saveChapter(Chapter chapter) {
-        if (checkPermission(chapter) == false) {
-            throw new OperationNotSupportedException("Operation not supported");
-        }
-        return chapterRepository.save(chapter);
-    }
-
     private Boolean checkPermission(Chapter chapter) {
         LmsUser currentUser = userUtils.getCurrentUser();
         if (currentUser.getIsAdmin() != true && currentUser != chapter.getCourse().getCourseOwner()) {
             return false;
         }
         return true;
+    }
+
+    private int getHighestSortOrder(long courseId){
+        return chapterRepository.maxChapterSortOrder(courseId);
+    }
+
+    @Override
+    public Chapter toChapter(NewChapterRequest newChapterRequest) {
+        Chapter chapter = new Chapter();
+        long courseId = newChapterRequest.getCourseId();
+
+        chapter.setChapterName(newChapterRequest.getChapterName());
+        chapter.setChapterDescription(newChapterRequest.getChapterDescription());
+
+        if (newChapterRequest.getChapterSortOrder() == 0) {
+            newChapterRequest.setChapterSortOrder(getHighestSortOrder(courseId) + 1);
+        }
+        
+        chapter.setChapterSortOrder(newChapterRequest.getChapterSortOrder());
+        chapter.setCourse(courseService.getCourseById(courseId));
+        chapter.setChapterIsDeleted(false);
+
+        return  chapter;
+    }
+
+    @Override
+    public Chapter getChapterById(Long id) {
+        Chapter existingChapter = chapterRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("Chapter", "Id", id));
+        return existingChapter;
+    }
+
+    @Override
+    public List<Chapter> getChaptersByCourseId(Long courseId) {
+        return chapterRepository.findByCourseIdOrderByChapterSortOrderAsc(courseId);
+    }
+
+    @Override
+    public List<Chapter> getAllChapters() {
+        return chapterRepository.findAll();
+    }
+
+    @Override
+    public Chapter saveChapter(Chapter chapter) {
+        if (checkPermission(chapter) == false) {
+            throw new OperationNotSupportedException("Operation not supported");
+        }
+        return chapterRepository.save(chapter);
     }
 
     @Override
@@ -83,45 +123,5 @@ public class ChapterServiceImpl implements ChapterService {
             throw new OperationNotSupportedException("User does not have permissions to delete this chapter");
         }
         chapterRepository.delete(existingChapter);
-    }
-
-    @Override
-    public Chapter getChapterById(Long id) {
-        Chapter existingChapter = chapterRepository.findById(id).orElseThrow(
-                () -> new ResourceNotFoundException("Chapter", "Id", id));
-        return existingChapter;
-    }
-
-    @Override
-    public List<Chapter> getChaptersByCourseId(Long courseId) {
-        return chapterRepository.findByCourseIdOrderByChapterSortOrderAsc(courseId);
-    }
-
-    @Override
-    public List<Chapter> getAllChapters() {
-        return chapterRepository.findAll();
-    }
-
-    private int getHighestSortOrder(long courseId){
-        return chapterRepository.maxChapterSortOrder(courseId);
-    }
-
-    @Override
-    public Chapter toChapter(NewChapterRequest newChapterRequest) {
-        Chapter chapter = new Chapter();
-        long courseId = newChapterRequest.getCourseId();
-
-        chapter.setChapterName(newChapterRequest.getChapterName());
-        chapter.setChapterDescription(newChapterRequest.getChapterDescription());
-
-        if (newChapterRequest.getChapterSortOrder() == 0) {
-            newChapterRequest.setChapterSortOrder(getHighestSortOrder(courseId) + 1);
-        }
-        
-        chapter.setChapterSortOrder(newChapterRequest.getChapterSortOrder());
-        chapter.setCourse(courseService.getCourseById(courseId));
-        chapter.setChapterIsDeleted(false);
-
-        return  chapter;
     }
 }

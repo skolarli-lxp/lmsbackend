@@ -5,12 +5,10 @@ import com.skolarli.lmsservice.exception.ResourceNotFoundException;
 import com.skolarli.lmsservice.models.db.LmsUser;
 import com.skolarli.lmsservice.repository.LmsUserRepository;
 import com.skolarli.lmsservice.services.LmsUserService;
-import com.skolarli.lmsservice.utils.UserUtils;
 
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -34,11 +32,6 @@ public class LmsUserServiceImpl implements LmsUserService {
     }
 
     @Override
-    public LmsUser saveLmsUser(LmsUser lmsUser) {
-        return lmsUserRepository.save(lmsUser);
-    }
-
-    @Override
     public List<LmsUser> getAllLmsUsers() {
         return lmsUserRepository.findAll();
     }
@@ -50,7 +43,7 @@ public class LmsUserServiceImpl implements LmsUserService {
         return existingUser;
     }
 
-
+    @Override
     public LmsUser getLmsUserByEmail(String email) {
         List<LmsUser> existingLmsUser = lmsUserRepository.findByEmail(email);
         if (!existingLmsUser.isEmpty()) {
@@ -74,6 +67,7 @@ public class LmsUserServiceImpl implements LmsUserService {
 //        }
     }
 
+    @Override
     public LmsUser getLmsUserByEmailAndTenantId(String email, long tenantId) {
         LmsUser existingLmsUser = lmsUserRepository.findByEmailAndTenantId(email, tenantId);
         if (existingLmsUser != null) {
@@ -82,6 +76,13 @@ public class LmsUserServiceImpl implements LmsUserService {
             throw  new ResourceNotFoundException("LmsUser", "email", email);
         }
     }
+
+    @Override
+    public LmsUser saveLmsUser(LmsUser lmsUser) {
+        return lmsUserRepository.save(lmsUser);
+    }
+
+    
 
     @Override
     public LmsUser updateLmsUser(LmsUser lmsUser, long id) {
