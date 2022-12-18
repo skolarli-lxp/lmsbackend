@@ -13,4 +13,5 @@ public interface ChapterService {
     void hardDeleteChapter(long id);
     Chapter getChapterById(Long id);
     List<Chapter> getAllChapters();
+    public List<Chapter> getChaptersByCourseId(Long courseId);
 }

@@ -21,4 +21,6 @@ public class NewChapterRequest {
 
     @NotNull(message = "courseId cannot be empty")
     private long courseId;
+
+    private int chapterSortOrder;
 }

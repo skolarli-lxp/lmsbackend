@@ -22,7 +22,7 @@ import java.util.List;
 @Table(name="batches")
 @AllArgsConstructor
 @NoArgsConstructor
-@Where(clause = "batch_deleted is null or batch_deleted = false")
+@Where(clause = "batch_is_deleted is null or batch_is_deleted = false")
 public class Batch extends  Tenantable{
     public static final Logger logger = LoggerFactory.getLogger(Batch.class);
 

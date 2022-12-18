@@ -29,17 +29,6 @@ public class CourseController {
     @Autowired
     private UserUtils userUtils;
 
-   @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<Course> addCourse(@Valid  @RequestBody Course course) {
-       logger.info("Received request for new course courseName: " + course.getCourseName());
-       
-       try {
-           return new ResponseEntity<Course>(courseService.saveCourse(course), HttpStatus.CREATED);
-       } catch (Exception e) {
-           throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
-       }
-    }
-
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<List<Course>> getAllCourses() {
        try {
@@ -53,6 +42,17 @@ public class CourseController {
     public ResponseEntity<Course> getCourse(@PathVariable long id) {
        try {
            return new ResponseEntity<Course>(courseService.getCourseById(id), HttpStatus.OK);
+       } catch (Exception e) {
+           throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+       }
+    }
+
+    @RequestMapping(method = RequestMethod.POST)
+    public ResponseEntity<Course> addCourse(@Valid  @RequestBody Course course) {
+       logger.info("Received request for new course courseName: " + course.getCourseName());
+       
+       try {
+           return new ResponseEntity<Course>(courseService.saveCourse(course), HttpStatus.CREATED);
        } catch (Exception e) {
            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
        }

@@ -31,6 +31,33 @@ public class UserController {
     @Autowired
     TenantContext tenantContext;
 
+    @GetMapping
+    public ResponseEntity<List<LmsUser>> getAllUsers() {
+        logger.info("Received List All Users request");
+        LmsUser currentUser = userUtils.getCurrentUser();
+        if (currentUser.getIsAdmin() != true) {
+            throw new ResponseStatusException( HttpStatus.FORBIDDEN, "Permission denied");
+        }
+        return new ResponseEntity<>(lmsUserService.getAllLmsUsers(), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "{id}")
+    public ResponseEntity<LmsUser> getUser(@PathVariable long id) {
+        logger.info("Received Get User request UserId: " + id);
+        LmsUser currentUser = userUtils.getCurrentUser();
+        if (currentUser.getIsAdmin() != true && currentUser.getId() != id) {
+            throw new ResponseStatusException( HttpStatus.FORBIDDEN, "Permission denied");
+        }
+        return new ResponseEntity<>(lmsUserService.getLmsUserById(id), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "email/{email}")
+    public ResponseEntity<LmsUser> getUserByEmail(@PathVariable String email) {
+        logger.info("Received Get User request Email: " + email);
+        long tenantId = tenantContext.getTenantId();
+        return new ResponseEntity<>(lmsUserService.getLmsUserByEmailAndTenantId(email, tenantId), HttpStatus.OK);
+    }
+
     @PostMapping
     public ResponseEntity<LmsUser> addNewUser(@Valid @RequestBody LmsUser lmsUser) {
         logger.info("Received new user request Email: " + lmsUser.getEmail() );
@@ -56,26 +83,6 @@ public class UserController {
         }
     }
 
-    @GetMapping
-    public ResponseEntity<List<LmsUser>> getAllUsers() {
-        logger.info("Received List All Users request");
-        LmsUser currentUser = userUtils.getCurrentUser();
-        if (currentUser.getIsAdmin() != true) {
-            throw new ResponseStatusException( HttpStatus.FORBIDDEN, "Permission denied");
-        }
-        return new ResponseEntity<>(lmsUserService.getAllLmsUsers(), HttpStatus.OK);
-    }
-
-    @GetMapping(value = "{id}")
-    public ResponseEntity<LmsUser> getUser(@PathVariable long id) {
-        logger.info("Received Get User request UserId: " + id);
-        LmsUser currentUser = userUtils.getCurrentUser();
-        if (currentUser.getIsAdmin() != true && currentUser.getId() != id) {
-            throw new ResponseStatusException( HttpStatus.FORBIDDEN, "Permission denied");
-        }
-        return new ResponseEntity<>(lmsUserService.getLmsUserById(id), HttpStatus.OK);
-    }
-
     @DeleteMapping(value = "{id}")
     public ResponseEntity<String> deleteUser(@PathVariable long id) {
         logger.info("Received Delete User request UserId: " + id);
@@ -96,12 +103,5 @@ public class UserController {
         }
         lmsUserService.hardDeleteLmsUser(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
-
-    @GetMapping(value = "email/{email}")
-    public ResponseEntity<LmsUser> getUserByEmail(@PathVariable String email) {
-        logger.info("Received Get User request Email: " + email);
-        long tenantId = tenantContext.getTenantId();
-        return new ResponseEntity<>(lmsUserService.getLmsUserByEmailAndTenantId(email, tenantId), HttpStatus.OK);
     }
 }

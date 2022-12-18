@@ -48,6 +48,16 @@ public class ChapterController {
         }
     }
 
+    @RequestMapping(method = RequestMethod.GET, value = "course/{id}")
+    public ResponseEntity<List<Chapter>> getChaptersByCourseId(@PathVariable long id) {
+        try {
+            return new ResponseEntity<>(chapterService.getChaptersByCourseId(id), HttpStatus.OK);
+        } catch (Exception e) {
+            logger.error("Error in getChaptersByCourseId: " + e.getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+    }
+
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<Chapter> addChapter(@RequestBody NewChapterRequest newChapterRequest) {
         Chapter chapter = chapterService.toChapter(newChapterRequest);

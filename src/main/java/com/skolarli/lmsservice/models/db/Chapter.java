@@ -12,6 +12,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.Where;
 
@@ -53,6 +54,9 @@ public class Chapter extends Tenantable{
     private List<Lesson> chapterLessons = new ArrayList<>();
 
     private Boolean chapterIsDeleted;
+
+    @NotNull
+    private int chapterSortOrder;
 
     public void update(Chapter chapter) {
         if (chapter.getChapterName() != null && !chapter.getChapterName().isEmpty()) {

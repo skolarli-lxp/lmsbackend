@@ -54,6 +54,17 @@ public class BatchController {
         }
     }
 
+    @RequestMapping(method = RequestMethod.GET, value = "getSchedules/{id}")
+    public ResponseEntity<List<BatchSchedule>> getSchedules(@PathVariable long id) {
+        try {
+            Batch batch = batchService.getBatch(id);
+            return new ResponseEntity<>(batch.getBatchSchedules(), HttpStatus.OK);
+        } catch (Exception e) {
+            logger.error("Error in getSchedules: " + e.getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+    }
+
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<Batch> addBatch(@Valid @RequestBody NewBatchRequest batchRequest) {
         Batch batch = batchService.toBatch(batchRequest);
@@ -116,15 +127,5 @@ public class BatchController {
         }
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "getSchedules/{id}")
-    public ResponseEntity<List<BatchSchedule>> getSchedules(@PathVariable long id) {
-        try {
-            Batch batch = batchService.getBatch(id);
-            return new ResponseEntity<>(batch.getBatchSchedules(), HttpStatus.OK);
-        } catch (Exception e) {
-            logger.error("Error in getSchedules: " + e.getMessage());
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
-        }
-    }
-
+    
 }
