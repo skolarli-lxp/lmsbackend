@@ -15,6 +15,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.skolarli.lmsservice.models.db.Lesson;
 import com.skolarli.lmsservice.models.NewLessonRequest;
+import com.skolarli.lmsservice.models.UpdateLessonDescriptionRequest;
 import com.skolarli.lmsservice.services.LessonService;
 
 @RestController
@@ -64,6 +65,22 @@ public class LessonController {
         Lesson lesson = lessonService.toLesson(newLessonRequest);
         try {
             return new ResponseEntity<>(lessonService.updateLesson(lesson, id), HttpStatus.OK);
+        } catch (Exception e) {
+            logger.error("Error in updateLesson: " + e.getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+    }
+
+    @RequestMapping(method = RequestMethod.PUT, value = "updatedescription/{id}")
+    public ResponseEntity<UpdateLessonDescriptionRequest> updateLessonDescription(@PathVariable long id, 
+                                                          @RequestBody UpdateLessonDescriptionRequest updateLessonDescriptionRequest) {
+        Lesson lesson = new Lesson();
+        lesson.setLessonDescription(updateLessonDescriptionRequest.getLessonDescription());
+        try {
+            Lesson updatedLesson = lessonService.updateLesson(lesson, id);
+            UpdateLessonDescriptionRequest response = new UpdateLessonDescriptionRequest(
+                                                                        updatedLesson.getLessonDescription());
+            return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
             logger.error("Error in updateLesson: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
