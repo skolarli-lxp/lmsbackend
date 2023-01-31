@@ -52,8 +52,12 @@ public class Lesson extends Tenantable{
     // Lesson Video Related info
     private String videoId;
     private String videoTitle;
+
+    @Column(columnDefinition = "TEXT")
     private String videoDescription;
+    @Column(columnDefinition = "VARCHAR(1024)")
     private String videoUrl;
+    @Column(columnDefinition = "VARCHAR(1024)")
     private String videoThumbnailUrl;
     private long videoSize;
     private Boolean allowDownload;
@@ -62,34 +66,44 @@ public class Lesson extends Tenantable{
     // Lesson Text Related info
     private String textContent;
     private String textTitle;
+    @Column(columnDefinition = "TEXT")
     private String textDescription;
+    @Column(columnDefinition = "VARCHAR(1024)")
     private String textUrl;
     private Boolean textIsActive;
 
     // Lesson PDF Related info
     private String pdfTitle;
+    @Column(columnDefinition = "TEXT")
     private String pdfDescription;
+    @Column(columnDefinition = "VARCHAR(1024)")
     private String pdfUrl;
     private long pdfSize;
     private Boolean pdfIsActive;
 
     // Lesson Audio Related info
     private String audioTitle;
+    @Column(columnDefinition = "TEXT")
     private String audioDescription;
+    @Column(columnDefinition = "VARCHAR(1024)")
     private String audioUrl;
     private long audioSize;
     private Boolean audioIsActive;
 
     // Lesson Presentation Related info
     private String presentationTitle;
+    @Column(columnDefinition = "TEXT")
     private String presentationDescription;
+    @Column(columnDefinition = "VARCHAR(1024)")
     private String presentationUrl;
     private long presentationSize;
     private Boolean presentationIsActive;
 
     // Lesson Downloadables Related info
     private String downloadablesTitle;
+    @Column(columnDefinition = "TEXT")
     private String downloadablesDescription;
+    @Column(columnDefinition = "VARCHAR(1024)")
     private String downloadablesUrl;
     private long downloadablesSize;
     private Boolean downloadablesIsActive;

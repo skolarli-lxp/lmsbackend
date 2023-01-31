@@ -4,5 +4,6 @@ public enum CourseStatus {
     PLANNED,
     SCHEDULED,
     RUNNING,
-    DEPRECATED
+    DEPRECATED,
+    OTHER
 }

@@ -58,6 +58,7 @@ public class Batch extends  Tenantable{
 
     private Date batchEndDate;
 
+    @Column(columnDefinition = "TEXT")
     private String batchCustomJs;
 
     private Boolean batchSeoAllowComments;

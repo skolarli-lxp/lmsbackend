@@ -70,8 +70,10 @@ public class Course extends Tenantable {
 
     private String courseMetaTagKeywords;
 
+    @Column(columnDefinition = "VARCHAR(1024)")
     private String courseCoverImage;
 
+    @Column(columnDefinition = "VARCHAR(1024)")
     private String courseThumbImage;
 
     private Boolean courseDeleted;
