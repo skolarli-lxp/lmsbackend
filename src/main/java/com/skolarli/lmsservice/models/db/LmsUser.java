@@ -36,6 +36,25 @@ public class LmsUser extends Tenantable{
     @NotNull
     private String email;
 
+    @Column(columnDefinition = "VARCHAR(15)")
+    private String phoneNumber;
+
+    private String companyName;
+
+    private int experience;
+
+    @Column(columnDefinition = "TEXT")
+    private String userBio;
+
+    @Column(columnDefinition = "VARCHAR(1024)")
+    private String profilePicUrl;
+
+    @Column(columnDefinition = "TEXT")
+    private String address;
+
+    private String country;
+
+
     //TODO: Better password storage
     @NotNull
     @JsonProperty( value = "password", access = JsonProperty.Access.WRITE_ONLY)
@@ -85,6 +104,27 @@ public class LmsUser extends Tenantable{
         if (lmsUser.getLastName() != null && !lmsUser.getLastName().isEmpty()) {
             this.setLastName(lmsUser.getLastName());
         }
+        if(lmsUser.getPhoneNumber() != null && !lmsUser.getPhoneNumber().isEmpty()) {
+            this.setPhoneNumber(lmsUser.getPhoneNumber());
+        }
+        if(lmsUser.getUserBio() != null && !lmsUser.getUserBio().isEmpty()) {
+            this.setUserBio(lmsUser.getUserBio());
+        }
+        if(lmsUser.getCompanyName() != null && !lmsUser.getCompanyName().isEmpty()) {
+            this.setCompanyName(lmsUser.getCompanyName());
+        }
+        if(lmsUser.getExperience() == 0) {
+            this.setExperience(lmsUser.getExperience());
+        }
+        if(lmsUser.getProfilePicUrl() != null && !lmsUser.getProfilePicUrl().isEmpty()) {
+            this.setProfilePicUrl(lmsUser.getProfilePicUrl());
+        }
+        if(lmsUser.getAddress() != null && !lmsUser.getAddress().isEmpty()) {
+            this.setAddress(lmsUser.getAddress());
+        }
+        if(lmsUser.getCountry() != null && !lmsUser.getCountry().isEmpty()) {
+            this.setCountry(lmsUser.getCountry());
+        }
         if (lmsUser.getIsAdmin() != null) {
             this.setIsAdmin(lmsUser.getIsAdmin());
         }
@@ -94,5 +134,6 @@ public class LmsUser extends Tenantable{
         if (lmsUser.getIsInstructor() != null) {
             this.setIsInstructor(lmsUser.getIsInstructor());
         }
+        
     }
 }
