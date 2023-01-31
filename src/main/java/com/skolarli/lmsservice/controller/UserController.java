@@ -2,6 +2,7 @@ package com.skolarli.lmsservice.controller;
 
 import com.skolarli.lmsservice.contexts.TenantContext;
 import com.skolarli.lmsservice.exception.OperationNotSupportedException;
+import com.skolarli.lmsservice.models.Role;
 import com.skolarli.lmsservice.models.db.LmsUser;
 import com.skolarli.lmsservice.services.LmsUserService;
 import com.skolarli.lmsservice.utils.UserUtils;
@@ -56,6 +57,13 @@ public class UserController {
         logger.info("Received Get User request Email: " + email);
         long tenantId = tenantContext.getTenantId();
         return new ResponseEntity<>(lmsUserService.getLmsUserByEmailAndTenantId(email, tenantId), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "role")
+    public ResponseEntity<List<LmsUser>> getUserByRole(@RequestParam("role") Role role) {
+        logger.info("Received Get User request Role: " + role);
+        long tenantId = tenantContext.getTenantId();
+        return new ResponseEntity<>(lmsUserService.getLmsUsersByRole(role), HttpStatus.OK);
     }
 
     @PostMapping

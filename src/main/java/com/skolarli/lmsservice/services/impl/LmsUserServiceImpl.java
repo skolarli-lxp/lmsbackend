@@ -2,6 +2,7 @@ package com.skolarli.lmsservice.services.impl;
 
 import com.skolarli.lmsservice.exception.OperationNotSupportedException;
 import com.skolarli.lmsservice.exception.ResourceNotFoundException;
+import com.skolarli.lmsservice.models.Role;
 import com.skolarli.lmsservice.models.db.LmsUser;
 import com.skolarli.lmsservice.repository.LmsUserRepository;
 import com.skolarli.lmsservice.services.LmsUserService;
@@ -78,6 +79,20 @@ public class LmsUserServiceImpl implements LmsUserService {
     }
 
     @Override
+    public List<LmsUser> getLmsUsersByRole(Role role) {
+        if (role == Role.ADMIN) {
+            return lmsUserRepository.findAllAdminUsers();
+        } else if(role == Role.STUDENT){
+            return lmsUserRepository.findAllStudents();
+        } else if(role == Role.INSTRUCTOR) {
+            return lmsUserRepository.findAllInstructors();
+        } else {
+            logger.error("Role not found"); 
+        }
+        return null;
+    }
+
+    @Override
     public LmsUser saveLmsUser(LmsUser lmsUser) {
         return lmsUserRepository.save(lmsUser);
     }
@@ -124,4 +139,6 @@ public class LmsUserServiceImpl implements LmsUserService {
         }
         lmsUserRepository.delete(existingUser);
     }
+
+   
 }

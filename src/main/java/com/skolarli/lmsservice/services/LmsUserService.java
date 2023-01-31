@@ -1,5 +1,6 @@
 package com.skolarli.lmsservice.services;
 
+import com.skolarli.lmsservice.models.Role;
 import com.skolarli.lmsservice.models.db.LmsUser;
 
 import java.util.List;
@@ -9,6 +10,7 @@ public interface LmsUserService {
     LmsUser getLmsUserById(long id);
     LmsUser getLmsUserByEmailAndTenantId(String email, long tenantId);
     LmsUser getLmsUserByEmail(String email);
+    List<LmsUser> getLmsUsersByRole(Role role);
 
     LmsUser saveLmsUser (LmsUser lmsUser);
     
