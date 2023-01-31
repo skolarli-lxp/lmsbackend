@@ -58,6 +58,7 @@ public class Course extends Tenantable {
 
     private Boolean courseIsPrivate;
 
+    @Column(columnDefinition = "TEXT")
     private String courseCustomJs;
 
     private Boolean courseSeoAllowComments;
