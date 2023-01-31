@@ -58,6 +58,8 @@ public class Batch extends  Tenantable{
 
     private Date batchEndDate;
 
+    private int batchDurationHours;
+
     @Column(columnDefinition = "TEXT")
     private String batchCustomJs;
 
@@ -110,6 +112,9 @@ public class Batch extends  Tenantable{
         }
         if (newBatch.getBatchEndDate() != null) {
             this.batchEndDate = newBatch.getBatchEndDate();
+        }
+        if (newBatch.getBatchDurationHours() != 0) {
+            this.batchDurationHours = newBatch.getBatchDurationHours();
         }
         if (newBatch.getBatchCustomJs() != null) {
             this.batchCustomJs = newBatch.getBatchCustomJs();

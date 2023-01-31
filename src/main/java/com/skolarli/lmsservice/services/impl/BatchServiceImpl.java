@@ -57,6 +57,23 @@ public class BatchServiceImpl implements BatchService {
         batch.setCourse(courseService.getCourseById(newBatchRequest.getCourseId()));
         batch.setInstructor(lmsUserService.getLmsUserById(newBatchRequest.getInstructorId()));
         batch.setBatchIsDeleted(false);
+
+        batch.setBatchEnrollmentCapacity(newBatchRequest.getBatchEnrollmentCapacity());
+        batch.setBatchAdditionalInfo(newBatchRequest.getBatchAdditionalInfo());
+        batch.setBatchFees(newBatchRequest.getBatchFees());
+        batch.setBatchDiscountType(newBatchRequest.getBatchDiscountType());
+        batch.setBatchDiscountAmount(newBatchRequest.getBatchDiscountAmount());
+
+        batch.setBatchStartDate(newBatchRequest.getBatchStartDate());
+        batch.setBatchEndDate(newBatchRequest.getBatchEndDate());
+        batch.setBatchDurationHours(newBatchRequest.getBatchDurationHours());
+        batch.setBatchCustomJs(newBatchRequest.getBatchCustomJs());
+        batch.setBatchSeoAllowComments(newBatchRequest.getBatchSeoAllowComments());
+        batch.setBatchSeoAllowRatings(newBatchRequest.getBatchSeoAllowRatings());
+        batch.setBatchSeoTitleTag(newBatchRequest.getBatchSeoTitleTag());
+        batch.setBatchSeoMetaDescription(newBatchRequest.getBatchSeoMetaDescription());
+        batch.setBatchSeoMetaKeywords(newBatchRequest.getBatchSeoMetaKeywords());
+
         return batch;
     }
 
