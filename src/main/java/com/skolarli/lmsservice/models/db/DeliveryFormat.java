@@ -5,5 +5,6 @@ public enum DeliveryFormat {
     VIRTUAL_CLASSROOM,
     ONLINE_INSTRUCTOR_LED,
     SELF_PACED,
-    MIXED_DELIVERY
+    MIXED_DELIVERY,
+    OTHER
 }

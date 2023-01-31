@@ -94,6 +94,16 @@ public class LmsUserServiceImpl implements LmsUserService {
     }
 
     @Override
+    public LmsUser verifyLmsUser(long id) {
+        LmsUser existingUser = lmsUserRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("LmsUser", "Id", id));
+        existingUser.setEmailVerified(true);
+        existingUser.update(existingUser);
+        lmsUserRepository.save(existingUser);
+        return existingUser;
+    }
+
+    @Override
     public void deleteLmsUser(long id) {
         LmsUser existingUser = lmsUserRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("LmsUser", "Id", id));

@@ -61,13 +61,20 @@ public class LmsUser extends Tenantable{
     private String password;
 
     @NotNull
+    @Column(columnDefinition = "bit(1) default false")
     private Boolean isAdmin;
 
     @NotNull
+    @Column(columnDefinition = "bit(1) default false")
     private Boolean isInstructor;
 
     @NotNull
+    @Column(columnDefinition = "bit(1) default false")
     private Boolean isStudent;
+
+    @NotNull
+    @Column(columnDefinition = "bit(1) default false")
+    private Boolean emailVerified;
 
     @OneToMany(mappedBy = "courseOwner")
     @JsonIgnoreProperties("courseOwner") // To avoid infinite recursion during serialization
@@ -133,6 +140,11 @@ public class LmsUser extends Tenantable{
         }
         if (lmsUser.getIsInstructor() != null) {
             this.setIsInstructor(lmsUser.getIsInstructor());
+        }
+        if(lmsUser.getEmailVerified() != null) {
+            this.setEmailVerified(lmsUser.getEmailVerified());
+        } else {
+            this.setEmailVerified(false);
         }
         
     }

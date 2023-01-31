@@ -69,6 +69,21 @@ public class UserController {
         return new ResponseEntity<LmsUser>(lmsUserService.saveLmsUser(lmsUser), HttpStatus.CREATED);
     }
 
+    @PostMapping(value="verify/{id}")
+    public ResponseEntity<LmsUser> verifyUser(@PathVariable long id) {
+        logger.info("Received update user request Id: " + id);
+        LmsUser currentUser = userUtils.getCurrentUser();
+        if (currentUser.getIsAdmin() != true && currentUser.getId() != id) {
+            throw new ResponseStatusException( HttpStatus.FORBIDDEN, "Permission denied");
+        }
+
+        try {
+            return new ResponseEntity<>(lmsUserService.verifyLmsUser(id), HttpStatus.OK);
+        } catch (OperationNotSupportedException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+    }
+
     @PutMapping(value="{id}")
     public ResponseEntity<LmsUser> updateUser(@PathVariable long id, @RequestBody LmsUser lmsUser) {
         logger.info("Received update user request Email: " + lmsUser.getEmail() );
