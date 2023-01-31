@@ -49,6 +49,16 @@ public class LessonController {
         }
     }
 
+    @RequestMapping(method = RequestMethod.GET, value = "chapter/{id}")
+    public ResponseEntity<List<Lesson>> getLessonByChapterId(@PathVariable long id) {
+        try {
+            return new ResponseEntity<>(lessonService.getLessonsByChapterId(id), HttpStatus.OK);
+        } catch (Exception e) {
+            logger.error("Error in getLesson: " + e.getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+    }
+
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<Lesson> addLesson(@RequestBody NewLessonRequest newLessonRequest) {
         Lesson lesson = lessonService.toLesson(newLessonRequest);

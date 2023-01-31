@@ -43,10 +43,16 @@ public class LessonServiceImpl implements LessonService {
     @Override
     public Lesson toLesson(NewLessonRequest newLessonRequest) {
         Lesson lesson = new Lesson();
+        long chapterId = newLessonRequest.getChapterId();
 
         lesson.setLessonName(newLessonRequest.getLessonName());
         lesson.setLessonDescription(newLessonRequest.getLessonDescription());
-        lesson.setChapter(chapterService.getChapterById(newLessonRequest.getChapterId()));
+        lesson.setChapter(chapterService.getChapterById(chapterId));
+
+        if (newLessonRequest.getLessonSortOrder() == 0) {
+            newLessonRequest.setLessonSortOrder(lessonRepository.findMaxLessonSortOrder(chapterId) + 1);
+        }
+        lesson.setLessonSortOrder(newLessonRequest.getLessonSortOrder());
 
         // Lesson Video Related info
         lesson.setVideoId(newLessonRequest.getVideoId());
@@ -108,6 +114,12 @@ public class LessonServiceImpl implements LessonService {
     public Lesson getLessonById(long id) {
         Lesson lesson = lessonRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Lesson", "Id", id));
+        return lesson;
+    }
+
+    @Override
+    public List<Lesson> getLessonsByChapterId(long id) {
+        List<Lesson> lesson = lessonRepository.findByChapterIdOrderByLessonSortOrderAsc(id);
         return lesson;
     }
 

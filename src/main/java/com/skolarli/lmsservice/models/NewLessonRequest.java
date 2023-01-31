@@ -28,6 +28,8 @@ public class NewLessonRequest {
     @NotNull(message = "chapterId is required")
     private long chapterId;
 
+    private int lessonSortOrder;
+
     // Lesson Video Related info
     private String videoId;
     private String videoTitle;

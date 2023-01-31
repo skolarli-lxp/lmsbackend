@@ -8,6 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.Where;
 
@@ -39,6 +40,9 @@ public class Lesson extends Tenantable{
 
     @Column(columnDefinition = "TEXT", nullable = false)
     private String lessonDescription;
+
+    @NotNull
+    private int lessonSortOrder;
 
     @ManyToOne
     @JoinColumn(name="chapter_id")
@@ -99,6 +103,9 @@ public class Lesson extends Tenantable{
         }
         if (lesson.getLessonDescription() != null && !lesson.getLessonDescription().isEmpty()) {
             this.setLessonDescription(lesson.getLessonDescription());
+        }
+        if(lesson.getLessonSortOrder()!= 0){
+            this.setLessonSortOrder(lesson.getLessonSortOrder());
         }
         if (lesson.getVideoId() != null && !lesson.getVideoId().isEmpty()) {
             this.setVideoId(lesson.getVideoId());

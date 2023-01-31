@@ -11,6 +11,7 @@ public interface LessonService {
 
     List<Lesson> getAllLessons ();
     Lesson getLessonById(long id);
+    List<Lesson> getLessonsByChapterId(long id);
 
     Lesson saveLesson (Lesson lesson);
    
