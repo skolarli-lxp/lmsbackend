@@ -38,7 +38,7 @@ public class Lesson extends Tenantable{
 
     private String lessonName;
 
-    @Column(columnDefinition = "TEXT", nullable = false)
+    @Column(columnDefinition = "TEXT")
     private String lessonDescription;
 
     @NotNull
