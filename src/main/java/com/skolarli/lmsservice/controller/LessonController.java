@@ -71,8 +71,7 @@ public class LessonController {
     } 
     
     @RequestMapping(method = RequestMethod.PUT, value = "{id}")
-    public ResponseEntity<Lesson> updateLesson(@PathVariable long id, @RequestBody NewLessonRequest newLessonRequest) {
-        Lesson lesson = lessonService.toLesson(newLessonRequest);
+    public ResponseEntity<Lesson> updateLesson(@PathVariable long id, @RequestBody Lesson lesson) {
         try {
             return new ResponseEntity<>(lessonService.updateLesson(lesson, id), HttpStatus.OK);
         } catch (Exception e) {
