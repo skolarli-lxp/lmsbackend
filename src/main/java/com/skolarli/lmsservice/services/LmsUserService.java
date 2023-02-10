@@ -2,6 +2,7 @@ package com.skolarli.lmsservice.services;
 
 import com.skolarli.lmsservice.models.Role;
 import com.skolarli.lmsservice.models.db.LmsUser;
+import com.skolarli.lmsservice.models.db.VerificationCode;
 
 import java.util.List;
 
@@ -15,6 +16,7 @@ public interface LmsUserService {
     LmsUser saveLmsUser (LmsUser lmsUser);
     
     LmsUser updateLmsUser(LmsUser lmsUser, long id);
+    VerificationCode generateVerificationCode(long id);
 
     void deleteLmsUser(long id);
     void hardDeleteLmsUser(long id);

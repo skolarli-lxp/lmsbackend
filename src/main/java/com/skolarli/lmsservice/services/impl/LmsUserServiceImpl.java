@@ -4,9 +4,10 @@ import com.skolarli.lmsservice.exception.OperationNotSupportedException;
 import com.skolarli.lmsservice.exception.ResourceNotFoundException;
 import com.skolarli.lmsservice.models.Role;
 import com.skolarli.lmsservice.models.db.LmsUser;
+import com.skolarli.lmsservice.models.db.VerificationCode;
 import com.skolarli.lmsservice.repository.LmsUserRepository;
 import com.skolarli.lmsservice.services.LmsUserService;
-
+import com.skolarli.lmsservice.services.VerificationService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,11 +21,13 @@ public class LmsUserServiceImpl implements LmsUserService {
 
     Logger logger = LoggerFactory.getLogger(LmsUserServiceImpl.class);
     private LmsUserRepository lmsUserRepository;
+    private VerificationService verificationService;
 
 
-    public LmsUserServiceImpl( LmsUserRepository lmsUserRepository) {
+    public LmsUserServiceImpl( LmsUserRepository lmsUserRepository, VerificationService verificationService) {
         super();
         this.lmsUserRepository = lmsUserRepository;
+        this.verificationService = verificationService;
     }
 
     private  LmsUser getCurrentUser(){
@@ -97,8 +100,6 @@ public class LmsUserServiceImpl implements LmsUserService {
         return lmsUserRepository.save(lmsUser);
     }
 
-    
-
     @Override
     public LmsUser updateLmsUser(LmsUser lmsUser, long id) {
         LmsUser existingUser = lmsUserRepository.findById(id).orElseThrow(
@@ -106,6 +107,13 @@ public class LmsUserServiceImpl implements LmsUserService {
         existingUser.update(lmsUser);
         lmsUserRepository.save(existingUser);
         return existingUser;
+    }
+
+    @Override
+    public VerificationCode generateVerificationCode(long id) {
+        LmsUser existingUser = lmsUserRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("LmsUser", "Id", id));
+        return verificationService.generateAndSaveVerificationCode(existingUser);
     }
 
     @Override

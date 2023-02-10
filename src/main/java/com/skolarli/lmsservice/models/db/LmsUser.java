@@ -92,6 +92,10 @@ public class LmsUser extends Tenantable{
     @JsonIgnoreProperties("student")
     private List<Enrollment> enrollments;
 
+    @OneToOne(mappedBy = "user")
+    @JsonIgnoreProperties("user")
+    private VerificationCode verificationCode;
+
     private Boolean userIsDeleted;
 
     public LmsUser(NewDomainRequest newDomainRequest) {

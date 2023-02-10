@@ -42,6 +42,7 @@ public class TenantAuthorizationFilter extends OncePerRequestFilter {
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
 
         String path = request.getServletPath();
-        return path.startsWith("/newdomain") || path.startsWith("/gethealthnoauth");
+        return path.startsWith("/newdomain") || path.startsWith("/gethealthnoauth") 
+                                                     ||  path.startsWith("/verify");
     }
 }
