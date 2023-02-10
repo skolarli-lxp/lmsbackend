@@ -1,8 +1,12 @@
 package com.skolarli.lmsservice.controller;
 
+import com.skolarli.lmsservice.contexts.TenantContext;
 import com.skolarli.lmsservice.models.AuthenticationRequest;
 import com.skolarli.lmsservice.models.AuthenticationResponse;
+import com.skolarli.lmsservice.models.db.LmsUser;
+import com.skolarli.lmsservice.models.db.Tenant;
 import com.skolarli.lmsservice.services.LMSUserDetailsService;
+import com.skolarli.lmsservice.services.LmsUserService;
 import com.skolarli.lmsservice.utils.JwtUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,15 +32,26 @@ public class AuthController {
     @Autowired
     private LMSUserDetailsService userDetailsService;
     @Autowired
+    LmsUserService lmsUserService;
+    @Autowired
+    TenantContext tenantContext;
+    @Autowired
     private JwtUtils jwtUtil;
 
     @RequestMapping( value = "/authenticate", method = RequestMethod.POST)
     public ResponseEntity<?> authenticate(@Valid @RequestBody AuthenticationRequest authenticationRequest) throws  Exception{
         logger.info("Received Authentication Request for User: " + authenticationRequest.getUsername());
+        String userName = authenticationRequest.getUsername();
+        LmsUser lmsUser = lmsUserService.getLmsUserByEmailAndTenantId(
+                               userName, tenantContext.getTenantId());
+        if (lmsUser.getEmailVerified() == false) {
+            logger.error("User Email " + userName + " is not verified");
+            return new ResponseEntity<>("{\"error\" : \"User Email not verified\"}", HttpStatus.UNAUTHORIZED);
+        }
 
         try {
             authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), authenticationRequest.getPassword())
+                    new UsernamePasswordAuthenticationToken(userName, authenticationRequest.getPassword())
             );
         } catch(Exception e) {
             logger.error("Authentication failed for user: " + authenticationRequest.getUsername());
