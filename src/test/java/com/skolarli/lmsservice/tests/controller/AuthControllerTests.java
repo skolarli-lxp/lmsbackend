@@ -1,17 +1,16 @@
 package com.skolarli.lmsservice.tests.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.skolarli.lmsservice.contexts.TenantContext;
 import com.skolarli.lmsservice.models.AuthenticationRequest;
+import com.skolarli.lmsservice.models.db.LmsUser;
 import com.skolarli.lmsservice.services.LMSUserDetailsService;
-import com.skolarli.lmsservice.services.TenantService;
+import com.skolarli.lmsservice.services.LmsUserService;
 import com.skolarli.lmsservice.utils.JwtUtils;
-import com.skolarli.lmsservice.utils.UserUtils;
-import org.apache.tomcat.websocket.AuthenticationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -25,8 +24,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import static org.hamcrest.Matchers.any;
 import static org.hamcrest.Matchers.is;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -48,15 +48,23 @@ class AuthControllerTests {
     private LMSUserDetailsService userDetailsService;
     @MockBean
     private JwtUtils jwtUtil;
+    @MockBean
+    private TenantContext tenantContext;
+    @MockBean 
+    private LmsUserService lmsUserService;
 
     @MockBean
     UserDetails userDetails;
 
     AuthenticationRequest authenticationRequest;
+    LmsUser lmsUser;
 
 
     @BeforeEach
     public  void setup() throws Exception {
+        lmsUser = new LmsUser();
+        lmsUser.setEmailVerified(true);
+
         authenticationRequest = new AuthenticationRequest("mymockusername","mymockpassword");
 
 
@@ -68,6 +76,9 @@ class AuthControllerTests {
                 authenticationRequest.getUsername(), authenticationRequest.getPassword()))).thenReturn(null);
         when(userDetailsService.loadUserByUsername(authenticationRequest.getUsername())).thenReturn(userDetails);
         when(jwtUtil.generateToken(userDetails)).thenReturn("my-mock-jwt-token");
+        when(tenantContext.getTenantId()).thenReturn(1L);
+        when(lmsUserService.getLmsUserByEmailAndTenantId(anyString(), anyLong())).thenReturn(lmsUser);
+
         String requestJson = mapper.writeValueAsString(authenticationRequest);
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
                 authenticationRequest.getUsername(), authenticationRequest.getPassword());
@@ -86,6 +97,7 @@ class AuthControllerTests {
 
     @Test
     void updateDomainTestFailureAuthFailure() throws Exception{
+
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
                 authenticationRequest.getUsername(), authenticationRequest.getPassword());
         String requestJson = mapper.writeValueAsString(authenticationRequest);
@@ -95,6 +107,9 @@ class AuthControllerTests {
                 new RuntimeException("Incorrect username or password"));
         when(userDetailsService.loadUserByUsername(authenticationRequest.getUsername()))
                 .thenReturn(userDetails);
+        when(tenantContext.getTenantId()).thenReturn(1L);
+        when(lmsUserService.getLmsUserByEmailAndTenantId(anyString(), anyLong())).thenReturn(lmsUser);
+
 
         mockMvc.perform(
                         MockMvcRequestBuilders.post("/authenticate")
