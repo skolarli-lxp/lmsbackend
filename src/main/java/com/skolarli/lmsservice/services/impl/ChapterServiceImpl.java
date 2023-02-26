@@ -119,7 +119,9 @@ public class ChapterServiceImpl implements ChapterService {
         List<Chapter> chapters = getChaptersByCourseId(courseId);
         for (Chapter chapter: chapters) {
             for (ChapterSortOrderRequest chapterSortOrder: chaptersSortOrderList) {
-                if (chapter.getId() == chapterSortOrder.getChapterId()) {
+                if (chapterSortOrder.getChapterSortOrder() > 0 &&  
+                    chapter.getId() == chapterSortOrder.getChapterId()) {
+                        
                     chapter.setChapterSortOrder(chapterSortOrder.getChapterSortOrder());
                 }
             }

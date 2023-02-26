@@ -157,7 +157,8 @@ public class LessonServiceImpl implements LessonService {
         List<Lesson> lessons = lessonRepository.findByChapterIdOrderByLessonSortOrderAsc(chapterId);
         for (Lesson lesson : lessons) {
             for (LessonSortOrderrequest lessonSortOrder : lessonSortOrderrequest) {
-                if (lesson.getId() == lessonSortOrder.getLessonId()) {
+                if (lessonSortOrder.getLessonSortOrder()>0 &&
+                     lesson.getId() == lessonSortOrder.getLessonId()) {
                     lesson.setLessonSortOrder(lessonSortOrder.getLessonSortOrder());
                 }
             }

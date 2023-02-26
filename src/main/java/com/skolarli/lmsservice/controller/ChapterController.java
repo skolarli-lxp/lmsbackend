@@ -62,10 +62,10 @@ public class ChapterController {
         }
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "sortorder/{id}")
-    public ResponseEntity<List<ChapterSortOrderResponse>> getChaptersSortOrder(@PathVariable long id) {
+    @RequestMapping(method = RequestMethod.GET, value = "sortorder/{courseId}")
+    public ResponseEntity<List<ChapterSortOrderResponse>> getChaptersSortOrder(@PathVariable long courseId) {
         try {
-            return new ResponseEntity<>(chapterService.getChaptersSortOrder(id), HttpStatus.OK);
+            return new ResponseEntity<>(chapterService.getChaptersSortOrder(courseId), HttpStatus.OK);
         } catch (Exception e) {
             logger.error("Error in getChaptersSortOrder: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
