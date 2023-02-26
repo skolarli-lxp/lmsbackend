@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 
 import com.skolarli.lmsservice.exception.OperationNotSupportedException;
 import com.skolarli.lmsservice.exception.ResourceNotFoundException;
+import com.skolarli.lmsservice.models.ChapterSortOrderRequest;
+import com.skolarli.lmsservice.models.ChapterSortOrderResponse;
 import com.skolarli.lmsservice.models.NewChapterRequest;
 import com.skolarli.lmsservice.models.db.Chapter;
 import com.skolarli.lmsservice.models.db.LmsUser;
@@ -81,6 +83,13 @@ public class ChapterServiceImpl implements ChapterService {
         return chapterRepository.findAll();
     }
 
+
+    @Override
+    public List<ChapterSortOrderResponse> getChaptersSortOrder(Long courseId) {
+        List<Chapter> chapters = getChaptersByCourseId(courseId);
+        return Chapter.toChapterSortOrderResponseList(chapters);
+    }
+
     @Override
     public Chapter saveChapter(Chapter chapter) {
         if (checkPermission(chapter) == false) {
@@ -102,6 +111,21 @@ public class ChapterServiceImpl implements ChapterService {
         }
         existingChapter.update(chapter);
         return chapterRepository.save(existingChapter);
+    }
+
+    @Override
+    public List<ChapterSortOrderResponse> updateChaptersSortOrder(Long courseId,
+            List<ChapterSortOrderRequest> chaptersSortOrderList) {
+        List<Chapter> chapters = getChaptersByCourseId(courseId);
+        for (Chapter chapter: chapters) {
+            for (ChapterSortOrderRequest chapterSortOrder: chaptersSortOrderList) {
+                if (chapter.getId() == chapterSortOrder.getChapterId()) {
+                    chapter.setChapterSortOrder(chapterSortOrder.getChapterSortOrder());
+                }
+            }
+        }
+        chapterRepository.saveAll(chapters);
+        return Chapter.toChapterSortOrderResponseList(chapters);
     }
 
     @Override

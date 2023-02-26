@@ -11,9 +11,10 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class LessonSortOrderrequest {
+public class LessonSortOrderResponse {
     @NotNull
     private long lessonId;
+    private String lessonName;
     @NotNull
     private Integer lessonSortOrder;
 }

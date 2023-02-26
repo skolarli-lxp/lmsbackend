@@ -16,6 +16,7 @@ import javax.validation.constraints.NotNull;
 import org.hibernate.annotations.Where;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.skolarli.lmsservice.models.LessonSortOrderResponse;
 import com.skolarli.lmsservice.models.LessonSortOrderrequest;
 
 import lombok.AllArgsConstructor;
@@ -172,17 +173,17 @@ public class Lesson extends Tenantable{
         }
     }
 
-    public LessonSortOrderrequest toLessonSortOrderrequest() {
-        LessonSortOrderrequest lessonSortOrderrequest = new LessonSortOrderrequest();
-        lessonSortOrderrequest.setLessonId(this.getId());
-        lessonSortOrderrequest.setLessonSortOrder(this.getLessonSortOrder());
-        lessonSortOrderrequest.setLessonName(this.getLessonName());
-        return lessonSortOrderrequest;
+    public LessonSortOrderResponse toLessonSortOrderResponse() {
+        LessonSortOrderResponse lessonSortOrderResponse = new LessonSortOrderResponse();
+        lessonSortOrderResponse.setLessonId(this.getId());
+        lessonSortOrderResponse.setLessonSortOrder(this.getLessonSortOrder());
+        lessonSortOrderResponse.setLessonName(this.getLessonName());
+        return lessonSortOrderResponse;
     }
 
-    public static List<LessonSortOrderrequest> toLessonSortOrderrequestList(List<Lesson> lessons) {
+    public static List<LessonSortOrderResponse> toLessonSortOrderResponseList(List<Lesson> lessons) {
         return lessons.stream().map(lesson -> {
-            return lesson.toLessonSortOrderrequest();
+            return lesson.toLessonSortOrderResponse();
         }).collect(Collectors.toList());
     }
 }

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.skolarli.lmsservice.models.db.Lesson;
+import com.skolarli.lmsservice.models.LessonSortOrderResponse;
 import com.skolarli.lmsservice.models.LessonSortOrderrequest;
 import com.skolarli.lmsservice.models.NewLessonRequest;
 import com.skolarli.lmsservice.models.UpdateLessonDescriptionRequest;
@@ -63,7 +64,7 @@ public class LessonController {
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "getsortorder/{chapterId}")
-    public ResponseEntity<List<LessonSortOrderrequest>> getAllLessonsSortOrder(@PathVariable long chapterId) {
+    public ResponseEntity<List<LessonSortOrderResponse>> getAllLessonsSortOrder(@PathVariable long chapterId) {
         try {
             return new ResponseEntity<>(lessonService.getAllLessonsSortOrder(chapterId), HttpStatus.OK);
         } catch (Exception e) {
@@ -110,7 +111,7 @@ public class LessonController {
     }
 
     @RequestMapping(method = RequestMethod.PUT, value = "updatesortorder/{chapterId}")
-    public ResponseEntity<List<LessonSortOrderrequest>> updateLessonSortOrder(@PathVariable long chapterId, @Valid @RequestBody List<LessonSortOrderrequest> lessonSortOrderrequest) {
+    public ResponseEntity<List<LessonSortOrderResponse>> updateLessonSortOrder(@PathVariable long chapterId, @Valid @RequestBody List<LessonSortOrderrequest> lessonSortOrderrequest) {
         try {
             return new ResponseEntity<>(lessonService.updateLessonSortOrder(chapterId, lessonSortOrderrequest), HttpStatus.OK);
         } catch (Exception e) {

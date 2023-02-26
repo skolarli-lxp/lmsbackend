@@ -2,6 +2,7 @@ package com.skolarli.lmsservice.models.db;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -18,6 +19,7 @@ import javax.validation.constraints.NotNull;
 import org.hibernate.annotations.Where;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.skolarli.lmsservice.models.ChapterSortOrderResponse;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -86,5 +88,18 @@ public class Chapter extends Tenantable{
         if (chapter.getChapterSortOrder() != 0) {
             this.setChapterSortOrder(chapter.getChapterSortOrder());
         }
+    }
+
+    public ChapterSortOrderResponse toChapterSortOrderResponse() {
+        return new ChapterSortOrderResponse(
+            this.getId(), 
+            this.getChapterName(), 
+            this.getChapterSortOrder());
+    }
+
+    public static List<ChapterSortOrderResponse> toChapterSortOrderResponseList(List<Chapter> chapters) {
+        return chapters.stream().map( (chapter)->
+            chapter.toChapterSortOrderResponse()
+        ).collect(Collectors.toList());
     }
 }

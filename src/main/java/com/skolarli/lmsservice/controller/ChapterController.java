@@ -2,6 +2,8 @@ package com.skolarli.lmsservice.controller;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -13,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.skolarli.lmsservice.models.ChapterSortOrderRequest;
+import com.skolarli.lmsservice.models.ChapterSortOrderResponse;
 import com.skolarli.lmsservice.models.NewChapterRequest;
 import com.skolarli.lmsservice.models.db.Chapter;
 import com.skolarli.lmsservice.services.ChapterService;
@@ -58,6 +62,16 @@ public class ChapterController {
         }
     }
 
+    @RequestMapping(method = RequestMethod.GET, value = "sortorder/{id}")
+    public ResponseEntity<List<ChapterSortOrderResponse>> getChaptersSortOrder(@PathVariable long id) {
+        try {
+            return new ResponseEntity<>(chapterService.getChaptersSortOrder(id), HttpStatus.OK);
+        } catch (Exception e) {
+            logger.error("Error in getChaptersSortOrder: " + e.getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+    }
+
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<Chapter> addChapter(@RequestBody NewChapterRequest newChapterRequest) {
         Chapter chapter = chapterService.toChapter(newChapterRequest);
@@ -76,6 +90,18 @@ public class ChapterController {
             return new ResponseEntity<>(chapterService.updateChapter(chapter, id), HttpStatus.OK);
         } catch (Exception e) {
             logger.error("Error in updateChapter: " + e.getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+    }
+
+    @RequestMapping(method = RequestMethod.PUT, value = "sortorder/{courseId}")
+    public ResponseEntity<List<ChapterSortOrderResponse>> updateChaptersSortOrder(
+                        @Valid @RequestBody List<ChapterSortOrderRequest> chaptersSortOrder, 
+                        @PathVariable long courseId) {
+        try {
+            return new ResponseEntity<>(chapterService.updateChaptersSortOrder(courseId, chaptersSortOrder), HttpStatus.OK);
+        } catch (Exception e) {
+            logger.error("Error in updateChaptersSortOrder: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }

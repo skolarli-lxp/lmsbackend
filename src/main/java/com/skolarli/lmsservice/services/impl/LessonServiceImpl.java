@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.skolarli.lmsservice.exception.OperationNotSupportedException;
 import com.skolarli.lmsservice.exception.ResourceNotFoundException;
+import com.skolarli.lmsservice.models.LessonSortOrderResponse;
 import com.skolarli.lmsservice.models.LessonSortOrderrequest;
 import com.skolarli.lmsservice.models.NewLessonRequest;
 import com.skolarli.lmsservice.models.db.Lesson;
@@ -125,9 +126,9 @@ public class LessonServiceImpl implements LessonService {
     }
 
     @Override
-    public List<LessonSortOrderrequest> getAllLessonsSortOrder(long chapterId) {
+    public List<LessonSortOrderResponse> getAllLessonsSortOrder(long chapterId) {
         List<Lesson> lessons = lessonRepository.findByChapterIdOrderByLessonSortOrderAsc(chapterId);
-        return Lesson.toLessonSortOrderrequestList(lessons);
+        return Lesson.toLessonSortOrderResponseList(lessons);
     }
 
 
@@ -151,7 +152,7 @@ public class LessonServiceImpl implements LessonService {
         return lessonRepository.save(existingLesson);
     }
 
-    public List<LessonSortOrderrequest> updateLessonSortOrder(Long chapterId, 
+    public List<LessonSortOrderResponse> updateLessonSortOrder(Long chapterId, 
                                                         List<LessonSortOrderrequest> lessonSortOrderrequest) {
         List<Lesson> lessons = lessonRepository.findByChapterIdOrderByLessonSortOrderAsc(chapterId);
         for (Lesson lesson : lessons) {
@@ -162,7 +163,7 @@ public class LessonServiceImpl implements LessonService {
             }
         }                                                       
         List<Lesson> savedLessons = lessonRepository.saveAll(lessons);
-        return Lesson.toLessonSortOrderrequestList(savedLessons);   
+        return Lesson.toLessonSortOrderResponseList(savedLessons);   
     }
 
     @Override
