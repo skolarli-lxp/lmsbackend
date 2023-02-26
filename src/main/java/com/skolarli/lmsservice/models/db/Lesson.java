@@ -1,5 +1,8 @@
 package com.skolarli.lmsservice.models.db;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -13,6 +16,7 @@ import javax.validation.constraints.NotNull;
 import org.hibernate.annotations.Where;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.skolarli.lmsservice.models.LessonSortOrderrequest;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -166,5 +170,19 @@ public class Lesson extends Tenantable{
         if (lesson.getLessonIsDeleted() != null) {
             this.setLessonIsDeleted(lesson.getLessonIsDeleted());
         }
+    }
+
+    public LessonSortOrderrequest toLessonSortOrderrequest() {
+        LessonSortOrderrequest lessonSortOrderrequest = new LessonSortOrderrequest();
+        lessonSortOrderrequest.setLessonId(this.getId());
+        lessonSortOrderrequest.setLessonSortOrder(this.getLessonSortOrder());
+        lessonSortOrderrequest.setLessonName(this.getLessonName());
+        return lessonSortOrderrequest;
+    }
+
+    public static List<LessonSortOrderrequest> toLessonSortOrderrequestList(List<Lesson> lessons) {
+        return lessons.stream().map(lesson -> {
+            return lesson.toLessonSortOrderrequest();
+        }).collect(Collectors.toList());
     }
 }

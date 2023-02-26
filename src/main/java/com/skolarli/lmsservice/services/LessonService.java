@@ -2,6 +2,7 @@ package com.skolarli.lmsservice.services;
 
 import java.util.List;
 
+import com.skolarli.lmsservice.models.LessonSortOrderrequest;
 import com.skolarli.lmsservice.models.NewLessonRequest;
 import com.skolarli.lmsservice.models.db.Lesson;
 
@@ -12,10 +13,12 @@ public interface LessonService {
     List<Lesson> getAllLessons ();
     Lesson getLessonById(long id);
     List<Lesson> getLessonsByChapterId(long id);
+    List<LessonSortOrderrequest> getAllLessonsSortOrder(long chapterId);
 
     Lesson saveLesson (Lesson lesson);
    
     Lesson updateLesson(Lesson lesson, long id);
+    List<LessonSortOrderrequest> updateLessonSortOrder(Long chapterId, List<LessonSortOrderrequest> lessonSortOrderrequest);
     
     void deleteLesson(long id);
     void hardDeleteLesson(long id);

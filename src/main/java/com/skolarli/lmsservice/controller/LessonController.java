@@ -2,6 +2,8 @@ package com.skolarli.lmsservice.controller;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.skolarli.lmsservice.models.db.Lesson;
+import com.skolarli.lmsservice.models.LessonSortOrderrequest;
 import com.skolarli.lmsservice.models.NewLessonRequest;
 import com.skolarli.lmsservice.models.UpdateLessonDescriptionRequest;
 import com.skolarli.lmsservice.services.LessonService;
@@ -59,6 +62,16 @@ public class LessonController {
         }
     }
 
+    @RequestMapping(method = RequestMethod.GET, value = "getsortorder/{chapterId}")
+    public ResponseEntity<List<LessonSortOrderrequest>> getAllLessonsSortOrder(@PathVariable long chapterId) {
+        try {
+            return new ResponseEntity<>(lessonService.getAllLessonsSortOrder(chapterId), HttpStatus.OK);
+        } catch (Exception e) {
+            logger.error("Error in getAllLessonsSortOrder: " + e.getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+    }
+
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<Lesson> addLesson(@RequestBody NewLessonRequest newLessonRequest) {
         Lesson lesson = lessonService.toLesson(newLessonRequest);
@@ -92,6 +105,16 @@ public class LessonController {
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
             logger.error("Error in updateLesson: " + e.getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+    }
+
+    @RequestMapping(method = RequestMethod.PUT, value = "updatesortorder/{chapterId}")
+    public ResponseEntity<List<LessonSortOrderrequest>> updateLessonSortOrder(@PathVariable long chapterId, @Valid @RequestBody List<LessonSortOrderrequest> lessonSortOrderrequest) {
+        try {
+            return new ResponseEntity<>(lessonService.updateLessonSortOrder(chapterId, lessonSortOrderrequest), HttpStatus.OK);
+        } catch (Exception e) {
+            logger.error("Error in updateLessonSortOrder: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }

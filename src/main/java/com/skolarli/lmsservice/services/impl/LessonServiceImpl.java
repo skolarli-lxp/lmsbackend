@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.skolarli.lmsservice.exception.OperationNotSupportedException;
 import com.skolarli.lmsservice.exception.ResourceNotFoundException;
+import com.skolarli.lmsservice.models.LessonSortOrderrequest;
 import com.skolarli.lmsservice.models.NewLessonRequest;
 import com.skolarli.lmsservice.models.db.Lesson;
 import com.skolarli.lmsservice.models.db.LmsUser;
@@ -123,6 +124,12 @@ public class LessonServiceImpl implements LessonService {
         return lesson;
     }
 
+    @Override
+    public List<LessonSortOrderrequest> getAllLessonsSortOrder(long chapterId) {
+        List<Lesson> lessons = lessonRepository.findByChapterIdOrderByLessonSortOrderAsc(chapterId);
+        return Lesson.toLessonSortOrderrequestList(lessons);
+    }
+
 
     @Override
     public Lesson saveLesson(Lesson lesson) {
@@ -142,6 +149,20 @@ public class LessonServiceImpl implements LessonService {
         }
         existingLesson.update(lesson);
         return lessonRepository.save(existingLesson);
+    }
+
+    public List<LessonSortOrderrequest> updateLessonSortOrder(Long chapterId, 
+                                                        List<LessonSortOrderrequest> lessonSortOrderrequest) {
+        List<Lesson> lessons = lessonRepository.findByChapterIdOrderByLessonSortOrderAsc(chapterId);
+        for (Lesson lesson : lessons) {
+            for (LessonSortOrderrequest lessonSortOrder : lessonSortOrderrequest) {
+                if (lesson.getId() == lessonSortOrder.getLessonId()) {
+                    lesson.setLessonSortOrder(lessonSortOrder.getLessonSortOrder());
+                }
+            }
+        }                                                       
+        List<Lesson> savedLessons = lessonRepository.saveAll(lessons);
+        return Lesson.toLessonSortOrderrequestList(savedLessons);   
     }
 
     @Override
@@ -164,4 +185,5 @@ public class LessonServiceImpl implements LessonService {
         }
         lessonRepository.delete(existingLesson);
     }
+
 }
