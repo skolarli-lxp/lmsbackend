@@ -15,7 +15,10 @@ import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.Where;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.skolarli.lmsservice.models.LessonSortOrderResponse;
 import com.skolarli.lmsservice.models.LessonSortOrderrequest;
 
@@ -51,7 +54,8 @@ public class Lesson extends Tenantable{
 
     @ManyToOne
     @JoinColumn(name="chapter_id")
-    @JsonIgnoreProperties("chapterLessons")
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+    @JsonIdentityReference(alwaysAsId = true)
     private Chapter chapter;
 
     // Lesson Video Related info

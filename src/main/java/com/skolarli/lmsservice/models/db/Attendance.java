@@ -1,6 +1,10 @@
 package com.skolarli.lmsservice.models.db;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -29,12 +33,14 @@ public class Attendance extends Tenantable{
 
     @ManyToOne
     @JoinColumn(name = "schedule_id")
-    @JsonIgnoreProperties("attendanceList")
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+    @JsonIdentityReference(alwaysAsId = true)
     private BatchSchedule batchSchedule;
 
     @ManyToOne
     @JoinColumn(name = "student_id")
-    @JsonIgnoreProperties("attendanceList")
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+    @JsonIdentityReference(alwaysAsId = true)
     private LmsUser student;
 
     private Boolean attended;

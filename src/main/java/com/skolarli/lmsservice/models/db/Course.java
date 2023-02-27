@@ -1,6 +1,10 @@
 package com.skolarli.lmsservice.models.db;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -44,10 +48,10 @@ public class Course extends Tenantable {
     private DisountType courseDiscountType;
     private int courseDiscountAmount;
 
-    //TODO: should not accept this in input json -- don't try to translate it
     @ManyToOne
     @JoinColumn(name = "owner_user_id")
-    @JsonIgnoreProperties("courses") // TO avoid infinite recursion during serialization
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+    @JsonIdentityReference(alwaysAsId = true)
     private LmsUser courseOwner;
 
     private CourseStatus courseStatus;

@@ -1,6 +1,9 @@
 package com.skolarli.lmsservice.models.db;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -29,12 +32,14 @@ public class Enrollment extends Tenantable {
 
     @ManyToOne
     @JoinColumn(name = "batch_id")
-    @JsonIgnoreProperties("enrollments")
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+    @JsonIdentityReference(alwaysAsId = true)
     private Batch batch;
 
     @ManyToOne
     @JoinColumn(name = "student_id")
-    @JsonIgnoreProperties("enrollments")
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+    @JsonIdentityReference(alwaysAsId = true)
     private LmsUser student;
 
     private Boolean enrollmentIsDeleted;    

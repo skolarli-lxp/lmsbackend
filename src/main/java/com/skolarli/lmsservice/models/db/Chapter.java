@@ -18,7 +18,10 @@ import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.Where;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.skolarli.lmsservice.models.ChapterSortOrderResponse;
 
 import lombok.AllArgsConstructor;
@@ -49,7 +52,8 @@ public class Chapter extends Tenantable{
 
     @ManyToOne
     @JoinColumn(name="course_id")
-    @JsonIgnoreProperties("courseChapters")
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+    @JsonIdentityReference(alwaysAsId = true)
     private Course course;
     
     @OneToMany(cascade = CascadeType.ALL)

@@ -1,6 +1,9 @@
 package com.skolarli.lmsservice.models.db;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -32,12 +35,14 @@ public class Batch extends  Tenantable{
 
     @ManyToOne
     @JoinColumn(name = "course_id")
-    @JsonIgnoreProperties("courseBatches") 
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+    @JsonIdentityReference(alwaysAsId = true)
     private Course course;
 
     @ManyToOne
     @JoinColumn(name="instructor_id")
-    @JsonIgnoreProperties("batches")
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+    @JsonIdentityReference(alwaysAsId = true)
     private LmsUser instructor;
 
     @OneToMany(mappedBy = "batch")
