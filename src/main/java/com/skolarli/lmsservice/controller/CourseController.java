@@ -2,8 +2,6 @@ package com.skolarli.lmsservice.controller;
 
 import com.skolarli.lmsservice.models.db.Course;
 import com.skolarli.lmsservice.services.CourseService;
-import com.skolarli.lmsservice.services.LmsUserService;
-import com.skolarli.lmsservice.utils.UserUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,11 +21,6 @@ public class CourseController {
 
     @Autowired
     private CourseService courseService;
-
-    @Autowired
-    private LmsUserService lmsUserService;
-    @Autowired
-    private UserUtils userUtils;
 
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<List<Course>> getAllCourses() {
