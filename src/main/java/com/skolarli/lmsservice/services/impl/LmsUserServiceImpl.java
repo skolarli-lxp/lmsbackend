@@ -97,6 +97,12 @@ public class LmsUserServiceImpl implements LmsUserService {
 
     @Override
     public LmsUser saveLmsUser(LmsUser lmsUser) {
+        if (lmsUser.getUserIsDeleted() == null) {
+            lmsUser.setUserIsDeleted(false);
+        }
+        if(lmsUser.getEmailVerified() == null) {
+            lmsUser.setEmailVerified(false);
+        }
         return lmsUserRepository.save(lmsUser);
     }
 
