@@ -5,8 +5,10 @@ import com.skolarli.lmsservice.models.NewDomainRequest;
 import com.skolarli.lmsservice.models.NewDomainResponse;
 import com.skolarli.lmsservice.models.db.LmsUser;
 import com.skolarli.lmsservice.models.db.Tenant;
+import com.skolarli.lmsservice.models.db.VerificationCode;
 import com.skolarli.lmsservice.services.LmsUserService;
 import com.skolarli.lmsservice.services.TenantService;
+import com.skolarli.lmsservice.services.VerificationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +36,9 @@ public class NewDomainController {
     @Autowired
     private LmsUserService lmsUserService;
 
+    @Autowired
+    private VerificationService verificationService;
+
     @PostMapping(value="/add")
     public ResponseEntity<NewDomainResponse> addNewDomain(@Valid @RequestBody NewDomainRequest newDomainRequest) {
         logger.info("Received new domain request. DomainName: "
@@ -41,6 +46,7 @@ public class NewDomainController {
                 + " Email: " + newDomainRequest.getEmail());
         Tenant savedTenant;
         LmsUser savedLmsUser;
+        VerificationCode code;
 
         Tenant tenant = new Tenant(newDomainRequest);
         try {
@@ -58,9 +64,15 @@ public class NewDomainController {
         } catch (Exception e){
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
+        try {
+            code = verificationService.generateAndSaveVerificationCode(savedLmsUser);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
         logger.info("Added new user Email: " + savedLmsUser.getEmail());
 
-        return new ResponseEntity<NewDomainResponse>(new NewDomainResponse(savedTenant, savedLmsUser), HttpStatus.CREATED);
+        return new ResponseEntity<>(
+                new NewDomainResponse(savedTenant, savedLmsUser, code), HttpStatus.CREATED);
     }
 
 

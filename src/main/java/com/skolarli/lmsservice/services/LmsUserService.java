@@ -16,7 +16,6 @@ public interface LmsUserService {
     LmsUser saveLmsUser (LmsUser lmsUser);
     
     LmsUser updateLmsUser(LmsUser lmsUser, long id);
-    VerificationCode generateVerificationCode(long id);
 
     void deleteLmsUser(long id);
     void hardDeleteLmsUser(long id);

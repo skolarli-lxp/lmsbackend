@@ -37,6 +37,11 @@ public class VerificationServiceImpl implements VerificationService{
     }
 
     @Override
+    public VerificationCode getVerificationCodeByUser(Long userId) {
+        return verificationCodeRepository.findByUserId(userId);
+    }
+
+    @Override
     public VerificationCode saveVerificationCode(VerificationCode code) {
         return verificationCodeRepository.save(code);
     }

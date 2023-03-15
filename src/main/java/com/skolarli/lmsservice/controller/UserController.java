@@ -6,6 +6,7 @@ import com.skolarli.lmsservice.models.Role;
 import com.skolarli.lmsservice.models.db.LmsUser;
 import com.skolarli.lmsservice.models.db.VerificationCode;
 import com.skolarli.lmsservice.services.LmsUserService;
+import com.skolarli.lmsservice.services.VerificationService;
 import com.skolarli.lmsservice.utils.UserUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,6 +33,9 @@ public class UserController {
 
     @Autowired
     TenantContext tenantContext;
+
+    @Autowired
+    VerificationService verificationService;
 
     @GetMapping
     public ResponseEntity<List<LmsUser>> getAllUsers() {
@@ -75,17 +79,11 @@ public class UserController {
             throw new ResponseStatusException( HttpStatus.FORBIDDEN, "Permission denied");
         }
         lmsUser.setUserIsDeleted(false);
-        return new ResponseEntity<LmsUser>(lmsUserService.saveLmsUser(lmsUser), HttpStatus.CREATED);
-    }
-
-    @GetMapping(value = "/verificationCode/{id}")
-    public ResponseEntity<VerificationCode> generateVerificationCode(@PathVariable long id) {
-        logger.info("Received generate code Request Id: " + id );
-        LmsUser currentUser = userUtils.getCurrentUser();
-        if (currentUser.getIsAdmin() != true) {
-            throw new ResponseStatusException( HttpStatus.FORBIDDEN, "Permission denied");
-        }
-        return new ResponseEntity<>(lmsUserService.generateVerificationCode(id), HttpStatus.OK);
+        lmsUser.setEmailVerified(false);
+        LmsUser savedUser = lmsUserService.saveLmsUser(lmsUser);
+        VerificationCode code = verificationService.generateAndSaveVerificationCode(savedUser);
+        savedUser.setVerificationCode(code);
+        return new ResponseEntity<LmsUser>(savedUser, HttpStatus.CREATED);
     }
 
     @PutMapping(value="{id}")

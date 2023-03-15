@@ -8,6 +8,7 @@ import com.skolarli.lmsservice.models.db.LmsUser;
 import com.skolarli.lmsservice.services.CourseService;
 import com.skolarli.lmsservice.services.LmsUserService;
 import com.skolarli.lmsservice.utils.UserUtils;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -25,7 +26,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import java.util.List;
 
 import static org.hamcrest.Matchers.is;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -66,6 +66,8 @@ class CourseControllerTests {
         lmsUser.setIsAdmin(true);
         lmsUser.setIsInstructor(false);
         lmsUser.setIsStudent(false);
+        lmsUser.setEmailVerified(false);
+        lmsUser.setUserIsDeleted(false);
 
         lmsUserNonAdmin = new LmsUser();
         lmsUserNonAdmin.setId(1);
@@ -76,6 +78,8 @@ class CourseControllerTests {
         lmsUserNonAdmin.setIsAdmin(false);
         lmsUserNonAdmin.setIsInstructor(false);
         lmsUserNonAdmin.setIsStudent(false);
+        lmsUserNonAdmin.setEmailVerified(false);
+        lmsUserNonAdmin.setUserIsDeleted(false);
 
              
 
@@ -89,8 +93,8 @@ class CourseControllerTests {
         updatedCourse = new Course();
         updatedCourse.setId(1);
         updatedCourse.setCourseName("mycoursename");
-        newCourse.setCourseDescription("mycoursedescription");
-        newCourse.setCourseOwner(lmsUser);
+        updatedCourse.setCourseDescription("mycoursedescription");
+        updatedCourse.setCourseOwner(lmsUser);
 
 
         existingCourse = new Course();

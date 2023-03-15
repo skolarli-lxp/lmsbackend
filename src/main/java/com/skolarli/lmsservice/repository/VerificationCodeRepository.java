@@ -8,4 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface VerificationCodeRepository extends JpaRepository<VerificationCode, Long> {
     VerificationCode findByToken(String token);
     VerificationCode findByUser(LmsUser user);
+
+    VerificationCode findByUserId(Long userId);
 }

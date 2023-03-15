@@ -72,7 +72,6 @@ public class LmsUser extends Tenantable{
     @Column(columnDefinition = "bit(1) default false")
     private Boolean isStudent;
 
-    @NotNull
     @Column(columnDefinition = "bit(1) default false")
     private Boolean emailVerified;
 

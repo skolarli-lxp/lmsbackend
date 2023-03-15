@@ -21,13 +21,11 @@ public class LmsUserServiceImpl implements LmsUserService {
 
     Logger logger = LoggerFactory.getLogger(LmsUserServiceImpl.class);
     private LmsUserRepository lmsUserRepository;
-    private VerificationService verificationService;
 
 
-    public LmsUserServiceImpl( LmsUserRepository lmsUserRepository, VerificationService verificationService) {
+    public LmsUserServiceImpl( LmsUserRepository lmsUserRepository) {
         super();
         this.lmsUserRepository = lmsUserRepository;
-        this.verificationService = verificationService;
     }
 
     private  LmsUser getCurrentUser(){
@@ -116,13 +114,6 @@ public class LmsUserServiceImpl implements LmsUserService {
     }
 
     @Override
-    public VerificationCode generateVerificationCode(long id) {
-        LmsUser existingUser = lmsUserRepository.findById(id).orElseThrow(
-                () -> new ResourceNotFoundException("LmsUser", "Id", id));
-        return verificationService.generateAndSaveVerificationCode(existingUser);
-    }
-
-    @Override
     public void deleteLmsUser(long id) {
         LmsUser existingUser = lmsUserRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("LmsUser", "Id", id));
@@ -143,6 +134,4 @@ public class LmsUserServiceImpl implements LmsUserService {
         }
         lmsUserRepository.delete(existingUser);
     }
-
-   
 }
