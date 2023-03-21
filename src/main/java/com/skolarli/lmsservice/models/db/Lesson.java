@@ -121,6 +121,8 @@ public class Lesson extends Tenantable{
 
 
     public void update(Lesson lesson) {
+        // Copy all non-null and non-empty values from the given object to this object
+
         if (lesson.getLessonName() != null && !lesson.getLessonName().isEmpty()) {
             this.setLessonName(lesson.getLessonName());
         }
@@ -130,6 +132,7 @@ public class Lesson extends Tenantable{
         if(lesson.getLessonSortOrder()!= 0){
             this.setLessonSortOrder(lesson.getLessonSortOrder());
         }
+        //Video details update
         if (lesson.getVideoId() != null && !lesson.getVideoId().isEmpty()) {
             this.setVideoId(lesson.getVideoId());
         }
@@ -154,6 +157,8 @@ public class Lesson extends Tenantable{
         if (lesson.getVideoIsActive() != null && !lesson.getVideoIsActive().isEmpty()) {
             this.setVideoIsActive(lesson.getVideoIsActive());
         }
+
+        // Text details update
         if (lesson.getTextContent() != null && !lesson.getTextContent().isEmpty()) {
             this.setTextContent(lesson.getTextContent());
         }
@@ -169,9 +174,77 @@ public class Lesson extends Tenantable{
         if (lesson.getTextIsActive() != null) {
             this.setTextIsActive(lesson.getTextIsActive());
         }
+
+        // Audio details update
+
+        if (lesson.getAudioTitle() != null && !lesson.getAudioTitle().isEmpty()) {
+            this.setAudioTitle(lesson.getAudioTitle());
+        }
+        if (lesson.getAudioDescription() != null && !lesson.getAudioDescription().isEmpty()) {
+            this.setAudioDescription(lesson.getAudioDescription());
+        }
+        if (lesson.getAudioUrl() != null && !lesson.getAudioUrl().isEmpty()) {
+            this.setAudioUrl(lesson.getAudioUrl());
+        }
+        if (lesson.getAudioSize() != 0) {
+            this.setAudioSize(lesson.getAudioSize());
+        }
+        if (lesson.getAudioIsActive() != null) {
+            this.setAudioIsActive(lesson.getAudioIsActive());
+        }
+
+        // Presentation details update
+        if (lesson.getPresentationTitle() != null && !lesson.getPresentationTitle().isEmpty()) {
+            this.setPresentationTitle(lesson.getPresentationTitle());
+        }
+        if (lesson.getPresentationDescription() != null && !lesson.getPresentationDescription().isEmpty()) {
+            this.setPresentationDescription(lesson.getPresentationDescription());
+        }
+        if (lesson.getPresentationUrl() != null && !lesson.getPresentationUrl().isEmpty()) {
+            this.setPresentationUrl(lesson.getPresentationUrl());
+        }
+        if (lesson.getPresentationSize() != 0) {
+            this.setPresentationSize(lesson.getPresentationSize());
+        }
+        if (lesson.getPresentationIsActive() != null) {
+            this.setPresentationIsActive(lesson.getPresentationIsActive());
+        }
+
+        // Downloadables details update
+        if (lesson.getDownloadablesTitle() != null && !lesson.getDownloadablesTitle().isEmpty()) {
+            this.setDownloadablesTitle(lesson.getDownloadablesTitle());
+        }
+        if (lesson.getDownloadablesDescription() != null && !lesson.getDownloadablesDescription().isEmpty()) {
+            this.setDownloadablesDescription(lesson.getDownloadablesDescription());
+        }
+        if (lesson.getDownloadablesUrl() != null && !lesson.getDownloadablesUrl().isEmpty()) {
+            this.setDownloadablesUrl(lesson.getDownloadablesUrl());
+        }
+        if (lesson.getDownloadablesSize() != 0) {
+            this.setDownloadablesSize(lesson.getDownloadablesSize());
+        }
+        if (lesson.getDownloadablesIsActive() != null) {
+            this.setDownloadablesIsActive(lesson.getDownloadablesIsActive());
+        }
+
+        // PDF details update
         if (lesson.getPdfTitle() != null && !lesson.getPdfTitle().isEmpty()) {
             this.setPdfTitle(lesson.getPdfTitle());
         }
+        if (lesson.getPdfDescription() != null && !lesson.getPdfDescription().isEmpty()) {
+            this.setPdfDescription(lesson.getPdfDescription());
+        }
+        if (lesson.getPdfUrl() != null && !lesson.getPdfUrl().isEmpty()) {
+            this.setPdfUrl(lesson.getPdfUrl());
+        }
+        if (lesson.getPdfSize() != 0) {
+            this.setPdfSize(lesson.getPdfSize());
+        }
+        if (lesson.getPdfIsActive() != null) {
+            this.setPdfIsActive(lesson.getPdfIsActive());
+        }
+
+
         if (lesson.getLessonIsDeleted() != null) {
             this.setLessonIsDeleted(lesson.getLessonIsDeleted());
         }
