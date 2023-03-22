@@ -1,6 +1,7 @@
 package com.skolarli.lmsservice.controller;
 
 import com.skolarli.lmsservice.authentications.TenantAuthenticationToken;
+import com.skolarli.lmsservice.exception.OperationNotSupportedException;
 import com.skolarli.lmsservice.models.NewDomainRequest;
 import com.skolarli.lmsservice.models.NewDomainResponse;
 import com.skolarli.lmsservice.models.db.LmsUser;
@@ -9,9 +10,11 @@ import com.skolarli.lmsservice.models.db.VerificationCode;
 import com.skolarli.lmsservice.services.LmsUserService;
 import com.skolarli.lmsservice.services.TenantService;
 import com.skolarli.lmsservice.services.VerificationService;
+import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -51,7 +54,14 @@ public class NewDomainController {
         Tenant tenant = new Tenant(newDomainRequest);
         try {
             savedTenant = tenantService.saveTenant(tenant);
+        } catch (DataIntegrityViolationException e) {
+            logger.error(e.getMessage());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Domain name is not unique");
+        } catch (OperationNotSupportedException e) {
+            logger.error(e.getMessage());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         } catch (Exception e) {
+            logger.error(e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
         logger.info("Added new tenant DomainName: " + savedTenant.getDomainName());

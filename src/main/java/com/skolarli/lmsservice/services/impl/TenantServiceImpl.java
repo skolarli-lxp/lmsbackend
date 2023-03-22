@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class TenantServiceImpl implements TenantService {
@@ -28,6 +30,14 @@ public class TenantServiceImpl implements TenantService {
         this.tenantRepository = tenantRepository;
         this.tenantContext = tenantContext;
         this.userUtils = userUtils;
+    }
+
+    private Boolean isRestrictedDomainName(String domainName) {
+        List<String> restrictedList = Stream.of(
+                "admin", "adminuser",
+                "skolarli", "skolarliadmin"
+        ).collect(Collectors.toList());
+        return restrictedList.contains(domainName);
     }
 
     
@@ -64,6 +74,11 @@ public class TenantServiceImpl implements TenantService {
 
     @Override
     public Tenant saveTenant(Tenant tenant) {
+        String domainName = tenant.getDomainName();
+        if(domainName == null || domainName.isEmpty() || isRestrictedDomainName(domainName)) {
+            throw new OperationNotSupportedException("Domain name is not allowed");
+        }
+        tenant.setTenantIsDeleted(false);
         tenantRepository.save(tenant);
         return tenant;
     }
