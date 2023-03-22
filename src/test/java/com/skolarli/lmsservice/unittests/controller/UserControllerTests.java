@@ -1,4 +1,4 @@
-package com.skolarli.lmsservice.tests.controller;
+package com.skolarli.lmsservice.unittests.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.skolarli.lmsservice.exception.OperationNotSupportedException;

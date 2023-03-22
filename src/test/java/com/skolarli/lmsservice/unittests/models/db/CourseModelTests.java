@@ -1,4 +1,4 @@
-package com.skolarli.lmsservice.tests.models.db;
+package com.skolarli.lmsservice.unittests.models.db;
 
 import java.util.ArrayList;
 import java.util.List;

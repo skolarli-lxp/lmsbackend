@@ -1,4 +1,4 @@
-package com.skolarli.lmsservice.tests.services.impl;
+package com.skolarli.lmsservice.unittests.services.impl;
 
 import com.skolarli.lmsservice.repository.AttendanceRepository;
 import com.skolarli.lmsservice.services.impl.AttendanceServiceImpl;

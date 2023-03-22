@@ -1,7 +1,6 @@
-package com.skolarli.lmsservice.tests.controller;
+package com.skolarli.lmsservice.unittests.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.skolarli.lmsservice.exception.OperationNotSupportedException;
 import com.skolarli.lmsservice.models.NewDomainRequest;
 import com.skolarli.lmsservice.models.db.LmsUser;
 import com.skolarli.lmsservice.models.db.Tenant;
@@ -9,11 +8,9 @@ import com.skolarli.lmsservice.models.db.VerificationCode;
 import com.skolarli.lmsservice.services.LmsUserService;
 import com.skolarli.lmsservice.services.TenantService;
 import com.skolarli.lmsservice.services.VerificationService;
-import com.skolarli.lmsservice.utils.UserUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
