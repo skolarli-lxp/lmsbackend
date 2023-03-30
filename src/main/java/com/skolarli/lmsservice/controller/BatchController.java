@@ -35,9 +35,18 @@ public class BatchController {
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity<List<Batch>> getAllBatches() {
+    public ResponseEntity<List<Batch>> getAllBatches(@RequestParam(required = false) Long courseId) {
+        if (courseId != null) {
+            try {
+                return new ResponseEntity<>(batchService.getBatchesForCourse(courseId), HttpStatus.OK);
+            } catch (Exception e) {
+                logger.error("Error in getAllBatches: " + e.getMessage());
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+            }
+        }
+
         try {
-        return new ResponseEntity<>(batchService.getAllBatches(), HttpStatus.OK);
+            return new ResponseEntity<>(batchService.getAllBatches(), HttpStatus.OK);
         } catch (Exception e) {
             logger.error("Error in getAllBatches: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
