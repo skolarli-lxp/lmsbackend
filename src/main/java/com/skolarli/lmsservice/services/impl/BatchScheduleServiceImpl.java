@@ -2,10 +2,14 @@ package com.skolarli.lmsservice.services.impl;
 
 import com.skolarli.lmsservice.exception.OperationNotSupportedException;
 import com.skolarli.lmsservice.exception.ResourceNotFoundException;
+import com.skolarli.lmsservice.models.NewBatchScheduleRequest;
+import com.skolarli.lmsservice.models.NewBatchSchedulesForBatchRequest;
+import com.skolarli.lmsservice.models.db.Batch;
 import com.skolarli.lmsservice.models.db.BatchSchedule;
 import com.skolarli.lmsservice.models.db.LmsUser;
 import com.skolarli.lmsservice.repository.BatchScheduleRepository;
 import com.skolarli.lmsservice.services.BatchScheduleService;
+import com.skolarli.lmsservice.services.BatchService;
 import com.skolarli.lmsservice.utils.UserUtils;
 
 import org.slf4j.Logger;
@@ -13,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -22,9 +27,12 @@ public class BatchScheduleServiceImpl implements BatchScheduleService {
     final BatchScheduleRepository batchScheduleRepository;
     final UserUtils userUtils;
 
-    public BatchScheduleServiceImpl(BatchScheduleRepository batchScheduleRepository, UserUtils userUtils) {
+    final BatchService batchService;
+
+    public BatchScheduleServiceImpl(BatchScheduleRepository batchScheduleRepository, UserUtils userUtils, BatchService batchService) {
         this.batchScheduleRepository = batchScheduleRepository;
         this.userUtils = userUtils;
+        this.batchService = batchService;
     }
 
     private Boolean checkPermissions (BatchSchedule existingBatchSchedule) {
@@ -33,6 +41,54 @@ public class BatchScheduleServiceImpl implements BatchScheduleService {
             return false;
         }
         return true;
+    }
+
+    private Boolean checkPermissions (Batch existingBatch) {
+        LmsUser currentUser = userUtils.getCurrentUser();
+        if (currentUser.getIsAdmin() != true && currentUser != existingBatch.getCourse().getCourseOwner()) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public BatchSchedule toBatchSchedule(NewBatchSchedulesForBatchRequest newBatchSchedulesForBatchRequest) {
+        if(newBatchSchedulesForBatchRequest.getEndDateTime().before(newBatchSchedulesForBatchRequest.getStartDateTime())) {
+            throw new OperationNotSupportedException("End date time cannot be before start date time");
+        }
+        BatchSchedule batchSchedule = new BatchSchedule();
+        if (newBatchSchedulesForBatchRequest.getStartDateTime() != null) {
+            batchSchedule.setStartDateTime(newBatchSchedulesForBatchRequest.getStartDateTime());
+        }
+        if (newBatchSchedulesForBatchRequest.getEndDateTime() != null) {
+            batchSchedule.setEndDateTime(newBatchSchedulesForBatchRequest.getEndDateTime());
+        }
+        return batchSchedule;
+    }
+
+    @Override
+    public BatchSchedule toBatchSchedule(NewBatchScheduleRequest newBatchScheduleRequest) {
+        if (newBatchScheduleRequest.getEndDateTime().before(newBatchScheduleRequest.getStartDateTime())) {
+            throw new OperationNotSupportedException("End date time cannot be before start date time");
+        }
+        Batch batch = batchService.getBatch(newBatchScheduleRequest.getBatchId());
+        // TODO: throw BAD REQUEST from controller in this case
+        if (batch == null) {
+            throw new ResourceNotFoundException("Batch", "Id", newBatchScheduleRequest.getBatchId());
+        }
+        BatchSchedule batchSchedule = new BatchSchedule();
+        batchSchedule.setBatch(batch);
+        batchSchedule.setStartDateTime(newBatchScheduleRequest.getStartDateTime());
+        batchSchedule.setEndDateTime(newBatchScheduleRequest.getEndDateTime());
+        batchSchedule.setBatchScheduleIsDeleted(false);
+        return batchSchedule;
+    }
+
+    @Override
+    public List<BatchSchedule> toBatchScheduleList(List<NewBatchSchedulesForBatchRequest> newBatchSchedulesForBatchRequests) {
+        List<BatchSchedule> batchSchedules = newBatchSchedulesForBatchRequests.stream().map(
+                this::toBatchSchedule).collect(Collectors.toList());
+        return batchSchedules;
     }
 
     @Override
@@ -55,11 +111,23 @@ public class BatchScheduleServiceImpl implements BatchScheduleService {
 
 
     @Override
-    public BatchSchedule saveBatchSchedule(BatchSchedule batchSchedule)  {
+    public BatchSchedule saveBatchSchedule(BatchSchedule batchSchedule) {
         if (checkPermissions(batchSchedule) == false) {
             throw new OperationNotSupportedException("Operation not supported");
         }
         return batchScheduleRepository.save(batchSchedule);
+    }
+
+    @Override
+    public List<BatchSchedule> saveAllBatchSchedules(List<BatchSchedule> batchSchedules, Long batchId) {
+        Batch existingBatch = batchService.getBatch(batchId);
+        if (checkPermissions(batchSchedules.get(0)) == false) {
+            throw new OperationNotSupportedException("Operation not supported");
+        }
+        for (BatchSchedule batchSchedule : batchSchedules) {
+            batchSchedule.setBatch(existingBatch);
+        }
+        return batchScheduleRepository.saveAll(batchSchedules);
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.skolarli.lmsservice.controller;
 
 import com.skolarli.lmsservice.exception.OperationNotSupportedException;
 import com.skolarli.lmsservice.models.NewBatchScheduleRequest;
+import com.skolarli.lmsservice.models.NewBatchSchedulesForBatchRequest;
 import com.skolarli.lmsservice.models.db.Attendance;
 import com.skolarli.lmsservice.models.db.Batch;
 import com.skolarli.lmsservice.models.db.BatchSchedule;
@@ -35,7 +36,15 @@ public class BatchScheduleController {
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity<List<BatchSchedule>> getAllBatchSchedules() {
+    public ResponseEntity<List<BatchSchedule>> getAllBatchSchedules(@RequestParam(required = false) Long batchId) {
+        if(batchId != null) {
+            try {
+                return new ResponseEntity<>(batchScheduleService.getSchedulesForBatch(batchId), HttpStatus.OK);
+            } catch (Exception e) {
+                logger.error("Error in getAllBatchSchedules: " + e.getMessage());
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+            }
+        }
         try {
             return new ResponseEntity<>(batchScheduleService.getAllBatchSchedules(), HttpStatus.OK);
         } catch (Exception e) {
@@ -73,15 +82,24 @@ public class BatchScheduleController {
 
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<BatchSchedule> addBatchSchedule(@Valid @RequestBody NewBatchScheduleRequest request) {
-        Batch batch = batchService.getBatch(request.getBatchId());
-        BatchSchedule batchSchedule = new BatchSchedule();
-        batchSchedule.setBatch(batch);
-        batchSchedule.setStartDateTime(request.getStartDateTime());
-        batchSchedule.setEndDateTime(request.getEndDateTime());
-        batchSchedule.setBatchScheduleIsDeleted(false);
+        BatchSchedule batchSchedule = batchScheduleService.toBatchSchedule(request);
 
         try {
             return new ResponseEntity<>(batchScheduleService.saveBatchSchedule(batchSchedule), HttpStatus.OK);
+        } catch (OperationNotSupportedException e){
+            throw new ResponseStatusException( HttpStatus.FORBIDDEN, e.getMessage());
+        }catch (Exception e) {
+            logger.error("Error in addBatchSchedule: " + e.getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+    }
+
+    @RequestMapping(method = RequestMethod.POST, value="/forbatch")
+    public ResponseEntity<List<BatchSchedule>> addBatchSchedules(@Valid @RequestBody List<NewBatchSchedulesForBatchRequest> request, @RequestParam Long batchId) {
+        List<BatchSchedule> batchSchedules = batchScheduleService.toBatchScheduleList(request);
+
+        try {
+            return new ResponseEntity<>(batchScheduleService.saveAllBatchSchedules(batchSchedules, batchId) , HttpStatus.OK);
         } catch (OperationNotSupportedException e){
             throw new ResponseStatusException( HttpStatus.FORBIDDEN, e.getMessage());
         }catch (Exception e) {
