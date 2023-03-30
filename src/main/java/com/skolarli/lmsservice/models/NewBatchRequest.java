@@ -1,5 +1,6 @@
 package com.skolarli.lmsservice.models;
 
+import com.skolarli.lmsservice.models.db.BatchStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -35,6 +36,8 @@ public class NewBatchRequest {
     private Date batchStartDate;
 
     private Date batchEndDate;
+
+    private BatchStatus batchStatus;
 
     private int batchDurationHours;
 

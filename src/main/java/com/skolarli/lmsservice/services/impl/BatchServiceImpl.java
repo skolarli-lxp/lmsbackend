@@ -54,8 +54,12 @@ public class BatchServiceImpl implements BatchService {
     @Override
     public Batch toBatch(NewBatchRequest newBatchRequest) {
         Batch batch = new Batch();
-        batch.setCourse(courseService.getCourseById(newBatchRequest.getCourseId()));
-        batch.setInstructor(lmsUserService.getLmsUserById(newBatchRequest.getInstructorId()));
+        if (newBatchRequest.getCourseId() != 0) {
+            batch.setCourse(courseService.getCourseById(newBatchRequest.getCourseId()));
+        }
+        if (newBatchRequest.getInstructorId() != 0) {
+            batch.setInstructor(lmsUserService.getLmsUserById(newBatchRequest.getInstructorId()));
+        }
         batch.setBatchIsDeleted(false);
 
         batch.setBatchEnrollmentCapacity(newBatchRequest.getBatchEnrollmentCapacity());
@@ -66,6 +70,7 @@ public class BatchServiceImpl implements BatchService {
 
         batch.setBatchStartDate(newBatchRequest.getBatchStartDate());
         batch.setBatchEndDate(newBatchRequest.getBatchEndDate());
+        batch.setBatchStatus(newBatchRequest.getBatchStatus());
         batch.setBatchDurationHours(newBatchRequest.getBatchDurationHours());
         batch.setBatchCustomJs(newBatchRequest.getBatchCustomJs());
         batch.setBatchSeoAllowComments(newBatchRequest.getBatchSeoAllowComments());

@@ -81,9 +81,9 @@ public class BatchController {
     }
 
     @RequestMapping(method = RequestMethod.PUT, value = "{id}")
-    public ResponseEntity<Batch> updateBatch(@PathVariable long id, @Valid @RequestBody NewBatchRequest batchRequest) {
+        public ResponseEntity<Batch> updateBatch(@PathVariable long id, @RequestBody NewBatchRequest batchRequest) {
         Batch batch = batchService.toBatch(batchRequest);
-        logger.info("Received request for updating batch for course" + batch.getCourse().getCourseName());
+        logger.info("Received request for updating batch batchID: " + id );
 
         try {
             return new ResponseEntity<>(batchService.updateBatch(batch, id), HttpStatus.OK);

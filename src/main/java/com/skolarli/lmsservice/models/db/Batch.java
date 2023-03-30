@@ -63,6 +63,8 @@ public class Batch extends  Tenantable{
 
     private Date batchEndDate;
 
+    private BatchStatus batchStatus;
+
     private int batchDurationHours;
 
     @Column(columnDefinition = "TEXT")
@@ -79,6 +81,7 @@ public class Batch extends  Tenantable{
     private String batchSeoMetaKeywords;
 
     private Boolean batchIsDeleted;
+
 
     public void update(Batch newBatch) {
         if (newBatch.getId() != 0) {
@@ -117,6 +120,9 @@ public class Batch extends  Tenantable{
         }
         if (newBatch.getBatchEndDate() != null) {
             this.batchEndDate = newBatch.getBatchEndDate();
+        }
+        if (newBatch.getBatchStatus() != null) {
+            this.batchStatus = newBatch.getBatchStatus();
         }
         if (newBatch.getBatchDurationHours() != 0) {
             this.batchDurationHours = newBatch.getBatchDurationHours();
