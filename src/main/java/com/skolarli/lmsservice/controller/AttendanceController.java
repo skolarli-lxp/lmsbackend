@@ -2,6 +2,7 @@ package com.skolarli.lmsservice.controller;
 
 import com.skolarli.lmsservice.exception.OperationNotSupportedException;
 import com.skolarli.lmsservice.models.NewAttendanceRequest;
+import com.skolarli.lmsservice.models.NewAttendancesForScheduleRequest;
 import com.skolarli.lmsservice.models.db.Attendance;
 import com.skolarli.lmsservice.services.AttendanceService;
 import com.skolarli.lmsservice.services.BatchScheduleService;
@@ -36,7 +37,15 @@ public class AttendanceController {
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity<List<Attendance>> getAllAttendances() {
+    public ResponseEntity<List<Attendance>> getAllAttendances(@RequestParam(required = false) Long batchScheduleId) {
+        if (batchScheduleId != null) {
+            try {
+                return new ResponseEntity<>(attendanceService.getAttendanceForSchedule(batchScheduleId), HttpStatus.OK);
+            } catch (Exception e) {
+                logger.error("Error in getAllAttendances: " + e.getMessage());
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+            }
+        }
         try {
             return new ResponseEntity<>(attendanceService.getAllAttendance(), HttpStatus.OK);
         } catch (Exception e) {
@@ -62,6 +71,18 @@ public class AttendanceController {
             return new ResponseEntity<>(attendanceService.saveAttendance(attendance), HttpStatus.OK);
         } catch (Exception e) {
             logger.error("Error in addAttendance: " + e.getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+    }
+
+    @RequestMapping(method = RequestMethod.POST, value = "/forschedule")
+    public ResponseEntity<List<Attendance>> addAttendancesForSchedule(@Valid @RequestBody List<NewAttendancesForScheduleRequest> request,
+                                                                      @RequestParam Long batchScheduleId) {
+        List<Attendance> attendances = attendanceService.toAttendances(request, batchScheduleId);
+        try {
+            return new ResponseEntity<>(attendanceService.saveAllAttendance(attendances), HttpStatus.OK);
+        } catch (Exception e) {
+            logger.error("Error in addAttendancesForSchedule: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }

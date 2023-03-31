@@ -3,6 +3,7 @@ package com.skolarli.lmsservice.services.impl;
 import com.skolarli.lmsservice.exception.OperationNotSupportedException;
 import com.skolarli.lmsservice.exception.ResourceNotFoundException;
 import com.skolarli.lmsservice.models.NewAttendanceRequest;
+import com.skolarli.lmsservice.models.NewAttendancesForScheduleRequest;
 import com.skolarli.lmsservice.models.db.Attendance;
 import com.skolarli.lmsservice.models.db.BatchSchedule;
 import com.skolarli.lmsservice.models.db.LmsUser;
@@ -17,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -58,6 +60,43 @@ public class AttendanceServiceImpl implements AttendanceService {
         return attendance;
     }
 
+    public Attendance toAttendance(NewAttendancesForScheduleRequest newAttendancesForScheduleRequest,
+                                   Long batchScheduleId) {
+        Attendance attendance = new Attendance();
+
+        if(newAttendancesForScheduleRequest.getStudentId() != 0) {
+            LmsUser student = lmsUserService.getLmsUserById(newAttendancesForScheduleRequest.getStudentId());
+            attendance.setStudent(student);
+        } else {
+            throw new OperationNotSupportedException("Student Id is required");
+        }
+        if (newAttendancesForScheduleRequest.getAttended() != null) {
+            attendance.setAttended(newAttendancesForScheduleRequest.getAttended());
+        }
+        if (newAttendancesForScheduleRequest.getStartDateTime() != null) {
+            attendance.setStartDateTime(newAttendancesForScheduleRequest.getStartDateTime());
+        }
+        if (newAttendancesForScheduleRequest.getEndDateTime() != null) {
+            attendance.setEndDateTime(newAttendancesForScheduleRequest.getEndDateTime());
+        }
+        if (batchScheduleId != 0) {
+            BatchSchedule batchSchedule = batchScheduleService.getBatchSchedule(batchScheduleId);
+            attendance.setBatchSchedule(batchSchedule);
+        } else {
+            throw new OperationNotSupportedException("Batch Schedule Id is required");
+        }
+        return attendance;
+    }
+
+    @Override
+    public List<Attendance> toAttendances(List<NewAttendancesForScheduleRequest> newAttendancesForScheduleRequests,
+                                          Long batchScheduleId) {
+        List<Attendance> attendances = newAttendancesForScheduleRequests.stream()
+                .map(newAttendanceForScheduleRequest -> toAttendance(newAttendanceForScheduleRequest, batchScheduleId))
+                .collect(Collectors.toList());
+        return attendances;
+    }
+
     @Override
     public Attendance getAttendance(long id) {
         return attendanceRepository.findById(id).orElseThrow(
@@ -80,6 +119,14 @@ public class AttendanceServiceImpl implements AttendanceService {
             throw new OperationNotSupportedException("Operation not supported");
         }
         return attendanceRepository.save(attendance);
+    }
+
+    @Override
+    public List<Attendance> saveAllAttendance(List<Attendance> attendance) {
+        if(checkPermission(attendance.get(0)) == false) {
+            throw new OperationNotSupportedException("Operation not supported");
+        }
+        return attendanceRepository.saveAll(attendance);
     }
 
     @Override
