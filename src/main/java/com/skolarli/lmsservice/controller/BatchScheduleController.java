@@ -63,23 +63,6 @@ public class BatchScheduleController {
         }
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "{id}/getattendance")
-    public ResponseEntity<List<Attendance>> getAttendance(@PathVariable long id) {
-        BatchSchedule schedule;
-        try {
-            schedule = batchScheduleService.getBatchSchedule(id);
-        } catch (Exception e) {
-            logger.error("Error in getAttendance: " + e.getMessage());
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
-        }
-        try {
-            return new ResponseEntity<>(schedule.getAttendanceList(), HttpStatus.OK);
-        } catch (Exception e) {
-            logger.error("Error in getAttendance: " + e.getMessage());
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
-        }
-    }
-
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<BatchSchedule> addBatchSchedule(@Valid @RequestBody NewBatchScheduleRequest request) {
         BatchSchedule batchSchedule = batchScheduleService.toBatchSchedule(request);
