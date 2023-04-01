@@ -1,4 +1,4 @@
-package com.skolarli.lmsservice.functionaltests.tests;
+package com.skolarli.lmsservice.integration;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.springframework.test.context.DynamicPropertyRegistry;
@@ -14,13 +14,6 @@ public class AbstractContainerBaseTest {
             .withUsername("Test")
             .withPassword("Test");
 
-    @BeforeAll
-    public static void setUp(){
-        container.withReuse(true);
-        //container.withInitScript("src/main/resources/db.sql");
-        container.start();
-    }
-
     @DynamicPropertySource
     public static void overrideProperties(DynamicPropertyRegistry registry){
         registry.add("spring.datasource.url", container::getJdbcUrl);
@@ -28,5 +21,4 @@ public class AbstractContainerBaseTest {
         registry.add("spring.datasource.password", container::getPassword);
         registry.add("spring.datasource.driver-class-name", container::getDriverClassName);
     }
-
 }
