@@ -188,30 +188,10 @@ class TenantServiceTests extends AbstractContainerBaseTest {
         assertEquals("Cannot update domainname for existing tenant", e.getMessage());
     }
 
-//    @Test
-//    void deleteTenant_Success(){
-//        tenantService.deleteTenant(1);
-//        ResourceNotFoundException resourceNotFoundException = assertThrows(ResourceNotFoundException.class, () -> {
-//            Tenant tenant = tenantService.getTenantById(1);
-//        });
-//        assertEquals("Tenant not found with Id : '1'", resourceNotFoundException.getMessage());
-//    }
-
-//    @Test
-//    void deleteTenant_Success_Redundant(){
-//        tenantService.deleteTenant(2);
-//        ResourceNotFoundException resourceNotFoundException = assertThrows(ResourceNotFoundException.class, () -> {
-//            Tenant tenant = tenantService.getTenantById(1);
-//        });
-//        assertEquals("Tenant not found with Id : '1'", resourceNotFoundException.getMessage());
-//    }
-//
-//    @Test
-//    void deleteTenant_Failure(){
-//        ResourceNotFoundException resourceNotFoundException = assertThrows(ResourceNotFoundException.class, () -> {
-//            tenantService.deleteTenant(3);
-//        });
-//        assertEquals("Tenant not found with Id : '3'", resourceNotFoundException.getMessage());
-//    }
+    @Test
+    void isUniqueDomainName_Success(){
+        boolean isUnique = tenantService.isUniqueDomainName("domainName2");
+        assert !isUnique;
+    }
 
 }

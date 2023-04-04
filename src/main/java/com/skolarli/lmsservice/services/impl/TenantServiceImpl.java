@@ -96,25 +96,27 @@ public class TenantServiceImpl implements TenantService {
 
     @Override
     public void deleteTenant(long id) {
-        Tenant existingTenant = tenantRepository.findById(id).orElseThrow(
-                () ->  new ResourceNotFoundException("Tenant", "Id", id)
-        );
-        if (!userUtils.getCurrentUser().getIsAdmin()) {
-            throw new OperationNotSupportedException("User does not have permission to perform this operation");
-        }
-        existingTenant.setTenantIsDeleted(true);
-        tenantRepository.save(existingTenant);
+        throw new OperationNotSupportedException("Operation can be done only by superuser");
+//        Tenant existingTenant = tenantRepository.findById(id).orElseThrow(
+//                () ->  new ResourceNotFoundException("Tenant", "Id", id)
+//        );
+//        if (!userUtils.getCurrentUser().getIsAdmin()) {
+//            throw new OperationNotSupportedException("User does not have permission to perform this operation");
+//        }
+//        existingTenant.setTenantIsDeleted(true);
+//        tenantRepository.save(existingTenant);
     }
 
     @Override
     public void hardDeleteTenant(long id) {
-        Tenant existingTenant = tenantRepository.findById(id).orElseThrow(
-                () ->  new ResourceNotFoundException("Tenant", "Id", id)
-        );
-        if (!userUtils.getCurrentUser().getIsAdmin()) {
-            throw new OperationNotSupportedException("User does not have permission to perform this operation");
-        }
-        tenantRepository.delete(existingTenant);
+        throw new OperationNotSupportedException("Operation can be done only by superuser");
+//        Tenant existingTenant = tenantRepository.findById(id).orElseThrow(
+//                () ->  new ResourceNotFoundException("Tenant", "Id", id)
+//        );
+//        if (!userUtils.getCurrentUser().getIsAdmin()) {
+//            throw new OperationNotSupportedException("User does not have permission to perform this operation");
+//        }
+//        tenantRepository.delete(existingTenant);
     }
 
     @Override
