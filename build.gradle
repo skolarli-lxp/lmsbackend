@@ -4,9 +4,9 @@ plugins {
     id 'java'
 }
 
-test {
-    exclude('com/skolarli/lmsservice/integration/**')
-}
+//test {
+//    exclude('com/skolarli/lmsservice.integration.*')
+//}
 
 group = 'com.skolarli'
 version = '0.0.1-SNAPSHOT'
@@ -17,6 +17,20 @@ configurations {
         extendsFrom annotationProcessor
     }
 }
+
+sourceSets {
+    integrationTest {
+        java {
+            srcDir file('src/integration/java')
+        }
+        resources {
+            srcDir file('src/integration/resources')
+        }
+        compileClasspath += main.output + test.output
+        runtimeClasspath += main.output + test.output
+    }
+}
+
 
 repositories {
     mavenCentral()
@@ -47,3 +61,25 @@ dependencies {
 tasks.named('test') {
     useJUnitPlatform()
 }
+
+
+task integrationTest(type: Test) {
+    description = 'Runs the integration tests.'
+    group = 'verification'
+    testClassesDirs = sourceSets.integrationTest.output.classesDirs
+    classpath = sourceSets.integrationTest.runtimeClasspath
+
+    useJUnitPlatform()
+
+    reports {
+        html.enabled true
+        junitXml.enabled = true
+    }
+}
+
+configurations {
+    integrationTestImplementation.extendsFrom(testImplementation)
+    integrationTestRuntimeOnly.extendsFrom(testRuntimeOnly)
+}
+
+
