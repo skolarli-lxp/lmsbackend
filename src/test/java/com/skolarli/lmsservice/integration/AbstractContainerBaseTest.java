@@ -6,11 +6,13 @@ import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 
+import java.util.function.Supplier;
+
 public class AbstractContainerBaseTest {
 
     @Container
     public static MySQLContainer container = new MySQLContainer("mysql:latest")
-            .withDatabaseName("example_db")
+            .withDatabaseName("lmsdb")
             .withUsername("Test")
             .withPassword("Test");
 
@@ -20,5 +22,6 @@ public class AbstractContainerBaseTest {
         registry.add("spring.datasource.username", container::getUsername);
         registry.add("spring.datasource.password", container::getPassword);
         registry.add("spring.datasource.driver-class-name", container::getDriverClassName);
+
     }
 }

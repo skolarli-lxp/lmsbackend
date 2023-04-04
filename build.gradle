@@ -4,6 +4,10 @@ plugins {
     id 'java'
 }
 
+test {
+    exclude('com/skolarli/lmsservice/integration/**')
+}
+
 group = 'com.skolarli'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'

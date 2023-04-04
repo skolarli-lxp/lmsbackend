@@ -62,6 +62,9 @@ public class Tenant {
     }
 
     public void update(Tenant tenant) {
+        if (tenant.getId() != 0) {
+            throw new OperationNotSupportedException("Cannot change tenant id");
+        }
         if (tenant.getDomainName() != null && !tenant.getDomainName().equals(this.domainName)) {
             throw new OperationNotSupportedException("Cannot update domainname for existing tenant");
         }
