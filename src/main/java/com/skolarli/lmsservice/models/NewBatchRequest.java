@@ -23,6 +23,9 @@ public class NewBatchRequest {
     @NotNull(message = "instructorId cannot be empty")
     private long instructorId;
 
+    @NotNull(message = "batchName cannot be empty")
+    private String batchName;
+
     private int batchEnrollmentCapacity;
 
     private String batchAdditionalInfo;

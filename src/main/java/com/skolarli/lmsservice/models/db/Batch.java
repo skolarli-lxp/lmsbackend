@@ -49,6 +49,8 @@ public class Batch extends  Tenantable{
     @JsonIgnoreProperties("batch")
     private List<BatchSchedule> batchSchedules;
 
+    private String batchName;
+
     private int batchEnrollmentCapacity;
 
     private String batchAdditionalInfo;
@@ -89,6 +91,9 @@ public class Batch extends  Tenantable{
         }
         if (newBatch.getCourse() != null) {
             this.course = newBatch.getCourse();
+        }
+        if (newBatch.getBatchName() != null) {
+            this.batchName = newBatch.getBatchName();
         }
         if (newBatch.getInstructor() != null) {
             this.instructor = newBatch.getInstructor();

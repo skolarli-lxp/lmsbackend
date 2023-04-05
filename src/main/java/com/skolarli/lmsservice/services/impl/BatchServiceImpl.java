@@ -61,7 +61,7 @@ public class BatchServiceImpl implements BatchService {
             batch.setInstructor(lmsUserService.getLmsUserById(newBatchRequest.getInstructorId()));
         }
         batch.setBatchIsDeleted(false);
-
+        batch.setBatchName(newBatchRequest.getBatchName());
         batch.setBatchEnrollmentCapacity(newBatchRequest.getBatchEnrollmentCapacity());
         batch.setBatchAdditionalInfo(newBatchRequest.getBatchAdditionalInfo());
         batch.setBatchFees(newBatchRequest.getBatchFees());
