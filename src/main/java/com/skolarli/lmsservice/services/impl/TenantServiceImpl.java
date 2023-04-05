@@ -68,7 +68,7 @@ public class TenantServiceImpl implements TenantService {
 
     @Override
     public List<String> getAllDomainNames() {
-        List<String> domainNames = tenantRepository.getAllDomainNames();
+        List<String> domainNames = tenantRepository.getAllDomainNamesIncludingDeleted();
         return domainNames;
     }
 
@@ -122,10 +122,9 @@ public class TenantServiceImpl implements TenantService {
     @Override
     public Boolean isUniqueDomainName(String domainName) {
         List<String> domainNames = getAllDomainNames();
-        if (domainNames.contains(domainName)) {
+        if (domainNames.stream().anyMatch(domainName::equalsIgnoreCase)) {
             return false;
-        } else {
-            return true;
         }
+        return true;
     }
 }

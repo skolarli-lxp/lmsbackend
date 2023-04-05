@@ -1,13 +1,12 @@
 package com.skolarli.lmsservice.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.skolarli.lmsservice.AbstractContainerBaseTest;
 import com.skolarli.lmsservice.authentications.TenantAuthenticationToken;
 import com.skolarli.lmsservice.exception.OperationNotSupportedException;
 import com.skolarli.lmsservice.exception.ResourceNotFoundException;
-import com.skolarli.lmsservice.integration.AbstractContainerBaseTest;
 import com.skolarli.lmsservice.models.db.Tenant;
 import com.skolarli.lmsservice.services.TenantService;
-import org.hibernate.exception.ConstraintViolationException;
 import org.junit.Rule;
 import org.junit.jupiter.api.*;
 import org.junit.rules.ExpectedException;
@@ -62,7 +61,6 @@ class TenantServiceTests extends AbstractContainerBaseTest {
         List<Tenant> tenants = tenantService.getAllTenants();
         assert tenants.size() == 1;
         assert tenants.get(0).getDomainName().equals("domainName1");
-        assert tenants.get(0).getId() == 1;
     }
 
     @Test

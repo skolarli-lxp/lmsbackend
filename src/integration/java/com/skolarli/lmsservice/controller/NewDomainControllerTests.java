@@ -1,7 +1,7 @@
 package com.skolarli.lmsservice.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.skolarli.lmsservice.integration.AbstractContainerBaseTest;
+import com.skolarli.lmsservice.AbstractContainerBaseTest;
 import com.skolarli.lmsservice.models.NewDomainRequest;
 import com.skolarli.lmsservice.models.db.LmsUser;
 import com.skolarli.lmsservice.models.db.Tenant;
@@ -36,6 +36,8 @@ class NewDomainControllerTests extends AbstractContainerBaseTest {
     @BeforeAll
     public static void setUp(){
         container.withReuse(true);
+        container.withInitScript("tenantservicetestdata.sql");
+
         //container.withInitScript("src/main/resources/db.sql");
         container.start();
     }

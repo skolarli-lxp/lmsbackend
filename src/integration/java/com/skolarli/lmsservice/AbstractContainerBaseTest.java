@@ -12,7 +12,7 @@ public class AbstractContainerBaseTest {
 
     @Container
     public static MySQLContainer container = new MySQLContainer("mysql:latest")
-            .withDatabaseName("lmsdb")
+            .withDatabaseName("lms")
             .withUsername("Test")
             .withPassword("Test");
 
