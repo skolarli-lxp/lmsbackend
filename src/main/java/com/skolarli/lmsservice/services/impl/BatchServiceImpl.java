@@ -71,6 +71,7 @@ public class BatchServiceImpl implements BatchService {
         batch.setBatchStartDate(newBatchRequest.getBatchStartDate());
         batch.setBatchEndDate(newBatchRequest.getBatchEndDate());
         batch.setBatchStatus(newBatchRequest.getBatchStatus());
+        batch.setBatchDeliveryFormat(newBatchRequest.getBatchDeliveryFormat());
         batch.setBatchDurationHours(newBatchRequest.getBatchDurationHours());
         batch.setBatchCustomJs(newBatchRequest.getBatchCustomJs());
         batch.setBatchSeoAllowComments(newBatchRequest.getBatchSeoAllowComments());

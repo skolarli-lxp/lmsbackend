@@ -22,7 +22,6 @@ docker run -p 8080:8080 lmsservice:latest
 
 ### To push docker image to Digital Ocean Docker Registry
 ```
-doctl registry login 
 docker tag lmsservice:latest skolarlistgregistry.azurecr.io/lmsservice:latest
 docker push skolarlistgregistry.azurecr.io/lmsservice:latest
 ```

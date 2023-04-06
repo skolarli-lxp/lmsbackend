@@ -6,5 +6,6 @@ public enum DeliveryFormat {
     ONLINE_INSTRUCTOR_LED,
     SELF_PACED,
     MIXED_DELIVERY,
+    TO_BE_DECIDED,
     OTHER
 }

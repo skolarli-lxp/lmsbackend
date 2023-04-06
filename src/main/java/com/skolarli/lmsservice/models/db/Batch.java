@@ -67,6 +67,8 @@ public class Batch extends  Tenantable{
 
     private BatchStatus batchStatus;
 
+    private DeliveryFormat batchDeliveryFormat;
+
     private int batchDurationHours;
 
     @Column(columnDefinition = "TEXT")
@@ -129,6 +131,9 @@ public class Batch extends  Tenantable{
         if (newBatch.getBatchStatus() != null) {
             this.batchStatus = newBatch.getBatchStatus();
         }
+        if (newBatch.getBatchDeliveryFormat() != null) {
+            this.batchDeliveryFormat = newBatch.getBatchDeliveryFormat();
+        }
         if (newBatch.getBatchDurationHours() != 0) {
             this.batchDurationHours = newBatch.getBatchDurationHours();
         }
@@ -154,7 +159,4 @@ public class Batch extends  Tenantable{
             this.batchIsDeleted = newBatch.getBatchIsDeleted();
         }
     }
-
-    
-
 }
