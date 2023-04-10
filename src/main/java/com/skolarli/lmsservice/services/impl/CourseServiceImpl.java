@@ -11,6 +11,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,6 +38,8 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public Course getCourseById(long id) {
         Optional<Course> course = courseRepository.findById(id);
+        List<Course> course2 = courseRepository.findAllById(new ArrayList<Long>(Arrays.asList(id)));
+
         if (course.isPresent()) {
             return course.get();
         }

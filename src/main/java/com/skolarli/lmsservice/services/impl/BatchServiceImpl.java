@@ -60,7 +60,6 @@ public class BatchServiceImpl implements BatchService {
         if (newBatchRequest.getInstructorId() != 0) {
             batch.setInstructor(lmsUserService.getLmsUserById(newBatchRequest.getInstructorId()));
         }
-        batch.setBatchIsDeleted(false);
         batch.setBatchName(newBatchRequest.getBatchName());
         batch.setBatchEnrollmentCapacity(newBatchRequest.getBatchEnrollmentCapacity());
         batch.setBatchAdditionalInfo(newBatchRequest.getBatchAdditionalInfo());
@@ -110,6 +109,7 @@ public class BatchServiceImpl implements BatchService {
         if (validate(batch) == false){
             throw new OperationNotSupportedException("Operation not supported");
         }
+        batch.setBatchIsDeleted(false);
         return batchRepository.save(batch);
     }
 
@@ -125,7 +125,7 @@ public class BatchServiceImpl implements BatchService {
             logger.error("Cannot change deleted status. Use Delete API");
             existingBatch.setBatchIsDeleted(null);
         }
-        if (validate(newBatch) == false){
+        if (newBatch.getInstructor() != null && validate(newBatch) == false){
             throw new OperationNotSupportedException("Operation not supported");
         }
         existingBatch.update(newBatch);        
