@@ -1,5 +1,6 @@
 package com.skolarli.lmsservice.services.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -114,9 +115,11 @@ public class LessonServiceImpl implements LessonService {
 
     @Override
     public Lesson getLessonById(long id) {
-        Lesson lesson = lessonRepository.findById(id).orElseThrow(
-                () -> new ResourceNotFoundException("Lesson", "Id", id));
-        return lesson;
+        List<Lesson> lesson = lessonRepository.findAllById(new ArrayList<>(List.of(id)));
+        if (lesson.isEmpty()) {
+            throw new ResourceNotFoundException("Lesson", "Id", id);
+        }
+        return lesson.get(0);
     }
 
     @Override

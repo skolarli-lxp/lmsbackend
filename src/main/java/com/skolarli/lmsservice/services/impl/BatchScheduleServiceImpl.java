@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -93,9 +94,11 @@ public class BatchScheduleServiceImpl implements BatchScheduleService {
 
     @Override
     public BatchSchedule getBatchSchedule(long id) {
-        BatchSchedule existingBatchSchedule = batchScheduleRepository.findById(id).orElseThrow(
-                () -> new ResourceNotFoundException("BatchSchedule", "Id", id));
-        return existingBatchSchedule;
+        List<BatchSchedule> existingBatchSchedule = batchScheduleRepository.findAllById(new ArrayList<>(List.of(id)));
+        if (existingBatchSchedule.size() == 0) {
+            throw new ResourceNotFoundException("BatchSchedule", "Id", id);
+        }
+        return existingBatchSchedule.get(0);
     }
 
     @Override

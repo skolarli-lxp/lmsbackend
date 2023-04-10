@@ -1,5 +1,7 @@
 package com.skolarli.lmsservice.services.impl;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.slf4j.LoggerFactory;
@@ -68,9 +70,11 @@ public class ChapterServiceImpl implements ChapterService {
 
     @Override
     public Chapter getChapterById(Long id) {
-        Chapter existingChapter = chapterRepository.findById(id).orElseThrow(
-                () -> new ResourceNotFoundException("Chapter", "Id", id));
-        return existingChapter;
+        List<Chapter> existingChapter = chapterRepository.findAllById(new ArrayList<>(List.of(id)));
+        if (existingChapter.size() == 0) {
+            throw new ResourceNotFoundException("Chapter", "Id", id);
+        }
+        return existingChapter.get(0);
     }
 
     @Override

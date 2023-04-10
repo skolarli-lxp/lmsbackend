@@ -145,17 +145,17 @@ public class CourseServiceImplTests {
 
     @Test
     public void testGetCourseByIdSuccess() {
-        when(courseRepository.findById(1L)).thenReturn(Optional.of(newCourse));
+        when(courseRepository.findAllById(List.of(1L))).thenReturn(List.of(newCourse));
 
         Course course = courseService.getCourseById(1);
 
-        verify(courseRepository).findById(1L);
+        verify(courseRepository).findAllById(List.of(1L));
         assertEquals(course.getId(), 1L);
     }
 
     @Test
     public void testGetCourseByIdFailure() throws Exception {
-        when(courseRepository.findById(1L)).thenReturn(Optional.empty());
+        when(courseRepository.findAllById(List.of(1L))).thenReturn(new ArrayList<>());
 
         assertThrows(ResourceNotFoundException.class, () -> {
             courseService.getCourseById(1);

@@ -17,6 +17,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -99,8 +101,11 @@ public class AttendanceServiceImpl implements AttendanceService {
 
     @Override
     public Attendance getAttendance(long id) {
-        return attendanceRepository.findById(id).orElseThrow(
-                () -> new ResourceNotFoundException("Attendance", "Id", id));
+        List<Attendance> existingAttendance =  attendanceRepository.findAllById(new ArrayList<>(List.of(id)));
+        if (existingAttendance.size() == 0) {
+            throw new ResourceNotFoundException("Attendance", "Id", id);
+        }
+        return existingAttendance.get(0);
     }
 
     @Override

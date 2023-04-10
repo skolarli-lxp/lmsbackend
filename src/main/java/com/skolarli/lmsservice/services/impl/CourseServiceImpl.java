@@ -37,15 +37,12 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public Course getCourseById(long id) {
-        Optional<Course> course = courseRepository.findById(id);
-        List<Course> course2 = courseRepository.findAllById(new ArrayList<Long>(Arrays.asList(id)));
+        List<Course> course = courseRepository.findAllById(new ArrayList<>(List.of(id)));
 
-        if (course.isPresent()) {
-            return course.get();
-        }
-        else {
+        if (course.isEmpty()) {
             throw new ResourceNotFoundException("Course","Id", id);
         }
+        return course.get(0);
     }
 
     @Override

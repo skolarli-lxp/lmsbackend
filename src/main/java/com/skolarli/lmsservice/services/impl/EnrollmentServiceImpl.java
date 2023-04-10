@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -63,8 +64,11 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
     @Override
     public Enrollment getEnrollmentById(long id) {
-        return enrollmentRepository.findById(id).orElseThrow(
-                () -> new ResourceNotFoundException("Enrollment", "Id", id));
+        List<Enrollment> existingEnrollment = enrollmentRepository.findAllById(new ArrayList<>(List.of(id)));
+        if (existingEnrollment.size() == 0) {
+            throw new ResourceNotFoundException("Enrollment", "Id", id);
+        }
+        return existingEnrollment.get(0);
     }
 
 

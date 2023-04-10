@@ -15,6 +15,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -89,9 +91,11 @@ public class BatchServiceImpl implements BatchService {
 
     @Override
     public Batch getBatch(long id) {
-        Batch existingBatch = batchRepository.findById(id).orElseThrow(
-                () -> new ResourceNotFoundException("Batch", "Id", id));
-        return existingBatch;
+        List<Batch> existingBatch = batchRepository.findAllById(new ArrayList<>(List.of(id)));
+        if (existingBatch.size() == 0) {
+            throw new ResourceNotFoundException("Batch", "Id", id);
+        }
+        return existingBatch.get(0);
     }
 
     @Override
