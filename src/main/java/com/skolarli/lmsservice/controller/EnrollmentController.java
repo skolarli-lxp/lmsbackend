@@ -6,6 +6,7 @@ import com.skolarli.lmsservice.models.db.Enrollment;
 import com.skolarli.lmsservice.services.EnrollmentService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -59,6 +60,9 @@ public class EnrollmentController {
         Enrollment enrollment = enrollmentService.toEnrollment(request);
         try {
             return new ResponseEntity<>(enrollmentService.save(enrollment), HttpStatus.OK);
+        } catch (DataIntegrityViolationException e){
+            logger.error("Error in addEnrollment: " + e.getMessage());
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Enrollment already exists");
         } catch (Exception e) {
             logger.error("Error in addEnrollment: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
@@ -72,6 +76,9 @@ public class EnrollmentController {
         List<Enrollment> enrollments = enrollmentService.toEnrollmentList(request);
         try {
             return new ResponseEntity<>(enrollmentService.saveAllEnrollments(enrollments,batchId) , HttpStatus.OK);
+        } catch (DataIntegrityViolationException e){
+            logger.error("Error in addEnrollment: " + e.getMessage());
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Enrollment already exists");
         } catch (Exception e) {
             logger.error("Error in addEnrollment: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
