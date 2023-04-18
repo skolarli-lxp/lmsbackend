@@ -26,7 +26,15 @@ public class EnrollmentController {
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity<List<Enrollment>> getAllEnrollments() {
+    public ResponseEntity<List<Enrollment>> getAllEnrollments(@RequestParam(required = false) Long batchId) {
+        if(batchId != null) {
+            try {
+                return new ResponseEntity<>(enrollmentService.getEnrollmentsByBatchId(batchId), HttpStatus.OK);
+            } catch (Exception e) {
+                logger.error("Error in getAllBatchSchedules: " + e.getMessage());
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+            }
+        }
         try {
             return new ResponseEntity<>(enrollmentService.getAllEnrollments(), HttpStatus.OK);
         } catch (Exception e) {

@@ -9,7 +9,9 @@ public interface EnrollmentService {
         Enrollment toEnrollment(NewEnrollmentRequest request);
 
         List<Enrollment> getAllEnrollments();
+        List<Enrollment> getEnrollmentsByBatchId(long batchId);
         Enrollment getEnrollmentById(long id);
+
 
         Enrollment save(Enrollment enrollment);
         

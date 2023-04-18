@@ -71,6 +71,11 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         return existingEnrollment.get(0);
     }
 
+    @Override
+    public List<Enrollment> getEnrollmentsByBatchId(long batchId) {
+        return enrollmentRepository.findByBatchId(batchId);
+    }
+
 
     @Override
     public Enrollment save(Enrollment enrollment) {
