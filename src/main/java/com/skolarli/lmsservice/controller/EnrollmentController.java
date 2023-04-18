@@ -1,6 +1,7 @@
 package com.skolarli.lmsservice.controller;
 
 import com.skolarli.lmsservice.models.NewEnrollmentRequest;
+import com.skolarli.lmsservice.models.NewEnrollmentsForBatchRequest;
 import com.skolarli.lmsservice.models.db.Enrollment;
 import com.skolarli.lmsservice.services.EnrollmentService;
 import org.slf4j.Logger;
@@ -58,6 +59,19 @@ public class EnrollmentController {
         Enrollment enrollment = enrollmentService.toEnrollment(request);
         try {
             return new ResponseEntity<>(enrollmentService.save(enrollment), HttpStatus.OK);
+        } catch (Exception e) {
+            logger.error("Error in addEnrollment: " + e.getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+    }
+
+    @RequestMapping(method = RequestMethod.POST, value="/forbatch")
+    public ResponseEntity<List<Enrollment>> addEnrollmentsForBatch(
+            @Valid @RequestBody List<NewEnrollmentsForBatchRequest> request,
+            @RequestParam Long batchId) {
+        List<Enrollment> enrollments = enrollmentService.toEnrollmentList(request);
+        try {
+            return new ResponseEntity<>(enrollmentService.saveAllEnrollments(enrollments,batchId) , HttpStatus.OK);
         } catch (Exception e) {
             logger.error("Error in addEnrollment: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());

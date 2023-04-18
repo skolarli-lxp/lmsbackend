@@ -3,6 +3,7 @@ package com.skolarli.lmsservice.services.impl;
 import com.skolarli.lmsservice.exception.OperationNotSupportedException;
 import com.skolarli.lmsservice.exception.ResourceNotFoundException;
 import com.skolarli.lmsservice.models.NewEnrollmentRequest;
+import com.skolarli.lmsservice.models.NewEnrollmentsForBatchRequest;
 import com.skolarli.lmsservice.models.db.Batch;
 import com.skolarli.lmsservice.models.db.Enrollment;
 import com.skolarli.lmsservice.models.db.LmsUser;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class EnrollmentServiceImpl implements EnrollmentService {
@@ -48,6 +50,9 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     public Enrollment toEnrollment(NewEnrollmentRequest newEnrollmentRequest) {
         Batch batch = batchService.getBatch(newEnrollmentRequest.getBatchId());
         LmsUser student = lmsUserService.getLmsUserById(newEnrollmentRequest.getStudentId());
+        if (student.getIsStudent() != true) {
+            throw new OperationNotSupportedException("User is not a student");
+        }
 
         Enrollment enrollment = new Enrollment();
         enrollment.setBatch(batch);
@@ -55,6 +60,29 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         enrollment.setEnrollmentIsDeleted(false);
         
         return enrollment;
+    }
+
+    @Override
+    public Enrollment toEnrollment(NewEnrollmentsForBatchRequest request) {
+        LmsUser student = lmsUserService.getLmsUserById(request.getStudentId());
+        if (student.getIsStudent() != true) {
+            throw new OperationNotSupportedException("User is not a student");
+        }
+        Enrollment enrollment = new Enrollment();
+        enrollment.setStudent(student);
+        enrollment.setEnrollmentIsDeleted(false);
+        return enrollment;
+    }
+
+    @Override
+    public List<Enrollment> toEnrollmentList(List<NewEnrollmentsForBatchRequest> request) {
+        List<Enrollment> enrollments = new ArrayList<>();
+        for (NewEnrollmentsForBatchRequest newEnrollmentRequest : request) {
+            enrollments.add(toEnrollment(newEnrollmentRequest));
+        }
+        //request.stream().forEach(newEnrollmentRequest -> enrollments.add(toEnrollment(newEnrollmentRequest)));
+        //return request.stream().map(this::toEnrollment).collect(Collectors.toList());
+        return enrollments;
     }
 
     @Override
@@ -80,6 +108,16 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     @Override
     public Enrollment save(Enrollment enrollment) {
         return enrollmentRepository.save(enrollment);
+    }
+
+    @Override
+    public List<Enrollment> saveAllEnrollments(List<Enrollment> enrollments, Long batchId) {
+        Batch batch = batchService.getBatch(batchId);
+        for (Enrollment enrollment : enrollments) {
+            enrollment.setBatch(batch);
+            enrollment.setEnrollmentIsDeleted(false);
+        }
+        return enrollmentRepository.saveAll(enrollments);
     }
 
     @Override
