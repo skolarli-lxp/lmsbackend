@@ -10,6 +10,7 @@ import com.skolarli.lmsservice.services.LmsUserService;
 import com.skolarli.lmsservice.utils.UserUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -69,6 +70,9 @@ public class AttendanceController {
         Attendance attendance = attendanceService.toAttendance(request);
         try {
             return new ResponseEntity<>(attendanceService.saveAttendance(attendance), HttpStatus.OK);
+        } catch (DataIntegrityViolationException e){
+            logger.error("Error in addAttendance: " + e.getMessage());
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Attendance already exists");
         } catch (Exception e) {
             logger.error("Error in addAttendance: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
@@ -81,6 +85,9 @@ public class AttendanceController {
         List<Attendance> attendances = attendanceService.toAttendances(request, batchScheduleId);
         try {
             return new ResponseEntity<>(attendanceService.saveAllAttendance(attendances), HttpStatus.OK);
+        } catch(DataIntegrityViolationException e){
+            logger.error("Error in addAttendancesForSchedule: " + e.getMessage());
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Attendance already exists");
         } catch (Exception e) {
             logger.error("Error in addAttendancesForSchedule: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
