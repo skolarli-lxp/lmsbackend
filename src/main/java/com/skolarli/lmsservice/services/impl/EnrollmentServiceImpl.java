@@ -80,6 +80,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         for (NewEnrollmentsForBatchRequest newEnrollmentRequest : request) {
             enrollments.add(toEnrollment(newEnrollmentRequest));
         }
+        // Some more fun ways to do the same  thing
         //request.stream().forEach(newEnrollmentRequest -> enrollments.add(toEnrollment(newEnrollmentRequest)));
         //return request.stream().map(this::toEnrollment).collect(Collectors.toList());
         return enrollments;

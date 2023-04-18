@@ -23,7 +23,7 @@ import java.util.Date;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name="attendance")
+@Table(name="attendance", uniqueConstraints = @UniqueConstraint(name= "dupattendance", columnNames = {"student_id", "schedule_id"}))
 @Where(clause = "attendance_is_deleted is null or attendance_is_deleted = false")
 public class Attendance extends Tenantable{
     private static final Logger logger = LoggerFactory.getLogger(Attendance.class);
