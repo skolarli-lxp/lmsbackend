@@ -64,6 +64,12 @@ public class BatchScheduleServiceImpl implements BatchScheduleService {
         if (newBatchSchedulesForBatchRequest.getEndDateTime() != null) {
             batchSchedule.setEndDateTime(newBatchSchedulesForBatchRequest.getEndDateTime());
         }
+        if (newBatchSchedulesForBatchRequest.getTitle() != null) {
+            batchSchedule.setTitle(newBatchSchedulesForBatchRequest.getTitle());
+        }
+        if (newBatchSchedulesForBatchRequest.getDescription() != null) {
+            batchSchedule.setDescription(newBatchSchedulesForBatchRequest.getDescription());
+        }
         return batchSchedule;
     }
 
@@ -79,6 +85,12 @@ public class BatchScheduleServiceImpl implements BatchScheduleService {
         }
         BatchSchedule batchSchedule = new BatchSchedule();
         batchSchedule.setBatch(batch);
+        if (newBatchScheduleRequest.getTitle() != null) {
+            batchSchedule.setTitle(newBatchScheduleRequest.getTitle());
+        }
+        if (newBatchScheduleRequest.getDescription() != null) {
+            batchSchedule.setDescription(newBatchScheduleRequest.getDescription());
+        }
         batchSchedule.setStartDateTime(newBatchScheduleRequest.getStartDateTime());
         batchSchedule.setEndDateTime(newBatchScheduleRequest.getEndDateTime());
         batchSchedule.setBatchScheduleIsDeleted(false);

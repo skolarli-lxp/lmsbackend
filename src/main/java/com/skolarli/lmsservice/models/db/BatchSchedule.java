@@ -39,6 +39,11 @@ public class BatchSchedule extends Tenantable {
     @JsonIdentityReference(alwaysAsId = true)
     private Batch batch;
 
+    private String title;
+
+    @Column(columnDefinition = "TEXT")
+    private String description;
+
     private Date startDateTime;
     private Date endDateTime;
 
@@ -54,6 +59,12 @@ public class BatchSchedule extends Tenantable {
         }
         if (newBatchSchedule.getBatch() != null) {
             this.batch = newBatchSchedule.getBatch();
+        }
+        if(newBatchSchedule.getTitle() != null) {
+            this.title = newBatchSchedule.getTitle();
+        }
+        if(newBatchSchedule.getDescription() != null) {
+            this.description = newBatchSchedule.getDescription();
         }
         if(newBatchSchedule.getStartDateTime() != null) {
             this.startDateTime = newBatchSchedule.getStartDateTime();
