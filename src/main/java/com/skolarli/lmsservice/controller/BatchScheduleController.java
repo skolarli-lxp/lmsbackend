@@ -92,16 +92,24 @@ public class BatchScheduleController {
     }
 
     @RequestMapping(method = RequestMethod.PUT, value = "{id}")
-    public ResponseEntity<BatchSchedule> updateBatchSchedule(@PathVariable long id, @Valid @RequestBody NewBatchScheduleRequest request) {
-        BatchSchedule batchSchedule = batchScheduleService.getBatchSchedule(id);
-        Batch batch = batchService.getBatch(request.getBatchId());
-        LmsUser currentUser = userUtils.getCurrentUser();
-        if (currentUser.getIsAdmin() != true && currentUser != batch.getCourse().getCourseOwner()) {
-            throw new ResponseStatusException( HttpStatus.FORBIDDEN, "");
+    public ResponseEntity<BatchSchedule> updateBatchSchedule(@PathVariable Long id, @RequestBody NewBatchScheduleRequest request) {
+        BatchSchedule batchSchedule = new BatchSchedule();
+        if (request.getBatchId() != 0) {
+            batchSchedule.setBatch(batchService.getBatch(request.getBatchId()));
         }
-        batchSchedule.setBatch(batch);
-        batchSchedule.setStartDateTime(request.getStartDateTime());
-        batchSchedule.setEndDateTime(request.getEndDateTime());
+        if (request.getStartDateTime() != null) {
+            batchSchedule.setStartDateTime(request.getStartDateTime());
+        }
+        if (request.getEndDateTime() != null) {
+            batchSchedule.setEndDateTime(request.getEndDateTime());
+        }
+        if (request.getTitle() != null) {
+            batchSchedule.setTitle(request.getTitle());
+        }
+        if (request.getDescription() != null) {
+            batchSchedule.setDescription(request.getDescription());
+        }
+
         try {
             return new ResponseEntity<>(batchScheduleService.updateBatchSchedule(batchSchedule, id), HttpStatus.OK);
         } catch (Exception e) {
