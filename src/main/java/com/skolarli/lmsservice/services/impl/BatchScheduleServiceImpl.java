@@ -64,6 +64,9 @@ public class BatchScheduleServiceImpl implements BatchScheduleService {
         if (newBatchSchedulesForBatchRequest.getEndDateTime() != null) {
             batchSchedule.setEndDateTime(newBatchSchedulesForBatchRequest.getEndDateTime());
         }
+        if (newBatchSchedulesForBatchRequest.getMeetingLink() != null) {
+            batchSchedule.setMeetingLink(newBatchSchedulesForBatchRequest.getMeetingLink());
+        }
         if (newBatchSchedulesForBatchRequest.getTitle() != null) {
             batchSchedule.setTitle(newBatchSchedulesForBatchRequest.getTitle());
         }
@@ -91,6 +94,7 @@ public class BatchScheduleServiceImpl implements BatchScheduleService {
         if (newBatchScheduleRequest.getDescription() != null) {
             batchSchedule.setDescription(newBatchScheduleRequest.getDescription());
         }
+        batchSchedule.setMeetingLink(newBatchScheduleRequest.getMeetingLink());
         batchSchedule.setStartDateTime(newBatchScheduleRequest.getStartDateTime());
         batchSchedule.setEndDateTime(newBatchScheduleRequest.getEndDateTime());
         batchSchedule.setBatchScheduleIsDeleted(false);

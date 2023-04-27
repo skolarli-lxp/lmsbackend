@@ -44,6 +44,9 @@ public class BatchSchedule extends Tenantable {
     @Column(columnDefinition = "TEXT")
     private String description;
 
+    @Column(columnDefinition = "VARCHAR(1024)")
+    private String meetingLink;
+
     private Date startDateTime;
     private Date endDateTime;
 
@@ -59,6 +62,9 @@ public class BatchSchedule extends Tenantable {
         }
         if (newBatchSchedule.getBatch() != null) {
             this.batch = newBatchSchedule.getBatch();
+        }
+        if(newBatchSchedule.getMeetingLink() != null) {
+            this.meetingLink = newBatchSchedule.getMeetingLink();
         }
         if(newBatchSchedule.getTitle() != null) {
             this.title = newBatchSchedule.getTitle();

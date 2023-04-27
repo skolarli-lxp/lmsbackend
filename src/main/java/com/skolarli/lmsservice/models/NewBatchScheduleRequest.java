@@ -20,6 +20,8 @@ public class NewBatchScheduleRequest {
     @NotNull(message = "endDateTime cannot be empty")
     private Date endDateTime;
 
+    private String meetingLink;
+
     private String title;
     private String description;
 }

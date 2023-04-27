@@ -97,18 +97,11 @@ public class BatchScheduleController {
         if (request.getBatchId() != 0) {
             batchSchedule.setBatch(batchService.getBatch(request.getBatchId()));
         }
-        if (request.getStartDateTime() != null) {
-            batchSchedule.setStartDateTime(request.getStartDateTime());
-        }
-        if (request.getEndDateTime() != null) {
-            batchSchedule.setEndDateTime(request.getEndDateTime());
-        }
-        if (request.getTitle() != null) {
-            batchSchedule.setTitle(request.getTitle());
-        }
-        if (request.getDescription() != null) {
-            batchSchedule.setDescription(request.getDescription());
-        }
+        batchSchedule.setStartDateTime(request.getStartDateTime());
+        batchSchedule.setEndDateTime(request.getEndDateTime());
+        batchSchedule.setTitle(request.getTitle());
+        batchSchedule.setDescription(request.getDescription());
+        batchSchedule.setMeetingLink(request.getMeetingLink());
 
         try {
             return new ResponseEntity<>(batchScheduleService.updateBatchSchedule(batchSchedule, id), HttpStatus.OK);
