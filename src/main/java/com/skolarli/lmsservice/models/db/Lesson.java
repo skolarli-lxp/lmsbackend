@@ -73,6 +73,8 @@ public class Lesson extends Tenantable{
     private String videoIsActive;
 
     // Lesson Text Related info
+
+    @Column(columnDefinition = "TEXT")
     private String textContent;
     private String textTitle;
     @Column(columnDefinition = "TEXT")
