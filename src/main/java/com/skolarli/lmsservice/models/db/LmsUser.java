@@ -42,6 +42,8 @@ public class LmsUser extends Tenantable{
     private String companyName;
 
     private int experience;
+    private String occupation;
+    private String education;
 
     @Column(columnDefinition = "TEXT")
     private String userBio;
@@ -123,8 +125,14 @@ public class LmsUser extends Tenantable{
         if(lmsUser.getCompanyName() != null && !lmsUser.getCompanyName().isEmpty()) {
             this.setCompanyName(lmsUser.getCompanyName());
         }
-        if(lmsUser.getExperience() == 0) {
+        if(lmsUser.getExperience() != 0) {
             this.setExperience(lmsUser.getExperience());
+        }
+        if(lmsUser.getOccupation() != null) {
+            this.setOccupation(lmsUser.getOccupation());
+        }
+        if(lmsUser.getEducation() != null) {
+            this.setEducation(lmsUser.getEducation());
         }
         if(lmsUser.getProfilePicUrl() != null && !lmsUser.getProfilePicUrl().isEmpty()) {
             this.setProfilePicUrl(lmsUser.getProfilePicUrl());
