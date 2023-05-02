@@ -10,6 +10,7 @@ public interface LmsUserRepository extends TenantableRepository<LmsUser>, Custom
     List<LmsUser> findByEmail(String email);
     List<LmsUser> findOneByEmail(String email);
     LmsUser findByEmailAndTenantId(String email, long tenantId);
+
     @Query("SELECT u FROM LmsUser AS u WHERE u.isAdmin = true")
     List<LmsUser> findAllAdminUsers();
     @Query("SELECT u FROM LmsUser AS u WHERE u.isStudent = true")

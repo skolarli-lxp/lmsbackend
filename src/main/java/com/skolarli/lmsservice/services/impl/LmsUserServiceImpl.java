@@ -3,6 +3,8 @@ package com.skolarli.lmsservice.services.impl;
 import com.skolarli.lmsservice.exception.OperationNotSupportedException;
 import com.skolarli.lmsservice.exception.ResourceNotFoundException;
 import com.skolarli.lmsservice.models.Role;
+import com.skolarli.lmsservice.models.db.Batch;
+import com.skolarli.lmsservice.models.db.Enrollment;
 import com.skolarli.lmsservice.models.db.LmsUser;
 import com.skolarli.lmsservice.models.db.VerificationCode;
 import com.skolarli.lmsservice.repository.LmsUserRepository;
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class LmsUserServiceImpl implements LmsUserService {
@@ -94,6 +97,49 @@ public class LmsUserServiceImpl implements LmsUserService {
             logger.error("Role not found"); 
         }
         return null;
+    }
+
+    private List<Batch> getBatchesTaughtByInstructor(LmsUser instructor){
+        if (!instructor.getIsInstructor()){
+            throw new OperationNotSupportedException("User is not an instructor");
+        } else {
+            return instructor.getBatches();
+        }
+    }
+
+
+    @Override
+    public List<Batch>  getBatchesTaughtByInstructor(Long instructorId) {
+    	LmsUser user =  getLmsUserById(instructorId);
+        return getBatchesTaughtByInstructor(user);
+    }
+
+    @Override
+    public List<Batch>  getBatchesTaughtByInstructor(String instructorEmail) {
+        LmsUser user =  getLmsUserByEmail(instructorEmail);
+        return getBatchesTaughtByInstructor(user);
+    }
+
+    private List<Batch> getBatchesEnrolledForStudent(LmsUser student){
+        if (!student.getIsStudent()){
+            throw new OperationNotSupportedException("User is not an student");
+        } else {
+            List<Enrollment>  enrollments = student.getEnrollments();
+            return  enrollments.stream().map(
+                    Enrollment::getBatch).collect(Collectors.toList());
+        }
+    }
+
+    @Override
+    public List<Batch> getBatchesEnrolledForStudent(Long studentId) {
+        	LmsUser user =  getLmsUserById(studentId);
+            return getBatchesEnrolledForStudent(user);
+    }
+
+    @Override
+    public List<Batch> getBatchesEnrolledForStudent(String studentEmail) {
+        LmsUser user =  getLmsUserByEmail(studentEmail);
+        return getBatchesEnrolledForStudent(user);
     }
 
     @Override

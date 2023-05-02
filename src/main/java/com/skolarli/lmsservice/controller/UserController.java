@@ -3,6 +3,7 @@ package com.skolarli.lmsservice.controller;
 import com.skolarli.lmsservice.contexts.TenantContext;
 import com.skolarli.lmsservice.exception.OperationNotSupportedException;
 import com.skolarli.lmsservice.models.Role;
+import com.skolarli.lmsservice.models.db.Batch;
 import com.skolarli.lmsservice.models.db.LmsUser;
 import com.skolarli.lmsservice.models.db.VerificationCode;
 import com.skolarli.lmsservice.services.LmsUserService;
@@ -69,6 +70,48 @@ public class UserController {
         logger.info("Received Get User request Role: " + role);
         long tenantId = tenantContext.getTenantId();
         return new ResponseEntity<>(lmsUserService.getLmsUsersByRole(role), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "getAllEnrolledBatches")
+    public ResponseEntity<List<Batch>> getAllEnrolledBatches(
+                                @RequestParam(required = false) Long studentId,
+                                @RequestParam(required = false) String studentEmail) {
+
+        logger.info("Received Get All Enrolled Batches request");
+        LmsUser currentUser = userUtils.getCurrentUser();
+        if (currentUser.getIsAdmin() != true && currentUser.getId() != studentId && !currentUser.getEmail().equals(studentEmail)) {
+            throw new ResponseStatusException( HttpStatus.FORBIDDEN, "Permission denied");
+        }
+        if (studentId != null) {
+            return new ResponseEntity<>(
+                    lmsUserService.getBatchesEnrolledForStudent(studentId), HttpStatus.OK);
+        } else if (null != studentEmail && !studentEmail.isEmpty()) {
+            return new ResponseEntity<>(
+                    lmsUserService.getBatchesEnrolledForStudent(studentEmail), HttpStatus.OK);
+        } else {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Request should contain either studentId or studentEmail");
+        }
+
+    }
+
+    @GetMapping( value = "getAllBatchesTaught")
+    public ResponseEntity<List<Batch>> getAllTaughtBatches(
+                            @RequestParam(required = false) Long instructorId,
+                            @RequestParam(required = false) String instructorEmail) {
+        logger.info("Received getAllBatchesTaught request");
+        LmsUser currentUser = userUtils.getCurrentUser();
+        if (currentUser.getIsAdmin() != true && currentUser.getId() != instructorId && !currentUser.getEmail().equals(instructorEmail)) {
+            throw new ResponseStatusException( HttpStatus.FORBIDDEN, "Permission denied");
+        }
+        if (instructorId != null) {
+            return new ResponseEntity<>(
+                    lmsUserService.getBatchesTaughtByInstructor(instructorId), HttpStatus.OK);
+        } else if (null != instructorEmail && !instructorEmail.isEmpty()) {
+            return new ResponseEntity<>(
+                    lmsUserService.getBatchesTaughtByInstructor(instructorEmail), HttpStatus.OK);
+        } else {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Request should contain either instructorId or instructorEmail");
+        }
     }
 
     @PostMapping
