@@ -17,7 +17,7 @@ import org.springframework.web.server.ResponseStatusException;
 Controller for changing the data related to a domain for a logged in tenant
  */
 @RestController
-@RequestMapping(value="/domain")
+@RequestMapping(value = "/domain")
 public class DomainController {
     Logger logger = LoggerFactory.getLogger(DomainController.class);
 
@@ -34,8 +34,8 @@ public class DomainController {
     public ResponseEntity<Tenant> updateDomain(@RequestBody Tenant tenant) {
 
         LmsUser currentUser = userUtils.getCurrentUser();
-        if (currentUser.getIsAdmin() != true) {
-            throw new ResponseStatusException( HttpStatus.FORBIDDEN,
+        if (!currentUser.getIsAdmin()) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN,
                     "This user does not have permission to update the domain");
         }
 

@@ -12,14 +12,14 @@ import java.util.Map;
 
 @Service
 public class JwtUtils {
-    private  String SECRET_KEY = "secret";
+    private final String SECRET_KEY = "secret";
 
-    public String extractUserName (String token) {
+    public String extractUserName(String token) {
         final Claims claims = extractAllClaims(token);
         return claims.getSubject();
     }
 
-    public Date extractExpiration (String token) {
+    public Date extractExpiration(String token) {
         final Claims claims = extractAllClaims(token);
         return claims.getExpiration();
     }
@@ -32,14 +32,16 @@ public class JwtUtils {
         return Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody();
     }
 
-    public String generateToken (UserDetails userDetails) {
+    public String generateToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
         return createToken(claims, userDetails.getUsername());
     }
+
     private String createToken(Map<String, Object> claims, String subject) {
         return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(
-                new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000*60*60*10)) //10 Hours
+                        new Date(System.currentTimeMillis()))
+                //10 Hours
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10))
                 .signWith(SignatureAlgorithm.HS256, SECRET_KEY).compact();
     }
 

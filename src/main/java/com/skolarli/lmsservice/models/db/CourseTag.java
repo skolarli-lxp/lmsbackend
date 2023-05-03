@@ -22,7 +22,7 @@ import java.util.Objects;
 @AllArgsConstructor
 @Getter
 @Setter
-@Table(name="course_tags")
+@Table(name = "course_tags")
 public class CourseTag extends Tenantable {
 
     @Id
@@ -30,7 +30,7 @@ public class CourseTag extends Tenantable {
     private long id;
 
     @ManyToOne
-    @JoinColumn(name="course_id", insertable = false, updatable = false)
+    @JoinColumn(name = "course_id", insertable = false, updatable = false)
     @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
     @JsonIdentityReference(alwaysAsId = true)
     private Course course;
@@ -47,10 +47,14 @@ public class CourseTag extends Tenantable {
     */
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         CourseTag courseTag = (CourseTag) o;
-        return  Objects.equals(tag, courseTag.tag);
+        return Objects.equals(tag, courseTag.tag);
     }
 
 }

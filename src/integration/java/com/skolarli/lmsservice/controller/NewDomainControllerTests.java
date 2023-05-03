@@ -34,7 +34,7 @@ class NewDomainControllerTests extends AbstractContainerBaseTest {
     private ObjectMapper mapper;
 
     @BeforeAll
-    public static void setUp(){
+    public static void setUp() {
         container.withReuse(true);
         container.withInitScript("tenantservicetestdata.sql");
 
@@ -54,11 +54,11 @@ class NewDomainControllerTests extends AbstractContainerBaseTest {
     void newDomainTestSuccess() throws Exception {
         String requestJson = mapper.writeValueAsString(newDomainRequest);
         mockMvc.perform(
-                        MockMvcRequestBuilders.post("/newdomain/add")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(requestJson)
-                                .accept(MediaType.APPLICATION_JSON)
-                ).andExpect(status().isCreated());
+                MockMvcRequestBuilders.post("/newdomain/add")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestJson)
+                        .accept(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isCreated());
 
     }
 }

@@ -125,7 +125,7 @@ public class BatchScheduleController {
         BatchSchedule batchSchedule = batchScheduleService.getBatchSchedule(id);
         LmsUser currentUser = userUtils.getCurrentUser();
         if (!currentUser.getIsAdmin() && currentUser !=
-                batchSchedule.getBatch().getCourse().getCourseOwner()){
+                batchSchedule.getBatch().getCourse().getCourseOwner()) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "");
         }
         try {
@@ -142,7 +142,7 @@ public class BatchScheduleController {
         BatchSchedule batchSchedule = batchScheduleService.getBatchSchedule(id);
         LmsUser currentUser = userUtils.getCurrentUser();
         if (!currentUser.getIsAdmin() && currentUser !=
-                batchSchedule.getBatch().getCourse().getCourseOwner()){
+                batchSchedule.getBatch().getCourse().getCourseOwner()) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "");
         }
         try {

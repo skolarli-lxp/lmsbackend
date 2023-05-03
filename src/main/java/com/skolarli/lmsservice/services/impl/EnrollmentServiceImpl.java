@@ -31,27 +31,24 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     private final LmsUserService lmsUserService;
 
     public EnrollmentServiceImpl(EnrollmentRepository enrollmentRepository, UserUtils userUtils,
-                                    BatchService batchService, LmsUserService lmsUserService) {
+                                 BatchService batchService, LmsUserService lmsUserService) {
         this.enrollmentRepository = enrollmentRepository;
         this.userUtils = userUtils;
         this.batchService = batchService;
         this.lmsUserService = lmsUserService;
     }
 
-    private Boolean checkPermissions (Enrollment existingEnrollment) {
+    private Boolean checkPermissions(Enrollment existingEnrollment) {
         LmsUser currentUser = userUtils.getCurrentUser();
-        if (currentUser.getIsAdmin() != true && currentUser !=
-                existingEnrollment.getBatch().getCourse().getCourseOwner()) {
-            return false;
-        }
-        return true;
+        return currentUser.getIsAdmin() ||
+                currentUser == existingEnrollment.getBatch().getCourse().getCourseOwner();
     }
 
     @Override
     public Enrollment toEnrollment(NewEnrollmentRequest newEnrollmentRequest) {
         Batch batch = batchService.getBatch(newEnrollmentRequest.getBatchId());
         LmsUser student = lmsUserService.getLmsUserById(newEnrollmentRequest.getStudentId());
-        if (student.getIsStudent() != true) {
+        if (!student.getIsStudent()) {
             throw new OperationNotSupportedException("User is not a student");
         }
 
@@ -59,14 +56,14 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         enrollment.setBatch(batch);
         enrollment.setStudent(student);
         enrollment.setEnrollmentIsDeleted(false);
-        
+
         return enrollment;
     }
 
     @Override
     public Enrollment toEnrollment(NewEnrollmentsForBatchRequest request) {
         LmsUser student = lmsUserService.getLmsUserById(request.getStudentId());
-        if (student.getIsStudent() != true) {
+        if (!student.getIsStudent()) {
             throw new OperationNotSupportedException("User is not a student");
         }
         Enrollment enrollment = new Enrollment();
@@ -128,7 +125,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     public Enrollment updateEnrollment(Enrollment enrollment, long id) {
         Enrollment existingEnrollment = enrollmentRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Enrollment", "Id", id));
-        if (checkPermissions(existingEnrollment) == false) {
+        if (!checkPermissions(existingEnrollment)) {
             throw new OperationNotSupportedException("User does not have permission to update " +
                     "this enrollment");
         }
@@ -145,7 +142,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     public void deleteEnrollment(long id) {
         Enrollment existingEnrollment = enrollmentRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Enrollment", "Id", id));
-        if (checkPermissions(existingEnrollment) == false) {
+        if (!checkPermissions(existingEnrollment)) {
             throw new OperationNotSupportedException("User does not have permission to perform " +
                     "Delete operation");
         }
@@ -158,7 +155,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     public void hardDeleteEnrollment(long id) {
         Enrollment existingEnrollment = enrollmentRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Enrollment", "Id", id));
-        if (checkPermissions(existingEnrollment) == false) {
+        if (!checkPermissions(existingEnrollment)) {
             throw new OperationNotSupportedException("User does not have permission to perform" +
                     " Delete operation");
         }

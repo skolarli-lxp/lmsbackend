@@ -36,9 +36,9 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name="lessons")
+@Table(name = "lessons")
 @Where(clause = "lesson_is_deleted is null or lesson_is_deleted = false")
-public class Lesson extends Tenantable{
+public class Lesson extends Tenantable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -53,7 +53,7 @@ public class Lesson extends Tenantable{
     private int lessonSortOrder;
 
     @ManyToOne
-    @JoinColumn(name="chapter_id")
+    @JoinColumn(name = "chapter_id")
     @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
     @JsonIdentityReference(alwaysAsId = true)
     private Chapter chapter;
@@ -131,7 +131,7 @@ public class Lesson extends Tenantable{
         if (lesson.getLessonDescription() != null && !lesson.getLessonDescription().isEmpty()) {
             this.setLessonDescription(lesson.getLessonDescription());
         }
-        if(lesson.getLessonSortOrder()!= 0){
+        if (lesson.getLessonSortOrder() != 0) {
             this.setLessonSortOrder(lesson.getLessonSortOrder());
         }
         //Video details update

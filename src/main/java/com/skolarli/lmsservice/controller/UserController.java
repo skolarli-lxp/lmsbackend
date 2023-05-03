@@ -43,8 +43,8 @@ public class UserController {
     public ResponseEntity<List<LmsUser>> getAllUsers() {
         logger.info("Received List All Users request");
         LmsUser currentUser = userUtils.getCurrentUser();
-        if (currentUser.getIsAdmin() != true) {
-            throw new ResponseStatusException( HttpStatus.FORBIDDEN, "Permission denied");
+        if (!currentUser.getIsAdmin()) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Permission denied");
         }
         return new ResponseEntity<>(lmsUserService.getAllLmsUsers(), HttpStatus.OK);
     }
@@ -53,8 +53,8 @@ public class UserController {
     public ResponseEntity<LmsUser> getUser(@PathVariable long id) {
         logger.info("Received Get User request UserId: " + id);
         LmsUser currentUser = userUtils.getCurrentUser();
-        if (currentUser.getIsAdmin() != true && currentUser.getId() != id) {
-            throw new ResponseStatusException( HttpStatus.FORBIDDEN, "Permission denied");
+        if (!currentUser.getIsAdmin() && currentUser.getId() != id) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Permission denied");
         }
         return new ResponseEntity<>(lmsUserService.getLmsUserById(id), HttpStatus.OK);
     }
@@ -76,14 +76,14 @@ public class UserController {
 
     @GetMapping(value = "getAllEnrolledBatches")
     public ResponseEntity<List<Batch>> getAllEnrolledBatches(
-                                @RequestParam(required = false) Long studentId,
-                                @RequestParam(required = false) String studentEmail) {
+            @RequestParam(required = false) Long studentId,
+            @RequestParam(required = false) String studentEmail) {
 
         logger.info("Received Get All Enrolled Batches request");
         LmsUser currentUser = userUtils.getCurrentUser();
         if (!currentUser.getIsAdmin() && currentUser.getId() != studentId && !currentUser.getEmail()
-                                                                            .equals(studentEmail)) {
-            throw new ResponseStatusException( HttpStatus.FORBIDDEN, "Permission denied");
+                .equals(studentEmail)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Permission denied");
         }
         if (studentId == null && (studentEmail == null || studentEmail.isEmpty())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
@@ -93,11 +93,11 @@ public class UserController {
             if (studentId != null) {
                 return new ResponseEntity<>(
                         lmsUserService.getBatchesEnrolledForStudent(studentId), HttpStatus.OK);
-            } else if (studentEmail != null && !studentEmail.isEmpty()){
+            } else if (studentEmail != null && !studentEmail.isEmpty()) {
                 return new ResponseEntity<>(
                         lmsUserService.getBatchesEnrolledForStudent(studentEmail), HttpStatus.OK);
             }
-        }catch (OperationNotSupportedException | ResourceNotFoundException e) {
+        } catch (OperationNotSupportedException | ResourceNotFoundException e) {
             logger.error(e.getMessage());
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
@@ -105,7 +105,7 @@ public class UserController {
 
     }
 
-    @GetMapping( value = "getAllBatchesTaught")
+    @GetMapping(value = "getAllBatchesTaught")
     public ResponseEntity<List<Batch>> getAllTaughtBatches(
             @RequestParam(required = false) Long instructorId,
             @RequestParam(required = false) String instructorEmail) {
@@ -137,10 +137,10 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<LmsUser> addNewUser(@Valid @RequestBody LmsUser lmsUser) {
-        logger.info("Received new user request Email: " + lmsUser.getEmail() );
+        logger.info("Received new user request Email: " + lmsUser.getEmail());
         LmsUser currentUser = userUtils.getCurrentUser();
-        if (currentUser.getIsAdmin() != true) {
-            throw new ResponseStatusException( HttpStatus.FORBIDDEN, "Permission denied");
+        if (!currentUser.getIsAdmin()) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Permission denied");
         }
         lmsUser.setUserIsDeleted(false);
         lmsUser.setEmailVerified(false);
@@ -150,12 +150,12 @@ public class UserController {
         return new ResponseEntity<LmsUser>(savedUser, HttpStatus.CREATED);
     }
 
-    @PutMapping(value="{id}")
+    @PutMapping(value = "{id}")
     public ResponseEntity<LmsUser> updateUser(@PathVariable long id, @RequestBody LmsUser lmsUser) {
-        logger.info("Received update user request Email: " + lmsUser.getEmail() );
+        logger.info("Received update user request Email: " + lmsUser.getEmail());
         LmsUser currentUser = userUtils.getCurrentUser();
-        if (currentUser.getIsAdmin() != true && currentUser.getId() != id) {
-            throw new ResponseStatusException( HttpStatus.FORBIDDEN, "Permission denied");
+        if (!currentUser.getIsAdmin() && currentUser.getId() != id) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Permission denied");
         }
 
         try {
@@ -169,8 +169,8 @@ public class UserController {
     public ResponseEntity<String> deleteUser(@PathVariable long id) {
         logger.info("Received Delete User request UserId: " + id);
         LmsUser currentUser = userUtils.getCurrentUser();
-        if (currentUser.getIsAdmin() != true) {
-            throw new ResponseStatusException( HttpStatus.FORBIDDEN, "Permission denied");
+        if (!currentUser.getIsAdmin()) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Permission denied");
         }
         lmsUserService.deleteLmsUser(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -180,8 +180,8 @@ public class UserController {
     public ResponseEntity<String> hardDeleteUser(@PathVariable long id) {
         logger.info("Received Delete User request UserId: " + id);
         LmsUser currentUser = userUtils.getCurrentUser();
-        if (currentUser.getIsAdmin() != true) {
-            throw new ResponseStatusException( HttpStatus.FORBIDDEN, "Permission denied");
+        if (!currentUser.getIsAdmin()) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Permission denied");
         }
         lmsUserService.hardDeleteLmsUser(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

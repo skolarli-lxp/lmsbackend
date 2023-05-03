@@ -64,7 +64,7 @@ public class ChapterController {
 
     @RequestMapping(method = RequestMethod.GET, value = "sortorder/{courseId}")
     public ResponseEntity<List<ChapterSortOrderResponse>> getChaptersSortOrder(
-            @PathVariable long courseId){
+            @PathVariable long courseId) {
 
         try {
             return new ResponseEntity<>(chapterService.getChaptersSortOrder(courseId),
@@ -100,8 +100,8 @@ public class ChapterController {
 
     @RequestMapping(method = RequestMethod.PUT, value = "sortorder/{courseId}")
     public ResponseEntity<List<ChapterSortOrderResponse>> updateChaptersSortOrder(
-                        @Valid @RequestBody List<ChapterSortOrderRequest> chaptersSortOrder, 
-                        @PathVariable long courseId) {
+            @Valid @RequestBody List<ChapterSortOrderRequest> chaptersSortOrder,
+            @PathVariable long courseId) {
         try {
             return new ResponseEntity<>(chapterService.updateChaptersSortOrder(courseId,
                     chaptersSortOrder), HttpStatus.OK);

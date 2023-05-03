@@ -22,8 +22,8 @@ import com.skolarli.lmsservice.utils.UserUtils;
 @Service
 public class LessonServiceImpl implements LessonService {
 
-    Logger logger = (Logger) LoggerFactory.getLogger(LessonServiceImpl.class);
-    
+    Logger logger = LoggerFactory.getLogger(LessonServiceImpl.class);
+
     LessonRepository lessonRepository;
     UserUtils userUtils;
     ChapterService chapterService;
@@ -38,11 +38,8 @@ public class LessonServiceImpl implements LessonService {
 
     private Boolean checkPermission(Lesson lesson) {
         LmsUser currentUser = userUtils.getCurrentUser();
-        if (currentUser.getIsAdmin() != true && currentUser !=
-                lesson.getChapter().getCourse().getCourseOwner()) {
-            return false;
-        }
-        return true;
+        return currentUser.getIsAdmin() ||
+                currentUser == lesson.getChapter().getCourse().getCourseOwner();
     }
 
     @Override
@@ -56,7 +53,7 @@ public class LessonServiceImpl implements LessonService {
 
         if (newLessonRequest.getLessonSortOrder() == 0) {
             newLessonRequest.setLessonSortOrder(lessonRepository.findMaxLessonSortOrder(chapterId)
-                                                + 1);
+                    + 1);
         }
         lesson.setLessonSortOrder(newLessonRequest.getLessonSortOrder());
 
@@ -69,7 +66,7 @@ public class LessonServiceImpl implements LessonService {
         lesson.setVideoSize(newLessonRequest.getVideoSize());
         lesson.setAllowDownload(newLessonRequest.getAllowDownload());
         lesson.setVideoIsActive(newLessonRequest.getVideoIsActive());
-        
+
         // Lesson Text Related info
         lesson.setTextContent(newLessonRequest.getTextContent());
         lesson.setTextTitle(newLessonRequest.getTextTitle());
@@ -147,7 +144,7 @@ public class LessonServiceImpl implements LessonService {
     public Lesson updateLesson(Lesson lesson, long id) {
         Lesson existingLesson = lessonRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Lesson", "Id", id));
-        if (checkPermission(existingLesson) == false) {
+        if (!checkPermission(existingLesson)) {
             throw new OperationNotSupportedException("User does not have permissions to update " +
                     "this lesson");
         }
@@ -165,21 +162,21 @@ public class LessonServiceImpl implements LessonService {
         List<Lesson> lessons = lessonRepository.findByChapterIdOrderByLessonSortOrderAsc(chapterId);
         for (Lesson lesson : lessons) {
             for (LessonSortOrderrequest lessonSortOrder : lessonSortOrderrequest) {
-                if (lessonSortOrder.getLessonSortOrder()>0 &&
-                     lesson.getId() == lessonSortOrder.getLessonId()) {
+                if (lessonSortOrder.getLessonSortOrder() > 0 &&
+                        lesson.getId() == lessonSortOrder.getLessonId()) {
                     lesson.setLessonSortOrder(lessonSortOrder.getLessonSortOrder());
                 }
             }
-        }                                                       
+        }
         List<Lesson> savedLessons = lessonRepository.saveAll(lessons);
-        return Lesson.toLessonSortOrderResponseList(savedLessons);   
+        return Lesson.toLessonSortOrderResponseList(savedLessons);
     }
 
     @Override
     public void deleteLesson(long id) {
         Lesson existingLesson = lessonRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Lesson", "Id", id));
-        if (checkPermission(existingLesson) == false) {
+        if (!checkPermission(existingLesson)) {
             throw new OperationNotSupportedException("User does not have permissions to delete " +
                     "this lesson");
         }
@@ -191,7 +188,7 @@ public class LessonServiceImpl implements LessonService {
     public void hardDeleteLesson(long id) {
         Lesson existingLesson = lessonRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Lesson", "Id", id));
-        if (checkPermission(existingLesson) == false) {
+        if (!checkPermission(existingLesson)) {
             throw new OperationNotSupportedException("User does not have permissions to delete" +
                     " this lesson");
         }

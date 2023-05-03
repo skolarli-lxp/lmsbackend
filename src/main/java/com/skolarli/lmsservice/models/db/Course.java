@@ -71,7 +71,7 @@ public class Course extends Tenantable {
 
     private String courseSeoTitleTag;
 
-    private  String courseSeoDescription;
+    private String courseSeoDescription;
 
     private String courseMetaTagKeywords;
 
@@ -90,12 +90,12 @@ public class Course extends Tenantable {
     private List<CourseTag> courseTagList = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name="course_id")
+    @JoinColumn(name = "course_id")
     @JsonIgnoreProperties("course")
     private List<Batch> courseBatches = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name="course_id")
+    @JoinColumn(name = "course_id")
     @JsonIgnoreProperties("course")
     private List<Chapter> courseChapters = new ArrayList<>();
 
@@ -107,7 +107,7 @@ public class Course extends Tenantable {
      * Permission should be handled in the service layer.
      * List of items like batches, lesson etc are only updated with additional values.
      * Existing values are not deleted.
-     * 
+     *
      * @param course
      */
     public void update(Course course) {
@@ -174,8 +174,8 @@ public class Course extends Tenantable {
             this.setCourseDeleted(course.getCourseDeleted());
         }
 
-    
-        if (course.getCourseTagList() != null &&   !course.getCourseTagList().isEmpty()) {
+
+        if (course.getCourseTagList() != null && !course.getCourseTagList().isEmpty()) {
             course.getCourseTagList().forEach(
                     (currentTag) -> {
                         if (!this.getCourseTagList().contains(currentTag)) {
@@ -184,7 +184,7 @@ public class Course extends Tenantable {
                     });
         }
 
-        if ( course.getCourseBatches() != null &&  !course.getCourseBatches().isEmpty()) {
+        if (course.getCourseBatches() != null && !course.getCourseBatches().isEmpty()) {
             course.getCourseBatches().forEach(
                     (currentBatch) -> {
                         if (!this.getCourseBatches().contains(currentBatch)) {
@@ -193,7 +193,7 @@ public class Course extends Tenantable {
                     });
         }
 
-        if (course.getCourseChapters()!= null  && !course.getCourseChapters().isEmpty()) {
+        if (course.getCourseChapters() != null && !course.getCourseChapters().isEmpty()) {
             course.getCourseChapters().forEach(
                     (currentChapter) -> {
                         if (!this.getCourseChapters().contains(currentChapter)) {

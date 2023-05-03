@@ -45,7 +45,7 @@ class UserControllerTests {
 
 
     @BeforeEach
-    public  void setup() throws Exception {
+    public void setup() throws Exception {
         currentUser1 = new LmsUser();
         currentUser1.setId(1);
         currentUser1.setFirstName("Jaya");
@@ -56,7 +56,7 @@ class UserControllerTests {
         currentUser1.setIsInstructor(false);
         currentUser1.setIsStudent(false);
 
-        currentUser2 = new  LmsUser();
+        currentUser2 = new LmsUser();
         currentUser2.setId(2);
         currentUser2.setFirstName("Jaya");
         currentUser2.setLastName("Nair");
@@ -90,7 +90,7 @@ class UserControllerTests {
     }
 
     @Test
-    void updateDomainTestSuccess() throws Exception{
+    void updateDomainTestSuccess() throws Exception {
         when(userUtils.getCurrentUser()).thenReturn(currentUser1);
         when(tenantService.updateTenant(existingTenant)).thenReturn(newTenant);
         String tenantJson = mapper.writeValueAsString(newTenant);
@@ -105,7 +105,7 @@ class UserControllerTests {
     }
 
     @Test
-    void updateDomainTestFailureNotAdmin() throws Exception{
+    void updateDomainTestFailureNotAdmin() throws Exception {
         when(userUtils.getCurrentUser()).thenReturn(currentUser2);
         String tenantJson = mapper.writeValueAsString(newTenant);
 
@@ -118,7 +118,7 @@ class UserControllerTests {
     }
 
     @Test
-    void updateDomainTestFailureUpdateException() throws Exception{
+    void updateDomainTestFailureUpdateException() throws Exception {
         when(userUtils.getCurrentUser()).thenReturn(currentUser1);
         when(tenantService.updateTenant(newTenant)).thenThrow(
                 new OperationNotSupportedException("Operation not supported"));

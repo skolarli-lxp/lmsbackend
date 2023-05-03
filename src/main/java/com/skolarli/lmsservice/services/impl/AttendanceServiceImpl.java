@@ -44,11 +44,8 @@ public class AttendanceServiceImpl implements AttendanceService {
 
     private Boolean checkPermission(Attendance attendance) {
         LmsUser currentUser = userUtils.getCurrentUser();
-        if (currentUser.getIsAdmin() != true && currentUser !=
-                attendance.getBatchSchedule().getBatch().getCourse().getCourseOwner()) {
-            return false;
-        }
-        return true;
+        return currentUser.getIsAdmin() || currentUser == attendance.getBatchSchedule()
+                .getBatch().getCourse().getCourseOwner();
     }
 
     @Override
@@ -71,7 +68,7 @@ public class AttendanceServiceImpl implements AttendanceService {
             Long batchScheduleId) {
         Attendance attendance = new Attendance();
 
-        if(newAttendancesForScheduleRequest.getStudentId() != 0) {
+        if (newAttendancesForScheduleRequest.getStudentId() != 0) {
             LmsUser student = lmsUserService.getLmsUserById(
                     newAttendancesForScheduleRequest.getStudentId());
             attendance.setStudent(student);
@@ -109,7 +106,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 
     @Override
     public Attendance getAttendance(long id) {
-        List<Attendance> existingAttendance =  attendanceRepository.findAllById(
+        List<Attendance> existingAttendance = attendanceRepository.findAllById(
                 new ArrayList<>(List.of(id)));
         if (existingAttendance.size() == 0) {
             throw new ResourceNotFoundException("Attendance", "Id", id);
@@ -129,7 +126,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 
     @Override
     public Attendance saveAttendance(Attendance attendance) {
-        if (checkPermission(attendance ) == false) {
+        if (!checkPermission(attendance)) {
             throw new OperationNotSupportedException("Operation not supported");
         }
         return attendanceRepository.save(attendance);
@@ -137,7 +134,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 
     @Override
     public List<Attendance> saveAllAttendance(List<Attendance> attendance) {
-        if(checkPermission(attendance.get(0)) == false) {
+        if (!checkPermission(attendance.get(0))) {
             throw new OperationNotSupportedException("Operation not supported");
         }
         return attendanceRepository.saveAll(attendance);
@@ -147,7 +144,7 @@ public class AttendanceServiceImpl implements AttendanceService {
     public Attendance updateAttendance(Attendance newAttendance, long id) {
         Attendance existingAttendance = attendanceRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Attendance", "Id", id));
-        if (checkPermission(existingAttendance) == false) {
+        if (!checkPermission(existingAttendance)) {
             throw new OperationNotSupportedException(
                     "User does not have permission to update this attendance");
         }
@@ -164,7 +161,7 @@ public class AttendanceServiceImpl implements AttendanceService {
     public void deleteAttendance(long id) {
         Attendance attendance = attendanceRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Attendance", "Id", id));
-        if (checkPermission(attendance) == false) {
+        if (!checkPermission(attendance)) {
             throw new OperationNotSupportedException(
                     "User does not have permission to delete this attendance");
         }
@@ -176,7 +173,7 @@ public class AttendanceServiceImpl implements AttendanceService {
     public void hardDeleteAttendance(long id) {
         Attendance attendance = attendanceRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Attendance", "Id", id));
-        if (checkPermission(attendance) == false) {
+        if (!checkPermission(attendance)) {
             throw new OperationNotSupportedException(
                     "User does not have permission to delete this attendance");
         }

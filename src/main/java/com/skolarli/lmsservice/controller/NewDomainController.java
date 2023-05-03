@@ -29,7 +29,7 @@ Like creating a new domain for new sign up
  */
 
 @RestController
-@RequestMapping(value="/newdomain")
+@RequestMapping(value = "/newdomain")
 public class NewDomainController {
 
     Logger logger = LoggerFactory.getLogger(NewDomainController.class);
@@ -42,7 +42,7 @@ public class NewDomainController {
     @Autowired
     private VerificationService verificationService;
 
-    @PostMapping(value="/add")
+    @PostMapping(value = "/add")
     public ResponseEntity<NewDomainResponse> addNewDomain(
             @Valid @RequestBody NewDomainRequest newDomainRequest) {
         logger.info("Received new domain request. DomainName: "
@@ -72,7 +72,7 @@ public class NewDomainController {
                 new TenantAuthenticationToken(newDomainRequest.getEmail(), savedTenant.getId()));
         try {
             savedLmsUser = lmsUserService.saveLmsUser(lmsUser);
-        } catch (Exception e){
+        } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
         try {
@@ -87,7 +87,7 @@ public class NewDomainController {
     }
 
 
-    @GetMapping(value="/isunique")
+    @GetMapping(value = "/isunique")
     public ResponseEntity<String> isUnique(@RequestParam String domainName) {
         logger.info("Checking if domainName " + domainName + " is unique");
         domainName = domainName.strip();
@@ -98,7 +98,7 @@ public class NewDomainController {
         try {
             String result = tenantService.isUniqueDomainName(domainName).toString();
             String responseString = "{ \n \"result\" : \"" + result + "\" \n}";
-            return new ResponseEntity<String>( responseString, HttpStatus.OK);
+            return new ResponseEntity<String>(responseString, HttpStatus.OK);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }

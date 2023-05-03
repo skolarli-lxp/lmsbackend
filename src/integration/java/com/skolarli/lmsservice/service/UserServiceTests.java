@@ -23,7 +23,7 @@ class UserServiceTests extends AbstractContainerBaseTest {
     public final ExpectedException exception = ExpectedException.none();
 
     @BeforeAll
-    public static void setUp(){
+    public static void setUp() {
         container.withReuse(true);
         container.withInitScript("courseservicetestdata.sql");
         container.start();
@@ -39,9 +39,7 @@ class UserServiceTests extends AbstractContainerBaseTest {
     void newDomainTestSuccess() throws Exception {
 
 
-
     }
-
 
 
 }

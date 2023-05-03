@@ -22,11 +22,11 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Entity
-@Table(name="batches")
+@Table(name = "batches")
 @AllArgsConstructor
 @NoArgsConstructor
 @Where(clause = "batch_is_deleted is null or batch_is_deleted = false")
-public class Batch extends  Tenantable{
+public class Batch extends Tenantable {
     public static final Logger logger = LoggerFactory.getLogger(Batch.class);
 
     @Id
@@ -40,7 +40,7 @@ public class Batch extends  Tenantable{
     private Course course;
 
     @ManyToOne
-    @JoinColumn(name="instructor_id")
+    @JoinColumn(name = "instructor_id")
     @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
     @JsonIdentityReference(alwaysAsId = true)
     private LmsUser instructor;

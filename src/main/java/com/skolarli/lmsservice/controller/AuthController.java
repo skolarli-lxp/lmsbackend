@@ -37,10 +37,10 @@ public class AuthController {
     @Autowired
     private JwtUtils jwtUtil;
 
-    @RequestMapping( value = "/authenticate", method = RequestMethod.POST)
+    @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
     public ResponseEntity<?> authenticate(
             @Valid @RequestBody AuthenticationRequest authenticationRequest)
-            throws  Exception{
+            throws Exception {
         logger.info("Received Authentication Request for User: "
                 + authenticationRequest.getUsername());
         String userName = authenticationRequest.getUsername();
@@ -57,7 +57,7 @@ public class AuthController {
                     new UsernamePasswordAuthenticationToken(userName,
                             authenticationRequest.getPassword())
             );
-        } catch(Exception e) {
+        } catch (Exception e) {
             logger.error("Authentication failed for user: " + authenticationRequest.getUsername());
             logger.error(e.getMessage());
             return new ResponseEntity<>("{\"error\" : \"Incorrect username or password\"}",

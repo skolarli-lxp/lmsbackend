@@ -29,8 +29,8 @@ public class EnrollmentController {
 
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<List<Enrollment>> getAllEnrollments(@RequestParam(required = false)
-                                                                  Long batchId) {
-        if(batchId != null) {
+                                                              Long batchId) {
+        if (batchId != null) {
             try {
                 return new ResponseEntity<>(enrollmentService.getEnrollmentsByBatchId(batchId),
                         HttpStatus.OK);
@@ -59,11 +59,11 @@ public class EnrollmentController {
 
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<Enrollment> addEnrollment(@Valid @RequestBody
-                                                        NewEnrollmentRequest request){
+                                                    NewEnrollmentRequest request) {
         Enrollment enrollment = enrollmentService.toEnrollment(request);
         try {
             return new ResponseEntity<>(enrollmentService.save(enrollment), HttpStatus.OK);
-        } catch (DataIntegrityViolationException e){
+        } catch (DataIntegrityViolationException e) {
             logger.error("Error in addEnrollment: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Enrollment already exists");
         } catch (Exception e) {
@@ -72,15 +72,15 @@ public class EnrollmentController {
         }
     }
 
-    @RequestMapping(method = RequestMethod.POST, value="/forbatch")
+    @RequestMapping(method = RequestMethod.POST, value = "/forbatch")
     public ResponseEntity<List<Enrollment>> addEnrollmentsForBatch(
             @Valid @RequestBody List<NewEnrollmentsForBatchRequest> request,
             @RequestParam Long batchId) {
         List<Enrollment> enrollments = enrollmentService.toEnrollmentList(request);
         try {
-            return new ResponseEntity<>(enrollmentService.saveAllEnrollments(enrollments,batchId) ,
+            return new ResponseEntity<>(enrollmentService.saveAllEnrollments(enrollments, batchId),
                     HttpStatus.OK);
-        } catch (DataIntegrityViolationException e){
+        } catch (DataIntegrityViolationException e) {
             logger.error("Error in addEnrollment: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Enrollment already exists");
         } catch (Exception e) {

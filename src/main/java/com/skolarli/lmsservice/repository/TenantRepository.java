@@ -12,7 +12,7 @@ public interface TenantRepository extends JpaRepository<Tenant, Long> {
     @Query("SELECT t.domainName FROM Tenant t")
     List<String> getAllDomainNames();
 
-    @Query(value="SELECT domain_name from lms.tenants", nativeQuery = true)
+    @Query(value = "SELECT domain_name from lms.tenants", nativeQuery = true)
     List<String> getAllDomainNamesIncludingDeleted();
 
 }

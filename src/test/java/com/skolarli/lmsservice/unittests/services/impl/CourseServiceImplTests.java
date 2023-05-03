@@ -41,7 +41,7 @@ public class CourseServiceImplTests {
     Course newCourse;
 
     @BeforeEach
-    void setup(){
+    void setup() {
         newCourse = new Course();
         newCourse.setId(1L);
         newCourse.setCourseName("Test Course");
@@ -53,7 +53,7 @@ public class CourseServiceImplTests {
     }
 
     @Test
-    public void testSaveCourseSuccess(){
+    public void testSaveCourseSuccess() {
         when(courseRepository.save(newCourse)).thenReturn(newCourse);
         Course savedCourse = courseService.saveCourse(newCourse);
 
@@ -181,6 +181,6 @@ public class CourseServiceImplTests {
             courseService.getAllCourses();
         });
     }
-    
+
 }
 

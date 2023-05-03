@@ -50,7 +50,7 @@ class AuthControllerTests {
     private JwtUtils jwtUtil;
     @MockBean
     private TenantContext tenantContext;
-    @MockBean 
+    @MockBean
     private LmsUserService lmsUserService;
 
     @MockBean
@@ -61,7 +61,7 @@ class AuthControllerTests {
 
 
     @BeforeEach
-    public  void setup() throws Exception {
+    public void setup() throws Exception {
         lmsUser = new LmsUser();
         lmsUser.setEmailVerified(true);
 
@@ -72,7 +72,7 @@ class AuthControllerTests {
     }
 
     @Test
-    void updateDomainTestSuccess() throws Exception{
+    void updateDomainTestSuccess() throws Exception {
         when(authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 authenticationRequest.getUsername(), authenticationRequest.getPassword())))
                 .thenReturn(null);
@@ -100,7 +100,7 @@ class AuthControllerTests {
     }
 
     @Test
-    void updateDomainTestFailureAuthFailure() throws Exception{
+    void updateDomainTestFailureAuthFailure() throws Exception {
 
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
                 authenticationRequest.getUsername(), authenticationRequest.getPassword());

@@ -27,7 +27,7 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
     private TenantAuthorizationFilter tenantAuthorizationFilter;
 
     @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws  Exception{
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(lmsUserDetailsService);
     }
 

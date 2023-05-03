@@ -14,10 +14,10 @@ public interface LmsUserService {
     LmsUser getLmsUserByEmail(String email);
     List<LmsUser> getLmsUsersByRole(Role role);
 
-    public List<Batch> getBatchesEnrolledForStudent(Long studentId);
-    public List<Batch> getBatchesEnrolledForStudent(String email);
-    public List<Batch> getBatchesTaughtByInstructor(Long instructorId);
-    public List<Batch> getBatchesTaughtByInstructor(String email);
+    List<Batch> getBatchesEnrolledForStudent(Long studentId);
+    List<Batch> getBatchesEnrolledForStudent(String email);
+    List<Batch> getBatchesTaughtByInstructor(Long instructorId);
+    List<Batch> getBatchesTaughtByInstructor(String email);
 
     LmsUser saveLmsUser (LmsUser lmsUser);
     

@@ -20,10 +20,10 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name="users", uniqueConstraints = @UniqueConstraint(name= "useremail",
+@Table(name = "users", uniqueConstraints = @UniqueConstraint(name = "useremail",
         columnNames = {"email", "tenantId"}))
 @Where(clause = "user_is_deleted is null or user_is_deleted = false")
-public class LmsUser extends Tenantable{
+public class LmsUser extends Tenantable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -60,7 +60,7 @@ public class LmsUser extends Tenantable{
 
     //TODO: Better password storage
     @NotNull
-    @JsonProperty( value = "password", access = JsonProperty.Access.WRITE_ONLY)
+    @JsonProperty(value = "password", access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
     @NotNull
@@ -117,31 +117,31 @@ public class LmsUser extends Tenantable{
         if (lmsUser.getLastName() != null && !lmsUser.getLastName().isEmpty()) {
             this.setLastName(lmsUser.getLastName());
         }
-        if(lmsUser.getPhoneNumber() != null && !lmsUser.getPhoneNumber().isEmpty()) {
+        if (lmsUser.getPhoneNumber() != null && !lmsUser.getPhoneNumber().isEmpty()) {
             this.setPhoneNumber(lmsUser.getPhoneNumber());
         }
-        if(lmsUser.getUserBio() != null && !lmsUser.getUserBio().isEmpty()) {
+        if (lmsUser.getUserBio() != null && !lmsUser.getUserBio().isEmpty()) {
             this.setUserBio(lmsUser.getUserBio());
         }
-        if(lmsUser.getCompanyName() != null && !lmsUser.getCompanyName().isEmpty()) {
+        if (lmsUser.getCompanyName() != null && !lmsUser.getCompanyName().isEmpty()) {
             this.setCompanyName(lmsUser.getCompanyName());
         }
-        if(lmsUser.getExperience() != 0) {
+        if (lmsUser.getExperience() != 0) {
             this.setExperience(lmsUser.getExperience());
         }
-        if(lmsUser.getOccupation() != null) {
+        if (lmsUser.getOccupation() != null) {
             this.setOccupation(lmsUser.getOccupation());
         }
-        if(lmsUser.getEducation() != null) {
+        if (lmsUser.getEducation() != null) {
             this.setEducation(lmsUser.getEducation());
         }
-        if(lmsUser.getProfilePicUrl() != null && !lmsUser.getProfilePicUrl().isEmpty()) {
+        if (lmsUser.getProfilePicUrl() != null && !lmsUser.getProfilePicUrl().isEmpty()) {
             this.setProfilePicUrl(lmsUser.getProfilePicUrl());
         }
-        if(lmsUser.getAddress() != null && !lmsUser.getAddress().isEmpty()) {
+        if (lmsUser.getAddress() != null && !lmsUser.getAddress().isEmpty()) {
             this.setAddress(lmsUser.getAddress());
         }
-        if(lmsUser.getCountry() != null && !lmsUser.getCountry().isEmpty()) {
+        if (lmsUser.getCountry() != null && !lmsUser.getCountry().isEmpty()) {
             this.setCountry(lmsUser.getCountry());
         }
         if (lmsUser.getIsAdmin() != null) {
@@ -153,11 +153,11 @@ public class LmsUser extends Tenantable{
         if (lmsUser.getIsInstructor() != null) {
             this.setIsInstructor(lmsUser.getIsInstructor());
         }
-        if(lmsUser.getEmailVerified() != null) {
+        if (lmsUser.getEmailVerified() != null) {
             this.setEmailVerified(lmsUser.getEmailVerified());
         } else {
             this.setEmailVerified(false);
         }
-        
+
     }
 }

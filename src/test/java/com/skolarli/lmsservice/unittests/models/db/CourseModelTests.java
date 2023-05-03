@@ -17,8 +17,9 @@ import com.skolarli.lmsservice.models.db.DeliveryFormat;
 @RunWith(MockitoJUnitRunner.class)
 public class CourseModelTests {
     Course course;
+
     @BeforeEach
-    public void setup(){
+    public void setup() {
         course = new Course();
         course.setId(1L);
         course.setCourseName("Test Course");
@@ -62,17 +63,17 @@ public class CourseModelTests {
         course.update(newCourse);
 
 
-        assert(course.getCourseName().equals("Updated Course Name"));
-        assert(course.getCourseDescription().equals("Updated Course Description"));
-        assert(course.getCourseFees() == 5000);
-        assert(course.getCourseDeliveryFormat().equals(DeliveryFormat.PHYSICAL_CLASSROOM));
-        assert(course.getCourseDiscountType().equals(DisountType.NONE));
-        assert(course.getCourseDiscountAmount() == 0);
-        assert(course.getCourseBatches().size() == 2);
-        assert(course.getCourseBatches().get(0).getId() == 1L);
-        assert(course.getCourseBatches().get(1).getId() == 2L);
-        assert(course.getCourseChapters().size() == 1);
-        assert(course.getCourseChapters().get(0).getId() == 1L);
+        assert (course.getCourseName().equals("Updated Course Name"));
+        assert (course.getCourseDescription().equals("Updated Course Description"));
+        assert (course.getCourseFees() == 5000);
+        assert (course.getCourseDeliveryFormat().equals(DeliveryFormat.PHYSICAL_CLASSROOM));
+        assert (course.getCourseDiscountType().equals(DisountType.NONE));
+        assert (course.getCourseDiscountAmount() == 0);
+        assert (course.getCourseBatches().size() == 2);
+        assert (course.getCourseBatches().get(0).getId() == 1L);
+        assert (course.getCourseBatches().get(1).getId() == 2L);
+        assert (course.getCourseChapters().size() == 1);
+        assert (course.getCourseChapters().get(0).getId() == 1L);
     }
 
     @Test
@@ -86,7 +87,7 @@ public class CourseModelTests {
         course.setCourseDiscountType(DisountType.NONE);
 
         course.update(newCourse);
-        assert(course.getId() == 1L);
+        assert (course.getId() == 1L);
     }
 
 }

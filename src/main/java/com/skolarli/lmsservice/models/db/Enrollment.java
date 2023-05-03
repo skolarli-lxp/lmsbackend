@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name="enrollment", uniqueConstraints = @UniqueConstraint(name= "dupenrollment",
+@Table(name = "enrollment", uniqueConstraints = @UniqueConstraint(name = "dupenrollment",
         columnNames = {"student_id", "batch_id"}))
 @Where(clause = "enrollment_is_deleted is null or enrollment_is_deleted = false")
 public class Enrollment extends Tenantable {
@@ -43,7 +43,7 @@ public class Enrollment extends Tenantable {
     @JsonIdentityReference(alwaysAsId = true)
     private LmsUser student;
 
-    private Boolean enrollmentIsDeleted;    
+    private Boolean enrollmentIsDeleted;
 
     public void update(Enrollment enrollment) {
         if (enrollment.getId() != 0) {

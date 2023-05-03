@@ -37,22 +37,19 @@ public class BatchServiceImpl implements BatchService {
         this.lmsUserService = lmsUserService;
     }
 
-    private Boolean validate(Batch batch){
+    private Boolean validate(Batch batch) {
         LmsUser instructor = batch.getInstructor();
-        if (instructor.getIsInstructor()== null || instructor.getIsInstructor()==false){
+        if (instructor.getIsInstructor() == null || !instructor.getIsInstructor()) {
             logger.error("Batch instructor not valid");
             return false;
         }
         return true;
     }
 
-    private Boolean checkPermissions (Batch existingBatch) {
+    private Boolean checkPermissions(Batch existingBatch) {
         LmsUser currentUser = userUtils.getCurrentUser();
-        if (currentUser.getIsAdmin() != true && currentUser !=
-                existingBatch.getCourse().getCourseOwner()) {
-            return false;
-        }
-        return true;
+        return currentUser.getIsAdmin() ||
+                currentUser == existingBatch.getCourse().getCourseOwner();
     }
 
     @Override
@@ -109,10 +106,10 @@ public class BatchServiceImpl implements BatchService {
     @Override
     public Batch saveBatch(Batch batch) {
         LmsUser currentUser = userUtils.getCurrentUser();
-        if (currentUser.getIsAdmin() != true && currentUser != batch.getCourse().getCourseOwner()) {
+        if (!currentUser.getIsAdmin() && currentUser != batch.getCourse().getCourseOwner()) {
             throw new OperationNotSupportedException("Operation not supported");
         }
-        if (validate(batch) == false){
+        if (!validate(batch)) {
             throw new OperationNotSupportedException("Operation not supported");
         }
         batch.setBatchIsDeleted(false);
@@ -124,7 +121,7 @@ public class BatchServiceImpl implements BatchService {
         Batch existingBatch = batchRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Batch", "Id", id));
         LmsUser currentUser = userUtils.getCurrentUser();
-        if (currentUser.getIsAdmin() != true && currentUser !=
+        if (!currentUser.getIsAdmin() && currentUser !=
                 existingBatch.getCourse().getCourseOwner()) {
             throw new OperationNotSupportedException(
                     "User does not have permission to perform Update operation");
@@ -133,18 +130,18 @@ public class BatchServiceImpl implements BatchService {
             logger.error("Cannot change deleted status. Use Delete API");
             existingBatch.setBatchIsDeleted(null);
         }
-        if (newBatch.getInstructor() != null && validate(newBatch) == false){
+        if (newBatch.getInstructor() != null && !validate(newBatch)) {
             throw new OperationNotSupportedException("Operation not supported");
         }
-        existingBatch.update(newBatch);        
-        return batchRepository.save(existingBatch);      
+        existingBatch.update(newBatch);
+        return batchRepository.save(existingBatch);
     }
 
     @Override
     public void deleteBatch(long id) {
         Batch existingBatch = batchRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Batch", "Id", id));
-        if (checkPermissions(existingBatch) == false) {
+        if (!checkPermissions(existingBatch)) {
             throw new OperationNotSupportedException(
                     "User does not gave permissions to perform delete operation");
         }
@@ -156,7 +153,7 @@ public class BatchServiceImpl implements BatchService {
     public void hardDeleteBatch(long id) {
         Batch existingBatch = batchRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Batch", "Id", id));
-        if (checkPermissions(existingBatch) == false) {
+        if (!checkPermissions(existingBatch)) {
             throw new OperationNotSupportedException(
                     "User does not gave permissions to perform delete operation");
         }

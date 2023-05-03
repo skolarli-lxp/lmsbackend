@@ -18,9 +18,9 @@ public class TenantEntityListener {
     @PreUpdate
     public void prePersistOrUpdate(Object object) {
         if (object instanceof Tenantable) {
-            if (((Tenantable)object).getTenantId() == 0) {
+            if (((Tenantable) object).getTenantId() == 0) {
                 ((Tenantable) object).setTenantId(tenantContext.getTenantId());
-            };
+            }
         }
     }
 

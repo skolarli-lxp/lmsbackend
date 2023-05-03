@@ -24,16 +24,16 @@ import java.util.stream.Collectors;
 public class LmsUserServiceImpl implements LmsUserService {
 
     Logger logger = LoggerFactory.getLogger(LmsUserServiceImpl.class);
-    private LmsUserRepository lmsUserRepository;
+    private final LmsUserRepository lmsUserRepository;
 
 
-    public LmsUserServiceImpl( LmsUserRepository lmsUserRepository) {
+    public LmsUserServiceImpl(LmsUserRepository lmsUserRepository) {
         super();
         this.lmsUserRepository = lmsUserRepository;
     }
 
-    private  LmsUser getCurrentUser(){
-        String userName = (String)SecurityContextHolder.getContext()
+    private LmsUser getCurrentUser() {
+        String userName = (String) SecurityContextHolder.getContext()
                 .getAuthentication().getPrincipal();
         return getLmsUserByEmail(userName);
     }
@@ -47,7 +47,7 @@ public class LmsUserServiceImpl implements LmsUserService {
     public LmsUser getLmsUserById(long id) {
         List<LmsUser> existingUser = lmsUserRepository.findAllById(new ArrayList<>(List.of(id)));
         if (existingUser.isEmpty()) {
-            throw new ResourceNotFoundException("LmsUser","Id", id);
+            throw new ResourceNotFoundException("LmsUser", "Id", id);
         }
         return existingUser.get(0);
     }
@@ -56,9 +56,9 @@ public class LmsUserServiceImpl implements LmsUserService {
     public LmsUser getLmsUserByEmail(String email) {
         List<LmsUser> existingLmsUser = lmsUserRepository.findByEmail(email);
         if (!existingLmsUser.isEmpty()) {
-            return  existingLmsUser.get(0);
+            return existingLmsUser.get(0);
         } else {
-            throw  new ResourceNotFoundException("LmsUser", "email", email);
+            throw new ResourceNotFoundException("LmsUser", "email", email);
         }
 //        LmsUser existingLmsUser = lmsUserRepository.findLmsUserByEmail(email);
 //        if (existingLmsUser != null) {
@@ -80,9 +80,9 @@ public class LmsUserServiceImpl implements LmsUserService {
     public LmsUser getLmsUserByEmailAndTenantId(String email, long tenantId) {
         LmsUser existingLmsUser = lmsUserRepository.findByEmailAndTenantId(email, tenantId);
         if (existingLmsUser != null) {
-            return  existingLmsUser;
+            return existingLmsUser;
         } else {
-            throw  new ResourceNotFoundException("LmsUser", "email", email);
+            throw new ResourceNotFoundException("LmsUser", "email", email);
         }
     }
 
@@ -90,18 +90,18 @@ public class LmsUserServiceImpl implements LmsUserService {
     public List<LmsUser> getLmsUsersByRole(Role role) {
         if (role == Role.ADMIN) {
             return lmsUserRepository.findAllAdminUsers();
-        } else if(role == Role.STUDENT){
+        } else if (role == Role.STUDENT) {
             return lmsUserRepository.findAllStudents();
-        } else if(role == Role.INSTRUCTOR) {
+        } else if (role == Role.INSTRUCTOR) {
             return lmsUserRepository.findAllInstructors();
         } else {
-            logger.error("Role not found"); 
+            logger.error("Role not found");
         }
         return null;
     }
 
-    private List<Batch> getBatchesTaughtByInstructor(LmsUser instructor){
-        if (!instructor.getIsInstructor()){
+    private List<Batch> getBatchesTaughtByInstructor(LmsUser instructor) {
+        if (!instructor.getIsInstructor()) {
             throw new OperationNotSupportedException("User is not an instructor");
         } else {
             return instructor.getBatches();
@@ -110,36 +110,36 @@ public class LmsUserServiceImpl implements LmsUserService {
 
 
     @Override
-    public List<Batch>  getBatchesTaughtByInstructor(Long instructorId) {
-        LmsUser user =  getLmsUserById(instructorId);
+    public List<Batch> getBatchesTaughtByInstructor(Long instructorId) {
+        LmsUser user = getLmsUserById(instructorId);
         return getBatchesTaughtByInstructor(user);
     }
 
     @Override
-    public List<Batch>  getBatchesTaughtByInstructor(String instructorEmail) {
-        LmsUser user =  getLmsUserByEmail(instructorEmail);
+    public List<Batch> getBatchesTaughtByInstructor(String instructorEmail) {
+        LmsUser user = getLmsUserByEmail(instructorEmail);
         return getBatchesTaughtByInstructor(user);
     }
 
-    private List<Batch> getBatchesEnrolledForStudent(LmsUser student){
-        if (!student.getIsStudent()){
+    private List<Batch> getBatchesEnrolledForStudent(LmsUser student) {
+        if (!student.getIsStudent()) {
             throw new OperationNotSupportedException("User is not an student");
         } else {
-            List<Enrollment>  enrollments = student.getEnrollments();
-            return  enrollments.stream().map(
+            List<Enrollment> enrollments = student.getEnrollments();
+            return enrollments.stream().map(
                     Enrollment::getBatch).collect(Collectors.toList());
         }
     }
 
     @Override
     public List<Batch> getBatchesEnrolledForStudent(Long studentId) {
-        LmsUser user =  getLmsUserById(studentId);
+        LmsUser user = getLmsUserById(studentId);
         return getBatchesEnrolledForStudent(user);
     }
 
     @Override
     public List<Batch> getBatchesEnrolledForStudent(String studentEmail) {
-        LmsUser user =  getLmsUserByEmail(studentEmail);
+        LmsUser user = getLmsUserByEmail(studentEmail);
         return getBatchesEnrolledForStudent(user);
     }
 
@@ -148,7 +148,7 @@ public class LmsUserServiceImpl implements LmsUserService {
         if (lmsUser.getUserIsDeleted() == null) {
             lmsUser.setUserIsDeleted(false);
         }
-        if(lmsUser.getEmailVerified() == null) {
+        if (lmsUser.getEmailVerified() == null) {
             lmsUser.setEmailVerified(false);
         }
         return lmsUserRepository.save(lmsUser);

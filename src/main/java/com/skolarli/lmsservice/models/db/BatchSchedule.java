@@ -24,11 +24,11 @@ import java.util.List;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @Entity
-@Table(name="batch_schedules")
+@Table(name = "batch_schedules")
 @Where(clause = "batch_schedule_is_deleted is null or batch_schedule_is_deleted = false")
 public class BatchSchedule extends Tenantable {
     public static final Logger logger = LoggerFactory.getLogger(BatchSchedule.class);
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -57,32 +57,33 @@ public class BatchSchedule extends Tenantable {
     private Boolean batchScheduleIsDeleted;
 
     public void update(BatchSchedule newBatchSchedule) {
-        if(newBatchSchedule.getId() != 0) {
+        if (newBatchSchedule.getId() != 0) {
             logger.error("Cannot update id");
         }
         if (newBatchSchedule.getBatch() != null) {
             this.batch = newBatchSchedule.getBatch();
         }
-        if(newBatchSchedule.getMeetingLink() != null) {
+        if (newBatchSchedule.getMeetingLink() != null) {
             this.meetingLink = newBatchSchedule.getMeetingLink();
         }
-        if(newBatchSchedule.getTitle() != null) {
+        if (newBatchSchedule.getTitle() != null) {
             this.title = newBatchSchedule.getTitle();
         }
-        if(newBatchSchedule.getDescription() != null) {
+        if (newBatchSchedule.getDescription() != null) {
             this.description = newBatchSchedule.getDescription();
         }
-        if(newBatchSchedule.getStartDateTime() != null) {
+        if (newBatchSchedule.getStartDateTime() != null) {
             this.startDateTime = newBatchSchedule.getStartDateTime();
         }
-        if(newBatchSchedule.getEndDateTime() != null) {
+        if (newBatchSchedule.getEndDateTime() != null) {
             this.endDateTime = newBatchSchedule.getEndDateTime();
         }
-        if(newBatchSchedule.getAttendanceList() != null &&
+        if (newBatchSchedule.getAttendanceList() != null &&
                 !newBatchSchedule.getAttendanceList().isEmpty()) {
             newBatchSchedule.getAttendanceList().forEach(attendance -> {
-                if (!this.getAttendanceList().contains(attendance)) 
+                if (!this.getAttendanceList().contains(attendance)) {
                     this.getAttendanceList().add(attendance);
+                }
             });
         }
     }

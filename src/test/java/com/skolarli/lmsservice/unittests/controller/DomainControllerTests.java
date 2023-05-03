@@ -47,7 +47,7 @@ class DomainControllerTests {
 
 
     @BeforeEach
-    public  void setup() throws Exception {
+    public void setup() throws Exception {
         currentUser1 = new LmsUser();
         currentUser1.setId(1);
         currentUser1.setFirstName("Jaya");
@@ -58,7 +58,7 @@ class DomainControllerTests {
         currentUser1.setIsInstructor(false);
         currentUser1.setIsStudent(false);
 
-        currentUser2 = new  LmsUser();
+        currentUser2 = new LmsUser();
         currentUser2.setId(2);
         currentUser2.setFirstName("Jaya");
         currentUser2.setLastName("Nair");
@@ -82,17 +82,17 @@ class DomainControllerTests {
     }
 
     @Test
-    void updateDomainTestSuccess() throws Exception{
+    void updateDomainTestSuccess() throws Exception {
         when(userUtils.getCurrentUser()).thenReturn(currentUser1);
         when(tenantService.updateTenant(newTenant)).thenReturn(newTenant);
         String tenantJson = mapper.writeValueAsString(newTenant);
 
         mockMvc.perform(
-                MockMvcRequestBuilders.put("/domain")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(tenantJson)
-                        .accept(MediaType.APPLICATION_JSON)
-        ).andExpect(status().isOk())
+                        MockMvcRequestBuilders.put("/domain")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(tenantJson)
+                                .accept(MediaType.APPLICATION_JSON)
+                ).andExpect(status().isOk())
                 .andExpect(jsonPath("id", is(1)))
                 .andExpect(jsonPath("companyName", is("MyNewAwesomerCompany")));
         Mockito.verify(userUtils).getCurrentUser();
@@ -101,7 +101,7 @@ class DomainControllerTests {
     }
 
     @Test
-    void updateDomainTestFailureNotAdmin() throws Exception{
+    void updateDomainTestFailureNotAdmin() throws Exception {
         when(userUtils.getCurrentUser()).thenReturn(currentUser2);
         String tenantJson = mapper.writeValueAsString(newTenant);
 
@@ -115,11 +115,11 @@ class DomainControllerTests {
     }
 
     @Test
-    void updateDomainTestFailureUpdateException() throws Exception{
+    void updateDomainTestFailureUpdateException() throws Exception {
         when(userUtils.getCurrentUser()).thenReturn(currentUser1);
         when(tenantService.updateTenant(newTenant)).thenThrow(
                 new OperationNotSupportedException("Operation not supported"));
-        
+
         String tenantJson = mapper.writeValueAsString(newTenant);
 
         mockMvc.perform(

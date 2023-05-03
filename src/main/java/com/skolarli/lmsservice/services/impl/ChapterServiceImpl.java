@@ -40,14 +40,10 @@ public class ChapterServiceImpl implements ChapterService {
 
     private Boolean checkPermission(Chapter chapter) {
         LmsUser currentUser = userUtils.getCurrentUser();
-        if (currentUser.getIsAdmin() != true && currentUser !=
-                chapter.getCourse().getCourseOwner()) {
-            return false;
-        }
-        return true;
+        return currentUser.getIsAdmin() || currentUser == chapter.getCourse().getCourseOwner();
     }
 
-    private int getHighestSortOrder(long courseId){
+    private int getHighestSortOrder(long courseId) {
         return chapterRepository.findMaxChapterSortOrder(courseId);
     }
 
@@ -62,12 +58,12 @@ public class ChapterServiceImpl implements ChapterService {
         if (newChapterRequest.getChapterSortOrder() == 0) {
             newChapterRequest.setChapterSortOrder(getHighestSortOrder(courseId) + 1);
         }
-        
+
         chapter.setChapterSortOrder(newChapterRequest.getChapterSortOrder());
         chapter.setCourse(courseService.getCourseById(courseId));
         chapter.setChapterIsDeleted(false);
 
-        return  chapter;
+        return chapter;
     }
 
     @Override
@@ -98,7 +94,7 @@ public class ChapterServiceImpl implements ChapterService {
 
     @Override
     public Chapter saveChapter(Chapter chapter) {
-        if (checkPermission(chapter) == false) {
+        if (!checkPermission(chapter)) {
             throw new OperationNotSupportedException("Operation not supported");
         }
         return chapterRepository.save(chapter);
@@ -108,7 +104,7 @@ public class ChapterServiceImpl implements ChapterService {
     public Chapter updateChapter(Chapter chapter, long id) {
         Chapter existingChapter = chapterRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Chapter", "Id", id));
-        if (checkPermission(existingChapter) == false) {
+        if (!checkPermission(existingChapter)) {
             throw new OperationNotSupportedException("User does not have permissions to " +
                     "update this chapter");
         }
@@ -121,14 +117,15 @@ public class ChapterServiceImpl implements ChapterService {
     }
 
     @Override
-    public List<ChapterSortOrderResponse> updateChaptersSortOrder(Long courseId,
+    public List<ChapterSortOrderResponse> updateChaptersSortOrder(
+            Long courseId,
             List<ChapterSortOrderRequest> chaptersSortOrderList) {
         List<Chapter> chapters = getChaptersByCourseId(courseId);
-        for (Chapter chapter: chapters) {
-            for (ChapterSortOrderRequest chapterSortOrder: chaptersSortOrderList) {
-                if (chapterSortOrder.getChapterSortOrder() > 0 &&  
-                    chapter.getId() == chapterSortOrder.getChapterId()) {
-                        
+        for (Chapter chapter : chapters) {
+            for (ChapterSortOrderRequest chapterSortOrder : chaptersSortOrderList) {
+                if (chapterSortOrder.getChapterSortOrder() > 0 &&
+                        chapter.getId() == chapterSortOrder.getChapterId()) {
+
                     chapter.setChapterSortOrder(chapterSortOrder.getChapterSortOrder());
                 }
             }
@@ -141,7 +138,7 @@ public class ChapterServiceImpl implements ChapterService {
     public void deleteChapter(long id) {
         Chapter existingChapter = chapterRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Chapter", "Id", id));
-        if (checkPermission(existingChapter) == false) {
+        if (!checkPermission(existingChapter)) {
             throw new OperationNotSupportedException("User does not have permissions to delete " +
                     "this chapter");
         }
@@ -153,7 +150,7 @@ public class ChapterServiceImpl implements ChapterService {
     public void hardDeleteChapter(long id) {
         Chapter existingChapter = chapterRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Chapter", "Id", id));
-        if (checkPermission(existingChapter) == false) {
+        if (!checkPermission(existingChapter)) {
             throw new OperationNotSupportedException("User does not have permissions to delete" +
                     " this chapter");
         }

@@ -17,7 +17,7 @@ public class AbstractContainerBaseTest {
             .withPassword("Test");
 
     @DynamicPropertySource
-    public static void overrideProperties(DynamicPropertyRegistry registry){
+    public static void overrideProperties(DynamicPropertyRegistry registry) {
         registry.add("spring.datasource.url", container::getJdbcUrl);
         registry.add("spring.datasource.username", container::getUsername);
         registry.add("spring.datasource.password", container::getPassword);

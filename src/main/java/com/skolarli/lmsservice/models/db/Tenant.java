@@ -15,7 +15,7 @@ import org.hibernate.annotations.Where;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name="tenants", uniqueConstraints = @UniqueConstraint(name= "domainname",
+@Table(name = "tenants", uniqueConstraints = @UniqueConstraint(name = "domainname",
         columnNames = "domainName"))
 @Where(clause = "tenant_is_deleted is null or tenant_is_deleted = false")
 public class Tenant {

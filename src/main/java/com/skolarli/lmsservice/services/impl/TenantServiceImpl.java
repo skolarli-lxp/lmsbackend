@@ -22,8 +22,8 @@ public class TenantServiceImpl implements TenantService {
     Logger logger = LoggerFactory.getLogger(TenantServiceImpl.class);
     private final TenantRepository tenantRepository;
 
-    private TenantContext tenantContext;
-    private UserUtils userUtils;
+    private final TenantContext tenantContext;
+    private final UserUtils userUtils;
 
     public TenantServiceImpl(TenantRepository tenantRepository,
                              TenantContext tenantContext, UserUtils userUtils) {
@@ -41,7 +41,7 @@ public class TenantServiceImpl implements TenantService {
         return restrictedList.contains(domainName);
     }
 
-    
+
     @Override
     public List<Tenant> getAllTenants() {
         return tenantRepository.findAll();
@@ -76,7 +76,7 @@ public class TenantServiceImpl implements TenantService {
     @Override
     public Tenant saveTenant(Tenant tenant) {
         String domainName = tenant.getDomainName();
-        if(domainName == null || domainName.isEmpty() || isRestrictedDomainName(domainName)) {
+        if (domainName == null || domainName.isEmpty() || isRestrictedDomainName(domainName)) {
             throw new OperationNotSupportedException("Domain name is not allowed");
         }
         tenant.setTenantIsDeleted(false);
@@ -88,7 +88,7 @@ public class TenantServiceImpl implements TenantService {
     public Tenant updateTenant(Tenant tenant) {
         long id = tenantContext.getTenantId();
         Tenant existingTenant = tenantRepository.findById(id).orElseThrow(
-                () ->  new ResourceNotFoundException("Tenant", "Id", id)
+                () -> new ResourceNotFoundException("Tenant", "Id", id)
         );
         existingTenant.update(tenant);
         tenantRepository.save(existingTenant);
@@ -125,9 +125,6 @@ public class TenantServiceImpl implements TenantService {
     @Override
     public Boolean isUniqueDomainName(String domainName) {
         List<String> domainNames = getAllDomainNames();
-        if (domainNames.stream().anyMatch(domainName::equalsIgnoreCase)) {
-            return false;
-        }
-        return true;
+        return domainNames.stream().noneMatch(domainName::equalsIgnoreCase);
     }
 }

@@ -37,7 +37,7 @@ public class BatchController {
 
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<List<Batch>> getAllBatches(@RequestParam(required = false)
-                                                         Long courseId) {
+                                                     Long courseId) {
         if (courseId != null) {
             try {
                 return new ResponseEntity<>(batchService.getBatchesForCourse(courseId),
@@ -85,25 +85,25 @@ public class BatchController {
 
         try {
             return new ResponseEntity<>(batchService.saveBatch(batch), HttpStatus.CREATED);
-        }catch (OperationNotSupportedException e){
-            throw new ResponseStatusException( HttpStatus.FORBIDDEN, e.getMessage());
-        }catch (Exception e) {
+        } catch (OperationNotSupportedException e) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
+        } catch (Exception e) {
             logger.error("Error in addBatch: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
 
     @RequestMapping(method = RequestMethod.PUT, value = "{id}")
-        public ResponseEntity<Batch> updateBatch(@PathVariable long id,
-                                                 @RequestBody NewBatchRequest batchRequest) {
+    public ResponseEntity<Batch> updateBatch(@PathVariable long id,
+                                             @RequestBody NewBatchRequest batchRequest) {
         Batch batch = batchService.toBatch(batchRequest);
-        logger.info("Received request for updating batch batchID: " + id );
+        logger.info("Received request for updating batch batchID: " + id);
 
         try {
             return new ResponseEntity<>(batchService.updateBatch(batch, id), HttpStatus.OK);
-        }catch (OperationNotSupportedException e){
-            throw new ResponseStatusException( HttpStatus.FORBIDDEN, e.getMessage());
-        }catch (Exception e) {
+        } catch (OperationNotSupportedException e) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
+        } catch (Exception e) {
             logger.error("Error in updateBatch: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
@@ -118,8 +118,8 @@ public class BatchController {
         try {
             batchService.deleteBatch(id);
             return new ResponseEntity<>("Batch Deleted !", HttpStatus.OK);
-        } catch (OperationNotSupportedException e){
-            throw new ResponseStatusException( HttpStatus.FORBIDDEN, e.getMessage());
+        } catch (OperationNotSupportedException e) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
         } catch (Exception e) {
             logger.error("Error in deleteBatch: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
@@ -135,13 +135,13 @@ public class BatchController {
         try {
             batchService.hardDeleteBatch(id);
             return new ResponseEntity<>("Batch Deleted !", HttpStatus.OK);
-        } catch (OperationNotSupportedException e){
-            throw new ResponseStatusException( HttpStatus.FORBIDDEN, e.getMessage());
+        } catch (OperationNotSupportedException e) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
         } catch (Exception e) {
             logger.error("Error in deleteBatch: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
 
-    
+
 }

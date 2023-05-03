@@ -13,8 +13,8 @@ public class UserUtils {
         this.lmsUserService = lmsUserService;
     }
 
-    public  LmsUser getCurrentUser(){
-        String userName = (String)SecurityContextHolder.getContext()
+    public LmsUser getCurrentUser() {
+        String userName = (String) SecurityContextHolder.getContext()
                 .getAuthentication().getPrincipal();
         return lmsUserService.getLmsUserByEmail(userName);
     }

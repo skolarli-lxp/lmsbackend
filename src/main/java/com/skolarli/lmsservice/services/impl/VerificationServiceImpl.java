@@ -15,13 +15,13 @@ import com.skolarli.lmsservice.services.VerificationService;
 import net.bytebuddy.utility.RandomString;
 
 @Service
-public class VerificationServiceImpl implements VerificationService{
+public class VerificationServiceImpl implements VerificationService {
 
     VerificationCodeRepository verificationCodeRepository;
     LmsUserRepository lmsUserRepository;
 
-    public VerificationServiceImpl(VerificationCodeRepository verificationCodeRepository, 
-                                    LmsUserRepository lmsUserRepository) {
+    public VerificationServiceImpl(VerificationCodeRepository verificationCodeRepository,
+                                   LmsUserRepository lmsUserRepository) {
         this.verificationCodeRepository = verificationCodeRepository;
         this.lmsUserRepository = lmsUserRepository;
     }
@@ -70,7 +70,7 @@ public class VerificationServiceImpl implements VerificationService{
         Date expiryDate = code.getExpiryDate();
         if (expiryDate != null && expiryDate.before(new Date())) {
             return false;
-        } 
+        }
         LmsUser user = code.getUser();
         user.setEmailVerified(true);
         lmsUserRepository.save(user);

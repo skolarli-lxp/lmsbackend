@@ -11,12 +11,12 @@ public class HealthController {
     Logger logger = LoggerFactory.getLogger(HealthController.class);
 
     @RequestMapping("/gethealth")
-    public String getHealth(){
+    public String getHealth() {
         return "OK";
     }
 
     @RequestMapping("/gethealthnoauth")
-    public String getHealthOpen(){
+    public String getHealthOpen() {
         logger.info("Health controller: No auth");
         return "OK";
     }

@@ -20,7 +20,7 @@ import java.util.Optional;
 public class CourseServiceImpl implements CourseService {
 
     Logger logger = LoggerFactory.getLogger(CourseServiceImpl.class);
-    private CourseRepository courseRepository;
+    private final CourseRepository courseRepository;
 
     private final UserUtils userUtils;
 
@@ -40,7 +40,7 @@ public class CourseServiceImpl implements CourseService {
         List<Course> course = courseRepository.findAllById(new ArrayList<>(List.of(id)));
 
         if (course.isEmpty()) {
-            throw new ResourceNotFoundException("Course","Id", id);
+            throw new ResourceNotFoundException("Course", "Id", id);
         }
         return course.get(0);
     }
@@ -58,9 +58,9 @@ public class CourseServiceImpl implements CourseService {
      * Update exsiting course with content of course 
      * Update will proceed only if the current user is an admin user. 
      * Else throws OperationNotSupportedException 
-     * 
+     *
      * @param course
-     * 
+     *
      * @return updated course
      * @throws OperationNotSupportedException
      * @throws ResourceNotFoundException
@@ -70,7 +70,7 @@ public class CourseServiceImpl implements CourseService {
         Course existingCourse = courseRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Course", "Id", id));
 
-        if (currentUser.getIsAdmin() != true && currentUser != existingCourse.getCourseOwner()) {
+        if (!currentUser.getIsAdmin() && currentUser != existingCourse.getCourseOwner()) {
             throw new OperationNotSupportedException("User does not have permission to perform " +
                     "Update operation");
         }
@@ -78,7 +78,7 @@ public class CourseServiceImpl implements CourseService {
             logger.error("Only admin can change course owner");
             newCourse.setCourseOwner(null);
         }
-        
+
         // Update existing Course
         existingCourse.update(newCourse);
         return courseRepository.save(existingCourse);
@@ -95,7 +95,7 @@ public class CourseServiceImpl implements CourseService {
                     "Delete operation");
         }
         existingCourse.setCourseDeleted(true);
-        
+
         courseRepository.save(existingCourse);
     }
 
