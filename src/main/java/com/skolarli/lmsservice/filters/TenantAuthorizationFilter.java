@@ -24,9 +24,12 @@ public class TenantAuthorizationFilter extends OncePerRequestFilter {
     TenantService tenantService;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
         logger.info("Tenant Authorization Filter");
-        TenantAuthenticationToken tenantAuthenticationToken = getTenantAuthenticationToken(request.getHeader("Domain"));
+        TenantAuthenticationToken tenantAuthenticationToken = getTenantAuthenticationToken(
+                request.getHeader("Domain"));
         SecurityContextHolder.getContext().setAuthentication(tenantAuthenticationToken);
         logger.info("Set Authentication");
         filterChain.doFilter(request, response);

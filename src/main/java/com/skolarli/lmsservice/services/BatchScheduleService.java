@@ -24,8 +24,10 @@ public interface BatchScheduleService {
     //DELETE
     void deleteBatchSchedule(long id);
     void hardDeleteBatchSchedule(long id);
-    BatchSchedule toBatchSchedule(NewBatchSchedulesForBatchRequest newBatchSchedulesForBatchRequest);
+    BatchSchedule toBatchSchedule(
+            NewBatchSchedulesForBatchRequest newBatchSchedulesForBatchRequest);
     BatchSchedule toBatchSchedule(NewBatchScheduleRequest newBatchScheduleRequest);
 
-    List<BatchSchedule> toBatchScheduleList(List<NewBatchSchedulesForBatchRequest> newBatchSchedulesForBatchRequests);
+    List<BatchSchedule> toBatchScheduleList(
+            List<NewBatchSchedulesForBatchRequest> newBatchSchedulesForBatchRequests);
 }

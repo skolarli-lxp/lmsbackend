@@ -25,7 +25,8 @@ public class TenantServiceImpl implements TenantService {
     private TenantContext tenantContext;
     private UserUtils userUtils;
 
-    public TenantServiceImpl(TenantRepository tenantRepository, TenantContext tenantContext, UserUtils userUtils) {
+    public TenantServiceImpl(TenantRepository tenantRepository,
+                             TenantContext tenantContext, UserUtils userUtils) {
         super();
         this.tenantRepository = tenantRepository;
         this.tenantContext = tenantContext;
@@ -101,7 +102,8 @@ public class TenantServiceImpl implements TenantService {
 //                () ->  new ResourceNotFoundException("Tenant", "Id", id)
 //        );
 //        if (!userUtils.getCurrentUser().getIsAdmin()) {
-//            throw new OperationNotSupportedException("User does not have permission to perform this operation");
+//            throw new OperationNotSupportedException("User does not have permission
+//            to perform this operation");
 //        }
 //        existingTenant.setTenantIsDeleted(true);
 //        tenantRepository.save(existingTenant);
@@ -114,7 +116,8 @@ public class TenantServiceImpl implements TenantService {
 //                () ->  new ResourceNotFoundException("Tenant", "Id", id)
 //        );
 //        if (!userUtils.getCurrentUser().getIsAdmin()) {
-//            throw new OperationNotSupportedException("User does not have permission to perform this operation");
+//            throw new OperationNotSupportedException("User does not have permission to
+//            perform this operation");
 //        }
 //        tenantRepository.delete(existingTenant);
     }

@@ -18,8 +18,9 @@ public interface ChapterService {
     Chapter saveChapter(Chapter chapter);
     
     Chapter updateChapter(Chapter chapter, long id);
-    List<ChapterSortOrderResponse> updateChaptersSortOrder(Long courseId, 
-                                                        List<ChapterSortOrderRequest> chaptersSortOrder);
+    List<ChapterSortOrderResponse> updateChaptersSortOrder(
+            Long courseId,
+            List<ChapterSortOrderRequest> chaptersSortOrder);
 
     void deleteChapter(long id);
     void hardDeleteChapter(long id);

@@ -14,7 +14,8 @@ public class UserUtils {
     }
 
     public  LmsUser getCurrentUser(){
-        String userName = (String)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String userName = (String)SecurityContextHolder.getContext()
+                .getAuthentication().getPrincipal();
         return lmsUserService.getLmsUserByEmail(userName);
     }
 }

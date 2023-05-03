@@ -65,7 +65,8 @@ class AuthControllerTests {
         lmsUser = new LmsUser();
         lmsUser.setEmailVerified(true);
 
-        authenticationRequest = new AuthenticationRequest("mymockusername","mymockpassword");
+        authenticationRequest = new AuthenticationRequest("mymockusername",
+                "mymockpassword");
 
 
     }
@@ -73,11 +74,14 @@ class AuthControllerTests {
     @Test
     void updateDomainTestSuccess() throws Exception{
         when(authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                authenticationRequest.getUsername(), authenticationRequest.getPassword()))).thenReturn(null);
-        when(userDetailsService.loadUserByUsername(authenticationRequest.getUsername())).thenReturn(userDetails);
+                authenticationRequest.getUsername(), authenticationRequest.getPassword())))
+                .thenReturn(null);
+        when(userDetailsService.loadUserByUsername(authenticationRequest.getUsername()))
+                .thenReturn(userDetails);
         when(jwtUtil.generateToken(userDetails)).thenReturn("my-mock-jwt-token");
         when(tenantContext.getTenantId()).thenReturn(1L);
-        when(lmsUserService.getLmsUserByEmailAndTenantId(anyString(), anyLong())).thenReturn(lmsUser);
+        when(lmsUserService.getLmsUserByEmailAndTenantId(anyString(), anyLong()))
+                .thenReturn(lmsUser);
 
         String requestJson = mapper.writeValueAsString(authenticationRequest);
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
@@ -108,7 +112,8 @@ class AuthControllerTests {
         when(userDetailsService.loadUserByUsername(authenticationRequest.getUsername()))
                 .thenReturn(userDetails);
         when(tenantContext.getTenantId()).thenReturn(1L);
-        when(lmsUserService.getLmsUserByEmailAndTenantId(anyString(), anyLong())).thenReturn(lmsUser);
+        when(lmsUserService.getLmsUserByEmailAndTenantId(anyString(), anyLong()))
+                .thenReturn(lmsUser);
 
 
         mockMvc.perform(

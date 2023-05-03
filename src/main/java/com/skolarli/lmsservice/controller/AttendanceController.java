@@ -29,8 +29,10 @@ public class AttendanceController {
     final LmsUserService lmsUserService;
     final UserUtils userUtils;
 
-    public AttendanceController(AttendanceService attendanceService, BatchScheduleService batchScheduleService,
-                                LmsUserService lmsUserService, UserUtils userUtils) {
+    public AttendanceController(AttendanceService attendanceService,
+                                BatchScheduleService batchScheduleService,
+                                LmsUserService lmsUserService,
+                                UserUtils userUtils) {
         this.attendanceService = attendanceService;
         this.batchScheduleService = batchScheduleService;
         this.lmsUserService = lmsUserService;
@@ -38,13 +40,17 @@ public class AttendanceController {
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity<List<Attendance>> getAllAttendances(@RequestParam(required = false) Long batchScheduleId) {
+    public ResponseEntity<List<Attendance>> getAllAttendances(
+            @RequestParam(required = false) Long batchScheduleId) {
         if (batchScheduleId != null) {
             try {
-                return new ResponseEntity<>(attendanceService.getAttendanceForSchedule(batchScheduleId), HttpStatus.OK);
+                return new ResponseEntity<>(
+                        attendanceService.getAttendanceForSchedule(batchScheduleId),
+                        HttpStatus.OK);
             } catch (Exception e) {
                 logger.error("Error in getAllAttendances: " + e.getMessage());
-                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                                                  e.getMessage());
             }
         }
         try {
@@ -66,11 +72,13 @@ public class AttendanceController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<Attendance> addAttendance(@Valid @RequestBody NewAttendanceRequest request) {
+    public ResponseEntity<Attendance> addAttendance(
+            @Valid @RequestBody NewAttendanceRequest request) {
         Attendance attendance = attendanceService.toAttendance(request);
         try {
-            return new ResponseEntity<>(attendanceService.saveAttendance(attendance), HttpStatus.OK);
-        } catch (DataIntegrityViolationException e){
+            return new ResponseEntity<>(attendanceService.saveAttendance(attendance),
+                                        HttpStatus.OK);
+        } catch (DataIntegrityViolationException e) {
             logger.error("Error in addAttendance: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Attendance already exists");
         } catch (Exception e) {
@@ -80,12 +88,14 @@ public class AttendanceController {
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/forschedule")
-    public ResponseEntity<List<Attendance>> addAttendancesForSchedule(@Valid @RequestBody List<NewAttendancesForScheduleRequest> request,
-                                                                      @RequestParam Long batchScheduleId) {
+    public ResponseEntity<List<Attendance>> addAttendancesForSchedule(
+            @Valid @RequestBody List<NewAttendancesForScheduleRequest> request,
+            @RequestParam Long batchScheduleId) {
         List<Attendance> attendances = attendanceService.toAttendances(request, batchScheduleId);
         try {
-            return new ResponseEntity<>(attendanceService.saveAllAttendance(attendances), HttpStatus.OK);
-        } catch(DataIntegrityViolationException e){
+            return new ResponseEntity<>(attendanceService.saveAllAttendance(attendances),
+                                        HttpStatus.OK);
+        } catch (DataIntegrityViolationException e) {
             logger.error("Error in addAttendancesForSchedule: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Attendance already exists");
         } catch (Exception e) {
@@ -95,12 +105,15 @@ public class AttendanceController {
     }
 
     @RequestMapping(method = RequestMethod.PUT, value = "{id}")
-    public ResponseEntity<Attendance> updateAttendance(@PathVariable long id, @Valid @RequestBody NewAttendanceRequest request) {
+    public ResponseEntity<Attendance> updateAttendance(
+            @PathVariable long id,
+            @Valid @RequestBody NewAttendanceRequest request) {
         Attendance attendance = attendanceService.toAttendance(request);
         try {
-            return new ResponseEntity<>(attendanceService.updateAttendance(attendance, id), HttpStatus.OK);
-        }catch (OperationNotSupportedException e) {
-            throw new ResponseStatusException( HttpStatus.FORBIDDEN, e.getMessage());
+            return new ResponseEntity<>(attendanceService.updateAttendance(attendance, id),
+                                        HttpStatus.OK);
+        } catch (OperationNotSupportedException e) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
         } catch (Exception e) {
             logger.error("Error in updateAttendance: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
@@ -111,10 +124,10 @@ public class AttendanceController {
     public ResponseEntity<String> deleteAttendance(@PathVariable long id) {
         try {
             attendanceService.deleteAttendance(id);
-            return new ResponseEntity<>("Attendance Deleted!",HttpStatus.OK);
-        }catch (OperationNotSupportedException e) {
-            throw new ResponseStatusException( HttpStatus.FORBIDDEN, e.getMessage());
-        }catch (Exception e) {
+            return new ResponseEntity<>("Attendance Deleted!", HttpStatus.OK);
+        } catch (OperationNotSupportedException e) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
+        } catch (Exception e) {
             logger.error("Error in deleteAttendance: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
@@ -124,10 +137,10 @@ public class AttendanceController {
     public ResponseEntity<String> hardDeleteAttendance(@PathVariable long id) {
         try {
             attendanceService.hardDeleteAttendance(id);
-            return new ResponseEntity<>("Attendance Deleted!",HttpStatus.OK);
-        }catch (OperationNotSupportedException e) {
-            throw new ResponseStatusException( HttpStatus.FORBIDDEN, e.getMessage());
-        }catch (Exception e) {
+            return new ResponseEntity<>("Attendance Deleted!", HttpStatus.OK);
+        } catch (OperationNotSupportedException e) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
+        } catch (Exception e) {
             logger.error("Error in deleteAttendance: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }

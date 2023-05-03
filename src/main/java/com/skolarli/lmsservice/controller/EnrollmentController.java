@@ -28,10 +28,12 @@ public class EnrollmentController {
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity<List<Enrollment>> getAllEnrollments(@RequestParam(required = false) Long batchId) {
+    public ResponseEntity<List<Enrollment>> getAllEnrollments(@RequestParam(required = false)
+                                                                  Long batchId) {
         if(batchId != null) {
             try {
-                return new ResponseEntity<>(enrollmentService.getEnrollmentsByBatchId(batchId), HttpStatus.OK);
+                return new ResponseEntity<>(enrollmentService.getEnrollmentsByBatchId(batchId),
+                        HttpStatus.OK);
             } catch (Exception e) {
                 logger.error("Error in getAllBatchSchedules: " + e.getMessage());
                 throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
@@ -56,7 +58,8 @@ public class EnrollmentController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<Enrollment> addEnrollment(@Valid @RequestBody NewEnrollmentRequest request) {
+    public ResponseEntity<Enrollment> addEnrollment(@Valid @RequestBody
+                                                        NewEnrollmentRequest request){
         Enrollment enrollment = enrollmentService.toEnrollment(request);
         try {
             return new ResponseEntity<>(enrollmentService.save(enrollment), HttpStatus.OK);
@@ -75,7 +78,8 @@ public class EnrollmentController {
             @RequestParam Long batchId) {
         List<Enrollment> enrollments = enrollmentService.toEnrollmentList(request);
         try {
-            return new ResponseEntity<>(enrollmentService.saveAllEnrollments(enrollments,batchId) , HttpStatus.OK);
+            return new ResponseEntity<>(enrollmentService.saveAllEnrollments(enrollments,batchId) ,
+                    HttpStatus.OK);
         } catch (DataIntegrityViolationException e){
             logger.error("Error in addEnrollment: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Enrollment already exists");
@@ -86,12 +90,15 @@ public class EnrollmentController {
     }
 
     @RequestMapping(method = RequestMethod.PUT, value = "{id}")
-    public ResponseEntity<Enrollment> updateEnrollment(@PathVariable long id, @Valid @RequestBody NewEnrollmentRequest request) {
+    public ResponseEntity<Enrollment> updateEnrollment(
+            @PathVariable long id,
+            @Valid @RequestBody NewEnrollmentRequest request) {
         Enrollment newEnrollment = enrollmentService.toEnrollment(request);
         Enrollment existingEnrollment = enrollmentService.getEnrollmentById(id);
         existingEnrollment.update(newEnrollment);
         try {
-            return new ResponseEntity<>(enrollmentService.updateEnrollment(newEnrollment, id), HttpStatus.OK);
+            return new ResponseEntity<>(enrollmentService.updateEnrollment(newEnrollment, id),
+                    HttpStatus.OK);
         } catch (Exception e) {
             logger.error("Error in updateEnrollment: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());

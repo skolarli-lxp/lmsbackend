@@ -32,8 +32,10 @@ public class AttendanceServiceImpl implements AttendanceService {
     final LmsUserService lmsUserService;
     final BatchScheduleService batchScheduleService;
 
-    public AttendanceServiceImpl(AttendanceRepository attendanceRepository, UserUtils userUtils,
-                                 LmsUserService lmsUserService, BatchScheduleService batchScheduleService) {
+    public AttendanceServiceImpl(AttendanceRepository attendanceRepository,
+                                 UserUtils userUtils,
+                                 LmsUserService lmsUserService,
+                                 BatchScheduleService batchScheduleService) {
         this.attendanceRepository = attendanceRepository;
         this.userUtils = userUtils;
         this.lmsUserService = lmsUserService;
@@ -42,7 +44,8 @@ public class AttendanceServiceImpl implements AttendanceService {
 
     private Boolean checkPermission(Attendance attendance) {
         LmsUser currentUser = userUtils.getCurrentUser();
-        if (currentUser.getIsAdmin() != true && currentUser != attendance.getBatchSchedule().getBatch().getCourse().getCourseOwner()) {
+        if (currentUser.getIsAdmin() != true && currentUser !=
+                attendance.getBatchSchedule().getBatch().getCourse().getCourseOwner()) {
             return false;
         }
         return true;
@@ -50,7 +53,8 @@ public class AttendanceServiceImpl implements AttendanceService {
 
     @Override
     public Attendance toAttendance(NewAttendanceRequest newAttendanceRequest) {
-        BatchSchedule batchSchedule = batchScheduleService.getBatchSchedule(newAttendanceRequest.getBatchScheduleId());
+        BatchSchedule batchSchedule = batchScheduleService.getBatchSchedule(
+                newAttendanceRequest.getBatchScheduleId());
         LmsUser student = lmsUserService.getLmsUserById(newAttendanceRequest.getStudentId());
         Attendance attendance = new Attendance();
         attendance.setBatchSchedule(batchSchedule);
@@ -62,12 +66,14 @@ public class AttendanceServiceImpl implements AttendanceService {
         return attendance;
     }
 
-    public Attendance toAttendance(NewAttendancesForScheduleRequest newAttendancesForScheduleRequest,
-                                   Long batchScheduleId) {
+    public Attendance toAttendance(
+            NewAttendancesForScheduleRequest newAttendancesForScheduleRequest,
+            Long batchScheduleId) {
         Attendance attendance = new Attendance();
 
         if(newAttendancesForScheduleRequest.getStudentId() != 0) {
-            LmsUser student = lmsUserService.getLmsUserById(newAttendancesForScheduleRequest.getStudentId());
+            LmsUser student = lmsUserService.getLmsUserById(
+                    newAttendancesForScheduleRequest.getStudentId());
             attendance.setStudent(student);
         } else {
             throw new OperationNotSupportedException("Student Id is required");
@@ -91,17 +97,20 @@ public class AttendanceServiceImpl implements AttendanceService {
     }
 
     @Override
-    public List<Attendance> toAttendances(List<NewAttendancesForScheduleRequest> newAttendancesForScheduleRequests,
-                                          Long batchScheduleId) {
+    public List<Attendance> toAttendances(
+            List<NewAttendancesForScheduleRequest> newAttendancesForScheduleRequests,
+            Long batchScheduleId) {
         List<Attendance> attendances = newAttendancesForScheduleRequests.stream()
-                .map(newAttendanceForScheduleRequest -> toAttendance(newAttendanceForScheduleRequest, batchScheduleId))
+                .map(newAttendanceForScheduleRequest -> toAttendance
+                        (newAttendanceForScheduleRequest, batchScheduleId))
                 .collect(Collectors.toList());
         return attendances;
     }
 
     @Override
     public Attendance getAttendance(long id) {
-        List<Attendance> existingAttendance =  attendanceRepository.findAllById(new ArrayList<>(List.of(id)));
+        List<Attendance> existingAttendance =  attendanceRepository.findAllById(
+                new ArrayList<>(List.of(id)));
         if (existingAttendance.size() == 0) {
             throw new ResourceNotFoundException("Attendance", "Id", id);
         }
@@ -139,7 +148,8 @@ public class AttendanceServiceImpl implements AttendanceService {
         Attendance existingAttendance = attendanceRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Attendance", "Id", id));
         if (checkPermission(existingAttendance) == false) {
-            throw new OperationNotSupportedException("User does not have permission to update this attendance");
+            throw new OperationNotSupportedException(
+                    "User does not have permission to update this attendance");
         }
         if (newAttendance.getAttendanceIsDeleted() != null) {
             logger.error("Cannot change deleted status. Use delete APIs instead");
@@ -155,7 +165,8 @@ public class AttendanceServiceImpl implements AttendanceService {
         Attendance attendance = attendanceRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Attendance", "Id", id));
         if (checkPermission(attendance) == false) {
-            throw new OperationNotSupportedException("User does not have permission to delete this attendance");
+            throw new OperationNotSupportedException(
+                    "User does not have permission to delete this attendance");
         }
         attendance.setAttendanceIsDeleted(true);
         attendanceRepository.save(attendance);
@@ -166,7 +177,8 @@ public class AttendanceServiceImpl implements AttendanceService {
         Attendance attendance = attendanceRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Attendance", "Id", id));
         if (checkPermission(attendance) == false) {
-            throw new OperationNotSupportedException("User does not have permission to delete this attendance");
+            throw new OperationNotSupportedException(
+                    "User does not have permission to delete this attendance");
         }
         attendanceRepository.delete(attendance);
     }

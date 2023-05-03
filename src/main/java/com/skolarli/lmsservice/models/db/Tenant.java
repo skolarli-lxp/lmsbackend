@@ -15,7 +15,8 @@ import org.hibernate.annotations.Where;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name="tenants", uniqueConstraints = @UniqueConstraint(name= "domainname", columnNames = "domainName"))
+@Table(name="tenants", uniqueConstraints = @UniqueConstraint(name= "domainname",
+        columnNames = "domainName"))
 @Where(clause = "tenant_is_deleted is null or tenant_is_deleted = false")
 public class Tenant {
     @Id
@@ -66,7 +67,8 @@ public class Tenant {
             throw new OperationNotSupportedException("Cannot change tenant id");
         }
         if (tenant.getDomainName() != null && !tenant.getDomainName().equals(this.domainName)) {
-            throw new OperationNotSupportedException("Cannot update domainname for existing tenant");
+            throw new OperationNotSupportedException(
+                    "Cannot update domainname for existing tenant");
         }
         if (tenant.getCompanyName() != null && !tenant.getCompanyName().isEmpty()) {
             this.setCompanyName(tenant.getCompanyName());

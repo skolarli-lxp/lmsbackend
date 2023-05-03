@@ -199,7 +199,8 @@ public class Lesson extends Tenantable{
         if (lesson.getPresentationTitle() != null && !lesson.getPresentationTitle().isEmpty()) {
             this.setPresentationTitle(lesson.getPresentationTitle());
         }
-        if (lesson.getPresentationDescription() != null && !lesson.getPresentationDescription().isEmpty()) {
+        if (lesson.getPresentationDescription() != null &&
+                !lesson.getPresentationDescription().isEmpty()) {
             this.setPresentationDescription(lesson.getPresentationDescription());
         }
         if (lesson.getPresentationUrl() != null && !lesson.getPresentationUrl().isEmpty()) {
@@ -216,7 +217,8 @@ public class Lesson extends Tenantable{
         if (lesson.getDownloadablesTitle() != null && !lesson.getDownloadablesTitle().isEmpty()) {
             this.setDownloadablesTitle(lesson.getDownloadablesTitle());
         }
-        if (lesson.getDownloadablesDescription() != null && !lesson.getDownloadablesDescription().isEmpty()) {
+        if (lesson.getDownloadablesDescription() != null &&
+                !lesson.getDownloadablesDescription().isEmpty()) {
             this.setDownloadablesDescription(lesson.getDownloadablesDescription());
         }
         if (lesson.getDownloadablesUrl() != null && !lesson.getDownloadablesUrl().isEmpty()) {
@@ -260,7 +262,8 @@ public class Lesson extends Tenantable{
         return lessonSortOrderResponse;
     }
 
-    public static List<LessonSortOrderResponse> toLessonSortOrderResponseList(List<Lesson> lessons) {
+    public static List<LessonSortOrderResponse> toLessonSortOrderResponseList(
+            List<Lesson> lessons) {
         return lessons.stream().map(lesson -> {
             return lesson.toLessonSortOrderResponse();
         }).collect(Collectors.toList());

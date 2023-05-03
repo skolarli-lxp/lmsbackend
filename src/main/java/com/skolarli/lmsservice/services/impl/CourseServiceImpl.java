@@ -71,7 +71,8 @@ public class CourseServiceImpl implements CourseService {
                 () -> new ResourceNotFoundException("Course", "Id", id));
 
         if (currentUser.getIsAdmin() != true && currentUser != existingCourse.getCourseOwner()) {
-            throw new OperationNotSupportedException("User does not have permission to perform Update operation");
+            throw new OperationNotSupportedException("User does not have permission to perform " +
+                    "Update operation");
         }
         if (!currentUser.getIsAdmin() && newCourse.getCourseOwner() != null) {
             logger.error("Only admin can change course owner");
@@ -90,7 +91,8 @@ public class CourseServiceImpl implements CourseService {
         Course existingCourse = courseRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Course", "Id", id));
         if (!currentUser.getIsAdmin() && currentUser != existingCourse.getCourseOwner()) {
-            throw new OperationNotSupportedException("User does not have permission to perform Delete operation");
+            throw new OperationNotSupportedException("User does not have permission to perform " +
+                    "Delete operation");
         }
         existingCourse.setCourseDeleted(true);
         
@@ -103,7 +105,8 @@ public class CourseServiceImpl implements CourseService {
         Course existingCourse = courseRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Course", "Id", id));
         if (!currentUser.getIsAdmin() && currentUser != existingCourse.getCourseOwner()) {
-            throw new OperationNotSupportedException("User does not have permission to perform Delete operation");
+            throw new OperationNotSupportedException("User does not have permission to perform " +
+                    "Delete operation");
         }
         courseRepository.delete(existingCourse);
     }

@@ -33,7 +33,8 @@ public class LmsUserServiceImpl implements LmsUserService {
     }
 
     private  LmsUser getCurrentUser(){
-        String userName = (String)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String userName = (String)SecurityContextHolder.getContext()
+                .getAuthentication().getPrincipal();
         return getLmsUserByEmail(userName);
     }
 
@@ -170,7 +171,8 @@ public class LmsUserServiceImpl implements LmsUserService {
             existingUser.setUserIsDeleted(true);
             lmsUserRepository.save(existingUser);
         } else {
-            throw new OperationNotSupportedException("User does not have permission to perform Delete operation");
+            throw new OperationNotSupportedException("User does not have permission to perform " +
+                    "Delete operation");
         }
     }
 
@@ -179,7 +181,8 @@ public class LmsUserServiceImpl implements LmsUserService {
         LmsUser existingUser = lmsUserRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("LmsUser", "Id", id));
         if (!getCurrentUser().getIsAdmin()) {
-            throw new OperationNotSupportedException("User does not have permission to perform Delete operation");
+            throw new OperationNotSupportedException("User does not have permission to perform " +
+                    "Delete operation");
         }
         lmsUserRepository.delete(existingUser);
     }

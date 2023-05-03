@@ -30,7 +30,8 @@ public class BatchScheduleServiceImpl implements BatchScheduleService {
 
     final BatchService batchService;
 
-    public BatchScheduleServiceImpl(BatchScheduleRepository batchScheduleRepository, UserUtils userUtils, BatchService batchService) {
+    public BatchScheduleServiceImpl(BatchScheduleRepository batchScheduleRepository,
+                                    UserUtils userUtils, BatchService batchService) {
         this.batchScheduleRepository = batchScheduleRepository;
         this.userUtils = userUtils;
         this.batchService = batchService;
@@ -38,7 +39,8 @@ public class BatchScheduleServiceImpl implements BatchScheduleService {
 
     private Boolean checkPermissions (BatchSchedule existingBatchSchedule) {
         LmsUser currentUser = userUtils.getCurrentUser();
-        if (currentUser.getIsAdmin() != true && currentUser != existingBatchSchedule.getBatch().getCourse().getCourseOwner()) {
+        if (currentUser.getIsAdmin() != true && currentUser !=
+                existingBatchSchedule.getBatch().getCourse().getCourseOwner()) {
             return false;
         }
         return true;
@@ -46,16 +48,20 @@ public class BatchScheduleServiceImpl implements BatchScheduleService {
 
     private Boolean checkPermissions (Batch existingBatch) {
         LmsUser currentUser = userUtils.getCurrentUser();
-        if (currentUser.getIsAdmin() != true && currentUser != existingBatch.getCourse().getCourseOwner()) {
+        if (currentUser.getIsAdmin() != true && currentUser !=
+                existingBatch.getCourse().getCourseOwner()) {
             return false;
         }
         return true;
     }
 
     @Override
-    public BatchSchedule toBatchSchedule(NewBatchSchedulesForBatchRequest newBatchSchedulesForBatchRequest) {
-        if(newBatchSchedulesForBatchRequest.getEndDateTime().before(newBatchSchedulesForBatchRequest.getStartDateTime())) {
-            throw new OperationNotSupportedException("End date time cannot be before start date time");
+    public BatchSchedule toBatchSchedule(
+            NewBatchSchedulesForBatchRequest newBatchSchedulesForBatchRequest) {
+        if(newBatchSchedulesForBatchRequest.getEndDateTime().before(
+                newBatchSchedulesForBatchRequest.getStartDateTime())) {
+            throw new OperationNotSupportedException(
+                    "End date time cannot be before start date time");
         }
         BatchSchedule batchSchedule = new BatchSchedule();
         if (newBatchSchedulesForBatchRequest.getStartDateTime() != null) {
@@ -78,13 +84,16 @@ public class BatchScheduleServiceImpl implements BatchScheduleService {
 
     @Override
     public BatchSchedule toBatchSchedule(NewBatchScheduleRequest newBatchScheduleRequest) {
-        if (newBatchScheduleRequest.getEndDateTime().before(newBatchScheduleRequest.getStartDateTime())) {
-            throw new OperationNotSupportedException("End date time cannot be before start date time");
+        if (newBatchScheduleRequest.getEndDateTime().before(
+                newBatchScheduleRequest.getStartDateTime())) {
+            throw new OperationNotSupportedException(
+                    "End date time cannot be before start date time");
         }
         Batch batch = batchService.getBatch(newBatchScheduleRequest.getBatchId());
         // TODO: throw BAD REQUEST from controller in this case
         if (batch == null) {
-            throw new ResourceNotFoundException("Batch", "Id", newBatchScheduleRequest.getBatchId());
+            throw new ResourceNotFoundException("Batch", "Id",
+                    newBatchScheduleRequest.getBatchId());
         }
         BatchSchedule batchSchedule = new BatchSchedule();
         batchSchedule.setBatch(batch);
@@ -102,7 +111,8 @@ public class BatchScheduleServiceImpl implements BatchScheduleService {
     }
 
     @Override
-    public List<BatchSchedule> toBatchScheduleList(List<NewBatchSchedulesForBatchRequest> newBatchSchedulesForBatchRequests) {
+    public List<BatchSchedule> toBatchScheduleList(
+            List<NewBatchSchedulesForBatchRequest> newBatchSchedulesForBatchRequests) {
         List<BatchSchedule> batchSchedules = newBatchSchedulesForBatchRequests.stream().map(
                 this::toBatchSchedule).collect(Collectors.toList());
         return batchSchedules;
@@ -110,7 +120,8 @@ public class BatchScheduleServiceImpl implements BatchScheduleService {
 
     @Override
     public BatchSchedule getBatchSchedule(long id) {
-        List<BatchSchedule> existingBatchSchedule = batchScheduleRepository.findAllById(new ArrayList<>(List.of(id)));
+        List<BatchSchedule> existingBatchSchedule = batchScheduleRepository.findAllById(
+                new ArrayList<>(List.of(id)));
         if (existingBatchSchedule.size() == 0) {
             throw new ResourceNotFoundException("BatchSchedule", "Id", id);
         }
@@ -138,7 +149,8 @@ public class BatchScheduleServiceImpl implements BatchScheduleService {
     }
 
     @Override
-    public List<BatchSchedule> saveAllBatchSchedules(List<BatchSchedule> batchSchedules, Long batchId) {
+    public List<BatchSchedule> saveAllBatchSchedules(List<BatchSchedule> batchSchedules,
+                                                     Long batchId) {
         Batch existingBatch = batchService.getBatch(batchId);
         if (checkPermissions(batchSchedules.get(0)) == false) {
             throw new OperationNotSupportedException("Operation not supported");
@@ -154,8 +166,10 @@ public class BatchScheduleServiceImpl implements BatchScheduleService {
         BatchSchedule existingBatchSchedule = batchScheduleRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("BatchSchedule", "Id", id));
         LmsUser currentUser = userUtils.getCurrentUser();
-        if (currentUser.getIsAdmin() != true && currentUser != existingBatchSchedule.getBatch().getCourse().getCourseOwner()) {
-            throw new OperationNotSupportedException("Operation not supported: Permission Denied");
+        if (currentUser.getIsAdmin() != true && currentUser !=
+                existingBatchSchedule.getBatch().getCourse().getCourseOwner()) {
+            throw new OperationNotSupportedException(
+                    "Operation not supported: Permission Denied");
         }
         if (batchSchedule.getBatchScheduleIsDeleted() != null) {
             logger.error("Cannot change deleted status. Use Delete API");

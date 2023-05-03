@@ -102,9 +102,11 @@ public class Course extends Tenantable {
     /**
      * Updates the course with the values in the passed object
      * All fields except for Id will be updated with the passed value if it is not null
-     * This method does not care about permissions. It is assumed that the caller has already checked for permissions.
+     * This method does not care about permissions.
+     * It is assumed that the caller has already checked for permissions.
      * Permission should be handled in the service layer.
-     * List of items like batches, lesson etc are only updated with additional values. Existing values are not deleted.
+     * List of items like batches, lesson etc are only updated with additional values.
+     * Existing values are not deleted.
      * 
      * @param course
      */
@@ -154,10 +156,12 @@ public class Course extends Tenantable {
         if (course.getCourseSeoTitleTag() != null && !course.getCourseSeoTitleTag().isEmpty()) {
             this.setCourseSeoTitleTag(course.getCourseSeoTitleTag());
         }
-        if (course.getCourseSeoDescription() != null && !course.getCourseSeoDescription().isEmpty()) {
+        if (course.getCourseSeoDescription() != null &&
+                !course.getCourseSeoDescription().isEmpty()) {
             this.setCourseSeoDescription(course.getCourseSeoDescription());
         }
-        if (course.getCourseMetaTagKeywords() != null && !course.getCourseMetaTagKeywords().isEmpty()) {
+        if (course.getCourseMetaTagKeywords() != null &&
+                !course.getCourseMetaTagKeywords().isEmpty()) {
             this.setCourseMetaTagKeywords(course.getCourseMetaTagKeywords());
         }
         if (course.getCourseCoverImage() != null && !course.getCourseCoverImage().isEmpty()) {

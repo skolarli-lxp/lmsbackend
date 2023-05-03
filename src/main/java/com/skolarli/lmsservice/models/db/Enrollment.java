@@ -21,7 +21,8 @@ import org.slf4j.LoggerFactory;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name="enrollment", uniqueConstraints = @UniqueConstraint(name= "dupenrollment", columnNames = {"student_id", "batch_id"}))
+@Table(name="enrollment", uniqueConstraints = @UniqueConstraint(name= "dupenrollment",
+        columnNames = {"student_id", "batch_id"}))
 @Where(clause = "enrollment_is_deleted is null or enrollment_is_deleted = false")
 public class Enrollment extends Tenantable {
     private static final Logger logger = LoggerFactory.getLogger(Enrollment.class);

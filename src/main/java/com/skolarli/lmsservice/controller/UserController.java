@@ -63,7 +63,8 @@ public class UserController {
     public ResponseEntity<LmsUser> getUserByEmail(@PathVariable String email) {
         logger.info("Received Get User request Email: " + email);
         long tenantId = tenantContext.getTenantId();
-        return new ResponseEntity<>(lmsUserService.getLmsUserByEmailAndTenantId(email, tenantId), HttpStatus.OK);
+        return new ResponseEntity<>(lmsUserService.getLmsUserByEmailAndTenantId(email, tenantId),
+                HttpStatus.OK);
     }
 
     @GetMapping(value = "role")
@@ -80,11 +81,13 @@ public class UserController {
 
         logger.info("Received Get All Enrolled Batches request");
         LmsUser currentUser = userUtils.getCurrentUser();
-        if (!currentUser.getIsAdmin() && currentUser.getId() != studentId && !currentUser.getEmail().equals(studentEmail)) {
+        if (!currentUser.getIsAdmin() && currentUser.getId() != studentId && !currentUser.getEmail()
+                                                                            .equals(studentEmail)) {
             throw new ResponseStatusException( HttpStatus.FORBIDDEN, "Permission denied");
         }
         if (studentId == null && (studentEmail == null || studentEmail.isEmpty())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Request should contain either studentId or studentEmail");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Request should contain either studentId or studentEmail");
         }
         try {
             if (studentId != null) {
@@ -108,11 +111,13 @@ public class UserController {
             @RequestParam(required = false) String instructorEmail) {
         logger.info("Received getAllBatchesTaught request");
         LmsUser currentUser = userUtils.getCurrentUser();
-        if (!currentUser.getIsAdmin() && currentUser.getId() != instructorId && !currentUser.getEmail().equals(instructorEmail)) {
+        if (!currentUser.getIsAdmin() && currentUser.getId() != instructorId &&
+                !currentUser.getEmail().equals(instructorEmail)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Permission denied");
         }
         if (instructorId == null && (instructorEmail == null || instructorEmail.isEmpty())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Request should contain either instructorId or instructorEmail");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Request should contain either instructorId or instructorEmail");
         }
         try {
             if (instructorId != null) {
@@ -120,7 +125,8 @@ public class UserController {
                         lmsUserService.getBatchesTaughtByInstructor(instructorId), HttpStatus.OK);
             } else if (null != instructorEmail && !instructorEmail.isEmpty()) {
                 return new ResponseEntity<>(
-                        lmsUserService.getBatchesTaughtByInstructor(instructorEmail), HttpStatus.OK);
+                        lmsUserService.getBatchesTaughtByInstructor(instructorEmail),
+                        HttpStatus.OK);
             }
         } catch (OperationNotSupportedException | ResourceNotFoundException e) {
             logger.error(e.getMessage());

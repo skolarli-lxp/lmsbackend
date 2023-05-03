@@ -71,9 +71,10 @@ class TenantServiceTests extends AbstractContainerBaseTest {
 
     @Test
     void getTenantById_Failure() {
-        ResourceNotFoundException resourceNotFoundException = assertThrows(ResourceNotFoundException.class, () -> {
-            Tenant tenant = tenantService.getTenantById(2);
-        });
+        ResourceNotFoundException resourceNotFoundException = assertThrows(
+                ResourceNotFoundException.class, () -> {
+                    Tenant tenant = tenantService.getTenantById(2);
+                });
         assertEquals("Tenant not found with Id : '2'", resourceNotFoundException.getMessage());
     }
 
@@ -85,10 +86,12 @@ class TenantServiceTests extends AbstractContainerBaseTest {
 
     @Test
     void getTenantByDomainName_Failure() {
-        ResourceNotFoundException resourceNotFoundException = assertThrows(ResourceNotFoundException.class, () -> {
-            Tenant tenant = tenantService.getTenantByDomainName("domainName2");
-        });
-        assertEquals("Tenant not found with Domain Name : 'domainName2'", resourceNotFoundException.getMessage());
+        ResourceNotFoundException resourceNotFoundException = assertThrows(
+                ResourceNotFoundException.class, () -> {
+                    Tenant tenant = tenantService.getTenantByDomainName("domainName2");
+                });
+        assertEquals("Tenant not found with Domain Name : 'domainName2'",
+                    resourceNotFoundException.getMessage());
     }
 
     @Test
@@ -116,8 +119,8 @@ class TenantServiceTests extends AbstractContainerBaseTest {
         tenant.setCountryCode("+91");
         tenant.setPhoneNumber("1234567890");
 
-        DataIntegrityViolationException e = assertThrows(DataIntegrityViolationException.class, () -> {
-            tenantService.saveTenant(tenant);
+        DataIntegrityViolationException e = assertThrows(DataIntegrityViolationException.class,
+                () -> { tenantService.saveTenant(tenant);
         });
         assertThat(e.getMessage(), containsString("constraint [tenants.domainname]"));
     }
@@ -132,9 +135,10 @@ class TenantServiceTests extends AbstractContainerBaseTest {
         tenant.setCountryCode("+91");
         tenant.setPhoneNumber("1234567890");
 
-        DataIntegrityViolationException e = assertThrows(DataIntegrityViolationException.class, () -> {
-            tenantService.saveTenant(tenant);
-        });
+        DataIntegrityViolationException e = assertThrows(
+                DataIntegrityViolationException.class, () -> {
+                    tenantService.saveTenant(tenant);
+                });
         assertThat(e.getMessage(), containsString("constraint [tenants.domainname]"));
     }
 
@@ -161,10 +165,10 @@ class TenantServiceTests extends AbstractContainerBaseTest {
         SecurityContextHolder.getContext().setAuthentication(
                 new TenantAuthenticationToken("tenantemail@domain.com", 1));
 
-        OperationNotSupportedException e = assertThrows(OperationNotSupportedException.class, () -> {
-            Tenant updatedTenant = tenantService.updateTenant(tenant);
-
-        });
+        OperationNotSupportedException e = assertThrows(
+                OperationNotSupportedException.class, () -> {
+                    Tenant updatedTenant = tenantService.updateTenant(tenant);
+                });
 
         assertEquals("Cannot change tenant id", e.getMessage());
     }
@@ -178,9 +182,8 @@ class TenantServiceTests extends AbstractContainerBaseTest {
         SecurityContextHolder.getContext().setAuthentication(
                 new TenantAuthenticationToken("tenantemail@domain.com", 1));
 
-        OperationNotSupportedException e = assertThrows(OperationNotSupportedException.class, () -> {
-            Tenant updatedTenant = tenantService.updateTenant(tenant);
-
+        OperationNotSupportedException e = assertThrows(OperationNotSupportedException.class,
+                () -> { Tenant updatedTenant = tenantService.updateTenant(tenant);
         });
 
         assertEquals("Cannot update domainname for existing tenant", e.getMessage());

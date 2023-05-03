@@ -28,7 +28,8 @@ public class LessonServiceImpl implements LessonService {
     UserUtils userUtils;
     ChapterService chapterService;
 
-    public LessonServiceImpl(LessonRepository lessonRepository, UserUtils userUtils, ChapterService chapterService) {
+    public LessonServiceImpl(LessonRepository lessonRepository, UserUtils userUtils,
+                             ChapterService chapterService) {
         super();
         this.lessonRepository = lessonRepository;
         this.userUtils = userUtils;
@@ -37,7 +38,8 @@ public class LessonServiceImpl implements LessonService {
 
     private Boolean checkPermission(Lesson lesson) {
         LmsUser currentUser = userUtils.getCurrentUser();
-        if (currentUser.getIsAdmin() != true && currentUser != lesson.getChapter().getCourse().getCourseOwner()) {
+        if (currentUser.getIsAdmin() != true && currentUser !=
+                lesson.getChapter().getCourse().getCourseOwner()) {
             return false;
         }
         return true;
@@ -53,7 +55,8 @@ public class LessonServiceImpl implements LessonService {
         lesson.setChapter(chapterService.getChapterById(chapterId));
 
         if (newLessonRequest.getLessonSortOrder() == 0) {
-            newLessonRequest.setLessonSortOrder(lessonRepository.findMaxLessonSortOrder(chapterId) + 1);
+            newLessonRequest.setLessonSortOrder(lessonRepository.findMaxLessonSortOrder(chapterId)
+                                                + 1);
         }
         lesson.setLessonSortOrder(newLessonRequest.getLessonSortOrder());
 
@@ -145,7 +148,8 @@ public class LessonServiceImpl implements LessonService {
         Lesson existingLesson = lessonRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Lesson", "Id", id));
         if (checkPermission(existingLesson) == false) {
-            throw new OperationNotSupportedException("User does not have permissions to update this lesson");
+            throw new OperationNotSupportedException("User does not have permissions to update " +
+                    "this lesson");
         }
         if (lesson.getLessonIsDeleted() != null) {
             logger.error("Cannot change deleted status. Use delete APIs instead");
@@ -155,8 +159,9 @@ public class LessonServiceImpl implements LessonService {
         return lessonRepository.save(existingLesson);
     }
 
-    public List<LessonSortOrderResponse> updateLessonSortOrder(Long chapterId, 
-                                                        List<LessonSortOrderrequest> lessonSortOrderrequest) {
+    public List<LessonSortOrderResponse> updateLessonSortOrder(
+            Long chapterId,
+            List<LessonSortOrderrequest> lessonSortOrderrequest) {
         List<Lesson> lessons = lessonRepository.findByChapterIdOrderByLessonSortOrderAsc(chapterId);
         for (Lesson lesson : lessons) {
             for (LessonSortOrderrequest lessonSortOrder : lessonSortOrderrequest) {
@@ -175,7 +180,8 @@ public class LessonServiceImpl implements LessonService {
         Lesson existingLesson = lessonRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Lesson", "Id", id));
         if (checkPermission(existingLesson) == false) {
-            throw new OperationNotSupportedException("User does not have permissions to delete this lesson");
+            throw new OperationNotSupportedException("User does not have permissions to delete " +
+                    "this lesson");
         }
         existingLesson.setLessonIsDeleted(true);
         lessonRepository.save(existingLesson);
@@ -186,7 +192,8 @@ public class LessonServiceImpl implements LessonService {
         Lesson existingLesson = lessonRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Lesson", "Id", id));
         if (checkPermission(existingLesson) == false) {
-            throw new OperationNotSupportedException("User does not have permissions to delete this lesson");
+            throw new OperationNotSupportedException("User does not have permissions to delete" +
+                    " this lesson");
         }
         lessonRepository.delete(existingLesson);
     }

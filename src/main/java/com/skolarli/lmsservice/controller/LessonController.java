@@ -64,9 +64,11 @@ public class LessonController {
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "getsortorder/{chapterId}")
-    public ResponseEntity<List<LessonSortOrderResponse>> getAllLessonsSortOrder(@PathVariable long chapterId) {
+    public ResponseEntity<List<LessonSortOrderResponse>> getAllLessonsSortOrder(
+            @PathVariable long chapterId) {
         try {
-            return new ResponseEntity<>(lessonService.getAllLessonsSortOrder(chapterId), HttpStatus.OK);
+            return new ResponseEntity<>(lessonService.getAllLessonsSortOrder(chapterId),
+                    HttpStatus.OK);
         } catch (Exception e) {
             logger.error("Error in getAllLessonsSortOrder: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
@@ -95,14 +97,15 @@ public class LessonController {
     }
 
     @RequestMapping(method = RequestMethod.PUT, value = "updatedescription/{id}")
-    public ResponseEntity<UpdateLessonDescriptionRequest> updateLessonDescription(@PathVariable long id, 
-                                                          @RequestBody UpdateLessonDescriptionRequest updateLessonDescriptionRequest) {
+    public ResponseEntity<UpdateLessonDescriptionRequest> updateLessonDescription(
+            @PathVariable long id,
+            @RequestBody UpdateLessonDescriptionRequest updateLessonDescriptionRequest) {
         Lesson lesson = new Lesson();
         lesson.setLessonDescription(updateLessonDescriptionRequest.getLessonDescription());
         try {
             Lesson updatedLesson = lessonService.updateLesson(lesson, id);
             UpdateLessonDescriptionRequest response = new UpdateLessonDescriptionRequest(
-                                                                        updatedLesson.getLessonDescription());
+                    updatedLesson.getLessonDescription());
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
             logger.error("Error in updateLesson: " + e.getMessage());
@@ -111,12 +114,16 @@ public class LessonController {
     }
 
     @RequestMapping(method = RequestMethod.PUT, value = "updatesortorder/{chapterId}")
-    public ResponseEntity<List<LessonSortOrderResponse>> updateLessonSortOrder(@PathVariable long chapterId, @Valid @RequestBody List<LessonSortOrderrequest> lessonSortOrderrequest) {
+    public ResponseEntity<List<LessonSortOrderResponse>> updateLessonSortOrder(
+            @PathVariable long chapterId,
+            @Valid @RequestBody List<LessonSortOrderrequest> lessonSortOrderrequest) {
         try {
-            return new ResponseEntity<>(lessonService.updateLessonSortOrder(chapterId, lessonSortOrderrequest), HttpStatus.OK);
+            return new ResponseEntity<>(lessonService.updateLessonSortOrder(chapterId,
+                    lessonSortOrderrequest), HttpStatus.OK);
         } catch (Exception e) {
             logger.error("Error in updateLessonSortOrder: " + e.getMessage());
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                    e.getMessage());
         }
     }
 
@@ -127,7 +134,8 @@ public class LessonController {
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception e) {
             logger.error("Error in deleteLesson: " + e.getMessage());
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                    e.getMessage());
         }
     }
 
@@ -138,7 +146,8 @@ public class LessonController {
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception e) {
             logger.error("Error in hardDeleteLesson: " + e.getMessage());
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                    e.getMessage());
         }
     }
     

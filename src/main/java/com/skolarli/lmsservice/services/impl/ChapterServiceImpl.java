@@ -30,7 +30,8 @@ public class ChapterServiceImpl implements ChapterService {
     UserUtils userUtils;
     CourseService courseService;
 
-    public ChapterServiceImpl(ChapterRepository chapterRepository, UserUtils userutils, CourseService courseService) {
+    public ChapterServiceImpl(ChapterRepository chapterRepository, UserUtils userutils,
+                              CourseService courseService) {
         super();
         this.chapterRepository = chapterRepository;
         this.userUtils = userutils;
@@ -39,7 +40,8 @@ public class ChapterServiceImpl implements ChapterService {
 
     private Boolean checkPermission(Chapter chapter) {
         LmsUser currentUser = userUtils.getCurrentUser();
-        if (currentUser.getIsAdmin() != true && currentUser != chapter.getCourse().getCourseOwner()) {
+        if (currentUser.getIsAdmin() != true && currentUser !=
+                chapter.getCourse().getCourseOwner()) {
             return false;
         }
         return true;
@@ -107,7 +109,8 @@ public class ChapterServiceImpl implements ChapterService {
         Chapter existingChapter = chapterRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Chapter", "Id", id));
         if (checkPermission(existingChapter) == false) {
-            throw new OperationNotSupportedException("User does not have permissions to update this chapter");
+            throw new OperationNotSupportedException("User does not have permissions to " +
+                    "update this chapter");
         }
         if (chapter.getChapterIsDeleted() != null) {
             logger.error("Cannot change deleted status. Use delete APIs instead");
@@ -139,7 +142,8 @@ public class ChapterServiceImpl implements ChapterService {
         Chapter existingChapter = chapterRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Chapter", "Id", id));
         if (checkPermission(existingChapter) == false) {
-            throw new OperationNotSupportedException("User does not have permissions to delete this chapter");
+            throw new OperationNotSupportedException("User does not have permissions to delete " +
+                    "this chapter");
         }
         existingChapter.setChapterIsDeleted(true);
         chapterRepository.save(existingChapter);
@@ -150,7 +154,8 @@ public class ChapterServiceImpl implements ChapterService {
         Chapter existingChapter = chapterRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Chapter", "Id", id));
         if (checkPermission(existingChapter) == false) {
-            throw new OperationNotSupportedException("User does not have permissions to delete this chapter");
+            throw new OperationNotSupportedException("User does not have permissions to delete" +
+                    " this chapter");
         }
         chapterRepository.delete(existingChapter);
     }

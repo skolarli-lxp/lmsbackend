@@ -23,7 +23,8 @@ import java.util.Date;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name="attendance", uniqueConstraints = @UniqueConstraint(name= "dupattendance", columnNames = {"student_id", "schedule_id"}))
+@Table(name="attendance", uniqueConstraints = @UniqueConstraint(
+        name= "dupattendance", columnNames = {"student_id", "schedule_id"}))
 @Where(clause = "attendance_is_deleted is null or attendance_is_deleted = false")
 public class Attendance extends Tenantable{
     private static final Logger logger = LoggerFactory.getLogger(Attendance.class);
@@ -48,7 +49,8 @@ public class Attendance extends Tenantable{
     private Date endDateTime;
     private Boolean attendanceIsDeleted;
 
-    public Attendance(BatchSchedule batchSchedule, LmsUser student, Boolean attended, Date startDateTime, Date endDateTime) {
+    public Attendance(BatchSchedule batchSchedule, LmsUser student,
+                      Boolean attended, Date startDateTime, Date endDateTime) {
         this.batchSchedule = batchSchedule;
         this.student = student;
         this.attended = attended;

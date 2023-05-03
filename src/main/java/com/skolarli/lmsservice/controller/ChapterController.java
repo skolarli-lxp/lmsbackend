@@ -63,9 +63,12 @@ public class ChapterController {
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "sortorder/{courseId}")
-    public ResponseEntity<List<ChapterSortOrderResponse>> getChaptersSortOrder(@PathVariable long courseId) {
+    public ResponseEntity<List<ChapterSortOrderResponse>> getChaptersSortOrder(
+            @PathVariable long courseId){
+
         try {
-            return new ResponseEntity<>(chapterService.getChaptersSortOrder(courseId), HttpStatus.OK);
+            return new ResponseEntity<>(chapterService.getChaptersSortOrder(courseId),
+                    HttpStatus.OK);
         } catch (Exception e) {
             logger.error("Error in getChaptersSortOrder: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
@@ -84,7 +87,8 @@ public class ChapterController {
     }
 
     @RequestMapping(method = RequestMethod.PUT, value = "{id}")
-    public ResponseEntity<Chapter> updateChapter(@RequestBody NewChapterRequest newChapterRequest, @PathVariable long id) {
+    public ResponseEntity<Chapter> updateChapter(@RequestBody NewChapterRequest newChapterRequest,
+                                                 @PathVariable long id) {
         Chapter chapter = chapterService.toChapter(newChapterRequest);
         try {
             return new ResponseEntity<>(chapterService.updateChapter(chapter, id), HttpStatus.OK);
@@ -99,7 +103,8 @@ public class ChapterController {
                         @Valid @RequestBody List<ChapterSortOrderRequest> chaptersSortOrder, 
                         @PathVariable long courseId) {
         try {
-            return new ResponseEntity<>(chapterService.updateChaptersSortOrder(courseId, chaptersSortOrder), HttpStatus.OK);
+            return new ResponseEntity<>(chapterService.updateChaptersSortOrder(courseId,
+                    chaptersSortOrder), HttpStatus.OK);
         } catch (Exception e) {
             logger.error("Error in updateChaptersSortOrder: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());

@@ -78,7 +78,8 @@ public class BatchSchedule extends Tenantable {
         if(newBatchSchedule.getEndDateTime() != null) {
             this.endDateTime = newBatchSchedule.getEndDateTime();
         }
-        if(newBatchSchedule.getAttendanceList() != null && !newBatchSchedule.getAttendanceList().isEmpty()) {
+        if(newBatchSchedule.getAttendanceList() != null &&
+                !newBatchSchedule.getAttendanceList().isEmpty()) {
             newBatchSchedule.getAttendanceList().forEach(attendance -> {
                 if (!this.getAttendanceList().contains(attendance)) 
                     this.getAttendanceList().add(attendance);

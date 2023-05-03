@@ -43,7 +43,8 @@ public class NewDomainController {
     private VerificationService verificationService;
 
     @PostMapping(value="/add")
-    public ResponseEntity<NewDomainResponse> addNewDomain(@Valid @RequestBody NewDomainRequest newDomainRequest) {
+    public ResponseEntity<NewDomainResponse> addNewDomain(
+            @Valid @RequestBody NewDomainRequest newDomainRequest) {
         logger.info("Received new domain request. DomainName: "
                 + newDomainRequest.getDomainName()
                 + " Email: " + newDomainRequest.getEmail());
@@ -91,7 +92,8 @@ public class NewDomainController {
         logger.info("Checking if domainName " + domainName + " is unique");
         domainName = domainName.strip();
         if (domainName == null || domainName.isEmpty()) {
-            return new ResponseEntity<String>("{\"error\" : \"domainName cannot be null\"}", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<String>("{\"error\" : \"domainName cannot be null\"}",
+                    HttpStatus.BAD_REQUEST);
         }
         try {
             String result = tenantService.isUniqueDomainName(domainName).toString();

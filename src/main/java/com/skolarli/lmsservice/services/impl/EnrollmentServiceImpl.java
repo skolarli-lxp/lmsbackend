@@ -40,7 +40,8 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
     private Boolean checkPermissions (Enrollment existingEnrollment) {
         LmsUser currentUser = userUtils.getCurrentUser();
-        if (currentUser.getIsAdmin() != true && currentUser != existingEnrollment.getBatch().getCourse().getCourseOwner()) {
+        if (currentUser.getIsAdmin() != true && currentUser !=
+                existingEnrollment.getBatch().getCourse().getCourseOwner()) {
             return false;
         }
         return true;
@@ -81,7 +82,8 @@ public class EnrollmentServiceImpl implements EnrollmentService {
             enrollments.add(toEnrollment(newEnrollmentRequest));
         }
         // Some more fun ways to do the same  thing
-        //request.stream().forEach(newEnrollmentRequest -> enrollments.add(toEnrollment(newEnrollmentRequest)));
+        //request.stream().forEach(newEnrollmentRequest ->
+        //              enrollments.add(toEnrollment(newEnrollmentRequest)));
         //return request.stream().map(this::toEnrollment).collect(Collectors.toList());
         return enrollments;
     }
@@ -93,7 +95,8 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
     @Override
     public Enrollment getEnrollmentById(long id) {
-        List<Enrollment> existingEnrollment = enrollmentRepository.findAllById(new ArrayList<>(List.of(id)));
+        List<Enrollment> existingEnrollment = enrollmentRepository.findAllById(
+                new ArrayList<>(List.of(id)));
         if (existingEnrollment.size() == 0) {
             throw new ResourceNotFoundException("Enrollment", "Id", id);
         }
@@ -126,7 +129,8 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         Enrollment existingEnrollment = enrollmentRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Enrollment", "Id", id));
         if (checkPermissions(existingEnrollment) == false) {
-            throw new OperationNotSupportedException("User does not have permission to update this enrollment");
+            throw new OperationNotSupportedException("User does not have permission to update " +
+                    "this enrollment");
         }
         if (enrollment.getEnrollmentIsDeleted() != null) {
             logger.error("Cannot change deleted status. Use Delete API instead");
@@ -142,7 +146,8 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         Enrollment existingEnrollment = enrollmentRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Enrollment", "Id", id));
         if (checkPermissions(existingEnrollment) == false) {
-            throw new OperationNotSupportedException("User does not have permission to perform Delete operation");
+            throw new OperationNotSupportedException("User does not have permission to perform " +
+                    "Delete operation");
         }
         existingEnrollment.setEnrollmentIsDeleted(true);
         enrollmentRepository.save(existingEnrollment);
@@ -154,7 +159,8 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         Enrollment existingEnrollment = enrollmentRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Enrollment", "Id", id));
         if (checkPermissions(existingEnrollment) == false) {
-            throw new OperationNotSupportedException("User does not have permission to perform Delete operation");
+            throw new OperationNotSupportedException("User does not have permission to perform" +
+                    " Delete operation");
         }
         enrollmentRepository.delete(existingEnrollment);
     }

@@ -55,7 +55,8 @@ public class CourseController {
     @RequestMapping(value = "{id}", method = RequestMethod.PUT)
     public ResponseEntity<Course> updateCourse(@PathVariable long id, @RequestBody Course course) {
         try {
-            return new ResponseEntity<Course>(courseService.updateCourse(course, id), HttpStatus.OK);
+            return new ResponseEntity<Course>(courseService.updateCourse(course, id),
+                                              HttpStatus.OK);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }

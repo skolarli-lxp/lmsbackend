@@ -8,8 +8,9 @@ import java.util.List;
 
 public interface AttendanceService {
         Attendance toAttendance(NewAttendanceRequest newAttendanceRequest);
-        List<Attendance> toAttendances(List<NewAttendancesForScheduleRequest> newAttendancesForScheduleRequests,
-                                       Long batchScheduleId);
+        List<Attendance> toAttendances(
+                List<NewAttendancesForScheduleRequest> newAttendancesForScheduleRequests,
+                Long batchScheduleId);
         //READ
         Attendance getAttendance(long id);
         List<Attendance> getAllAttendance();

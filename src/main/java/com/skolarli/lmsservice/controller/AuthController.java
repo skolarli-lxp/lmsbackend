@@ -4,7 +4,6 @@ import com.skolarli.lmsservice.contexts.TenantContext;
 import com.skolarli.lmsservice.models.AuthenticationRequest;
 import com.skolarli.lmsservice.models.AuthenticationResponse;
 import com.skolarli.lmsservice.models.db.LmsUser;
-import com.skolarli.lmsservice.models.db.Tenant;
 import com.skolarli.lmsservice.services.LMSUserDetailsService;
 import com.skolarli.lmsservice.services.LmsUserService;
 import com.skolarli.lmsservice.utils.JwtUtils;
@@ -39,26 +38,33 @@ public class AuthController {
     private JwtUtils jwtUtil;
 
     @RequestMapping( value = "/authenticate", method = RequestMethod.POST)
-    public ResponseEntity<?> authenticate(@Valid @RequestBody AuthenticationRequest authenticationRequest) throws  Exception{
-        logger.info("Received Authentication Request for User: " + authenticationRequest.getUsername());
+    public ResponseEntity<?> authenticate(
+            @Valid @RequestBody AuthenticationRequest authenticationRequest)
+            throws  Exception{
+        logger.info("Received Authentication Request for User: "
+                + authenticationRequest.getUsername());
         String userName = authenticationRequest.getUsername();
         LmsUser lmsUser = lmsUserService.getLmsUserByEmailAndTenantId(
-                               userName, tenantContext.getTenantId());
-        if (lmsUser.getEmailVerified() == false) {
+                userName, tenantContext.getTenantId());
+        if (!lmsUser.getEmailVerified()) {
             logger.error("User Email " + userName + " is not verified");
-            return new ResponseEntity<>("{\"error\" : \"User Email not verified\"}", HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>("{\"error\" : \"User Email not verified\"}",
+                    HttpStatus.UNAUTHORIZED);
         }
 
         try {
             authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(userName, authenticationRequest.getPassword())
+                    new UsernamePasswordAuthenticationToken(userName,
+                            authenticationRequest.getPassword())
             );
         } catch(Exception e) {
             logger.error("Authentication failed for user: " + authenticationRequest.getUsername());
             logger.error(e.getMessage());
-            return new ResponseEntity<>("{\"error\" : \"Incorrect username or password\"}", HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>("{\"error\" : \"Incorrect username or password\"}",
+                    HttpStatus.UNAUTHORIZED);
         }
-        final UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
+        final UserDetails userDetails = userDetailsService.loadUserByUsername(
+                authenticationRequest.getUsername());
         final String jwt = jwtUtil.generateToken(userDetails);
 
         logger.info("Authenticated User: " + userDetails.getUsername());

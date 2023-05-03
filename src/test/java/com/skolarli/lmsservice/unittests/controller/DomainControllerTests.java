@@ -117,7 +117,8 @@ class DomainControllerTests {
     @Test
     void updateDomainTestFailureUpdateException() throws Exception{
         when(userUtils.getCurrentUser()).thenReturn(currentUser1);
-        when(tenantService.updateTenant(newTenant)).thenThrow(new OperationNotSupportedException("Operation not supported"));
+        when(tenantService.updateTenant(newTenant)).thenThrow(
+                new OperationNotSupportedException("Operation not supported"));
         
         String tenantJson = mapper.writeValueAsString(newTenant);
 

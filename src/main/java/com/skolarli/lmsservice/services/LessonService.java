@@ -19,7 +19,9 @@ public interface LessonService {
     Lesson saveLesson (Lesson lesson);
    
     Lesson updateLesson(Lesson lesson, long id);
-    List<LessonSortOrderResponse> updateLessonSortOrder(Long chapterId, List<LessonSortOrderrequest> lessonSortOrderrequest);
+    List<LessonSortOrderResponse> updateLessonSortOrder(Long chapterId,
+                                                        List<LessonSortOrderrequest>
+                                                                lessonSortOrderrequest);
     
     void deleteLesson(long id);
     void hardDeleteLesson(long id);

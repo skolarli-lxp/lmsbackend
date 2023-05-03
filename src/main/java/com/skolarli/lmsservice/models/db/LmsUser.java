@@ -20,7 +20,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name="users", uniqueConstraints = @UniqueConstraint(name= "useremail", columnNames = {"email", "tenantId"}))
+@Table(name="users", uniqueConstraints = @UniqueConstraint(name= "useremail",
+        columnNames = {"email", "tenantId"}))
 @Where(clause = "user_is_deleted is null or user_is_deleted = false")
 public class LmsUser extends Tenantable{
     @Id

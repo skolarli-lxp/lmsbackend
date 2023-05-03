@@ -27,7 +27,8 @@ public class BatchController {
     final LmsUserService lmsUserService;
     final UserUtils userUtils;
 
-    public BatchController(BatchService batchService, CourseService courseService, LmsUserService lmsUserService, UserUtils userUtils) {
+    public BatchController(BatchService batchService, CourseService courseService,
+                           LmsUserService lmsUserService, UserUtils userUtils) {
         this.batchService = batchService;
         this.courseService = courseService;
         this.lmsUserService = lmsUserService;
@@ -35,10 +36,12 @@ public class BatchController {
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity<List<Batch>> getAllBatches(@RequestParam(required = false) Long courseId) {
+    public ResponseEntity<List<Batch>> getAllBatches(@RequestParam(required = false)
+                                                         Long courseId) {
         if (courseId != null) {
             try {
-                return new ResponseEntity<>(batchService.getBatchesForCourse(courseId), HttpStatus.OK);
+                return new ResponseEntity<>(batchService.getBatchesForCourse(courseId),
+                        HttpStatus.OK);
             } catch (Exception e) {
                 logger.error("Error in getAllBatches: " + e.getMessage());
                 throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
@@ -77,7 +80,8 @@ public class BatchController {
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<Batch> addBatch(@Valid @RequestBody NewBatchRequest batchRequest) {
         Batch batch = batchService.toBatch(batchRequest);
-        logger.info("Received request for new batch for course" + batch.getCourse().getCourseName());
+        logger.info("Received request for new batch for course"
+                + batch.getCourse().getCourseName());
 
         try {
             return new ResponseEntity<>(batchService.saveBatch(batch), HttpStatus.CREATED);
@@ -90,7 +94,8 @@ public class BatchController {
     }
 
     @RequestMapping(method = RequestMethod.PUT, value = "{id}")
-        public ResponseEntity<Batch> updateBatch(@PathVariable long id, @RequestBody NewBatchRequest batchRequest) {
+        public ResponseEntity<Batch> updateBatch(@PathVariable long id,
+                                                 @RequestBody NewBatchRequest batchRequest) {
         Batch batch = batchService.toBatch(batchRequest);
         logger.info("Received request for updating batch batchID: " + id );
 
@@ -107,7 +112,8 @@ public class BatchController {
     @RequestMapping(method = RequestMethod.DELETE, value = "{id}")
     public ResponseEntity<String> deleteBatch(@PathVariable long id) {
         Batch batch = batchService.getBatch(id);
-        logger.info("Received request for deleting batch for course" + batch.getCourse().getCourseName());
+        logger.info("Received request for deleting batch for course"
+                + batch.getCourse().getCourseName());
 
         try {
             batchService.deleteBatch(id);
@@ -123,7 +129,8 @@ public class BatchController {
     @RequestMapping(method = RequestMethod.DELETE, value = "hard/{id}")
     public ResponseEntity<String> hardDeleteBatch(@PathVariable long id) {
         Batch batch = batchService.getBatch(id);
-        logger.info("Received request for deleting batch for course" + batch.getCourse().getCourseName());
+        logger.info("Received request for deleting batch for course"
+                + batch.getCourse().getCourseName());
 
         try {
             batchService.hardDeleteBatch(id);

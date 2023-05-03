@@ -35,7 +35,8 @@ public class DomainController {
 
         LmsUser currentUser = userUtils.getCurrentUser();
         if (currentUser.getIsAdmin() != true) {
-            throw new ResponseStatusException( HttpStatus.FORBIDDEN, "This user does not have permission to update the domain");
+            throw new ResponseStatusException( HttpStatus.FORBIDDEN,
+                    "This user does not have permission to update the domain");
         }
 
         try {

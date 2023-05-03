@@ -171,7 +171,8 @@ class CourseControllerTests {
     void updateCourseTestFailureException() throws Exception{
         when(userUtils.getCurrentUser()).thenReturn(lmsUserNonAdmin);
         when(courseService.getCourseById(1)).thenReturn(existingCourse);
-        when(courseService.updateCourse(newCourse,1)).thenThrow(new RuntimeException("error occured"));
+        when(courseService.updateCourse(newCourse,1)).thenThrow(
+                new RuntimeException("error occured"));
         String requestJson = mapper.writeValueAsString(newCourse);
 
         mockMvc.perform(
@@ -193,7 +194,8 @@ class CourseControllerTests {
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
         ).andExpect(status().isOk())
-                        .andExpect(jsonPath("$[0].courseName", is("myoldcoursename")));
+                        .andExpect(jsonPath("$[0].courseName",
+                                is("myoldcoursename")));
         Mockito.verify(courseService).getAllCourses();
     }
 

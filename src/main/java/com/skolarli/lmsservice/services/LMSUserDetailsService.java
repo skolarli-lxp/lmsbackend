@@ -28,7 +28,8 @@ public class LMSUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
-        LmsUser lmsUser = lmsUserService.getLmsUserByEmailAndTenantId(userName, tenantContext.getTenantId());
+        LmsUser lmsUser = lmsUserService.getLmsUserByEmailAndTenantId(
+                userName, tenantContext.getTenantId());
         if (lmsUser != null) {
             return new User(userName, lmsUser.getPassword(), new ArrayList<>());
         } else {

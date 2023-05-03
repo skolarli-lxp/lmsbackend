@@ -28,7 +28,8 @@ public class VerificationController {
         if (result) {
             return new ResponseEntity<>("OK", HttpStatus.OK);
         } else {
-            throw new ResponseStatusException( HttpStatus.BAD_REQUEST, "Verification token expired");
+            throw new ResponseStatusException( HttpStatus.BAD_REQUEST,
+                    "Verification token expired");
         }
     }
 
