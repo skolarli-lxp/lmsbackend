@@ -11,7 +11,6 @@ import com.skolarli.lmsservice.repository.BatchScheduleRepository;
 import com.skolarli.lmsservice.services.BatchScheduleService;
 import com.skolarli.lmsservice.services.BatchService;
 import com.skolarli.lmsservice.utils.UserUtils;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;

@@ -10,7 +10,6 @@ import com.skolarli.lmsservice.models.db.VerificationCode;
 import com.skolarli.lmsservice.services.LmsUserService;
 import com.skolarli.lmsservice.services.TenantService;
 import com.skolarli.lmsservice.services.VerificationService;
-import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -92,13 +91,13 @@ public class NewDomainController {
         logger.info("Checking if domainName " + domainName + " is unique");
         domainName = domainName.strip();
         if (domainName == null || domainName.isEmpty()) {
-            return new ResponseEntity<String>("{\"error\" : \"domainName cannot be null\"}",
+            return new ResponseEntity<>("{\"error\" : \"domainName cannot be null\"}",
                     HttpStatus.BAD_REQUEST);
         }
         try {
             String result = tenantService.isUniqueDomainName(domainName).toString();
             String responseString = "{ \n \"result\" : \"" + result + "\" \n}";
-            return new ResponseEntity<String>(responseString, HttpStatus.OK);
+            return new ResponseEntity<>(responseString, HttpStatus.OK);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }

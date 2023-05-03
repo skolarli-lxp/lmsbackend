@@ -6,11 +6,8 @@ import com.skolarli.lmsservice.models.Role;
 import com.skolarli.lmsservice.models.db.Batch;
 import com.skolarli.lmsservice.models.db.Enrollment;
 import com.skolarli.lmsservice.models.db.LmsUser;
-import com.skolarli.lmsservice.models.db.VerificationCode;
 import com.skolarli.lmsservice.repository.LmsUserRepository;
 import com.skolarli.lmsservice.services.LmsUserService;
-import com.skolarli.lmsservice.services.VerificationService;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.context.SecurityContextHolder;

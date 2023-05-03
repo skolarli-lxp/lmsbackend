@@ -4,7 +4,7 @@ import com.skolarli.lmsservice.contexts.TenantContext;
 import com.skolarli.lmsservice.models.AuthenticationRequest;
 import com.skolarli.lmsservice.models.AuthenticationResponse;
 import com.skolarli.lmsservice.models.db.LmsUser;
-import com.skolarli.lmsservice.services.LMSUserDetailsService;
+import com.skolarli.lmsservice.services.LmsUserDetailsService;
 import com.skolarli.lmsservice.services.LmsUserService;
 import com.skolarli.lmsservice.utils.JwtUtils;
 import org.slf4j.Logger;
@@ -27,20 +27,19 @@ public class AuthController {
 
     Logger logger = LoggerFactory.getLogger(AuthController.class);
     @Autowired
-    private AuthenticationManager authenticationManager;
-    @Autowired
-    private LMSUserDetailsService userDetailsService;
-    @Autowired
     LmsUserService lmsUserService;
     @Autowired
     TenantContext tenantContext;
+    @Autowired
+    private AuthenticationManager authenticationManager;
+    @Autowired
+    private LmsUserDetailsService userDetailsService;
     @Autowired
     private JwtUtils jwtUtil;
 
     @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
     public ResponseEntity<?> authenticate(
-            @Valid @RequestBody AuthenticationRequest authenticationRequest)
-            throws Exception {
+            @Valid @RequestBody AuthenticationRequest authenticationRequest) {
         logger.info("Received Authentication Request for User: "
                 + authenticationRequest.getUsername());
         String userName = authenticationRequest.getUsername();

@@ -30,13 +30,13 @@ class BatchServiceTests extends AbstractContainerBaseTest {
     }
 
     @BeforeEach
-    public void setup() throws Exception {
+    public void setup() {
 
     }
 
     @Test
     @Order(1)
-    void newDomainTestSuccess() throws Exception {
+    void newDomainTestSuccess() {
 
 
     }

@@ -17,7 +17,7 @@ public class NewDomainResponse {
     private String email;
     private String verificationCode;
 
-    public  NewDomainResponse(Tenant tenant, LmsUser lmsUser, VerificationCode code) {
+    public NewDomainResponse(Tenant tenant, LmsUser lmsUser, VerificationCode code) {
         this.userId = lmsUser.getId();
         this.tenantId = tenant.getId();
         this.domainName = tenant.getDomainName();

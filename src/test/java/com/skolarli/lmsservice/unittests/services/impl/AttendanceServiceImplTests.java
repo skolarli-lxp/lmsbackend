@@ -17,12 +17,12 @@ public class AttendanceServiceImplTests {
     AttendanceRepository attendanceRepository;
 
     @BeforeEach
-    void setup(){
+    void setup() {
 
     }
 
     @Test
-    void testSaveAttendanceSuccess(){
+    void testSaveAttendanceSuccess() {
         //TODO
     }
 

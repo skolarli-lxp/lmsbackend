@@ -10,8 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import javax.validation.Valid;
 import java.util.List;
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping(value = "/courses")
@@ -24,61 +24,61 @@ public class CourseController {
 
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<List<Course>> getAllCourses() {
-       try {
-           return new ResponseEntity<List<Course>>(courseService.getAllCourses(), HttpStatus.OK);
-       } catch (Exception e) {
-           throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
-       }
+        try {
+            return new ResponseEntity<List<Course>>(courseService.getAllCourses(), HttpStatus.OK);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
     }
 
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
     public ResponseEntity<Course> getCourse(@PathVariable long id) {
-       try {
-           return new ResponseEntity<Course>(courseService.getCourseById(id), HttpStatus.OK);
-       } catch (Exception e) {
-           throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
-       }
+        try {
+            return new ResponseEntity<Course>(courseService.getCourseById(id), HttpStatus.OK);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<Course> addCourse(@Valid  @RequestBody Course course) {
-       logger.info("Received request for new course courseName: " + course.getCourseName());
-       course.setCourseDeleted(false);
-       
-       try {
-           return new ResponseEntity<Course>(courseService.saveCourse(course), HttpStatus.CREATED);
-       } catch (Exception e) {
-           throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
-       }
+    public ResponseEntity<Course> addCourse(@Valid @RequestBody Course course) {
+        logger.info("Received request for new course courseName: " + course.getCourseName());
+        course.setCourseDeleted(false);
+
+        try {
+            return new ResponseEntity<Course>(courseService.saveCourse(course), HttpStatus.CREATED);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
     }
 
     @RequestMapping(value = "{id}", method = RequestMethod.PUT)
     public ResponseEntity<Course> updateCourse(@PathVariable long id, @RequestBody Course course) {
         try {
             return new ResponseEntity<Course>(courseService.updateCourse(course, id),
-                                              HttpStatus.OK);
+                    HttpStatus.OK);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
 
-   @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
     public ResponseEntity<String> deleteCourse(@PathVariable long id) {
-         try {
-              courseService.deleteCourse(id);
-         } catch (Exception e) {
+        try {
+            courseService.deleteCourse(id);
+        } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
-        return new ResponseEntity<String> ("Course Deleted!", HttpStatus.OK);
+        return new ResponseEntity<String>("Course Deleted!", HttpStatus.OK);
     }
 
     @RequestMapping(value = "hard/{id}", method = RequestMethod.DELETE)
     public ResponseEntity<String> hardDeleteCourse(@PathVariable long id) {
-         try {
-              courseService.hardDeleteCourse(id);
-         } catch (Exception e) {
+        try {
+            courseService.hardDeleteCourse(id);
+        } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
-        return new ResponseEntity<String> ("Course Deleted!", HttpStatus.OK);
+        return new ResponseEntity<String>("Course Deleted!", HttpStatus.OK);
     }
 }

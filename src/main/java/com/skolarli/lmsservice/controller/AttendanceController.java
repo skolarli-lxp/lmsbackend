@@ -16,18 +16,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import javax.validation.Valid;
 import java.util.List;
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/attendance")
 public class AttendanceController {
-    Logger logger = LoggerFactory.getLogger(AttendanceController.class);
-    final
-    AttendanceService attendanceService;
+    final AttendanceService attendanceService;
     final BatchScheduleService batchScheduleService;
     final LmsUserService lmsUserService;
     final UserUtils userUtils;
+    Logger logger = LoggerFactory.getLogger(AttendanceController.class);
 
     public AttendanceController(AttendanceService attendanceService,
                                 BatchScheduleService batchScheduleService,
@@ -50,7 +49,7 @@ public class AttendanceController {
             } catch (Exception e) {
                 logger.error("Error in getAllAttendances: " + e.getMessage());
                 throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
-                                                  e.getMessage());
+                        e.getMessage());
             }
         }
         try {
@@ -77,7 +76,7 @@ public class AttendanceController {
         Attendance attendance = attendanceService.toAttendance(request);
         try {
             return new ResponseEntity<>(attendanceService.saveAttendance(attendance),
-                                        HttpStatus.OK);
+                    HttpStatus.OK);
         } catch (DataIntegrityViolationException e) {
             logger.error("Error in addAttendance: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Attendance already exists");
@@ -94,7 +93,7 @@ public class AttendanceController {
         List<Attendance> attendances = attendanceService.toAttendances(request, batchScheduleId);
         try {
             return new ResponseEntity<>(attendanceService.saveAllAttendance(attendances),
-                                        HttpStatus.OK);
+                    HttpStatus.OK);
         } catch (DataIntegrityViolationException e) {
             logger.error("Error in addAttendancesForSchedule: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Attendance already exists");
@@ -111,7 +110,7 @@ public class AttendanceController {
         Attendance attendance = attendanceService.toAttendance(request);
         try {
             return new ResponseEntity<>(attendanceService.updateAttendance(attendance, id),
-                                        HttpStatus.OK);
+                    HttpStatus.OK);
         } catch (OperationNotSupportedException e) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
         } catch (Exception e) {

@@ -1,18 +1,16 @@
 package com.skolarli.lmsservice.services.impl;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-
-import org.springframework.stereotype.Service;
-
 import com.skolarli.lmsservice.models.db.LmsUser;
 import com.skolarli.lmsservice.models.db.VerificationCode;
 import com.skolarli.lmsservice.repository.LmsUserRepository;
 import com.skolarli.lmsservice.repository.VerificationCodeRepository;
 import com.skolarli.lmsservice.services.VerificationService;
-
 import net.bytebuddy.utility.RandomString;
+import org.springframework.stereotype.Service;
+
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 @Service
 public class VerificationServiceImpl implements VerificationService {

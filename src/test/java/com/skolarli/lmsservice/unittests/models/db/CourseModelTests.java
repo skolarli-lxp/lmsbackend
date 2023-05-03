@@ -1,18 +1,13 @@
 package com.skolarli.lmsservice.unittests.models.db;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.skolarli.lmsservice.models.db.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import com.skolarli.lmsservice.models.db.Batch;
-import com.skolarli.lmsservice.models.db.Chapter;
-import com.skolarli.lmsservice.models.db.Course;
-import com.skolarli.lmsservice.models.db.DisountType;
-import com.skolarli.lmsservice.models.db.DeliveryFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CourseModelTests {

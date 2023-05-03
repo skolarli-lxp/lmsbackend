@@ -1,12 +1,6 @@
 package com.skolarli.lmsservice.services.impl;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
-
+import ch.qos.logback.classic.Logger;
 import com.skolarli.lmsservice.exception.OperationNotSupportedException;
 import com.skolarli.lmsservice.exception.ResourceNotFoundException;
 import com.skolarli.lmsservice.models.ChapterSortOrderRequest;
@@ -18,8 +12,11 @@ import com.skolarli.lmsservice.repository.ChapterRepository;
 import com.skolarli.lmsservice.services.ChapterService;
 import com.skolarli.lmsservice.services.CourseService;
 import com.skolarli.lmsservice.utils.UserUtils;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
-import ch.qos.logback.classic.Logger;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class ChapterServiceImpl implements ChapterService {

@@ -12,16 +12,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import javax.validation.Valid;
 import java.util.List;
+import javax.validation.Valid;
 
 
 @RestController
 @RequestMapping("/enrollment")
 public class EnrollmentController {
-    Logger logger = LoggerFactory.getLogger(EnrollmentController.class);
-
     private final EnrollmentService enrollmentService;
+    Logger logger = LoggerFactory.getLogger(EnrollmentController.class);
 
     public EnrollmentController(EnrollmentService enrollmentService) {
         this.enrollmentService = enrollmentService;

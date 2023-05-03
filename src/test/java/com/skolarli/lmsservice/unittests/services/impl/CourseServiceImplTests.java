@@ -6,13 +6,14 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
 import com.skolarli.lmsservice.exception.OperationNotSupportedException;
 import com.skolarli.lmsservice.exception.ResourceNotFoundException;
+import com.skolarli.lmsservice.models.db.Course;
+import com.skolarli.lmsservice.models.db.DeliveryFormat;
+import com.skolarli.lmsservice.models.db.DisountType;
 import com.skolarli.lmsservice.models.db.LmsUser;
+import com.skolarli.lmsservice.repository.CourseRepository;
+import com.skolarli.lmsservice.services.impl.CourseServiceImpl;
 import com.skolarli.lmsservice.utils.UserUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,11 +22,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.skolarli.lmsservice.models.db.Course;
-import com.skolarli.lmsservice.models.db.DeliveryFormat;
-import com.skolarli.lmsservice.models.db.DisountType;
-import com.skolarli.lmsservice.repository.CourseRepository;
-import com.skolarli.lmsservice.services.impl.CourseServiceImpl;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
 public class CourseServiceImplTests {
@@ -62,7 +61,7 @@ public class CourseServiceImplTests {
     }
 
     @Test
-    public void testSaveCourseFailure() throws Exception {
+    public void testSaveCourseFailure() {
         when(courseRepository.save(any())).thenThrow(new IllegalArgumentException());
         assertThrows(IllegalArgumentException.class, () -> {
             courseService.saveCourse(newCourse);
@@ -96,7 +95,7 @@ public class CourseServiceImplTests {
     }
 
     @Test
-    public void testUpdateCourseFailure() throws Exception {
+    public void testUpdateCourseFailure() {
         LmsUser currentUser = new LmsUser();
         currentUser.setId(1);
         currentUser.setIsAdmin(false);
@@ -130,7 +129,7 @@ public class CourseServiceImplTests {
     }
 
     @Test
-    public void testDeleteCourseFailure() throws Exception {
+    public void testDeleteCourseFailure() {
         LmsUser currentUser = new LmsUser();
         currentUser.setId(1);
         currentUser.setIsAdmin(false);
@@ -154,7 +153,7 @@ public class CourseServiceImplTests {
     }
 
     @Test
-    public void testGetCourseByIdFailure() throws Exception {
+    public void testGetCourseByIdFailure() {
         when(courseRepository.findAllById(List.of(1L))).thenReturn(new ArrayList<>());
 
         assertThrows(ResourceNotFoundException.class, () -> {
@@ -174,7 +173,7 @@ public class CourseServiceImplTests {
     }
 
     @Test
-    public void testGetAllCoursesFailure() throws Exception {
+    public void testGetAllCoursesFailure() {
         when(courseRepository.findAll()).thenThrow(new IllegalArgumentException());
 
         assertThrows(IllegalArgumentException.class, () -> {

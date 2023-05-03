@@ -2,23 +2,21 @@ package com.skolarli.lmsservice.models;
 
 import com.skolarli.lmsservice.models.db.BatchStatus;
 import com.skolarli.lmsservice.models.db.DeliveryFormat;
+import com.skolarli.lmsservice.models.db.DisountType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Date;
-
 import javax.validation.constraints.NotNull;
-
-import com.skolarli.lmsservice.models.db.DisountType;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class NewBatchRequest {
-    
+
     @NotNull(message = "courseId cannot be empty")
     private long courseId;
     @NotNull(message = "instructorId cannot be empty")

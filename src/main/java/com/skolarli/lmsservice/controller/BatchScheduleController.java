@@ -15,16 +15,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import javax.validation.Valid;
 import java.util.List;
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/batchschedule")
 public class BatchScheduleController {
-    Logger logger = LoggerFactory.getLogger(BatchScheduleController.class);
     final BatchScheduleService batchScheduleService;
     final BatchService batchService;
     final UserUtils userUtils;
+    Logger logger = LoggerFactory.getLogger(BatchScheduleController.class);
 
     public BatchScheduleController(BatchScheduleService batchScheduleService,
                                    BatchService batchService, UserUtils userUtils) {

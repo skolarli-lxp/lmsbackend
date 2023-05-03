@@ -1,5 +1,10 @@
 package com.skolarli.lmsservice.service;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.skolarli.lmsservice.AbstractContainerBaseTest;
 import com.skolarli.lmsservice.authentications.TenantAuthenticationToken;
@@ -17,22 +22,16 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.List;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static org.junit.jupiter.api.Assertions.*;
-
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class TenantServiceTests extends AbstractContainerBaseTest {
 
-    @Autowired
-    TenantService tenantService;
-
-    @Autowired
-    private ObjectMapper mapper;
-
     @Rule
     public final ExpectedException exception = ExpectedException.none();
+    @Autowired
+    TenantService tenantService;
+    @Autowired
+    private ObjectMapper mapper;
 
     @BeforeAll
     public static void setUp() {
@@ -42,13 +41,13 @@ class TenantServiceTests extends AbstractContainerBaseTest {
     }
 
     @BeforeEach
-    public void setup() throws Exception {
+    public void setup() {
 
     }
 
     @Test
     @Order(1)
-    void newDomainTestSuccess() throws Exception {
+    void newDomainTestSuccess() {
 
         Tenant tenant = tenantService.getTenantByDomainName("domainName1");
         System.out.println(tenant);

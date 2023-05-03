@@ -7,11 +7,13 @@ import java.util.List;
 
 public interface VerificationService {
     List<VerificationCode> getAllVerificationCodes();
+
     VerificationCode getVerificationCodeByToken(String token);
 
     VerificationCode getVerificationCodeByUser(Long userId);
-    
+
     VerificationCode generateAndSaveVerificationCode(LmsUser user);
+
     VerificationCode saveVerificationCode(VerificationCode code);
 
     Boolean verifyCode(String token);

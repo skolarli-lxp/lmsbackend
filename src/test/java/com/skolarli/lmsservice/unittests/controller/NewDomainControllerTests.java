@@ -1,5 +1,11 @@
 package com.skolarli.lmsservice.unittests.controller;
 
+import static org.hamcrest.Matchers.is;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.skolarli.lmsservice.models.NewDomainRequest;
 import com.skolarli.lmsservice.models.db.LmsUser;
@@ -22,12 +28,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.Calendar;
-
-import static org.hamcrest.Matchers.is;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -52,7 +52,7 @@ class NewDomainControllerTests {
     private VerificationCode code;
 
     @BeforeEach
-    public void setup() throws Exception {
+    public void setup() {
         newDomainRequest = new NewDomainRequest("mydomainname", "MyAwesomeCompany", "+91",
                 "1234561234", "INR", null, "myawesomewebsite.com", "Jaya",
                 "Nair", "jaya@skolarli.com", "mymockpassword");

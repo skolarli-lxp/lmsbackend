@@ -2,7 +2,7 @@ package com.skolarli.lmsservice.config;
 
 import com.skolarli.lmsservice.filters.JwtRequestFilter;
 import com.skolarli.lmsservice.filters.TenantAuthorizationFilter;
-import com.skolarli.lmsservice.services.LMSUserDetailsService;
+import com.skolarli.lmsservice.services.LmsUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,7 +18,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
     @Autowired
-    private LMSUserDetailsService lmsUserDetailsService;
+    private LmsUserDetailsService lmsUserDetailsService;
 
     @Autowired
     private JwtRequestFilter jwtRequestFilter;

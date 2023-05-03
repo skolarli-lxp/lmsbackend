@@ -12,6 +12,8 @@ import java.util.Map;
 
 @Service
 public class JwtUtils {
+
+    @SuppressWarnings("checkstyle:all")
     private final String SECRET_KEY = "secret";
 
     public String extractUserName(String token) {

@@ -1,10 +1,17 @@
 package com.skolarli.lmsservice.unittests.controller;
 
+import static org.hamcrest.Matchers.is;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.skolarli.lmsservice.contexts.TenantContext;
 import com.skolarli.lmsservice.models.AuthenticationRequest;
 import com.skolarli.lmsservice.models.db.LmsUser;
-import com.skolarli.lmsservice.services.LMSUserDetailsService;
+import com.skolarli.lmsservice.services.LmsUserDetailsService;
 import com.skolarli.lmsservice.services.LmsUserService;
 import com.skolarli.lmsservice.utils.JwtUtils;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,13 +31,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import static org.hamcrest.Matchers.is;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
@@ -45,7 +45,7 @@ class AuthControllerTests {
     @MockBean
     private AuthenticationManager authenticationManager;
     @MockBean
-    private LMSUserDetailsService userDetailsService;
+    private LmsUserDetailsService userDetailsService;
     @MockBean
     private JwtUtils jwtUtil;
     @MockBean
@@ -61,7 +61,7 @@ class AuthControllerTests {
 
 
     @BeforeEach
-    public void setup() throws Exception {
+    public void setup() {
         lmsUser = new LmsUser();
         lmsUser.setEmailVerified(true);
 

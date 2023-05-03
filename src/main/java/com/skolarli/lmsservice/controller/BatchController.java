@@ -15,17 +15,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import javax.validation.Valid;
 import java.util.List;
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/batch")
 public class BatchController {
-    Logger logger = LoggerFactory.getLogger(BatchController.class);
     final BatchService batchService;
     final CourseService courseService;
     final LmsUserService lmsUserService;
     final UserUtils userUtils;
+    Logger logger = LoggerFactory.getLogger(BatchController.class);
 
     public BatchController(BatchService batchService, CourseService courseService,
                            LmsUserService lmsUserService, UserUtils userUtils) {

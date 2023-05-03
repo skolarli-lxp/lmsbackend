@@ -1,5 +1,7 @@
 package com.skolarli.lmsservice.controller;
 
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.skolarli.lmsservice.AbstractContainerBaseTest;
 import com.skolarli.lmsservice.models.NewDomainRequest;
@@ -16,8 +18,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -43,7 +43,7 @@ class NewDomainControllerTests extends AbstractContainerBaseTest {
     }
 
     @BeforeEach
-    public void setup() throws Exception {
+    public void setup() {
         newDomainRequest = new NewDomainRequest("mydomainname3", "MyAwesomeCompany", "+91",
                 "1234561234", "INR", null, "myawesomewebsite.com", "Jaya",
                 "Nair", "jaya@skolarli.com", "mymockpassword");

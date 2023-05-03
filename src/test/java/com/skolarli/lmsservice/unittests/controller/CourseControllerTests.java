@@ -1,5 +1,10 @@
 package com.skolarli.lmsservice.unittests.controller;
 
+import static org.hamcrest.Matchers.is;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.skolarli.lmsservice.authentications.TenantAuthenticationToken;
 import com.skolarli.lmsservice.models.db.Course;
@@ -8,7 +13,6 @@ import com.skolarli.lmsservice.models.db.LmsUser;
 import com.skolarli.lmsservice.services.CourseService;
 import com.skolarli.lmsservice.services.LmsUserService;
 import com.skolarli.lmsservice.utils.UserUtils;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -24,11 +28,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.List;
-
-import static org.hamcrest.Matchers.is;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -56,7 +55,7 @@ class CourseControllerTests {
 
 
     @BeforeEach
-    public void setup() throws Exception {
+    public void setup() {
         lmsUser = new LmsUser();
         lmsUser.setId(1);
         lmsUser.setFirstName("Jaya");

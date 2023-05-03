@@ -8,7 +8,6 @@ import javax.persistence.PersistenceContext;
 
 /**
  * Code for custom access methods of the user repo goes here.
- *
  */
 public class CustomLmsUserRepositoryImpl implements CustomLmsUserRepository {
     @PersistenceContext

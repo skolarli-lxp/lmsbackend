@@ -14,15 +14,14 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 
 @Service
-public class LMSUserDetailsService implements UserDetailsService {
-    Logger logger = LoggerFactory.getLogger(LMSUserDetailsService.class);
-    final
-    LmsUserService lmsUserService;
+public class LmsUserDetailsService implements UserDetailsService {
+    Logger logger = LoggerFactory.getLogger(LmsUserDetailsService.class);
+    final LmsUserService lmsUserService;
 
     @Autowired
     private TenantContext tenantContext;
 
-    public LMSUserDetailsService(LmsUserService lmsUserService) {
+    public LmsUserDetailsService(LmsUserService lmsUserService) {
         this.lmsUserService = lmsUserService;
     }
 

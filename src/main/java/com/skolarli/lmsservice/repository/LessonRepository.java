@@ -1,10 +1,9 @@
 package com.skolarli.lmsservice.repository;
 
-import java.util.List;
-
+import com.skolarli.lmsservice.models.db.Lesson;
 import org.springframework.data.jpa.repository.Query;
 
-import com.skolarli.lmsservice.models.db.Lesson;
+import java.util.List;
 
 
 public interface LessonRepository extends TenantableRepository<Lesson> {
@@ -13,6 +12,7 @@ public interface LessonRepository extends TenantableRepository<Lesson> {
     int findMaxLessonSortOrder(long chapterId);
 
     List<Lesson> findByChapterId(long courseId);
+
     List<Lesson> findByChapterIdOrderByLessonSortOrderAsc(long courseId);
-    
+
 }

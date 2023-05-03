@@ -12,14 +12,12 @@ import com.skolarli.lmsservice.services.BatchService;
 import com.skolarli.lmsservice.services.EnrollmentService;
 import com.skolarli.lmsservice.services.LmsUserService;
 import com.skolarli.lmsservice.utils.UserUtils;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class EnrollmentServiceImpl implements EnrollmentService {

@@ -18,26 +18,22 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import javax.validation.Valid;
 import java.util.List;
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping(value = "user")
 public class UserController {
 
     Logger logger = LoggerFactory.getLogger(UserController.class);
-
-    @Autowired
-    private UserUtils userUtils;
-
-    @Autowired
-    private LmsUserService lmsUserService;
-
     @Autowired
     TenantContext tenantContext;
-
     @Autowired
     VerificationService verificationService;
+    @Autowired
+    private UserUtils userUtils;
+    @Autowired
+    private LmsUserService lmsUserService;
 
     @GetMapping
     public ResponseEntity<List<LmsUser>> getAllUsers() {

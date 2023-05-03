@@ -10,11 +10,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import java.io.IOException;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 @Component
 public class TenantAuthorizationFilter extends OncePerRequestFilter {
@@ -42,10 +42,10 @@ public class TenantAuthorizationFilter extends OncePerRequestFilter {
 
 
     @Override
-    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+    protected boolean shouldNotFilter(HttpServletRequest request) {
 
         String path = request.getServletPath();
-        return path.startsWith("/newdomain") || path.startsWith("/gethealthnoauth") 
-                                                     ||  path.startsWith("/verify");
+        return path.startsWith("/newdomain") || path.startsWith("/gethealthnoauth")
+                || path.startsWith("/verify");
     }
 }

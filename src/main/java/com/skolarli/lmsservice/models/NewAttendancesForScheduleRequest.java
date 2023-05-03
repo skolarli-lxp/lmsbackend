@@ -1,13 +1,12 @@
 package com.skolarli.lmsservice.models;
 
-import com.skolarli.lmsservice.models.db.Attendance;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.validation.constraints.NotNull;
 import java.util.Date;
+import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter

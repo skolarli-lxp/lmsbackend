@@ -1,26 +1,20 @@
 package com.skolarli.lmsservice.controller;
 
-import java.util.List;
-
-import javax.validation.Valid;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
-
-import com.skolarli.lmsservice.models.db.Lesson;
 import com.skolarli.lmsservice.models.LessonSortOrderResponse;
 import com.skolarli.lmsservice.models.LessonSortOrderrequest;
 import com.skolarli.lmsservice.models.NewLessonRequest;
 import com.skolarli.lmsservice.models.UpdateLessonDescriptionRequest;
+import com.skolarli.lmsservice.models.db.Lesson;
 import com.skolarli.lmsservice.services.LessonService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.util.List;
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/lesson")
@@ -84,8 +78,8 @@ public class LessonController {
             logger.error("Error in addLesson: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
-    } 
-    
+    }
+
     @RequestMapping(method = RequestMethod.PUT, value = "{id}")
     public ResponseEntity<Lesson> updateLesson(@PathVariable long id, @RequestBody Lesson lesson) {
         try {
@@ -150,5 +144,5 @@ public class LessonController {
                     e.getMessage());
         }
     }
-    
+
 }

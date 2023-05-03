@@ -7,7 +7,6 @@ import com.skolarli.lmsservice.models.db.Tenant;
 import com.skolarli.lmsservice.repository.TenantRepository;
 import com.skolarli.lmsservice.services.TenantService;
 import com.skolarli.lmsservice.utils.UserUtils;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;

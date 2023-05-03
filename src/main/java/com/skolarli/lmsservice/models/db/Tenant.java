@@ -5,11 +5,10 @@ import com.skolarli.lmsservice.models.NewDomainRequest;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-
-import org.hibernate.annotations.Where;
 
 @Data
 @NoArgsConstructor

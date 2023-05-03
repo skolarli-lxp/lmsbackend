@@ -9,12 +9,16 @@ public interface BatchService {
     Batch toBatch(NewBatchRequest newBatchRequest);
 
     Batch getBatch(long id);
+
     List<Batch> getAllBatches();
+
     List<Batch> getBatchesForCourse(long courseId);
-    
+
     Batch saveBatch(Batch batch);
+
     Batch updateBatch(Batch batch, long id);
-    
+
     void deleteBatch(long id);
+
     void hardDeleteBatch(long id);
 }
