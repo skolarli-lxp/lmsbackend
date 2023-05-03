@@ -1,7 +1,7 @@
 package com.skolarli.lmsservice.controller;
 
+import com.skolarli.lmsservice.models.LessonSortOrderRequest;
 import com.skolarli.lmsservice.models.LessonSortOrderResponse;
-import com.skolarli.lmsservice.models.LessonSortOrderrequest;
 import com.skolarli.lmsservice.models.NewLessonRequest;
 import com.skolarli.lmsservice.models.UpdateLessonDescriptionRequest;
 import com.skolarli.lmsservice.models.db.Lesson;
@@ -110,7 +110,7 @@ public class LessonController {
     @RequestMapping(method = RequestMethod.PUT, value = "updatesortorder/{chapterId}")
     public ResponseEntity<List<LessonSortOrderResponse>> updateLessonSortOrder(
             @PathVariable long chapterId,
-            @Valid @RequestBody List<LessonSortOrderrequest> lessonSortOrderrequest) {
+            @Valid @RequestBody List<LessonSortOrderRequest> lessonSortOrderrequest) {
         try {
             return new ResponseEntity<>(lessonService.updateLessonSortOrder(chapterId,
                     lessonSortOrderrequest), HttpStatus.OK);

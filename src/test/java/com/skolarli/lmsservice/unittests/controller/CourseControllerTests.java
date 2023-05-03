@@ -199,7 +199,6 @@ class CourseControllerTests {
 
     @Test
     void getAllCoursesFailureException() throws Exception {
-        List<Course> courseList = List.of(existingCourse);
         when(courseService.getAllCourses()).thenThrow(new RuntimeException("Error Occured"));
 
         mockMvc.perform(

@@ -1,6 +1,6 @@
 package com.skolarli.lmsservice.models.db;
 
-public enum DisountType {
+public enum DiscountType {
     NONE,
     PERCENTAGE,
     FIXED

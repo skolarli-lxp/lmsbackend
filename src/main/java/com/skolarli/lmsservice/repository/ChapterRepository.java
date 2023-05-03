@@ -10,7 +10,5 @@ public interface ChapterRepository extends TenantableRepository<Chapter> {
             + "FROM lms.chapters where course_id = ?1", nativeQuery = true)
     int findMaxChapterSortOrder(long courseId);
 
-    List<Chapter> findByCourseId(long courseId);
-
     List<Chapter> findByCourseIdOrderByChapterSortOrderAsc(long courseId);
 }

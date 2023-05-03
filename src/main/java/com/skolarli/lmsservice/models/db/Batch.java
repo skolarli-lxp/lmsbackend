@@ -54,7 +54,7 @@ public class Batch extends Tenantable {
 
     private long batchFees;
 
-    private DisountType batchDiscountType;
+    private DiscountType batchDiscountType;
 
     private int batchDiscountAmount;
 

@@ -22,17 +22,11 @@ import javax.validation.Valid;
 @RequestMapping("/batch")
 public class BatchController {
     final BatchService batchService;
-    final CourseService courseService;
-    final LmsUserService lmsUserService;
-    final UserUtils userUtils;
     final Logger logger = LoggerFactory.getLogger(BatchController.class);
 
     public BatchController(BatchService batchService, CourseService courseService,
                            LmsUserService lmsUserService, UserUtils userUtils) {
         this.batchService = batchService;
-        this.courseService = courseService;
-        this.lmsUserService = lmsUserService;
-        this.userUtils = userUtils;
     }
 
     @RequestMapping(method = RequestMethod.GET)

@@ -2,7 +2,7 @@ package com.skolarli.lmsservice.models;
 
 import com.skolarli.lmsservice.models.db.BatchStatus;
 import com.skolarli.lmsservice.models.db.DeliveryFormat;
-import com.skolarli.lmsservice.models.db.DisountType;
+import com.skolarli.lmsservice.models.db.DiscountType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,7 +31,7 @@ public class NewBatchRequest {
 
     private long batchFees;
 
-    private DisountType batchDiscountType;
+    private DiscountType batchDiscountType;
 
     private int batchDiscountAmount;
 

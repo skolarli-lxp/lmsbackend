@@ -39,7 +39,7 @@ public class CourseModelTests {
         newCourse.setCourseDescription("Updated Course Description");
         newCourse.setCourseFees(5000);
         course.setCourseDeliveryFormat(DeliveryFormat.PHYSICAL_CLASSROOM);
-        course.setCourseDiscountType(DisountType.NONE);
+        course.setCourseDiscountType(DiscountType.NONE);
 
         Batch batchTwo = new Batch();
         batchTwo.setId(2L);
@@ -62,7 +62,7 @@ public class CourseModelTests {
         assert (course.getCourseDescription().equals("Updated Course Description"));
         assert (course.getCourseFees() == 5000);
         assert (course.getCourseDeliveryFormat().equals(DeliveryFormat.PHYSICAL_CLASSROOM));
-        assert (course.getCourseDiscountType().equals(DisountType.NONE));
+        assert (course.getCourseDiscountType().equals(DiscountType.NONE));
         assert (course.getCourseDiscountAmount() == 0);
         assert (course.getCourseBatches().size() == 2);
         assert (course.getCourseBatches().get(0).getId() == 1L);
@@ -79,7 +79,7 @@ public class CourseModelTests {
         newCourse.setCourseDescription("Updated Course Description");
         newCourse.setCourseFees(5000);
         course.setCourseDeliveryFormat(DeliveryFormat.PHYSICAL_CLASSROOM);
-        course.setCourseDiscountType(DisountType.NONE);
+        course.setCourseDiscountType(DiscountType.NONE);
 
         course.update(newCourse);
         assert (course.getId() == 1L);

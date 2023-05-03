@@ -28,8 +28,7 @@ class NewDomainControllerTests extends AbstractContainerBaseTest {
     MockMvc mockMvc;
 
     private NewDomainRequest newDomainRequest;
-    private LmsUser lmsUser;
-    private Tenant tenant;
+
     @Autowired
     private ObjectMapper mapper;
 

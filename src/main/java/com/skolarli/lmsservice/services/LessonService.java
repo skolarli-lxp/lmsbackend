@@ -1,7 +1,7 @@
 package com.skolarli.lmsservice.services;
 
+import com.skolarli.lmsservice.models.LessonSortOrderRequest;
 import com.skolarli.lmsservice.models.LessonSortOrderResponse;
-import com.skolarli.lmsservice.models.LessonSortOrderrequest;
 import com.skolarli.lmsservice.models.NewLessonRequest;
 import com.skolarli.lmsservice.models.db.Lesson;
 
@@ -24,7 +24,7 @@ public interface LessonService {
     Lesson updateLesson(Lesson lesson, long id);
 
     List<LessonSortOrderResponse> updateLessonSortOrder(
-            Long chapterId, List<LessonSortOrderrequest> lessonSortOrderrequest);
+            Long chapterId, List<LessonSortOrderRequest> lessonSortOrderRequest);
 
     void deleteLesson(long id);
 

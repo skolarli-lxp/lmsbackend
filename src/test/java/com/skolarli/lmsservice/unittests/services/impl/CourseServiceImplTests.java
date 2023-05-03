@@ -10,7 +10,7 @@ import com.skolarli.lmsservice.exception.OperationNotSupportedException;
 import com.skolarli.lmsservice.exception.ResourceNotFoundException;
 import com.skolarli.lmsservice.models.db.Course;
 import com.skolarli.lmsservice.models.db.DeliveryFormat;
-import com.skolarli.lmsservice.models.db.DisountType;
+import com.skolarli.lmsservice.models.db.DiscountType;
 import com.skolarli.lmsservice.models.db.LmsUser;
 import com.skolarli.lmsservice.repository.CourseRepository;
 import com.skolarli.lmsservice.services.impl.CourseServiceImpl;
@@ -48,7 +48,7 @@ public class CourseServiceImplTests {
         newCourse.setCourseFees(1000);
         newCourse.setCourseDeliveryFormat(DeliveryFormat.PHYSICAL_CLASSROOM);
         newCourse.setCourseDiscountAmount(0);
-        newCourse.setCourseDiscountType(DisountType.NONE);
+        newCourse.setCourseDiscountType(DiscountType.NONE);
     }
 
     @Test
@@ -80,7 +80,7 @@ public class CourseServiceImplTests {
         updatedCourse.setCourseName("Updated Course Name");
         updatedCourse.setCourseDescription("Updated Course Description");
         updatedCourse.setCourseDeliveryFormat(DeliveryFormat.PHYSICAL_CLASSROOM);
-        updatedCourse.setCourseDiscountType(DisountType.NONE);
+        updatedCourse.setCourseDiscountType(DiscountType.NONE);
 
         when(courseRepository.findById(1L)).thenReturn(Optional.of(newCourse));
         when(courseRepository.save(newCourse)).thenReturn(newCourse);
@@ -105,7 +105,7 @@ public class CourseServiceImplTests {
         updatedCourse.setCourseName("Updated Course Name");
         updatedCourse.setCourseDescription("Updated Course Description");
         updatedCourse.setCourseDeliveryFormat(DeliveryFormat.PHYSICAL_CLASSROOM);
-        updatedCourse.setCourseDiscountType(DisountType.NONE);
+        updatedCourse.setCourseDiscountType(DiscountType.NONE);
 
         when(userUtils.getCurrentUser()).thenReturn(currentUser);
         when(courseRepository.findById(1L)).thenReturn(Optional.of(newCourse));

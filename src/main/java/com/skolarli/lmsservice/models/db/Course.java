@@ -42,7 +42,7 @@ public class Course extends Tenantable {
 
     private int courseFees;
 
-    private DisountType courseDiscountType;
+    private DiscountType courseDiscountType;
     private int courseDiscountAmount;
 
     @ManyToOne

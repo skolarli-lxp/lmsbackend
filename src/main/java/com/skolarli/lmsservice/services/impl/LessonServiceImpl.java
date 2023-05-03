@@ -2,8 +2,8 @@ package com.skolarli.lmsservice.services.impl;
 
 import com.skolarli.lmsservice.exception.OperationNotSupportedException;
 import com.skolarli.lmsservice.exception.ResourceNotFoundException;
+import com.skolarli.lmsservice.models.LessonSortOrderRequest;
 import com.skolarli.lmsservice.models.LessonSortOrderResponse;
-import com.skolarli.lmsservice.models.LessonSortOrderrequest;
 import com.skolarli.lmsservice.models.NewLessonRequest;
 import com.skolarli.lmsservice.models.db.Lesson;
 import com.skolarli.lmsservice.models.db.LmsUser;
@@ -156,10 +156,10 @@ public class LessonServiceImpl implements LessonService {
 
     public List<LessonSortOrderResponse> updateLessonSortOrder(
             Long chapterId,
-            List<LessonSortOrderrequest> lessonSortOrderrequest) {
+            List<LessonSortOrderRequest> lessonSortOrderRequest) {
         List<Lesson> lessons = lessonRepository.findByChapterIdOrderByLessonSortOrderAsc(chapterId);
         for (Lesson lesson : lessons) {
-            for (LessonSortOrderrequest lessonSortOrder : lessonSortOrderrequest) {
+            for (LessonSortOrderRequest lessonSortOrder : lessonSortOrderRequest) {
                 if (lessonSortOrder.getLessonSortOrder() > 0
                         && lesson.getId() == lessonSortOrder.getLessonId()) {
                     lesson.setLessonSortOrder(lessonSortOrder.getLessonSortOrder());

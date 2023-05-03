@@ -23,9 +23,6 @@ import javax.validation.Valid;
 @RequestMapping("/attendance")
 public class AttendanceController {
     final AttendanceService attendanceService;
-    final BatchScheduleService batchScheduleService;
-    final LmsUserService lmsUserService;
-    final UserUtils userUtils;
     final Logger logger = LoggerFactory.getLogger(AttendanceController.class);
 
     public AttendanceController(AttendanceService attendanceService,
@@ -33,9 +30,6 @@ public class AttendanceController {
                                 LmsUserService lmsUserService,
                                 UserUtils userUtils) {
         this.attendanceService = attendanceService;
-        this.batchScheduleService = batchScheduleService;
-        this.lmsUserService = lmsUserService;
-        this.userUtils = userUtils;
     }
 
     @RequestMapping(method = RequestMethod.GET)
