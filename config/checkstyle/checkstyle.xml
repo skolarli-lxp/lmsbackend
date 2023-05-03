@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!DOCTYPE module PUBLIC "-//Puppy Crawl//DTD Check Configuration 1.3//EN"
+        "https://checkstyle.org/dtds/configuration_1_3.dtd">
+
+<module name="Checker">
+    <property name="severity" value="warning"/>
+    <property name="charset" value="UTF-8"/>
+    <property name="fileExtensions" value="java"/>
+    <property name="tabWidth" value="4"/>
+    <property name="basedir" value="."/>
+
+    <!-- Import Spring Framework checkstyle rules -->
+    <module name="TreeWalker">
+        <module name="Spring"/>
+    </module>
+
+    <!-- Custom rules -->
+    <module name="CustomImportOrder"/>
+    <module name="CustomModifierOrder"/>
+    <module name="CustomWhitespaceAround"/>
+
+</module>

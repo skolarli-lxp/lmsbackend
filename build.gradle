@@ -2,20 +2,18 @@ plugins {
     id 'org.springframework.boot' version '2.6.7'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'java'
+    id 'checkstyle'
 }
-
-//test {
-//    exclude('com/skolarli/lmsservice.integration.*')
-//}
 
 group = 'com.skolarli'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
 
-configurations {
-    compileOnly {
-        extendsFrom annotationProcessor
-    }
+
+checkstyle {
+    toolVersion '8.40'
+    maxWarnings = 0
+    ignoreFailures false
 }
 
 sourceSets {
@@ -62,6 +60,12 @@ tasks.named('test') {
     useJUnitPlatform()
 }
 
+tasks.withType(Checkstyle).configureEach {
+    reports {
+        xml.required = true
+        html.required = true
+    }
+}
 
 task integrationTest(type: Test) {
     description = 'Runs the integration tests.'
@@ -80,6 +84,13 @@ task integrationTest(type: Test) {
 configurations {
     integrationTestImplementation.extendsFrom(testImplementation)
     integrationTestRuntimeOnly.extendsFrom(testRuntimeOnly)
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
 }
+
+//configurations {
+//
+//}
 
 

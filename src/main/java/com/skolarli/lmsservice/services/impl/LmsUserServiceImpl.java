@@ -110,7 +110,7 @@ public class LmsUserServiceImpl implements LmsUserService {
 
     @Override
     public List<Batch>  getBatchesTaughtByInstructor(Long instructorId) {
-    	LmsUser user =  getLmsUserById(instructorId);
+        LmsUser user =  getLmsUserById(instructorId);
         return getBatchesTaughtByInstructor(user);
     }
 
@@ -132,8 +132,8 @@ public class LmsUserServiceImpl implements LmsUserService {
 
     @Override
     public List<Batch> getBatchesEnrolledForStudent(Long studentId) {
-        	LmsUser user =  getLmsUserById(studentId);
-            return getBatchesEnrolledForStudent(user);
+        LmsUser user =  getLmsUserById(studentId);
+        return getBatchesEnrolledForStudent(user);
     }
 
     @Override
