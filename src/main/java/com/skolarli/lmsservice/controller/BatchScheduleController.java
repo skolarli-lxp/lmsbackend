@@ -124,8 +124,8 @@ public class BatchScheduleController {
     public ResponseEntity<String> deleteBatchSchedule(@PathVariable long id) {
         BatchSchedule batchSchedule = batchScheduleService.getBatchSchedule(id);
         LmsUser currentUser = userUtils.getCurrentUser();
-        if (!currentUser.getIsAdmin() && currentUser !=
-                batchSchedule.getBatch().getCourse().getCourseOwner()) {
+        if (!currentUser.getIsAdmin() && currentUser
+                != batchSchedule.getBatch().getCourse().getCourseOwner()) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "");
         }
         try {
@@ -141,8 +141,8 @@ public class BatchScheduleController {
     public ResponseEntity<String> hardDeleteBatchSchedule(@PathVariable long id) {
         BatchSchedule batchSchedule = batchScheduleService.getBatchSchedule(id);
         LmsUser currentUser = userUtils.getCurrentUser();
-        if (!currentUser.getIsAdmin() && currentUser !=
-                batchSchedule.getBatch().getCourse().getCourseOwner()) {
+        if (!currentUser.getIsAdmin() && currentUser
+                != batchSchedule.getBatch().getCourse().getCourseOwner()) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "");
         }
         try {

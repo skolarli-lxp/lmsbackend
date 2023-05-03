@@ -57,20 +57,20 @@ public class LmsUserServiceImpl implements LmsUserService {
         } else {
             throw new ResourceNotFoundException("LmsUser", "email", email);
         }
-//        LmsUser existingLmsUser = lmsUserRepository.findLmsUserByEmail(email);
-//        if (existingLmsUser != null) {
-//            return  existingLmsUser;
-//        } else {
-//            throw  new ResourceNotFoundException("LmsUser", "email", email);
-//        }
+        //LmsUser existingLmsUser = lmsUserRepository.findLmsUserByEmail(email);
+        //if (existingLmsUser != null) {
+        //    return  existingLmsUser;
+        //} else {
+        //    throw  new ResourceNotFoundException("LmsUser", "email", email);
+        //}
 
 
-//        LmsUser existingUser = lmsUserRepository.getByEmail(email);
-//        if (existingUser != null) {
-//            return existingUser;
-//        } else {
-//            throw  new ResourceNotFoundException("LmsUser", "email", email);
-//        }
+        //LmsUser existingUser = lmsUserRepository.getByEmail(email);
+        //if (existingUser != null) {
+        //    return existingUser;
+        //} else {
+        //    throw  new ResourceNotFoundException("LmsUser", "email", email);
+        //}
     }
 
     @Override
@@ -168,8 +168,8 @@ public class LmsUserServiceImpl implements LmsUserService {
             existingUser.setUserIsDeleted(true);
             lmsUserRepository.save(existingUser);
         } else {
-            throw new OperationNotSupportedException("User does not have permission to perform " +
-                    "Delete operation");
+            throw new OperationNotSupportedException("User does not have permission to perform "
+                    + "Delete operation");
         }
     }
 
@@ -178,8 +178,8 @@ public class LmsUserServiceImpl implements LmsUserService {
         LmsUser existingUser = lmsUserRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("LmsUser", "Id", id));
         if (!getCurrentUser().getIsAdmin()) {
-            throw new OperationNotSupportedException("User does not have permission to perform " +
-                    "Delete operation");
+            throw new OperationNotSupportedException("User does not have permission to perform "
+                    + "Delete operation");
         }
         lmsUserRepository.delete(existingUser);
     }

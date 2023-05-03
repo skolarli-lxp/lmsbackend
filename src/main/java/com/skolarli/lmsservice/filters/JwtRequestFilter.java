@@ -43,7 +43,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             username = jwtUtils.extractUserName(jwt);
         }
 
-//        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+        //if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
         if (username != null) {
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
             if (jwtUtils.validateToken(jwt, userDetails)) {
@@ -56,8 +56,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                         SecurityContextHolder.getContext().getAuthentication();
                 SecurityContextHolder.getContext().setAuthentication(new TenantAuthenticationToken(
                         username, tenantAuthenticationToken.getTenantId()));
-//                SecurityContextHolder.getContext().setAuthentication(
-//                usernamePasswordAuthenticationToken);
+                //SecurityContextHolder.getContext().setAuthentication(
+                //usernamePasswordAuthenticationToken);
 
             }
         }

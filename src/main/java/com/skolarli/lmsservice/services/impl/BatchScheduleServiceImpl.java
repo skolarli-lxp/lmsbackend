@@ -38,14 +38,14 @@ public class BatchScheduleServiceImpl implements BatchScheduleService {
 
     private Boolean checkPermissions(BatchSchedule existingBatchSchedule) {
         LmsUser currentUser = userUtils.getCurrentUser();
-        return currentUser.getIsAdmin() ||
-                currentUser == existingBatchSchedule.getBatch().getCourse().getCourseOwner();
+        return currentUser.getIsAdmin()
+                || currentUser == existingBatchSchedule.getBatch().getCourse().getCourseOwner();
     }
 
     private Boolean checkPermissions(Batch existingBatch) {
         LmsUser currentUser = userUtils.getCurrentUser();
-        return currentUser.getIsAdmin() ||
-                currentUser == existingBatch.getCourse().getCourseOwner();
+        return currentUser.getIsAdmin()
+                || currentUser == existingBatch.getCourse().getCourseOwner();
     }
 
     @Override
@@ -159,8 +159,8 @@ public class BatchScheduleServiceImpl implements BatchScheduleService {
         BatchSchedule existingBatchSchedule = batchScheduleRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("BatchSchedule", "Id", id));
         LmsUser currentUser = userUtils.getCurrentUser();
-        if (!currentUser.getIsAdmin() && currentUser !=
-                existingBatchSchedule.getBatch().getCourse().getCourseOwner()) {
+        if (!currentUser.getIsAdmin() && currentUser
+                != existingBatchSchedule.getBatch().getCourse().getCourseOwner()) {
             throw new OperationNotSupportedException(
                     "Operation not supported: Permission Denied");
         }

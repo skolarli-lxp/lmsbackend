@@ -23,12 +23,11 @@ import java.util.stream.Collectors;
 
 @Service
 public class AttendanceServiceImpl implements AttendanceService {
-    Logger logger = LoggerFactory.getLogger(AttendanceServiceImpl.class);
-
     final AttendanceRepository attendanceRepository;
     final UserUtils userUtils;
     final LmsUserService lmsUserService;
     final BatchScheduleService batchScheduleService;
+    Logger logger = LoggerFactory.getLogger(AttendanceServiceImpl.class);
 
     public AttendanceServiceImpl(AttendanceRepository attendanceRepository,
                                  UserUtils userUtils,
@@ -96,8 +95,8 @@ public class AttendanceServiceImpl implements AttendanceService {
             List<NewAttendancesForScheduleRequest> newAttendancesForScheduleRequests,
             Long batchScheduleId) {
         List<Attendance> attendances = newAttendancesForScheduleRequests.stream()
-                .map(newAttendanceForScheduleRequest -> toAttendance
-                        (newAttendanceForScheduleRequest, batchScheduleId))
+                .map(newAttendanceForScheduleRequest -> toAttendance(
+                        newAttendanceForScheduleRequest, batchScheduleId))
                 .collect(Collectors.toList());
         return attendances;
     }

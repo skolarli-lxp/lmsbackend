@@ -38,10 +38,12 @@ class AuthControllerTests {
 
     @Autowired
     MockMvc mockMvc;
-
+    @MockBean
+    UserDetails userDetails;
+    AuthenticationRequest authenticationRequest;
+    LmsUser lmsUser;
     @Autowired
     private ObjectMapper mapper;
-
     @MockBean
     private AuthenticationManager authenticationManager;
     @MockBean
@@ -52,13 +54,6 @@ class AuthControllerTests {
     private TenantContext tenantContext;
     @MockBean
     private LmsUserService lmsUserService;
-
-    @MockBean
-    UserDetails userDetails;
-
-    AuthenticationRequest authenticationRequest;
-    LmsUser lmsUser;
-
 
     @BeforeEach
     public void setup() {

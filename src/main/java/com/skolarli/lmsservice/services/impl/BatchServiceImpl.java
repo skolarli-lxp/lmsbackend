@@ -46,8 +46,8 @@ public class BatchServiceImpl implements BatchService {
 
     private Boolean checkPermissions(Batch existingBatch) {
         LmsUser currentUser = userUtils.getCurrentUser();
-        return currentUser.getIsAdmin() ||
-                currentUser == existingBatch.getCourse().getCourseOwner();
+        return currentUser.getIsAdmin()
+                || currentUser == existingBatch.getCourse().getCourseOwner();
     }
 
     @Override
@@ -119,8 +119,8 @@ public class BatchServiceImpl implements BatchService {
         Batch existingBatch = batchRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Batch", "Id", id));
         LmsUser currentUser = userUtils.getCurrentUser();
-        if (!currentUser.getIsAdmin() && currentUser !=
-                existingBatch.getCourse().getCourseOwner()) {
+        if (!currentUser.getIsAdmin() && currentUser
+                != existingBatch.getCourse().getCourseOwner()) {
             throw new OperationNotSupportedException(
                     "User does not have permission to perform Update operation");
         }

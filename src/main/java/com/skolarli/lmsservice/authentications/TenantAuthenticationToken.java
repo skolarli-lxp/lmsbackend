@@ -7,7 +7,7 @@ public class TenantAuthenticationToken extends AbstractAuthenticationToken {
     private final Object principal;
     private final long tenantId;
 
-    public TenantAuthenticationToken( Object principal, long tenantId) {
+    public TenantAuthenticationToken(Object principal, long tenantId) {
         super(null);
         this.principal = principal;
         this.tenantId = tenantId;

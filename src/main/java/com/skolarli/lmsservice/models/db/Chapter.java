@@ -53,8 +53,8 @@ public class Chapter extends Tenantable {
         if (chapter.getChapterName() != null && !chapter.getChapterName().isEmpty()) {
             this.setChapterName(chapter.getChapterName());
         }
-        if (chapter.getChapterDescription() != null &&
-                !chapter.getChapterDescription().isEmpty()) {
+        if (chapter.getChapterDescription() != null
+                && !chapter.getChapterDescription().isEmpty()) {
             this.setChapterDescription(chapter.getChapterDescription());
         }
 

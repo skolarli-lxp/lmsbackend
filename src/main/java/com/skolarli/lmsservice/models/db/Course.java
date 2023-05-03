@@ -105,7 +105,6 @@ public class Course extends Tenantable {
      * List of items like batches, lesson etc are only updated with additional values.
      * Existing values are not deleted.
      *
-     * @param course
      */
     public void update(Course course) {
         if (course.getId() != 0) {
@@ -153,12 +152,12 @@ public class Course extends Tenantable {
         if (course.getCourseSeoTitleTag() != null && !course.getCourseSeoTitleTag().isEmpty()) {
             this.setCourseSeoTitleTag(course.getCourseSeoTitleTag());
         }
-        if (course.getCourseSeoDescription() != null &&
-                !course.getCourseSeoDescription().isEmpty()) {
+        if (course.getCourseSeoDescription() != null
+                && !course.getCourseSeoDescription().isEmpty()) {
             this.setCourseSeoDescription(course.getCourseSeoDescription());
         }
-        if (course.getCourseMetaTagKeywords() != null &&
-                !course.getCourseMetaTagKeywords().isEmpty()) {
+        if (course.getCourseMetaTagKeywords() != null
+                && !course.getCourseMetaTagKeywords().isEmpty()) {
             this.setCourseMetaTagKeywords(course.getCourseMetaTagKeywords());
         }
         if (course.getCourseCoverImage() != null && !course.getCourseCoverImage().isEmpty()) {

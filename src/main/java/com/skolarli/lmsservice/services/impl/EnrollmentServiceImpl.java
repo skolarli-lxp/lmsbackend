@@ -38,8 +38,8 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
     private Boolean checkPermissions(Enrollment existingEnrollment) {
         LmsUser currentUser = userUtils.getCurrentUser();
-        return currentUser.getIsAdmin() ||
-                currentUser == existingEnrollment.getBatch().getCourse().getCourseOwner();
+        return currentUser.getIsAdmin()
+                || currentUser == existingEnrollment.getBatch().getCourse().getCourseOwner();
     }
 
     @Override
@@ -124,8 +124,8 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         Enrollment existingEnrollment = enrollmentRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Enrollment", "Id", id));
         if (!checkPermissions(existingEnrollment)) {
-            throw new OperationNotSupportedException("User does not have permission to update " +
-                    "this enrollment");
+            throw new OperationNotSupportedException("User does not have permission to update "
+                    + "this enrollment");
         }
         if (enrollment.getEnrollmentIsDeleted() != null) {
             logger.error("Cannot change deleted status. Use Delete API instead");
@@ -141,8 +141,8 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         Enrollment existingEnrollment = enrollmentRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Enrollment", "Id", id));
         if (!checkPermissions(existingEnrollment)) {
-            throw new OperationNotSupportedException("User does not have permission to perform " +
-                    "Delete operation");
+            throw new OperationNotSupportedException("User does not have permission to perform "
+                    + "Delete operation");
         }
         existingEnrollment.setEnrollmentIsDeleted(true);
         enrollmentRepository.save(existingEnrollment);
@@ -154,8 +154,8 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         Enrollment existingEnrollment = enrollmentRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Enrollment", "Id", id));
         if (!checkPermissions(existingEnrollment)) {
-            throw new OperationNotSupportedException("User does not have permission to perform" +
-                    " Delete operation");
+            throw new OperationNotSupportedException("User does not have permission to perform"
+                    + " Delete operation");
         }
         enrollmentRepository.delete(existingEnrollment);
     }

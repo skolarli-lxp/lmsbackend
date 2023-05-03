@@ -26,8 +26,8 @@ public class TenantEntityListener {
 
     @PreRemove
     public void preRemove(Object object) {
-        if (object instanceof Tenantable && ((Tenantable) object).getTenantId() !=
-                tenantContext.getTenantId()) {
+        if (object instanceof Tenantable && ((Tenantable) object).getTenantId()
+                != tenantContext.getTenantId()) {
             throw new EntityNotFoundException();
         }
     }

@@ -37,8 +37,8 @@ public class LessonServiceImpl implements LessonService {
 
     private Boolean checkPermission(Lesson lesson) {
         LmsUser currentUser = userUtils.getCurrentUser();
-        return currentUser.getIsAdmin() ||
-                currentUser == lesson.getChapter().getCourse().getCourseOwner();
+        return currentUser.getIsAdmin()
+                || currentUser == lesson.getChapter().getCourse().getCourseOwner();
     }
 
     @Override
@@ -144,8 +144,8 @@ public class LessonServiceImpl implements LessonService {
         Lesson existingLesson = lessonRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Lesson", "Id", id));
         if (!checkPermission(existingLesson)) {
-            throw new OperationNotSupportedException("User does not have permissions to update " +
-                    "this lesson");
+            throw new OperationNotSupportedException("User does not have permissions to update "
+                    + "this lesson");
         }
         if (lesson.getLessonIsDeleted() != null) {
             logger.error("Cannot change deleted status. Use delete APIs instead");
@@ -161,8 +161,8 @@ public class LessonServiceImpl implements LessonService {
         List<Lesson> lessons = lessonRepository.findByChapterIdOrderByLessonSortOrderAsc(chapterId);
         for (Lesson lesson : lessons) {
             for (LessonSortOrderrequest lessonSortOrder : lessonSortOrderrequest) {
-                if (lessonSortOrder.getLessonSortOrder() > 0 &&
-                        lesson.getId() == lessonSortOrder.getLessonId()) {
+                if (lessonSortOrder.getLessonSortOrder() > 0
+                        && lesson.getId() == lessonSortOrder.getLessonId()) {
                     lesson.setLessonSortOrder(lessonSortOrder.getLessonSortOrder());
                 }
             }
@@ -176,8 +176,8 @@ public class LessonServiceImpl implements LessonService {
         Lesson existingLesson = lessonRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Lesson", "Id", id));
         if (!checkPermission(existingLesson)) {
-            throw new OperationNotSupportedException("User does not have permissions to delete " +
-                    "this lesson");
+            throw new OperationNotSupportedException("User does not have permissions to delete "
+                    + "this lesson");
         }
         existingLesson.setLessonIsDeleted(true);
         lessonRepository.save(existingLesson);
@@ -188,8 +188,8 @@ public class LessonServiceImpl implements LessonService {
         Lesson existingLesson = lessonRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Lesson", "Id", id));
         if (!checkPermission(existingLesson)) {
-            throw new OperationNotSupportedException("User does not have permissions to delete" +
-                    " this lesson");
+            throw new OperationNotSupportedException("User does not have permissions to delete"
+                    + " this lesson");
         }
         lessonRepository.delete(existingLesson);
     }

@@ -107,8 +107,8 @@ public class UserController {
             @RequestParam(required = false) String instructorEmail) {
         logger.info("Received getAllBatchesTaught request");
         LmsUser currentUser = userUtils.getCurrentUser();
-        if (!currentUser.getIsAdmin() && currentUser.getId() != instructorId &&
-                !currentUser.getEmail().equals(instructorEmail)) {
+        if (!currentUser.getIsAdmin() && currentUser.getId() != instructorId
+                && !currentUser.getEmail().equals(instructorEmail)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Permission denied");
         }
         if (instructorId == null && (instructorEmail == null || instructorEmail.isEmpty())) {

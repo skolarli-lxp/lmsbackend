@@ -15,9 +15,9 @@ public class CustomLmsUserRepositoryImpl implements CustomLmsUserRepository {
 
     @Override
     public LmsUser findLmsUserByEmail(String email) {
-//        return (LmsUser) entityManager.createQuery("SELECT u FROM LmsUser u WHERE u.email = :id")
-//                .setParameter("id", email)
-//                .getSingleResult();
+        //return (LmsUser) entityManager.createQuery("SELECT u FROM LmsUser u WHERE u.email = :id")
+        //        .setParameter("id", email)
+        //        .getSingleResult();
         return null;
     }
 }

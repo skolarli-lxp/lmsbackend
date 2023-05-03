@@ -18,11 +18,10 @@ import java.util.stream.Stream;
 
 @Service
 public class TenantServiceImpl implements TenantService {
-    Logger logger = LoggerFactory.getLogger(TenantServiceImpl.class);
     private final TenantRepository tenantRepository;
-
     private final TenantContext tenantContext;
     private final UserUtils userUtils;
+    Logger logger = LoggerFactory.getLogger(TenantServiceImpl.class);
 
     public TenantServiceImpl(TenantRepository tenantRepository,
                              TenantContext tenantContext, UserUtils userUtils) {
@@ -97,28 +96,28 @@ public class TenantServiceImpl implements TenantService {
     @Override
     public void deleteTenant(long id) {
         throw new OperationNotSupportedException("Operation can be done only by superuser");
-//        Tenant existingTenant = tenantRepository.findById(id).orElseThrow(
-//                () ->  new ResourceNotFoundException("Tenant", "Id", id)
-//        );
-//        if (!userUtils.getCurrentUser().getIsAdmin()) {
-//            throw new OperationNotSupportedException("User does not have permission
-//            to perform this operation");
-//        }
-//        existingTenant.setTenantIsDeleted(true);
-//        tenantRepository.save(existingTenant);
+        //Tenant existingTenant = tenantRepository.findById(id).orElseThrow(
+        //        () ->  new ResourceNotFoundException("Tenant", "Id", id)
+        //);
+        //if (!userUtils.getCurrentUser().getIsAdmin()) {
+        //    throw new OperationNotSupportedException("User does not have permission
+        //    to perform this operation");
+        //}
+        //existingTenant.setTenantIsDeleted(true);
+        //tenantRepository.save(existingTenant);
     }
 
     @Override
     public void hardDeleteTenant(long id) {
         throw new OperationNotSupportedException("Operation can be done only by superuser");
-//        Tenant existingTenant = tenantRepository.findById(id).orElseThrow(
-//                () ->  new ResourceNotFoundException("Tenant", "Id", id)
-//        );
-//        if (!userUtils.getCurrentUser().getIsAdmin()) {
-//            throw new OperationNotSupportedException("User does not have permission to
-//            perform this operation");
-//        }
-//        tenantRepository.delete(existingTenant);
+        //Tenant existingTenant = tenantRepository.findById(id).orElseThrow(
+        //        () ->  new ResourceNotFoundException("Tenant", "Id", id)
+        //);
+        //if (!userUtils.getCurrentUser().getIsAdmin()) {
+        //    throw new OperationNotSupportedException("User does not have permission to
+        //    perform this operation");
+        //}
+        //tenantRepository.delete(existingTenant);
     }
 
     @Override
