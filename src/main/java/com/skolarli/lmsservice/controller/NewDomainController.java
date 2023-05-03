@@ -31,7 +31,7 @@ Like creating a new domain for new sign up
 @RequestMapping(value = "/newdomain")
 public class NewDomainController {
 
-    Logger logger = LoggerFactory.getLogger(NewDomainController.class);
+    final Logger logger = LoggerFactory.getLogger(NewDomainController.class);
     @Autowired
     private TenantService tenantService;
 

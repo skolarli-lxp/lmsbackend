@@ -19,9 +19,9 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping("/lesson")
 public class LessonController {
-    Logger logger = LoggerFactory.getLogger(LessonController.class);
+    final Logger logger = LoggerFactory.getLogger(LessonController.class);
 
-    LessonService lessonService;
+    final LessonService lessonService;
 
     public LessonController(LessonService lessonService) {
         this.lessonService = lessonService;

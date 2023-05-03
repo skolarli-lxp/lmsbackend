@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 
 @Component
 public class TenantAuthorizationFilter extends OncePerRequestFilter {
-    Logger logger = LoggerFactory.getLogger(TenantAuthorizationFilter.class);
+    final Logger logger = LoggerFactory.getLogger(TenantAuthorizationFilter.class);
 
     @Autowired
     TenantService tenantService;

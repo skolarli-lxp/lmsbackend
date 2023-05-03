@@ -18,7 +18,7 @@ import org.springframework.web.server.ResponseStatusException;
 @RequestMapping(value = "/verify")
 public class VerificationController {
 
-    Logger logger = LoggerFactory.getLogger(VerificationController.class);
+    final Logger logger = LoggerFactory.getLogger(VerificationController.class);
 
     @Autowired
     private VerificationService verificationService;

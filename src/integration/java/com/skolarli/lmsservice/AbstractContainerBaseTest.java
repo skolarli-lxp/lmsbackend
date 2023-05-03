@@ -8,7 +8,7 @@ import org.testcontainers.junit.jupiter.Container;
 public class AbstractContainerBaseTest {
 
     @Container
-    public static MySQLContainer container = new MySQLContainer("mysql:latest")
+    public static final MySQLContainer container = new MySQLContainer("mysql:latest")
             .withDatabaseName("lms")
             .withUsername("Test")
             .withPassword("Test");

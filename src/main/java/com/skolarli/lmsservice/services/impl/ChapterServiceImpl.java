@@ -23,9 +23,9 @@ public class ChapterServiceImpl implements ChapterService {
 
     private static final Logger logger = (Logger) LoggerFactory.getLogger(ChapterServiceImpl.class);
 
-    ChapterRepository chapterRepository;
-    UserUtils userUtils;
-    CourseService courseService;
+    final ChapterRepository chapterRepository;
+    final UserUtils userUtils;
+    final CourseService courseService;
 
     public ChapterServiceImpl(ChapterRepository chapterRepository, UserUtils userutils,
                               CourseService courseService) {

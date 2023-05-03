@@ -17,7 +17,7 @@ import java.util.List;
 @Service
 public class CourseServiceImpl implements CourseService {
 
-    Logger logger = LoggerFactory.getLogger(CourseServiceImpl.class);
+    final Logger logger = LoggerFactory.getLogger(CourseServiceImpl.class);
     private final CourseRepository courseRepository;
 
     private final UserUtils userUtils;

@@ -27,7 +27,7 @@ public class AttendanceServiceImpl implements AttendanceService {
     final UserUtils userUtils;
     final LmsUserService lmsUserService;
     final BatchScheduleService batchScheduleService;
-    Logger logger = LoggerFactory.getLogger(AttendanceServiceImpl.class);
+    final Logger logger = LoggerFactory.getLogger(AttendanceServiceImpl.class);
 
     public AttendanceServiceImpl(AttendanceRepository attendanceRepository,
                                  UserUtils userUtils,
@@ -94,11 +94,10 @@ public class AttendanceServiceImpl implements AttendanceService {
     public List<Attendance> toAttendances(
             List<NewAttendancesForScheduleRequest> newAttendancesForScheduleRequests,
             Long batchScheduleId) {
-        List<Attendance> attendances = newAttendancesForScheduleRequests.stream()
+        return newAttendancesForScheduleRequests.stream()
                 .map(newAttendanceForScheduleRequest -> toAttendance(
                         newAttendanceForScheduleRequest, batchScheduleId))
                 .collect(Collectors.toList());
-        return attendances;
     }
 
     @Override

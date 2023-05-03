@@ -20,7 +20,7 @@ import javax.validation.Valid;
 @RequestMapping("/enrollment")
 public class EnrollmentController {
     private final EnrollmentService enrollmentService;
-    Logger logger = LoggerFactory.getLogger(EnrollmentController.class);
+    final Logger logger = LoggerFactory.getLogger(EnrollmentController.class);
 
     public EnrollmentController(EnrollmentService enrollmentService) {
         this.enrollmentService = enrollmentService;

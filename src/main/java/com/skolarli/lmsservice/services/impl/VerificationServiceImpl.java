@@ -15,8 +15,8 @@ import java.util.List;
 @Service
 public class VerificationServiceImpl implements VerificationService {
 
-    VerificationCodeRepository verificationCodeRepository;
-    LmsUserRepository lmsUserRepository;
+    final VerificationCodeRepository verificationCodeRepository;
+    final LmsUserRepository lmsUserRepository;
 
     public VerificationServiceImpl(VerificationCodeRepository verificationCodeRepository,
                                    LmsUserRepository lmsUserRepository) {

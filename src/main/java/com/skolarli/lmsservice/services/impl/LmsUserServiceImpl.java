@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 @Service
 public class LmsUserServiceImpl implements LmsUserService {
 
-    Logger logger = LoggerFactory.getLogger(LmsUserServiceImpl.class);
+    final Logger logger = LoggerFactory.getLogger(LmsUserServiceImpl.class);
     private final LmsUserRepository lmsUserRepository;
 
 

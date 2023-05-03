@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class HealthController {
 
-    Logger logger = LoggerFactory.getLogger(HealthController.class);
+    final Logger logger = LoggerFactory.getLogger(HealthController.class);
 
     @RequestMapping("/gethealth")
     public String getHealth() {

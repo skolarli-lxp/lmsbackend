@@ -26,7 +26,7 @@ public class AttendanceController {
     final BatchScheduleService batchScheduleService;
     final LmsUserService lmsUserService;
     final UserUtils userUtils;
-    Logger logger = LoggerFactory.getLogger(AttendanceController.class);
+    final Logger logger = LoggerFactory.getLogger(AttendanceController.class);
 
     public AttendanceController(AttendanceService attendanceService,
                                 BatchScheduleService batchScheduleService,

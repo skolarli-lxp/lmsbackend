@@ -22,7 +22,7 @@ Controller for changing the data related to a domain for a logged in tenant
 @RestController
 @RequestMapping(value = "/domain")
 public class DomainController {
-    Logger logger = LoggerFactory.getLogger(DomainController.class);
+    final Logger logger = LoggerFactory.getLogger(DomainController.class);
 
     private final UserUtils userUtils;
 

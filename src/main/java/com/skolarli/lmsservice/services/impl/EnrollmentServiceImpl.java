@@ -21,7 +21,7 @@ import java.util.List;
 
 @Service
 public class EnrollmentServiceImpl implements EnrollmentService {
-    Logger logger = LoggerFactory.getLogger(EnrollmentServiceImpl.class);
+    final Logger logger = LoggerFactory.getLogger(EnrollmentServiceImpl.class);
 
     private final EnrollmentRepository enrollmentRepository;
     private final UserUtils userUtils;

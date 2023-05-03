@@ -24,7 +24,7 @@ public class BatchScheduleController {
     final BatchScheduleService batchScheduleService;
     final BatchService batchService;
     final UserUtils userUtils;
-    Logger logger = LoggerFactory.getLogger(BatchScheduleController.class);
+    final Logger logger = LoggerFactory.getLogger(BatchScheduleController.class);
 
     public BatchScheduleController(BatchScheduleService batchScheduleService,
                                    BatchService batchService, UserUtils userUtils) {

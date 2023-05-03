@@ -25,7 +25,7 @@ public class BatchController {
     final CourseService courseService;
     final LmsUserService lmsUserService;
     final UserUtils userUtils;
-    Logger logger = LoggerFactory.getLogger(BatchController.class);
+    final Logger logger = LoggerFactory.getLogger(BatchController.class);
 
     public BatchController(BatchService batchService, CourseService courseService,
                            LmsUserService lmsUserService, UserUtils userUtils) {

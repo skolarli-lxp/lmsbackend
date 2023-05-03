@@ -25,7 +25,7 @@ import javax.validation.Valid;
 @RestController
 public class AuthController {
 
-    Logger logger = LoggerFactory.getLogger(AuthController.class);
+    final Logger logger = LoggerFactory.getLogger(AuthController.class);
     @Autowired
     LmsUserService lmsUserService;
     @Autowired

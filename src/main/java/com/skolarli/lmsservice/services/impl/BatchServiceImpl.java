@@ -20,7 +20,7 @@ import java.util.List;
 @Service
 public class BatchServiceImpl implements BatchService {
 
-    Logger logger = LoggerFactory.getLogger(BatchServiceImpl.class);
+    final Logger logger = LoggerFactory.getLogger(BatchServiceImpl.class);
     private final BatchRepository batchRepository;
     private final UserUtils userUtils;
     private final CourseService courseService;

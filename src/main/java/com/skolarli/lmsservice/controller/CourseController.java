@@ -17,7 +17,7 @@ import javax.validation.Valid;
 @RequestMapping(value = "/courses")
 public class CourseController {
 
-    Logger logger = LoggerFactory.getLogger(CourseController.class);
+    final Logger logger = LoggerFactory.getLogger(CourseController.class);
 
     @Autowired
     private CourseService courseService;

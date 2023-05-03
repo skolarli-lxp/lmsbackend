@@ -20,7 +20,7 @@ import javax.validation.Valid;
 public class ChapterController {
     private static final Logger logger = LoggerFactory.getLogger(ChapterController.class);
 
-    ChapterService chapterService;
+    final ChapterService chapterService;
 
     public ChapterController(ChapterService chapterService) {
         this.chapterService = chapterService;

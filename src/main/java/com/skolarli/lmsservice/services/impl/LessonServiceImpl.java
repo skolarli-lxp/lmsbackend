@@ -21,11 +21,11 @@ import java.util.List;
 @Service
 public class LessonServiceImpl implements LessonService {
 
-    Logger logger = LoggerFactory.getLogger(LessonServiceImpl.class);
+    final Logger logger = LoggerFactory.getLogger(LessonServiceImpl.class);
 
-    LessonRepository lessonRepository;
-    UserUtils userUtils;
-    ChapterService chapterService;
+    final LessonRepository lessonRepository;
+    final UserUtils userUtils;
+    final ChapterService chapterService;
 
     public LessonServiceImpl(LessonRepository lessonRepository, UserUtils userUtils,
                              ChapterService chapterService) {
@@ -123,8 +123,7 @@ public class LessonServiceImpl implements LessonService {
 
     @Override
     public List<Lesson> getLessonsByChapterId(long id) {
-        List<Lesson> lesson = lessonRepository.findByChapterIdOrderByLessonSortOrderAsc(id);
-        return lesson;
+        return lessonRepository.findByChapterIdOrderByLessonSortOrderAsc(id);
     }
 
     @Override

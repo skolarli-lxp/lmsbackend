@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class BatchScheduleServiceImpl implements BatchScheduleService {
-    Logger logger = LoggerFactory.getLogger(BatchScheduleServiceImpl.class);
+    final Logger logger = LoggerFactory.getLogger(BatchScheduleServiceImpl.class);
 
     final BatchScheduleRepository batchScheduleRepository;
     final UserUtils userUtils;
@@ -106,9 +106,8 @@ public class BatchScheduleServiceImpl implements BatchScheduleService {
     @Override
     public List<BatchSchedule> toBatchScheduleList(
             List<NewBatchSchedulesForBatchRequest> newBatchSchedulesForBatchRequests) {
-        List<BatchSchedule> batchSchedules = newBatchSchedulesForBatchRequests.stream().map(
+        return newBatchSchedulesForBatchRequests.stream().map(
                 this::toBatchSchedule).collect(Collectors.toList());
-        return batchSchedules;
     }
 
     @Override
