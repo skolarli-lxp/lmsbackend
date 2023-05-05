@@ -1,10 +1,10 @@
 package com.skolarli.lmsservice.controller;
 
-import com.skolarli.lmsservice.models.LessonSortOrderRequest;
-import com.skolarli.lmsservice.models.LessonSortOrderResponse;
-import com.skolarli.lmsservice.models.NewLessonRequest;
-import com.skolarli.lmsservice.models.UpdateLessonDescriptionRequest;
 import com.skolarli.lmsservice.models.db.Lesson;
+import com.skolarli.lmsservice.models.dto.LessonSortOrderRequest;
+import com.skolarli.lmsservice.models.dto.LessonSortOrderResponse;
+import com.skolarli.lmsservice.models.dto.NewLessonRequest;
+import com.skolarli.lmsservice.models.dto.UpdateLessonDescriptionRequest;
 import com.skolarli.lmsservice.services.LessonService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

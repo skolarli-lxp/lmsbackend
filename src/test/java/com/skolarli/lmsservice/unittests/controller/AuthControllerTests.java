@@ -9,8 +9,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.skolarli.lmsservice.contexts.TenantContext;
-import com.skolarli.lmsservice.models.AuthenticationRequest;
 import com.skolarli.lmsservice.models.db.LmsUser;
+import com.skolarli.lmsservice.models.dto.AuthenticationRequest;
 import com.skolarli.lmsservice.services.LmsUserDetailsService;
 import com.skolarli.lmsservice.services.LmsUserService;
 import com.skolarli.lmsservice.utils.JwtUtils;

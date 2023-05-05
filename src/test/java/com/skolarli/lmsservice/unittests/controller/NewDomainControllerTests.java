@@ -7,10 +7,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.skolarli.lmsservice.models.NewDomainRequest;
 import com.skolarli.lmsservice.models.db.LmsUser;
 import com.skolarli.lmsservice.models.db.Tenant;
 import com.skolarli.lmsservice.models.db.VerificationCode;
+import com.skolarli.lmsservice.models.dto.NewDomainRequest;
 import com.skolarli.lmsservice.services.LmsUserService;
 import com.skolarli.lmsservice.services.TenantService;
 import com.skolarli.lmsservice.services.VerificationService;

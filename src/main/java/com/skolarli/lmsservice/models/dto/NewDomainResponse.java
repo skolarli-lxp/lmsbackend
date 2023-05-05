@@ -1,4 +1,4 @@
-package com.skolarli.lmsservice.models;
+package com.skolarli.lmsservice.models.dto;
 
 import com.skolarli.lmsservice.models.db.LmsUser;
 import com.skolarli.lmsservice.models.db.Tenant;

@@ -1,4 +1,4 @@
-package com.skolarli.lmsservice.models;
+package com.skolarli.lmsservice.models.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,10 +11,9 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @Getter
 @Setter
-public class ChapterSortOrderResponse {
+public class LessonSortOrderRequest {
     @NotNull
-    private long chapterId;
-    private String chapterName;
+    private long lessonId;
     @NotNull
-    private Integer chapterSortOrder;
+    private Integer lessonSortOrder;
 }

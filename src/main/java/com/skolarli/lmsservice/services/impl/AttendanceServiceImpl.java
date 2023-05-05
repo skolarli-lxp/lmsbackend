@@ -2,11 +2,11 @@ package com.skolarli.lmsservice.services.impl;
 
 import com.skolarli.lmsservice.exception.OperationNotSupportedException;
 import com.skolarli.lmsservice.exception.ResourceNotFoundException;
-import com.skolarli.lmsservice.models.NewAttendanceRequest;
-import com.skolarli.lmsservice.models.NewAttendancesForScheduleRequest;
 import com.skolarli.lmsservice.models.db.Attendance;
 import com.skolarli.lmsservice.models.db.BatchSchedule;
 import com.skolarli.lmsservice.models.db.LmsUser;
+import com.skolarli.lmsservice.models.dto.NewAttendanceRequest;
+import com.skolarli.lmsservice.models.dto.NewAttendancesForScheduleRequest;
 import com.skolarli.lmsservice.repository.AttendanceRepository;
 import com.skolarli.lmsservice.services.AttendanceService;
 import com.skolarli.lmsservice.services.BatchScheduleService;

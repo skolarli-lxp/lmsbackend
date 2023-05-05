@@ -1,9 +1,9 @@
 package com.skolarli.lmsservice.services;
 
-import com.skolarli.lmsservice.models.LessonSortOrderRequest;
-import com.skolarli.lmsservice.models.LessonSortOrderResponse;
-import com.skolarli.lmsservice.models.NewLessonRequest;
 import com.skolarli.lmsservice.models.db.Lesson;
+import com.skolarli.lmsservice.models.dto.LessonSortOrderRequest;
+import com.skolarli.lmsservice.models.dto.LessonSortOrderResponse;
+import com.skolarli.lmsservice.models.dto.NewLessonRequest;
 
 import java.util.List;
 

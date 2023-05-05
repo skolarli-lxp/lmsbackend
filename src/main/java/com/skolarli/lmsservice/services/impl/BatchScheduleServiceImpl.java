@@ -2,11 +2,11 @@ package com.skolarli.lmsservice.services.impl;
 
 import com.skolarli.lmsservice.exception.OperationNotSupportedException;
 import com.skolarli.lmsservice.exception.ResourceNotFoundException;
-import com.skolarli.lmsservice.models.NewBatchScheduleRequest;
-import com.skolarli.lmsservice.models.NewBatchSchedulesForBatchRequest;
 import com.skolarli.lmsservice.models.db.Batch;
 import com.skolarli.lmsservice.models.db.BatchSchedule;
 import com.skolarli.lmsservice.models.db.LmsUser;
+import com.skolarli.lmsservice.models.dto.NewBatchScheduleRequest;
+import com.skolarli.lmsservice.models.dto.NewBatchSchedulesForBatchRequest;
 import com.skolarli.lmsservice.repository.BatchScheduleRepository;
 import com.skolarli.lmsservice.services.BatchScheduleService;
 import com.skolarli.lmsservice.services.BatchService;

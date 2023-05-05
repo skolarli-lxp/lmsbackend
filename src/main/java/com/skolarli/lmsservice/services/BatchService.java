@@ -1,7 +1,7 @@
 package com.skolarli.lmsservice.services;
 
-import com.skolarli.lmsservice.models.NewBatchRequest;
 import com.skolarli.lmsservice.models.db.Batch;
+import com.skolarli.lmsservice.models.dto.NewBatchRequest;
 
 import java.util.List;
 

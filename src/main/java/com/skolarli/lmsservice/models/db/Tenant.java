@@ -1,7 +1,7 @@
 package com.skolarli.lmsservice.models.db;
 
 import com.skolarli.lmsservice.exception.OperationNotSupportedException;
-import com.skolarli.lmsservice.models.NewDomainRequest;
+import com.skolarli.lmsservice.models.dto.NewDomainRequest;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

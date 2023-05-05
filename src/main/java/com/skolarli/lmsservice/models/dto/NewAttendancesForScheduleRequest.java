@@ -1,4 +1,4 @@
-package com.skolarli.lmsservice.models;
+package com.skolarli.lmsservice.models.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,14 +12,13 @@ import javax.validation.constraints.NotNull;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class NewBatchSchedulesForBatchRequest {
-    @NotNull(message = "startDateTime cannot be empty")
+public class NewAttendancesForScheduleRequest {
+    @NotNull(message = "studentId cannot be empty")
+    private long studentId;
+    @NotNull(message = "attended cannot be empty")
+    @Getter
+    private Boolean attended;
+
     private Date startDateTime;
-    @NotNull(message = "endDateTime cannot be empty")
     private Date endDateTime;
-
-    private String meetingLink;
-
-    private String title;
-    private String description;
 }
