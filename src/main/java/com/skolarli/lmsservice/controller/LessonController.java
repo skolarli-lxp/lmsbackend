@@ -1,10 +1,7 @@
 package com.skolarli.lmsservice.controller;
 
 import com.skolarli.lmsservice.models.db.Lesson;
-import com.skolarli.lmsservice.models.dto.LessonSortOrderRequest;
-import com.skolarli.lmsservice.models.dto.LessonSortOrderResponse;
-import com.skolarli.lmsservice.models.dto.NewLessonRequest;
-import com.skolarli.lmsservice.models.dto.UpdateLessonDescriptionRequest;
+import com.skolarli.lmsservice.models.dto.*;
 import com.skolarli.lmsservice.services.LessonService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -80,11 +77,16 @@ public class LessonController {
         }
     }
 
+    @Deprecated
     @RequestMapping(method = RequestMethod.PUT, value = "{id}")
-    public ResponseEntity<Lesson> updateLesson(@PathVariable long id, @RequestBody Lesson lesson) {
+    public ResponseEntity<Lesson> updateLesson(@PathVariable long id,
+                                               @RequestBody LessonUpdateRequest updateRequest) {
+        logger.info("updateLesson: " + updateRequest.toString());
         try {
-            return new ResponseEntity<>(lessonService.updateLesson(lesson, id), HttpStatus.OK);
+            return new ResponseEntity<>(lessonService.updateLesson(updateRequest, id),
+                    HttpStatus.OK);
         } catch (Exception e) {
+            e.printStackTrace();
             logger.error("Error in updateLesson: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }

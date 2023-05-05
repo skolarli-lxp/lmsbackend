@@ -2,10 +2,12 @@ package com.skolarli.lmsservice.services.impl;
 
 import com.skolarli.lmsservice.exception.OperationNotSupportedException;
 import com.skolarli.lmsservice.exception.ResourceNotFoundException;
+import com.skolarli.lmsservice.models.db.Chapter;
 import com.skolarli.lmsservice.models.db.Lesson;
 import com.skolarli.lmsservice.models.db.LmsUser;
 import com.skolarli.lmsservice.models.dto.LessonSortOrderRequest;
 import com.skolarli.lmsservice.models.dto.LessonSortOrderResponse;
+import com.skolarli.lmsservice.models.dto.LessonUpdateRequest;
 import com.skolarli.lmsservice.models.dto.NewLessonRequest;
 import com.skolarli.lmsservice.repository.LessonRepository;
 import com.skolarli.lmsservice.services.ChapterService;
@@ -138,6 +140,7 @@ public class LessonServiceImpl implements LessonService {
         return lessonRepository.save(lesson);
     }
 
+
     @Override
     public Lesson updateLesson(Lesson lesson, long id) {
         Lesson existingLesson = lessonRepository.findById(id).orElseThrow(
@@ -151,6 +154,18 @@ public class LessonServiceImpl implements LessonService {
             lesson.setLessonIsDeleted(null);
         }
         existingLesson.update(lesson);
+        return lessonRepository.save(existingLesson);
+    }
+
+    @Override
+    public Lesson updateLesson(LessonUpdateRequest lessonUpdateRequest, long id) {
+        Lesson existingLesson = lessonRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("Lesson", "Id", id));
+        if (!checkPermission(existingLesson)) {
+            throw new OperationNotSupportedException("User does not have permissions to update "
+                    + "this lesson");
+        }
+        updateExistingLesson(existingLesson, lessonUpdateRequest);
         return lessonRepository.save(existingLesson);
     }
 
@@ -193,4 +208,244 @@ public class LessonServiceImpl implements LessonService {
         lessonRepository.delete(existingLesson);
     }
 
+    private void updateExistingLesson(Lesson existingLesson, LessonUpdateRequest updateRequest) {
+        if (updateRequest.getChapterId() != null) {
+            if (updateRequest.getChapterId().isEmpty()) {
+                existingLesson.setChapter(null);
+            } else {
+                Chapter chapter = chapterService.getChapterById(updateRequest.getChapterId().get());
+                existingLesson.setChapter(chapter);
+            }
+        }
+        if (updateRequest.getLessonName() != null) {
+            if (updateRequest.getLessonName().isPresent()) {
+                existingLesson.setLessonName(updateRequest.getLessonName().get());
+            } else {
+                existingLesson.setLessonName(null);
+            }
+        }
+        if (updateRequest.getLessonDescription() != null) {
+            if (updateRequest.getLessonDescription().isPresent()) {
+                existingLesson.setLessonDescription(updateRequest.getLessonDescription().get());
+            } else {
+                existingLesson.setLessonDescription(null);
+            }
+        }
+        if (updateRequest.getLessonSortOrder() != null
+                && updateRequest.getLessonSortOrder().isPresent()) {
+            existingLesson.setLessonSortOrder(updateRequest.getLessonSortOrder().get());
+        }
+
+        // Lesson Video Related info
+        if (updateRequest.getVideoId() != null) {
+            if (updateRequest.getVideoId().isPresent()) {
+                existingLesson.setVideoId(updateRequest.getVideoId().get());
+            } else {
+                existingLesson.setVideoId(null);
+            }
+        }
+        if (updateRequest.getVideoTitle() != null) {
+            if (updateRequest.getVideoTitle().isPresent()) {
+                existingLesson.setVideoTitle(updateRequest.getVideoTitle().get());
+            } else {
+                existingLesson.setVideoTitle(null);
+            }
+        }
+        if (updateRequest.getVideoDescription() != null) {
+            if (updateRequest.getVideoDescription().isPresent()) {
+                existingLesson.setVideoDescription(updateRequest.getVideoDescription().get());
+            } else {
+                existingLesson.setVideoDescription(null);
+            }
+        }
+        if (updateRequest.getVideoUrl() != null) {
+            if (updateRequest.getVideoUrl().isPresent()) {
+                existingLesson.setVideoUrl(updateRequest.getVideoUrl().get());
+            } else {
+                existingLesson.setVideoUrl(null);
+            }
+        }
+        if (updateRequest.getVideoSize() != null && updateRequest.getVideoSize().isPresent()) {
+            existingLesson.setVideoSize(updateRequest.getVideoSize().get());
+        }
+        if (updateRequest.getVideoIsActive() != null
+                && updateRequest.getVideoIsActive().isPresent()) {
+            existingLesson.setVideoIsActive(updateRequest.getVideoIsActive().get());
+        }
+        if (updateRequest.getVideoThumbnailUrl() != null) {
+            if (updateRequest.getVideoThumbnailUrl().isPresent()) {
+                existingLesson.setVideoThumbnailUrl(updateRequest.getVideoThumbnailUrl().get());
+            } else {
+                existingLesson.setVideoThumbnailUrl(null);
+            }
+        }
+        if (updateRequest.getAllowDownload() != null
+                && updateRequest.getAllowDownload().isPresent()) {
+            existingLesson.setAllowDownload(updateRequest.getAllowDownload().get());
+        }
+
+        // Lesson text related info
+        if (updateRequest.getTextContent() != null) {
+            if (updateRequest.getTextContent().isPresent()) {
+                existingLesson.setTextContent(updateRequest.getTextContent().get());
+            } else {
+                existingLesson.setTextContent(null);
+            }
+        }
+        if (updateRequest.getTextTitle() != null) {
+            if (updateRequest.getTextTitle().isPresent()) {
+                existingLesson.setTextTitle(updateRequest.getTextTitle().get());
+            } else {
+                existingLesson.setTextTitle(null);
+            }
+        }
+        if (updateRequest.getTextDescription() != null) {
+            if (updateRequest.getTextDescription().isPresent()) {
+                existingLesson.setTextDescription(updateRequest.getTextDescription().get());
+            } else {
+                existingLesson.setTextDescription(null);
+            }
+        }
+        if (updateRequest.getTextUrl() != null) {
+            if (updateRequest.getTextUrl().isPresent()) {
+                existingLesson.setTextUrl(updateRequest.getTextUrl().get());
+            } else {
+                existingLesson.setTextUrl(null);
+            }
+        }
+        if (updateRequest.getTextIsActive() != null
+                && updateRequest.getTextIsActive().isPresent()) {
+            existingLesson.setTextIsActive(updateRequest.getTextIsActive().get());
+        }
+
+        // Lesson PDF Related info
+
+        if (updateRequest.getPdfTitle() != null) {
+            if (updateRequest.getPdfTitle().isPresent()) {
+                existingLesson.setPdfTitle(updateRequest.getPdfTitle().get());
+            } else {
+                existingLesson.setPdfTitle(null);
+            }
+        }
+        if (updateRequest.getPdfDescription() != null) {
+            if (updateRequest.getPdfDescription().isPresent()) {
+                existingLesson.setPdfDescription(updateRequest.getPdfDescription().get());
+            } else {
+                existingLesson.setPdfDescription(null);
+            }
+        }
+        if (updateRequest.getPdfUrl() != null) {
+            if (updateRequest.getPdfUrl().isPresent()) {
+                existingLesson.setPdfUrl(updateRequest.getPdfUrl().get());
+            } else {
+                existingLesson.setPdfUrl(null);
+            }
+        }
+        if (updateRequest.getPdfSize() != null && updateRequest.getPdfSize().isPresent()) {
+            existingLesson.setPdfSize(updateRequest.getPdfSize().get());
+
+        }
+        if (updateRequest.getPdfIsActive() != null && updateRequest.getPdfIsActive().isPresent()) {
+            existingLesson.setPdfIsActive(updateRequest.getPdfIsActive().get());
+        }
+
+        // Lesson Audio Related info
+
+        if (updateRequest.getAudioTitle() != null) {
+            if (updateRequest.getAudioTitle().isPresent()) {
+                existingLesson.setAudioTitle(updateRequest.getAudioTitle().get());
+            } else {
+                existingLesson.setAudioTitle(null);
+            }
+        }
+        if (updateRequest.getAudioDescription() != null) {
+            if (updateRequest.getAudioDescription().isPresent()) {
+                existingLesson.setAudioDescription(updateRequest.getAudioDescription().get());
+            } else {
+                existingLesson.setAudioDescription(null);
+            }
+        }
+        if (updateRequest.getAudioUrl() != null) {
+            if (updateRequest.getAudioUrl().isPresent()) {
+                existingLesson.setAudioUrl(updateRequest.getAudioUrl().get());
+            } else {
+                existingLesson.setAudioUrl(null);
+            }
+        }
+
+        if (updateRequest.getAudioSize() != null && updateRequest.getAudioSize().isPresent()) {
+            existingLesson.setAudioSize(updateRequest.getAudioSize().get());
+        }
+        if (updateRequest.getAudioIsActive() != null
+                && updateRequest.getAudioIsActive().isPresent()) {
+            existingLesson.setAudioIsActive(updateRequest.getAudioIsActive().get());
+        }
+
+        // Lesson presentation related info
+
+        if (updateRequest.getPresentationTitle() != null) {
+            if (updateRequest.getPresentationTitle().isPresent()) {
+                existingLesson.setPresentationTitle(updateRequest.getPresentationTitle().get());
+            } else {
+                existingLesson.setPresentationTitle(null);
+            }
+        }
+        if (updateRequest.getPresentationDescription() != null) {
+            if (updateRequest.getPresentationDescription().isPresent()) {
+                existingLesson.setPresentationDescription(
+                        updateRequest.getPresentationDescription().get());
+            } else {
+                existingLesson.setPresentationDescription(null);
+            }
+        }
+        if (updateRequest.getPresentationUrl() != null) {
+            if (updateRequest.getPresentationUrl().isPresent()) {
+                existingLesson.setPresentationUrl(updateRequest.getPresentationUrl().get());
+            } else {
+                existingLesson.setPresentationUrl(null);
+            }
+        }
+        if (updateRequest.getPresentationSize() != null
+                && updateRequest.getPresentationSize().isPresent()) {
+            existingLesson.setPresentationSize(updateRequest.getPresentationSize().get());
+        }
+        if (updateRequest.getPresentationIsActive() != null
+                && updateRequest.getPresentationIsActive().isPresent()) {
+            existingLesson.setPresentationIsActive(updateRequest.getPresentationIsActive().get());
+        }
+
+        // Lesson downloadables related info
+
+        if (updateRequest.getDownloadablesTitle() != null) {
+            if (updateRequest.getDownloadablesTitle().isPresent()) {
+                existingLesson.setDownloadablesTitle(updateRequest.getDownloadablesTitle().get());
+            } else {
+                existingLesson.setDownloadablesTitle(null);
+            }
+        }
+        if (updateRequest.getDownloadablesDescription() != null) {
+            if (updateRequest.getDownloadablesDescription().isPresent()) {
+                existingLesson.setDownloadablesDescription(
+                        updateRequest.getDownloadablesDescription().get());
+            } else {
+                existingLesson.setDownloadablesDescription(null);
+            }
+        }
+        if (updateRequest.getDownloadablesUrl() != null) {
+            if (updateRequest.getDownloadablesUrl().isPresent()) {
+                existingLesson.setDownloadablesUrl(updateRequest.getDownloadablesUrl().get());
+            } else {
+                existingLesson.setDownloadablesUrl(null);
+            }
+        }
+        if (updateRequest.getDownloadablesSize() != null
+                && updateRequest.getDownloadablesSize().isPresent()) {
+            existingLesson.setDownloadablesSize(updateRequest.getDownloadablesSize().get());
+
+        }
+        if (updateRequest.getDownloadablesIsActive() != null
+                && updateRequest.getDownloadablesIsActive().isPresent()) {
+            existingLesson.setDownloadablesIsActive(updateRequest.getDownloadablesIsActive().get());
+        }
+    }
 }

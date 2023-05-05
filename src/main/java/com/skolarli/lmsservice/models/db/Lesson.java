@@ -12,7 +12,6 @@ import java.util.stream.Collectors;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
-@Data
 @EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor
@@ -22,6 +21,8 @@ import javax.validation.constraints.NotNull;
 @Table(name = "lessons")
 @Where(clause = "lesson_is_deleted is null or lesson_is_deleted = false")
 public class Lesson extends Tenantable {
+
+    // TODO Validate lesson sort order as positive
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -104,6 +105,12 @@ public class Lesson extends Tenantable {
 
     private Boolean lessonIsDeleted;
 
+    public static List<LessonSortOrderResponse> toLessonSortOrderResponseList(
+            List<Lesson> lessons) {
+        return lessons.stream().map(lesson -> {
+            return lesson.toLessonSortOrderResponse();
+        }).collect(Collectors.toList());
+    }
 
     public void update(Lesson lesson) {
         // Copy all non-null and non-empty values from the given object to this object
@@ -245,10 +252,5 @@ public class Lesson extends Tenantable {
         return lessonSortOrderResponse;
     }
 
-    public static List<LessonSortOrderResponse> toLessonSortOrderResponseList(
-            List<Lesson> lessons) {
-        return lessons.stream().map(lesson -> {
-            return lesson.toLessonSortOrderResponse();
-        }).collect(Collectors.toList());
-    }
+
 }
