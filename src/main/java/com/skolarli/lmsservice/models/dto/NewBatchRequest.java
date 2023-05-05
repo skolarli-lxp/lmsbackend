@@ -1,8 +1,8 @@
 package com.skolarli.lmsservice.models.dto;
 
-import com.skolarli.lmsservice.models.db.BatchStatus;
-import com.skolarli.lmsservice.models.db.DeliveryFormat;
-import com.skolarli.lmsservice.models.db.DiscountType;
+import com.skolarli.lmsservice.models.BatchStatus;
+import com.skolarli.lmsservice.models.DeliveryFormat;
+import com.skolarli.lmsservice.models.DiscountType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

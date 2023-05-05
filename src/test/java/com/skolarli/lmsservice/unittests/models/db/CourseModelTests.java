@@ -1,5 +1,7 @@
 package com.skolarli.lmsservice.unittests.models.db;
 
+import com.skolarli.lmsservice.models.DeliveryFormat;
+import com.skolarli.lmsservice.models.DiscountType;
 import com.skolarli.lmsservice.models.db.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

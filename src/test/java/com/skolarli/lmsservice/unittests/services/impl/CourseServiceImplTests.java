@@ -8,9 +8,9 @@ import static org.mockito.Mockito.when;
 
 import com.skolarli.lmsservice.exception.OperationNotSupportedException;
 import com.skolarli.lmsservice.exception.ResourceNotFoundException;
+import com.skolarli.lmsservice.models.DeliveryFormat;
+import com.skolarli.lmsservice.models.DiscountType;
 import com.skolarli.lmsservice.models.db.Course;
-import com.skolarli.lmsservice.models.db.DeliveryFormat;
-import com.skolarli.lmsservice.models.db.DiscountType;
 import com.skolarli.lmsservice.models.db.LmsUser;
 import com.skolarli.lmsservice.repository.CourseRepository;
 import com.skolarli.lmsservice.services.impl.CourseServiceImpl;
@@ -28,16 +28,13 @@ import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
 public class CourseServiceImplTests {
+    Course newCourse;
     @Mock
     private CourseRepository courseRepository;
-
     @InjectMocks
     private CourseServiceImpl courseService;
-
     @Mock
     private UserUtils userUtils;
-
-    Course newCourse;
 
     @BeforeEach
     void setup() {

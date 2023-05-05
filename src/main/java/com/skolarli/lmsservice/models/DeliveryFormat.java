@@ -1,4 +1,4 @@
-package com.skolarli.lmsservice.models.db;
+package com.skolarli.lmsservice.models;
 
 public enum DeliveryFormat {
     PHYSICAL_CLASSROOM,
