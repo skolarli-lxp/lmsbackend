@@ -16,6 +16,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -125,10 +127,47 @@ public class BatchScheduleServiceImpl implements BatchScheduleService {
         return batchScheduleRepository.findAll();
     }
 
+    private List<BatchSchedule> getAllBatchSchedulesForTimePeriod(Date queryStartDate,
+                                                                  Date queryEndDate,
+                                                                  Long batchId) {
+        if (batchId == 0) {
+            throw new OperationNotSupportedException("Batch id cannot be 0");
+        }
+        if (queryStartDate != null) {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(queryStartDate);
+            calendar.add(Calendar.DAY_OF_MONTH, -1);
+            queryStartDate = calendar.getTime();
+        }
+        if (queryEndDate != null) {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(queryEndDate);
+            calendar.add(Calendar.DAY_OF_MONTH, 1);
+            queryEndDate = calendar.getTime();
+        }
+
+        if (queryStartDate != null && queryEndDate != null) {
+            return batchScheduleRepository.findAllByStartDateTimeBetweenAndBatch_Id(
+                    queryStartDate, queryEndDate, batchId);
+        } else if (queryStartDate != null) {
+            return batchScheduleRepository.findAllByStartDateTimeAfterAndBatch_Id(
+                    queryStartDate, batchId);
+        } else if (queryEndDate != null) {
+            return batchScheduleRepository.findAllByStartDateTimeBeforeAndBatch_Id(
+                    queryEndDate, batchId);
+        } else {
+            throw new OperationNotSupportedException(
+                    "Query start date and query end date cannot be null");
+        }
+    }
+
     @Override
-    public List<BatchSchedule> getSchedulesForBatch(long batchId) {
-        List<BatchSchedule> batchSchedules = batchScheduleRepository.findByBatch_Id(batchId);
-        return batchSchedules;
+    public List<BatchSchedule> getSchedulesForBatch(long batchId, Date queryStartDate,
+                                                    Date queryEndDate) {
+        if (queryStartDate == null && queryEndDate == null) {
+            return batchScheduleRepository.findByBatch_Id(batchId);
+        }
+        return getAllBatchSchedulesForTimePeriod(queryStartDate, queryEndDate, batchId);
     }
 
 

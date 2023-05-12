@@ -4,10 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.Where;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -83,6 +80,18 @@ public class BatchSchedule extends Tenantable {
                 }
             });
         }
+    }
+
+    public String toString() {
+        return "BatchSchedule(id=" + this.getId()
+                + ", batch=" + this.getBatch().getId()
+                + ", title=" + this.getTitle()
+                + ", description=" + this.getDescription()
+                + ", meetingLink=" + this.getMeetingLink()
+                + ", startDateTime=" + this.getStartDateTime()
+                + ", endDateTime=" + this.getEndDateTime()
+                + ", attendanceList=" + this.getAttendanceList()
+                + ", batchScheduleIsDeleted=" + this.getBatchScheduleIsDeleted() + ")";
     }
 }
 
