@@ -18,4 +18,20 @@ public class UserUtils {
                 .getAuthentication().getPrincipal();
         return lmsUserService.getLmsUserByEmail(userName);
     }
+
+    public Boolean currentUserIsAdmin() {
+        return getCurrentUser().getIsAdmin();
+    }
+
+    public Boolean currentUserIsStudent() {
+        return getCurrentUser().getIsStudent();
+    }
+
+    public Boolean currentUserIsInstructor() {
+        return getCurrentUser().getIsInstructor();
+    }
+
+    public Boolean currentUserIsSuperAdmin() {
+        return getCurrentUser().getIsSuperAdmin();
+    }
 }

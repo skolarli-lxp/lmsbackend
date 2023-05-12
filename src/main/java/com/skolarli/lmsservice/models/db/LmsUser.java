@@ -73,6 +73,10 @@ public class LmsUser extends Tenantable {
     @Column(columnDefinition = "bit(1) default false")
     private Boolean isStudent;
 
+    @NotNull
+    @Column(columnDefinition = "bit(1) default false")
+    private Boolean isSuperAdmin;
+
     @Column(columnDefinition = "bit(1) default false")
     private Boolean emailVerified;
 
@@ -156,6 +160,5 @@ public class LmsUser extends Tenantable {
         } else {
             this.setEmailVerified(false);
         }
-
     }
 }
