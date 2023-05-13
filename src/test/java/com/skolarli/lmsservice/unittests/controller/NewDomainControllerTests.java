@@ -27,6 +27,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.time.Instant;
 import java.util.Calendar;
 
 @RunWith(SpringRunner.class)
@@ -79,9 +80,7 @@ class NewDomainControllerTests {
         code.setId(1L);
         code.setUser(lmsUser);
         code.setToken("123456");
-        Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.HOUR_OF_DAY, VerificationCode.EXPIRY_HOURS);
-        code.setExpiryDate(cal.getTime());
+        code.setExpiryDate(Instant.now().plusSeconds(VerificationCode.EXPIRY_HOURS * 60 * 60));
     }
 
     @Test

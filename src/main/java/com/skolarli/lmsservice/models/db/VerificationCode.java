@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.Instant;
 import java.util.Date;
 import javax.persistence.*;
 
@@ -33,5 +34,5 @@ public class VerificationCode {
     @JsonIdentityReference(alwaysAsId = true)
     private LmsUser user;
 
-    private Date expiryDate;
+    private Instant expiryDate;
 }

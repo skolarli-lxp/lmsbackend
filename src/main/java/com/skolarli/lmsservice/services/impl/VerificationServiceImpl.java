@@ -8,6 +8,7 @@ import com.skolarli.lmsservice.services.VerificationService;
 import net.bytebuddy.utility.RandomString;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -54,9 +55,7 @@ public class VerificationServiceImpl implements VerificationService {
         }
         code.setToken(RandomString.make(64));
 
-        Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.HOUR_OF_DAY, VerificationCode.EXPIRY_HOURS);
-        code.setExpiryDate(cal.getTime());
+        code.setExpiryDate(Instant.now().plusSeconds(VerificationCode.EXPIRY_HOURS * 60 * 60));
 
         verificationCodeRepository.save(code);
         return code;
@@ -65,8 +64,8 @@ public class VerificationServiceImpl implements VerificationService {
     @Override
     public Boolean verifyCode(String token) {
         VerificationCode code = verificationCodeRepository.findByToken(token);
-        Date expiryDate = code.getExpiryDate();
-        if (expiryDate != null && expiryDate.before(new Date())) {
+        Instant expiryDate = code.getExpiryDate();
+        if (expiryDate != null && expiryDate.isBefore(Instant.now())) {
             return false;
         }
         LmsUser user = code.getUser();
