@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.ZonedDateTime;
 import java.util.Date;
 import javax.validation.constraints.NotNull;
 
@@ -14,9 +15,9 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 public class NewBatchSchedulesForBatchRequest {
     @NotNull(message = "startDateTime cannot be empty")
-    private Date startDateTime;
+    private ZonedDateTime startDateTime;
     @NotNull(message = "endDateTime cannot be empty")
-    private Date endDateTime;
+    private ZonedDateTime endDateTime;
 
     private String meetingLink;
 

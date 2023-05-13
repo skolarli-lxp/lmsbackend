@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.Date;
 import javax.validation.constraints.NotNull;
 
@@ -35,9 +37,9 @@ public class NewBatchRequest {
 
     private int batchDiscountAmount;
 
-    private Date batchStartDate;
+    private ZonedDateTime batchStartDate;
 
-    private Date batchEndDate;
+    private ZonedDateTime batchEndDate;
 
     private BatchStatus batchStatus;
 

@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Date;
+import java.time.ZonedDateTime;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 
@@ -22,6 +22,6 @@ public class NewAttendanceRequest {
     @Getter
     private Boolean attended;
 
-    private Date startDateTime;
-    private Date endDateTime;
+    private ZonedDateTime startDateTime;
+    private ZonedDateTime endDateTime;
 }

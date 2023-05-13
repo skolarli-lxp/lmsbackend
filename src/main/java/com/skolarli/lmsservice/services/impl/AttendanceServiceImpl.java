@@ -54,8 +54,12 @@ public class AttendanceServiceImpl implements AttendanceService {
         attendance.setBatchSchedule(batchSchedule);
         attendance.setStudent(student);
         attendance.setAttended(newAttendanceRequest.getAttended());
-        attendance.setStartDateTime(newAttendanceRequest.getStartDateTime());
-        attendance.setEndDateTime(newAttendanceRequest.getEndDateTime());
+        if (newAttendanceRequest.getStartDateTime() != null) {
+            attendance.setStartDateTime(newAttendanceRequest.getStartDateTime().toInstant());
+        }
+        if (newAttendanceRequest.getEndDateTime() != null) {
+            attendance.setEndDateTime(newAttendanceRequest.getEndDateTime().toInstant());
+        }
         attendance.setAttendanceIsDeleted(false);
         return attendance;
     }
@@ -76,10 +80,12 @@ public class AttendanceServiceImpl implements AttendanceService {
             attendance.setAttended(newAttendancesForScheduleRequest.getAttended());
         }
         if (newAttendancesForScheduleRequest.getStartDateTime() != null) {
-            attendance.setStartDateTime(newAttendancesForScheduleRequest.getStartDateTime());
+            attendance.setStartDateTime(newAttendancesForScheduleRequest.getStartDateTime()
+                    .toInstant());
         }
         if (newAttendancesForScheduleRequest.getEndDateTime() != null) {
-            attendance.setEndDateTime(newAttendancesForScheduleRequest.getEndDateTime());
+            attendance.setEndDateTime(newAttendancesForScheduleRequest.getEndDateTime()
+                    .toInstant());
         }
         if (batchScheduleId != 0) {
             BatchSchedule batchSchedule = batchScheduleService.getBatchSchedule(batchScheduleId);

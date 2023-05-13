@@ -15,6 +15,8 @@ import org.hibernate.annotations.Where;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.*;
@@ -61,9 +63,9 @@ public class Batch extends Tenantable {
 
     private int batchDiscountAmount;
 
-    private Date batchStartDate;
+    private Instant batchStartDate;
 
-    private Date batchEndDate;
+    private Instant batchEndDate;
 
     private BatchStatus batchStatus;
 

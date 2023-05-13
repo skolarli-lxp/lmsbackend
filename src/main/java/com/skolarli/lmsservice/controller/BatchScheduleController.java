@@ -40,9 +40,9 @@ public class BatchScheduleController {
     public ResponseEntity<List<BatchSchedule>> getAllBatchSchedules(
             @RequestParam(required = false) Long batchId,
             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd")
-                                            LocalDate queryStartDate,
+            LocalDate queryStartDate,
             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd")
-                                            LocalDate queryEndDate) {
+            LocalDate queryEndDate) {
         Date queryStartDateAsDate = null;
         Date queryEndDateAsDate = null;
         if (batchId != null) {
@@ -121,8 +121,12 @@ public class BatchScheduleController {
         if (request.getBatchId() != 0) {
             batchSchedule.setBatch(batchService.getBatch(request.getBatchId()));
         }
-        batchSchedule.setStartDateTime(request.getStartDateTime());
-        batchSchedule.setEndDateTime(request.getEndDateTime());
+        if (request.getStartDateTime() != null) {
+            batchSchedule.setStartDateTime(request.getStartDateTime().toInstant());
+        }
+        if (request.getEndDateTime() != null) {
+            batchSchedule.setEndDateTime(request.getEndDateTime().toInstant());
+        }
         batchSchedule.setTitle(request.getTitle());
         batchSchedule.setDescription(request.getDescription());
         batchSchedule.setMeetingLink(request.getMeetingLink());

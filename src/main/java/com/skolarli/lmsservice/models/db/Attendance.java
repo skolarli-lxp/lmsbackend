@@ -11,6 +11,7 @@ import org.hibernate.annotations.Where;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.Instant;
 import java.util.Date;
 import javax.persistence.*;
 
@@ -41,12 +42,12 @@ public class Attendance extends Tenantable {
     private LmsUser student;
 
     private Boolean attended;
-    private Date startDateTime;
-    private Date endDateTime;
+    private Instant startDateTime;
+    private Instant endDateTime;
     private Boolean attendanceIsDeleted;
 
     public Attendance(BatchSchedule batchSchedule, LmsUser student,
-                      Boolean attended, Date startDateTime, Date endDateTime) {
+                      Boolean attended, Instant startDateTime, Instant endDateTime) {
         this.batchSchedule = batchSchedule;
         this.student = student;
         this.attended = attended;

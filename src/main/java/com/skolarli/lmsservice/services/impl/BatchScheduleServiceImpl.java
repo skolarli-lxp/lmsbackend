@@ -53,17 +53,19 @@ public class BatchScheduleServiceImpl implements BatchScheduleService {
     @Override
     public BatchSchedule toBatchSchedule(
             NewBatchSchedulesForBatchRequest newBatchSchedulesForBatchRequest) {
-        if (newBatchSchedulesForBatchRequest.getEndDateTime().before(
+        if (newBatchSchedulesForBatchRequest.getEndDateTime().isBefore(
                 newBatchSchedulesForBatchRequest.getStartDateTime())) {
             throw new OperationNotSupportedException(
                     "End date time cannot be before start date time");
         }
         BatchSchedule batchSchedule = new BatchSchedule();
         if (newBatchSchedulesForBatchRequest.getStartDateTime() != null) {
-            batchSchedule.setStartDateTime(newBatchSchedulesForBatchRequest.getStartDateTime());
+            batchSchedule.setStartDateTime(newBatchSchedulesForBatchRequest.getStartDateTime()
+                    .toInstant());
         }
         if (newBatchSchedulesForBatchRequest.getEndDateTime() != null) {
-            batchSchedule.setEndDateTime(newBatchSchedulesForBatchRequest.getEndDateTime());
+            batchSchedule.setEndDateTime(newBatchSchedulesForBatchRequest.getEndDateTime()
+                    .toInstant());
         }
         if (newBatchSchedulesForBatchRequest.getMeetingLink() != null) {
             batchSchedule.setMeetingLink(newBatchSchedulesForBatchRequest.getMeetingLink());
@@ -79,11 +81,12 @@ public class BatchScheduleServiceImpl implements BatchScheduleService {
 
     @Override
     public BatchSchedule toBatchSchedule(NewBatchScheduleRequest newBatchScheduleRequest) {
-        if (newBatchScheduleRequest.getEndDateTime().before(
-                newBatchScheduleRequest.getStartDateTime())) {
+        if (newBatchScheduleRequest.getEndDateTime().isBefore(newBatchScheduleRequest
+                .getStartDateTime())) {
             throw new OperationNotSupportedException(
                     "End date time cannot be before start date time");
         }
+
         Batch batch = batchService.getBatch(newBatchScheduleRequest.getBatchId());
         // TODO: throw BAD REQUEST from controller in this case
         if (batch == null) {
@@ -99,8 +102,15 @@ public class BatchScheduleServiceImpl implements BatchScheduleService {
             batchSchedule.setDescription(newBatchScheduleRequest.getDescription());
         }
         batchSchedule.setMeetingLink(newBatchScheduleRequest.getMeetingLink());
-        batchSchedule.setStartDateTime(newBatchScheduleRequest.getStartDateTime());
-        batchSchedule.setEndDateTime(newBatchScheduleRequest.getEndDateTime());
+
+        if (newBatchScheduleRequest.getStartDateTime() != null) {
+            batchSchedule.setStartDateTime(newBatchScheduleRequest.getStartDateTime()
+                    .toInstant());
+        }
+        if (newBatchScheduleRequest.getEndDateTime() != null) {
+            batchSchedule.setEndDateTime(newBatchScheduleRequest.getEndDateTime()
+                    .toInstant());
+        }
         batchSchedule.setBatchScheduleIsDeleted(false);
         return batchSchedule;
     }
@@ -147,6 +157,10 @@ public class BatchScheduleServiceImpl implements BatchScheduleService {
         }
 
         if (queryStartDate != null && queryEndDate != null) {
+            if (queryStartDate.after(queryEndDate)) {
+                throw new OperationNotSupportedException(
+                        "Query start date cannot be after query end date");
+            }
             return batchScheduleRepository.findAllByStartDateTimeBetweenAndBatch_Id(
                     queryStartDate, queryEndDate, batchId);
         } else if (queryStartDate != null) {

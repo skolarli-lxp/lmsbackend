@@ -9,6 +9,7 @@ import org.hibernate.annotations.Where;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.Instant;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.*;
@@ -41,8 +42,8 @@ public class BatchSchedule extends Tenantable {
     @Column(columnDefinition = "VARCHAR(1024)")
     private String meetingLink;
 
-    private Date startDateTime;
-    private Date endDateTime;
+    private Instant startDateTime;
+    private Instant endDateTime;
 
     @OneToMany(mappedBy = "batchSchedule")
     @JsonIgnoreProperties({"batchSchedule", "student"})

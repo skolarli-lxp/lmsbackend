@@ -66,8 +66,12 @@ public class BatchServiceImpl implements BatchService {
         batch.setBatchDiscountType(newBatchRequest.getBatchDiscountType());
         batch.setBatchDiscountAmount(newBatchRequest.getBatchDiscountAmount());
 
-        batch.setBatchStartDate(newBatchRequest.getBatchStartDate());
-        batch.setBatchEndDate(newBatchRequest.getBatchEndDate());
+        if (newBatchRequest.getBatchStartDate() != null) {
+            batch.setBatchStartDate(newBatchRequest.getBatchStartDate().toInstant());
+        }
+        if (newBatchRequest.getBatchEndDate() != null) {
+            batch.setBatchEndDate(newBatchRequest.getBatchEndDate().toInstant());
+        }
         batch.setBatchStatus(newBatchRequest.getBatchStatus());
         batch.setBatchDeliveryFormat(newBatchRequest.getBatchDeliveryFormat());
         batch.setBatchDurationHours(newBatchRequest.getBatchDurationHours());
