@@ -4,7 +4,7 @@ import com.skolarli.lmsservice.models.db.BatchSchedule;
 import com.skolarli.lmsservice.models.dto.NewBatchScheduleRequest;
 import com.skolarli.lmsservice.models.dto.NewBatchSchedulesForBatchRequest;
 
-import java.util.Date;
+import java.time.Instant;
 import java.util.List;
 
 public interface BatchScheduleService {
@@ -14,7 +14,8 @@ public interface BatchScheduleService {
 
     List<BatchSchedule> getAllBatchSchedules();
 
-    List<BatchSchedule> getSchedulesForBatch(long batchId, Date queryStartDate, Date queryEndDate);
+    List<BatchSchedule> getSchedulesForBatch(long batchId,
+                                             Instant queryStartDate, Instant queryEndDate);
 
     //CREATE
     BatchSchedule saveBatchSchedule(BatchSchedule batchSchedule);

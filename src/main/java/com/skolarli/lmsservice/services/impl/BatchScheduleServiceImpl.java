@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -137,27 +138,27 @@ public class BatchScheduleServiceImpl implements BatchScheduleService {
         return batchScheduleRepository.findAll();
     }
 
-    private List<BatchSchedule> getAllBatchSchedulesForTimePeriod(Date queryStartDate,
-                                                                  Date queryEndDate,
+    private List<BatchSchedule> getAllBatchSchedulesForTimePeriod(Instant queryStartDate,
+                                                                  Instant queryEndDate,
                                                                   Long batchId) {
         if (batchId == 0) {
             throw new OperationNotSupportedException("Batch id cannot be 0");
         }
-        if (queryStartDate != null) {
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(queryStartDate);
-            calendar.add(Calendar.DAY_OF_MONTH, -1);
-            queryStartDate = calendar.getTime();
-        }
-        if (queryEndDate != null) {
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(queryEndDate);
-            calendar.add(Calendar.DAY_OF_MONTH, 1);
-            queryEndDate = calendar.getTime();
-        }
+        //if (queryStartDate != null) {
+        //    Calendar calendar = Calendar.getInstance();
+        //    calendar.setTime(queryStartDate);
+        //    calendar.add(Calendar.DAY_OF_MONTH, -1);
+        //    queryStartDate = calendar.getTime();
+        //}
+        //if (queryEndDate != null) {
+        //    Calendar calendar = Calendar.getInstance();
+        //    calendar.setTime(queryEndDate);
+        //    calendar.add(Calendar.DAY_OF_MONTH, 1);
+        //    queryEndDate = calendar.getTime();
+        //}
 
         if (queryStartDate != null && queryEndDate != null) {
-            if (queryStartDate.after(queryEndDate)) {
+            if (queryStartDate.isAfter(queryEndDate)) {
                 throw new OperationNotSupportedException(
                         "Query start date cannot be after query end date");
             }
@@ -176,8 +177,8 @@ public class BatchScheduleServiceImpl implements BatchScheduleService {
     }
 
     @Override
-    public List<BatchSchedule> getSchedulesForBatch(long batchId, Date queryStartDate,
-                                                    Date queryEndDate) {
+    public List<BatchSchedule> getSchedulesForBatch(long batchId, Instant queryStartDate,
+                                                    Instant queryEndDate) {
         if (queryStartDate == null && queryEndDate == null) {
             return batchScheduleRepository.findByBatch_Id(batchId);
         }

@@ -16,8 +16,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.Instant;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 import javax.validation.Valid;
 
@@ -43,19 +43,24 @@ public class BatchScheduleController {
             LocalDate queryStartDate,
             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd")
             LocalDate queryEndDate) {
-        Date queryStartDateAsDate = null;
-        Date queryEndDateAsDate = null;
+        Instant queryStartDateInstant = null;
+        Instant queryEndDateAsDate = null;
         if (batchId != null) {
             if (queryStartDate != null) {
-                queryStartDateAsDate = java.sql.Date.valueOf(queryStartDate);
+                queryStartDateInstant = queryStartDate.atStartOfDay().toInstant(
+                        java.time.ZoneOffset.UTC);
             }
             if (queryEndDate != null) {
-                queryEndDateAsDate = java.sql.Date.valueOf(queryEndDate);
+                queryEndDateAsDate = queryEndDate.atStartOfDay().toInstant(
+                        java.time.ZoneOffset.UTC);
+                // Make it end of day
+                queryEndDateAsDate = queryEndDateAsDate.plusSeconds(86399);
             }
             try {
                 return new ResponseEntity<>(
                         batchScheduleService.getSchedulesForBatch(
-                                batchId, queryStartDateAsDate, queryEndDateAsDate), HttpStatus.OK);
+                                batchId, queryStartDateInstant, queryEndDateAsDate),
+                        HttpStatus.OK);
             } catch (Exception e) {
                 logger.error("Error in getAllBatchSchedules: " + e.getMessage());
                 throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
