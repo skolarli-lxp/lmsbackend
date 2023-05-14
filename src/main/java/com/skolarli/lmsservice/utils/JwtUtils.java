@@ -26,6 +26,11 @@ public class JwtUtils {
         return claims.getExpiration();
     }
 
+    public Long extractTenantId(String token) {
+        final Claims claims = extractAllClaims(token);
+        return claims.get("tenantId", Long.class);
+    }
+
     private Boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
     }
@@ -34,8 +39,10 @@ public class JwtUtils {
         return Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody();
     }
 
-    public String generateToken(UserDetails userDetails) {
+    public String generateToken(UserDetails userDetails, Long tenantId) {
         Map<String, Object> claims = new HashMap<>();
+        claims.put("tenantId", tenantId);
+
         return createToken(claims, userDetails.getUsername());
     }
 
@@ -51,5 +58,4 @@ public class JwtUtils {
         final String username = extractUserName(token);
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
-
 }

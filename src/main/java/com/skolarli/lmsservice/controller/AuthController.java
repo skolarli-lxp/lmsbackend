@@ -1,11 +1,14 @@
 package com.skolarli.lmsservice.controller;
 
+import com.skolarli.lmsservice.authentications.TenantAuthenticationToken;
 import com.skolarli.lmsservice.contexts.TenantContext;
 import com.skolarli.lmsservice.models.db.LmsUser;
+import com.skolarli.lmsservice.models.db.Tenant;
 import com.skolarli.lmsservice.models.dto.AuthenticationRequest;
 import com.skolarli.lmsservice.models.dto.AuthenticationResponse;
 import com.skolarli.lmsservice.services.LmsUserDetailsService;
 import com.skolarli.lmsservice.services.LmsUserService;
+import com.skolarli.lmsservice.services.TenantService;
 import com.skolarli.lmsservice.utils.JwtUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,11 +17,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -28,6 +29,8 @@ public class AuthController {
     final Logger logger = LoggerFactory.getLogger(AuthController.class);
     @Autowired
     LmsUserService lmsUserService;
+    @Autowired
+    TenantService tenantService;
     @Autowired
     TenantContext tenantContext;
     @Autowired
@@ -39,12 +42,21 @@ public class AuthController {
 
     @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
     public ResponseEntity<?> authenticate(
-            @Valid @RequestBody AuthenticationRequest authenticationRequest) {
+            @Valid @RequestBody AuthenticationRequest authenticationRequest,
+            @RequestHeader(value = "Domain") String domainName) {
+
         logger.info("Received Authentication Request for User: "
                 + authenticationRequest.getUsername());
+
+        Tenant tenant = tenantService.getTenantByDomainName(domainName);
         String userName = authenticationRequest.getUsername();
+
+        TenantAuthenticationToken tenantAuthenticationToken = new TenantAuthenticationToken(
+                "", tenant.getId());
+        SecurityContextHolder.getContext().setAuthentication(tenantAuthenticationToken);
+
         LmsUser lmsUser = lmsUserService.getLmsUserByEmailAndTenantId(
-                userName, tenantContext.getTenantId());
+                userName, tenant.getId());
         if (!lmsUser.getEmailVerified()) {
             logger.error("User Email " + userName + " is not verified");
             return new ResponseEntity<>("{\"error\" : \"User Email not verified\"}",
@@ -64,7 +76,7 @@ public class AuthController {
         }
         final UserDetails userDetails = userDetailsService.loadUserByUsername(
                 authenticationRequest.getUsername());
-        final String jwt = jwtUtil.generateToken(userDetails);
+        final String jwt = jwtUtil.generateToken(userDetails, tenant.getId());
 
         logger.info("Authenticated User: " + userDetails.getUsername());
         return ResponseEntity.ok(new AuthenticationResponse(jwt));

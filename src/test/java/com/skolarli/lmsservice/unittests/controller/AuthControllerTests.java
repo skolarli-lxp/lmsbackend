@@ -1,8 +1,7 @@
 package com.skolarli.lmsservice.unittests.controller;
 
 import static org.hamcrest.Matchers.is;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -10,14 +9,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.skolarli.lmsservice.contexts.TenantContext;
 import com.skolarli.lmsservice.models.db.LmsUser;
+import com.skolarli.lmsservice.models.db.Tenant;
 import com.skolarli.lmsservice.models.dto.AuthenticationRequest;
 import com.skolarli.lmsservice.services.LmsUserDetailsService;
 import com.skolarli.lmsservice.services.LmsUserService;
+import com.skolarli.lmsservice.services.TenantService;
 import com.skolarli.lmsservice.utils.JwtUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -42,6 +42,7 @@ class AuthControllerTests {
     UserDetails userDetails;
     AuthenticationRequest authenticationRequest;
     LmsUser lmsUser;
+    Tenant tenant;
     @Autowired
     private ObjectMapper mapper;
     @MockBean
@@ -54,11 +55,16 @@ class AuthControllerTests {
     private TenantContext tenantContext;
     @MockBean
     private LmsUserService lmsUserService;
+    @MockBean
+    private TenantService tenantService;
 
     @BeforeEach
     public void setup() {
         lmsUser = new LmsUser();
         lmsUser.setEmailVerified(true);
+
+        tenant = new Tenant();
+        tenant.setId(1L);
 
         authenticationRequest = new AuthenticationRequest("mymockusername",
                 "mymockpassword");
@@ -68,12 +74,14 @@ class AuthControllerTests {
 
     @Test
     void updateDomainTestSuccess() throws Exception {
+
+        when(tenantService.getTenantByDomainName(anyString())).thenReturn(tenant);
         when(authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 authenticationRequest.getUsername(), authenticationRequest.getPassword())))
                 .thenReturn(null);
         when(userDetailsService.loadUserByUsername(authenticationRequest.getUsername()))
                 .thenReturn(userDetails);
-        when(jwtUtil.generateToken(userDetails)).thenReturn("my-mock-jwt-token");
+        when(jwtUtil.generateToken(userDetails, 1L)).thenReturn("my-mock-jwt-token");
         when(tenantContext.getTenantId()).thenReturn(1L);
         when(lmsUserService.getLmsUserByEmailAndTenantId(anyString(), anyLong()))
                 .thenReturn(lmsUser);
@@ -85,13 +93,14 @@ class AuthControllerTests {
         mockMvc.perform(
                         MockMvcRequestBuilders.post("/authenticate")
                                 .contentType(MediaType.APPLICATION_JSON)
+                                .header("domain", "mydomain.com")
                                 .content(requestJson)
                                 .accept(MediaType.APPLICATION_JSON)
                 ).andExpect(status().isOk())
                 .andExpect(jsonPath("jwt", is("my-mock-jwt-token")));
         Mockito.verify(authenticationManager).authenticate(token);
         Mockito.verify(userDetailsService).loadUserByUsername(authenticationRequest.getUsername());
-        Mockito.verify(jwtUtil).generateToken(ArgumentMatchers.any(UserDetails.class));
+        Mockito.verify(jwtUtil).generateToken(any(UserDetails.class), anyLong());
     }
 
     @Test
@@ -99,9 +108,9 @@ class AuthControllerTests {
 
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
                 authenticationRequest.getUsername(), authenticationRequest.getPassword());
-        String requestJson = mapper.writeValueAsString(authenticationRequest);
+        final String requestJson = mapper.writeValueAsString(authenticationRequest);
 
-
+        when(tenantService.getTenantByDomainName(anyString())).thenReturn(tenant);
         when(authenticationManager.authenticate(token)).thenThrow(
                 new RuntimeException("Incorrect username or password"));
         when(userDetailsService.loadUserByUsername(authenticationRequest.getUsername()))
@@ -114,6 +123,7 @@ class AuthControllerTests {
         mockMvc.perform(
                         MockMvcRequestBuilders.post("/authenticate")
                                 .contentType(MediaType.APPLICATION_JSON)
+                                .header("domain", "mydomain.com")
                                 .content(requestJson)
                                 .accept(MediaType.APPLICATION_JSON)
                 ).andExpect(status().isUnauthorized())

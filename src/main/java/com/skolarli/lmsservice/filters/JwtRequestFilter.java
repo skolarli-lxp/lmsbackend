@@ -2,6 +2,7 @@ package com.skolarli.lmsservice.filters;
 
 import com.skolarli.lmsservice.authentications.TenantAuthenticationToken;
 import com.skolarli.lmsservice.services.LmsUserDetailsService;
+import com.skolarli.lmsservice.services.TenantService;
 import com.skolarli.lmsservice.utils.JwtUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,11 +23,11 @@ import javax.servlet.http.HttpServletResponse;
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
 
-    Logger logger = LoggerFactory.getLogger(TenantAuthorizationFilter.class);
-
+    Logger logger = LoggerFactory.getLogger(JwtRequestFilter.class);
+    @Autowired
+    TenantService tenantService;
     @Autowired
     private LmsUserDetailsService userDetailsService;
-
     @Autowired
     private JwtUtils jwtUtils;
 
@@ -37,14 +38,21 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
         String username = null;
         String jwt = null;
+        Long tenantId = null;
 
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             jwt = authorizationHeader.substring(7);
             username = jwtUtils.extractUserName(jwt);
+            tenantId = jwtUtils.extractTenantId(jwt);
         }
 
-        //if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
         if (username != null) {
+
+            TenantAuthenticationToken tenantAuthenticationToken = new TenantAuthenticationToken(
+                    "", tenantId);
+            SecurityContextHolder.getContext().setAuthentication(tenantAuthenticationToken);
+
+
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
             if (jwtUtils.validateToken(jwt, userDetails)) {
                 UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
@@ -52,12 +60,9 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                                 userDetails, null, userDetails.getAuthorities());
                 usernamePasswordAuthenticationToken.setDetails(
                         new WebAuthenticationDetailsSource().buildDetails(request));
-                TenantAuthenticationToken tenantAuthenticationToken = (TenantAuthenticationToken)
-                        SecurityContextHolder.getContext().getAuthentication();
+
                 SecurityContextHolder.getContext().setAuthentication(new TenantAuthenticationToken(
-                        username, tenantAuthenticationToken.getTenantId()));
-                //SecurityContextHolder.getContext().setAuthentication(
-                //usernamePasswordAuthenticationToken);
+                        username, tenantId));
 
             }
         }
