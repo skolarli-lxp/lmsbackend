@@ -113,6 +113,21 @@ public class AttendanceController {
         }
     }
 
+    @RequestMapping(method = RequestMethod.PUT, value = "/forschedule")
+    public ResponseEntity<List<Attendance>> updateAttendancesForSchedule(
+            @Valid @RequestBody List<NewAttendancesForScheduleRequest> request,
+            @RequestParam Long batchScheduleId) {
+        try {
+            return new ResponseEntity<>(attendanceService.createOrUpdateAllAttendances(request,
+                    batchScheduleId), HttpStatus.OK);
+        } catch (OperationNotSupportedException e) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
+        } catch (Exception e) {
+            logger.error("Error in updateAttendancesForSchedule: " + e.getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+    }
+
     @RequestMapping(method = RequestMethod.DELETE, value = "{id}")
     public ResponseEntity<String> deleteAttendance(@PathVariable long id) {
         try {

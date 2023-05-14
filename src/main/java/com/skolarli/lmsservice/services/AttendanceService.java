@@ -28,6 +28,10 @@ public interface AttendanceService {
     //UPDATE
     Attendance updateAttendance(Attendance attendance, long id);
 
+    List<Attendance> createOrUpdateAllAttendances(List<NewAttendancesForScheduleRequest>
+                                                          newAttendanceRequests,
+                                                  Long batchScheduleId);
+
     //DELETE
     void deleteAttendance(long id);
 

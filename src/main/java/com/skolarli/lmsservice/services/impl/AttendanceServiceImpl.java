@@ -45,6 +45,21 @@ public class AttendanceServiceImpl implements AttendanceService {
                 .getBatch().getCourse().getCourseOwner();
     }
 
+    private void copyAttendanceDetails(NewAttendancesForScheduleRequest currentRequest,
+                                       Attendance existingAttendance) {
+        if (currentRequest.getAttended() != null) {
+            existingAttendance.setAttended(currentRequest.getAttended());
+        }
+        if (currentRequest.getStartDateTime() != null) {
+            existingAttendance.setStartDateTime(currentRequest.getStartDateTime()
+                    .toInstant());
+        }
+        if (currentRequest.getEndDateTime() != null) {
+            existingAttendance.setEndDateTime(currentRequest.getEndDateTime()
+                    .toInstant());
+        }
+    }
+
     @Override
     public Attendance toAttendance(NewAttendanceRequest newAttendanceRequest) {
         BatchSchedule batchSchedule = batchScheduleService.getBatchSchedule(
@@ -76,17 +91,7 @@ public class AttendanceServiceImpl implements AttendanceService {
         } else {
             throw new OperationNotSupportedException("Student Id is required");
         }
-        if (newAttendancesForScheduleRequest.getAttended() != null) {
-            attendance.setAttended(newAttendancesForScheduleRequest.getAttended());
-        }
-        if (newAttendancesForScheduleRequest.getStartDateTime() != null) {
-            attendance.setStartDateTime(newAttendancesForScheduleRequest.getStartDateTime()
-                    .toInstant());
-        }
-        if (newAttendancesForScheduleRequest.getEndDateTime() != null) {
-            attendance.setEndDateTime(newAttendancesForScheduleRequest.getEndDateTime()
-                    .toInstant());
-        }
+        copyAttendanceDetails(newAttendancesForScheduleRequest, attendance);
         if (batchScheduleId != 0) {
             BatchSchedule batchSchedule = batchScheduleService.getBatchSchedule(batchScheduleId);
             attendance.setBatchSchedule(batchSchedule);
@@ -156,6 +161,34 @@ public class AttendanceServiceImpl implements AttendanceService {
         }
         existingAttendance.updateAttendance(newAttendance);
         return attendanceRepository.save(existingAttendance);
+    }
+
+    @Override
+    public List<Attendance> createOrUpdateAllAttendances(List<NewAttendancesForScheduleRequest>
+                                                                 newAttendanceRequests,
+                                                         Long batchScheduleId) {
+        List<Attendance> existingAttendances = attendanceRepository
+                .findByBatchSchedule_Id(batchScheduleId);
+        List<Attendance> attendanceListToUpdate = new ArrayList<>();
+        for (NewAttendancesForScheduleRequest currentRequest : newAttendanceRequests) {
+            Boolean update = false;
+            if (currentRequest.getStudentId() == 0) {
+                throw new OperationNotSupportedException("Student Id is required");
+            } else {
+                for (Attendance existingAttendance : existingAttendances) {
+                    if (existingAttendance.getStudent().getId() == currentRequest.getStudentId()) {
+                        copyAttendanceDetails(currentRequest, existingAttendance);
+                        attendanceListToUpdate.add(existingAttendance);
+                        update = true;
+                        break;
+                    }
+                }
+                if (!update) {
+                    attendanceListToUpdate.add(toAttendance(currentRequest, batchScheduleId));
+                }
+            }
+        }
+        return attendanceRepository.saveAll(attendanceListToUpdate);
     }
 
 
