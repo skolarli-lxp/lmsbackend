@@ -5,9 +5,6 @@ import com.skolarli.lmsservice.models.db.Batch;
 import com.skolarli.lmsservice.models.db.BatchSchedule;
 import com.skolarli.lmsservice.models.dto.NewBatchRequest;
 import com.skolarli.lmsservice.services.BatchService;
-import com.skolarli.lmsservice.services.CourseService;
-import com.skolarli.lmsservice.services.LmsUserService;
-import com.skolarli.lmsservice.utils.UserUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -24,8 +21,7 @@ public class BatchController {
     final BatchService batchService;
     final Logger logger = LoggerFactory.getLogger(BatchController.class);
 
-    public BatchController(BatchService batchService, CourseService courseService,
-                           LmsUserService lmsUserService, UserUtils userUtils) {
+    public BatchController(BatchService batchService) {
         this.batchService = batchService;
     }
 

@@ -5,9 +5,6 @@ import com.skolarli.lmsservice.models.db.Attendance;
 import com.skolarli.lmsservice.models.dto.NewAttendanceRequest;
 import com.skolarli.lmsservice.models.dto.NewAttendancesForScheduleRequest;
 import com.skolarli.lmsservice.services.AttendanceService;
-import com.skolarli.lmsservice.services.BatchScheduleService;
-import com.skolarli.lmsservice.services.LmsUserService;
-import com.skolarli.lmsservice.utils.UserUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -25,10 +22,7 @@ public class AttendanceController {
     final AttendanceService attendanceService;
     final Logger logger = LoggerFactory.getLogger(AttendanceController.class);
 
-    public AttendanceController(AttendanceService attendanceService,
-                                BatchScheduleService batchScheduleService,
-                                LmsUserService lmsUserService,
-                                UserUtils userUtils) {
+    public AttendanceController(AttendanceService attendanceService) {
         this.attendanceService = attendanceService;
     }
 
