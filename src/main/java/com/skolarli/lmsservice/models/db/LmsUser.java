@@ -73,7 +73,6 @@ public class LmsUser extends Tenantable {
     @Column(columnDefinition = "bit(1) default false")
     private Boolean isStudent;
 
-    @NotNull
     @Column(columnDefinition = "bit(1) default false")
     private Boolean isSuperAdmin;
 
@@ -110,6 +109,9 @@ public class LmsUser extends Tenantable {
         this.isAdmin = true;
         this.isStudent = false;
         this.isInstructor = false;
+        this.isSuperAdmin = false;
+        this.userIsDeleted = false;
+        this.emailVerified = false;
     }
 
     public void update(LmsUser lmsUser) {

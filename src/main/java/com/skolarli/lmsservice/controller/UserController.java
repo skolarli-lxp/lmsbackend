@@ -140,6 +140,7 @@ public class UserController {
         }
         lmsUser.setUserIsDeleted(false);
         lmsUser.setEmailVerified(false);
+        lmsUser.setIsSuperAdmin(false);
         LmsUser savedUser = lmsUserService.saveLmsUser(lmsUser);
         VerificationCode code = verificationService.generateAndSaveVerificationCode(savedUser);
         savedUser.setVerificationCode(code);
