@@ -122,7 +122,7 @@ public class CourseServiceImplTests {
         when(courseRepository.findById(1L)).thenReturn(Optional.of(newCourse));
         when(userUtils.getCurrentUser()).thenReturn(currentUser);
 
-        courseService.deleteCourse(1);
+        courseService.softDeleteCourse(1);
     }
 
     @Test
@@ -135,7 +135,7 @@ public class CourseServiceImplTests {
         when(courseRepository.findById(1L)).thenReturn(Optional.of(newCourse));
 
         assertThrows(OperationNotSupportedException.class, () -> {
-            courseService.deleteCourse(1);
+            courseService.softDeleteCourse(1);
         });
     }
 

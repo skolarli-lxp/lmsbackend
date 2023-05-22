@@ -106,10 +106,10 @@ public class BatchController {
                 + batch.getCourse().getCourseName());
 
         try {
-            batchService.deleteBatch(id);
+            batchService.softDeleteBatch(id);
             return new ResponseEntity<>("Batch Deleted !", HttpStatus.OK);
         } catch (OperationNotSupportedException e) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
+            throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
         } catch (Exception e) {
             logger.error("Error in deleteBatch: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());

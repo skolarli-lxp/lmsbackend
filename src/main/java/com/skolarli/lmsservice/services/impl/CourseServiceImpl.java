@@ -3,8 +3,10 @@ package com.skolarli.lmsservice.services.impl;
 import com.skolarli.lmsservice.exception.OperationNotSupportedException;
 import com.skolarli.lmsservice.exception.ResourceNotFoundException;
 import com.skolarli.lmsservice.models.db.Course;
+import com.skolarli.lmsservice.models.db.CourseTag;
 import com.skolarli.lmsservice.models.db.LmsUser;
 import com.skolarli.lmsservice.repository.CourseRepository;
+import com.skolarli.lmsservice.repository.CourseTagRepository;
 import com.skolarli.lmsservice.services.CourseService;
 import com.skolarli.lmsservice.utils.UserUtils;
 import org.slf4j.Logger;
@@ -19,13 +21,16 @@ public class CourseServiceImpl implements CourseService {
 
     final Logger logger = LoggerFactory.getLogger(CourseServiceImpl.class);
     private final CourseRepository courseRepository;
+    private final CourseTagRepository courseTagRepository;
 
     private final UserUtils userUtils;
 
-    public CourseServiceImpl(CourseRepository courseRepository, UserUtils userUtils) {
+    public CourseServiceImpl(CourseRepository courseRepository, UserUtils userUtils,
+                             CourseTagRepository courseTagRepository) {
         super();
         this.courseRepository = courseRepository;
         this.userUtils = userUtils;
+        this.courseTagRepository = courseTagRepository;
     }
 
     @Override
@@ -72,29 +77,66 @@ public class CourseServiceImpl implements CourseService {
 
     }
 
-    @Override
-    public void deleteCourse(long id) {
+    private void canDelete(Course existingCourse) {
         LmsUser currentUser = userUtils.getCurrentUser();
-        Course existingCourse = courseRepository.findById(id).orElseThrow(
-                () -> new ResourceNotFoundException("Course", "Id", id));
         if (!currentUser.getIsAdmin() && currentUser != existingCourse.getCourseOwner()) {
             throw new OperationNotSupportedException("User does not have permission to perform "
                     + "Delete operation");
         }
-        existingCourse.setCourseDeleted(true);
+        if (existingCourse.getCourseBatches() != null
+                && !existingCourse.getCourseBatches().isEmpty()) {
+            throw new OperationNotSupportedException("Course cannot be deleted as it has batches "
+                    + "associated with it");
+        }
+        if (existingCourse.getCourseChapters() != null
+                && !existingCourse.getCourseChapters().isEmpty()) {
+            throw new OperationNotSupportedException("Course cannot be deleted as it has chapters "
+                    + "associated with it");
+        }
+    }
 
+    private void deleteCourseTags(Course existingCourse) {
+        if (existingCourse.getCourseTagList() != null
+                && !existingCourse.getCourseTagList().isEmpty()) {
+
+            List<CourseTag> courseTagList = existingCourse.getCourseTagList();
+            List<CourseTag> courseTagListCopy = new ArrayList<>(courseTagList);
+
+            // @Preremove will not work for deleteAll
+            while (!courseTagList.isEmpty()) {
+                courseTagList.remove(0);
+            }
+            courseTagRepository.deleteAll(courseTagListCopy);
+        }
+    }
+
+    @Override
+    public void softDeleteCourse(long id) {
+        Course existingCourse = courseRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("Course", "Id", id));
+        try {
+            canDelete(existingCourse);
+        } catch (OperationNotSupportedException e) {
+            logger.error("Error while deleting course", e);
+            throw e;
+        }
+
+        deleteCourseTags(existingCourse);
+        existingCourse.setCourseDeleted(true);
         courseRepository.save(existingCourse);
     }
 
     @Override
     public void hardDeleteCourse(long id) {
-        LmsUser currentUser = userUtils.getCurrentUser();
         Course existingCourse = courseRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Course", "Id", id));
-        if (!currentUser.getIsAdmin() && currentUser != existingCourse.getCourseOwner()) {
-            throw new OperationNotSupportedException("User does not have permission to perform "
-                    + "Delete operation");
+        try {
+            canDelete(existingCourse);
+        } catch (OperationNotSupportedException e) {
+            logger.error("Error while deleting course", e);
+            throw e;
         }
+        deleteCourseTags(existingCourse);
         courseRepository.delete(existingCourse);
     }
 }

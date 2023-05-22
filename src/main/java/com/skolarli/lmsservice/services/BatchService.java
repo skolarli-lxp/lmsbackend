@@ -18,7 +18,7 @@ public interface BatchService {
 
     Batch updateBatch(Batch batch, long id);
 
-    void deleteBatch(long id);
+    void softDeleteBatch(long id);
 
     void hardDeleteBatch(long id);
 }

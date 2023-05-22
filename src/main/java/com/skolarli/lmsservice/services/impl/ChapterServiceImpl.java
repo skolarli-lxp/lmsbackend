@@ -131,13 +131,26 @@ public class ChapterServiceImpl implements ChapterService {
         return Chapter.toChapterSortOrderResponseList(chapters);
     }
 
-    @Override
-    public void deleteChapter(long id) {
-        Chapter existingChapter = chapterRepository.findById(id).orElseThrow(
-                () -> new ResourceNotFoundException("Chapter", "Id", id));
+    private void canDelete(Chapter existingChapter) {
         if (!checkPermission(existingChapter)) {
             throw new OperationNotSupportedException("User does not have permissions to delete "
                     + "this chapter");
+        }
+        if (existingChapter.getChapterLessons() != null
+                && !existingChapter.getChapterLessons().isEmpty()) {
+            throw new OperationNotSupportedException("Cannot delete chapter with lessons");
+        }
+    }
+
+    @Override
+    public void softDeleteChapter(long id) {
+        Chapter existingChapter = chapterRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("Chapter", "Id", id));
+        try {
+            canDelete(existingChapter);
+        } catch (OperationNotSupportedException e) {
+            logger.error("Cannot delete chapter", e);
+            throw e;
         }
         existingChapter.setChapterIsDeleted(true);
         chapterRepository.save(existingChapter);
@@ -147,9 +160,11 @@ public class ChapterServiceImpl implements ChapterService {
     public void hardDeleteChapter(long id) {
         Chapter existingChapter = chapterRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Chapter", "Id", id));
-        if (!checkPermission(existingChapter)) {
-            throw new OperationNotSupportedException("User does not have permissions to delete"
-                    + " this chapter");
+        try {
+            canDelete(existingChapter);
+        } catch (OperationNotSupportedException e) {
+            logger.error("Cannot delete chapter", e);
+            throw e;
         }
         chapterRepository.delete(existingChapter);
     }

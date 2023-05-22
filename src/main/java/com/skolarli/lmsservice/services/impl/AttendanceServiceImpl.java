@@ -191,19 +191,6 @@ public class AttendanceServiceImpl implements AttendanceService {
         return attendanceRepository.saveAll(attendanceListToUpdate);
     }
 
-
-    @Override
-    public void deleteAttendance(long id) {
-        Attendance attendance = attendanceRepository.findById(id).orElseThrow(
-                () -> new ResourceNotFoundException("Attendance", "Id", id));
-        if (!checkPermission(attendance)) {
-            throw new OperationNotSupportedException(
-                    "User does not have permission to delete this attendance");
-        }
-        attendance.setAttendanceIsDeleted(true);
-        attendanceRepository.save(attendance);
-    }
-
     @Override
     public void hardDeleteAttendance(long id) {
         Attendance attendance = attendanceRepository.findById(id).orElseThrow(

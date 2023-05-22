@@ -99,6 +99,7 @@ public class Course extends Tenantable {
     @JsonIgnoreProperties("course")
     private List<Chapter> courseChapters = new ArrayList<>();
 
+
     /**
      * Updates the course with the values in the passed object
      * All fields except for Id will be updated with the passed value if it is not null
@@ -107,7 +108,6 @@ public class Course extends Tenantable {
      * Permission should be handled in the service layer.
      * List of items like batches, lesson etc are only updated with additional values.
      * Existing values are not deleted.
-     *
      */
     public void update(Course course) {
         if (course.getId() != 0) {

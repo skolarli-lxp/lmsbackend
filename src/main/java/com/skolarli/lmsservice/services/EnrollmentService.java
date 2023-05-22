@@ -26,7 +26,7 @@ public interface EnrollmentService {
 
     Enrollment updateEnrollment(Enrollment enrollment, long id);
 
-    void deleteEnrollment(long id);
+    void softDeleteEnrollment(long id);
 
     void hardDeleteEnrollment(long id);
 }

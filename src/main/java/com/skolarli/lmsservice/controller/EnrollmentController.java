@@ -1,5 +1,6 @@
 package com.skolarli.lmsservice.controller;
 
+import com.skolarli.lmsservice.exception.OperationNotSupportedException;
 import com.skolarli.lmsservice.models.db.Enrollment;
 import com.skolarli.lmsservice.models.dto.NewEnrollmentRequest;
 import com.skolarli.lmsservice.models.dto.NewEnrollmentsForBatchRequest;
@@ -19,8 +20,8 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping("/enrollment")
 public class EnrollmentController {
-    private final EnrollmentService enrollmentService;
     final Logger logger = LoggerFactory.getLogger(EnrollmentController.class);
+    private final EnrollmentService enrollmentService;
 
     public EnrollmentController(EnrollmentService enrollmentService) {
         this.enrollmentService = enrollmentService;
@@ -105,20 +106,22 @@ public class EnrollmentController {
     }
 
     @RequestMapping(method = RequestMethod.DELETE, value = "{id}")
-    public ResponseEntity<String> deleteEnrollment(@PathVariable long id) {
+    public ResponseEntity<String> hardDeleteEnrollment(@PathVariable long id) {
         try {
-            enrollmentService.deleteEnrollment(id);
+            enrollmentService.hardDeleteEnrollment(id);
             return new ResponseEntity<>("Enrollment Deleted!", HttpStatus.OK);
+        } catch (OperationNotSupportedException e) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
         } catch (Exception e) {
             logger.error("Error in deleteEnrollment: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
 
-    @RequestMapping(method = RequestMethod.DELETE, value = "hard/{id}")
-    public ResponseEntity<String> hardDeleteEnrollment(@PathVariable long id) {
+    @RequestMapping(method = RequestMethod.DELETE, value = "soft/{id}")
+    public ResponseEntity<String> deleteEnrollment(@PathVariable long id) {
         try {
-            enrollmentService.hardDeleteEnrollment(id);
+            enrollmentService.softDeleteEnrollment(id);
             return new ResponseEntity<>("Enrollment Deleted!", HttpStatus.OK);
         } catch (Exception e) {
             logger.error("Error in deleteEnrollment: " + e.getMessage());

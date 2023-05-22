@@ -8,6 +8,6 @@ import org.springframework.stereotype.Component;
 public class TenantContext {
     public long getTenantId() {
         return ((TenantAuthenticationToken) SecurityContextHolder.getContext()
-                        .getAuthentication()).getTenantId();
+                .getAuthentication()).getTenantId();
     }
 }

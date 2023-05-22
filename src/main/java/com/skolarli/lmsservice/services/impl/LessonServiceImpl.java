@@ -186,7 +186,7 @@ public class LessonServiceImpl implements LessonService {
     }
 
     @Override
-    public void deleteLesson(long id) {
+    public void softDeleteLesson(long id) {
         Lesson existingLesson = lessonRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Lesson", "Id", id));
         if (!checkPermission(existingLesson)) {

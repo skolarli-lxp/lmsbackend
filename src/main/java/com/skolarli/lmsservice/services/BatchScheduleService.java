@@ -26,7 +26,7 @@ public interface BatchScheduleService {
     BatchSchedule updateBatchSchedule(BatchSchedule batchSchedule, long id);
 
     //DELETE
-    void deleteBatchSchedule(long id);
+    void softDeleteBatchSchedule(long id);
 
     void hardDeleteBatchSchedule(long id);
 

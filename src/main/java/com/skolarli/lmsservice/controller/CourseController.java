@@ -1,5 +1,6 @@
 package com.skolarli.lmsservice.controller;
 
+import com.skolarli.lmsservice.exception.OperationNotSupportedException;
 import com.skolarli.lmsservice.models.db.Course;
 import com.skolarli.lmsservice.services.CourseService;
 import org.slf4j.Logger;
@@ -46,7 +47,7 @@ public class CourseController {
         course.setCourseDeleted(false);
 
         try {
-            return new ResponseEntity<Course>(courseService.saveCourse(course), HttpStatus.CREATED);
+            return new ResponseEntity<>(courseService.saveCourse(course), HttpStatus.CREATED);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
@@ -63,16 +64,18 @@ public class CourseController {
     }
 
     @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
-    public ResponseEntity<String> deleteCourse(@PathVariable long id) {
+    public ResponseEntity<String> softDeleteCourse(@PathVariable long id) {
         try {
-            courseService.deleteCourse(id);
+            courseService.softDeleteCourse(id);
+        } catch (OperationNotSupportedException e) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
         return new ResponseEntity<String>("Course Deleted!", HttpStatus.OK);
     }
 
-    @RequestMapping(value = "hard/{id}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "harddelete/{id}", method = RequestMethod.DELETE)
     public ResponseEntity<String> hardDeleteCourse(@PathVariable long id) {
         try {
             courseService.hardDeleteCourse(id);

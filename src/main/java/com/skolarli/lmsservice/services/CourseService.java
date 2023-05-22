@@ -14,7 +14,7 @@ public interface CourseService {
 
     Course updateCourse(Course course, long id);
 
-    void deleteCourse(long id);
+    void softDeleteCourse(long id);
 
     void hardDeleteCourse(long id);
 }

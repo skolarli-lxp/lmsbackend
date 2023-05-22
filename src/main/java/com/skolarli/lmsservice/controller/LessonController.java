@@ -1,5 +1,6 @@
 package com.skolarli.lmsservice.controller;
 
+import com.skolarli.lmsservice.exception.OperationNotSupportedException;
 import com.skolarli.lmsservice.models.db.Lesson;
 import com.skolarli.lmsservice.models.dto.*;
 import com.skolarli.lmsservice.services.LessonService;
@@ -124,22 +125,12 @@ public class LessonController {
     }
 
     @RequestMapping(method = RequestMethod.DELETE, value = "{id}")
-    public ResponseEntity<Lesson> deleteLesson(@PathVariable long id) {
-        try {
-            lessonService.deleteLesson(id);
-            return new ResponseEntity<>(HttpStatus.OK);
-        } catch (Exception e) {
-            logger.error("Error in deleteLesson: " + e.getMessage());
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
-                    e.getMessage());
-        }
-    }
-
-    @RequestMapping(method = RequestMethod.DELETE, value = "hard/{id}")
     public ResponseEntity<Lesson> hardDeleteLesson(@PathVariable long id) {
         try {
             lessonService.hardDeleteLesson(id);
             return new ResponseEntity<>(HttpStatus.OK);
+        } catch (OperationNotSupportedException e) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
         } catch (Exception e) {
             logger.error("Error in hardDeleteLesson: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,

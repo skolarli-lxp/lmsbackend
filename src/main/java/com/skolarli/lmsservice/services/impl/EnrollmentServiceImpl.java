@@ -137,7 +137,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     }
 
     @Override
-    public void deleteEnrollment(long id) {
+    public void softDeleteEnrollment(long id) {
         Enrollment existingEnrollment = enrollmentRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Enrollment", "Id", id));
         if (!checkPermissions(existingEnrollment)) {

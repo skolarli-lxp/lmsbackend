@@ -26,7 +26,7 @@ public interface ChapterService {
             Long courseId,
             List<ChapterSortOrderRequest> chaptersSortOrder);
 
-    void deleteChapter(long id);
+    void softDeleteChapter(long id);
 
     void hardDeleteChapter(long id);
 

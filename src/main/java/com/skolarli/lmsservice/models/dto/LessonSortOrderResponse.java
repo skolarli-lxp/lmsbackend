@@ -11,7 +11,7 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @Getter
 @Setter
-public class    LessonSortOrderResponse {
+public class LessonSortOrderResponse {
     @NotNull
     private long lessonId;
     private String lessonName;

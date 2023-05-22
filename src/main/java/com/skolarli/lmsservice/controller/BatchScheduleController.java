@@ -146,23 +146,6 @@ public class BatchScheduleController {
     }
 
     @RequestMapping(method = RequestMethod.DELETE, value = "{id}")
-    public ResponseEntity<String> deleteBatchSchedule(@PathVariable long id) {
-        BatchSchedule batchSchedule = batchScheduleService.getBatchSchedule(id);
-        LmsUser currentUser = userUtils.getCurrentUser();
-        if (!currentUser.getIsAdmin() && currentUser
-                != batchSchedule.getBatch().getCourse().getCourseOwner()) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "");
-        }
-        try {
-            batchScheduleService.deleteBatchSchedule(id);
-            return new ResponseEntity<>("Deleted Schedule", HttpStatus.OK);
-        } catch (Exception e) {
-            logger.error("Error in deleteBatchSchedule: " + e.getMessage());
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
-        }
-    }
-
-    @RequestMapping(method = RequestMethod.DELETE, value = "hard/{id}")
     public ResponseEntity<String> hardDeleteBatchSchedule(@PathVariable long id) {
         BatchSchedule batchSchedule = batchScheduleService.getBatchSchedule(id);
         LmsUser currentUser = userUtils.getCurrentUser();
@@ -173,8 +156,27 @@ public class BatchScheduleController {
         try {
             batchScheduleService.hardDeleteBatchSchedule(id);
             return new ResponseEntity<>("Deleted Schedule", HttpStatus.OK);
+        } catch (OperationNotSupportedException e) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
         } catch (Exception e) {
             logger.error("Error in hardDeleteBatchSchedule: " + e.getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+    }
+
+    @RequestMapping(method = RequestMethod.DELETE, value = "soft/{id}")
+    public ResponseEntity<String> deleteBatchSchedule(@PathVariable long id) {
+        BatchSchedule batchSchedule = batchScheduleService.getBatchSchedule(id);
+        LmsUser currentUser = userUtils.getCurrentUser();
+        if (!currentUser.getIsAdmin() && currentUser
+                != batchSchedule.getBatch().getCourse().getCourseOwner()) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "");
+        }
+        try {
+            batchScheduleService.softDeleteBatchSchedule(id);
+            return new ResponseEntity<>("Deleted Schedule", HttpStatus.OK);
+        } catch (Exception e) {
+            logger.error("Error in deleteBatchSchedule: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }

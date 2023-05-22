@@ -33,7 +33,5 @@ public interface AttendanceService {
                                                   Long batchScheduleId);
 
     //DELETE
-    void deleteAttendance(long id);
-
     void hardDeleteAttendance(long id);
 }

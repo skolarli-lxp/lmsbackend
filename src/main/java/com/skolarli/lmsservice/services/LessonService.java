@@ -29,7 +29,7 @@ public interface LessonService {
     List<LessonSortOrderResponse> updateLessonSortOrder(
             Long chapterId, List<LessonSortOrderRequest> lessonSortOrderRequest);
 
-    void deleteLesson(long id);
+    void softDeleteLesson(long id);
 
     void hardDeleteLesson(long id);
 }

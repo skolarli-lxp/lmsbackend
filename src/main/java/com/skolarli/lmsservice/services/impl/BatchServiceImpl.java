@@ -139,13 +139,27 @@ public class BatchServiceImpl implements BatchService {
         return batchRepository.save(existingBatch);
     }
 
-    @Override
-    public void deleteBatch(long id) {
-        Batch existingBatch = batchRepository.findById(id).orElseThrow(
-                () -> new ResourceNotFoundException("Batch", "Id", id));
+    private void canDelete(Batch existingBatch) {
         if (!checkPermissions(existingBatch)) {
             throw new OperationNotSupportedException(
                     "User does not gave permissions to perform delete operation");
+        }
+        if (existingBatch.getBatchSchedules() != null
+                && !existingBatch.getBatchSchedules().isEmpty()) {
+            throw new OperationNotSupportedException(
+                    "Cannot delete batch with schedules. Please delete schedules first");
+        }
+    }
+
+    @Override
+    public void softDeleteBatch(long id) {
+        Batch existingBatch = batchRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("Batch", "Id", id));
+        try {
+            canDelete(existingBatch);
+        } catch (OperationNotSupportedException e) {
+            logger.error("Cannot delete batch", e);
+            throw e;
         }
         existingBatch.setBatchIsDeleted(true);
         batchRepository.save(existingBatch);
@@ -155,9 +169,11 @@ public class BatchServiceImpl implements BatchService {
     public void hardDeleteBatch(long id) {
         Batch existingBatch = batchRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Batch", "Id", id));
-        if (!checkPermissions(existingBatch)) {
-            throw new OperationNotSupportedException(
-                    "User does not gave permissions to perform delete operation");
+        try {
+            canDelete(existingBatch);
+        } catch (OperationNotSupportedException e) {
+            logger.error("Cannot delete batch", e);
+            throw e;
         }
         batchRepository.delete(existingBatch);
     }

@@ -123,25 +123,12 @@ public class AttendanceController {
     }
 
     @RequestMapping(method = RequestMethod.DELETE, value = "{id}")
-    public ResponseEntity<String> deleteAttendance(@PathVariable long id) {
-        try {
-            attendanceService.deleteAttendance(id);
-            return new ResponseEntity<>("Attendance Deleted!", HttpStatus.OK);
-        } catch (OperationNotSupportedException e) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
-        } catch (Exception e) {
-            logger.error("Error in deleteAttendance: " + e.getMessage());
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
-        }
-    }
-
-    @RequestMapping(method = RequestMethod.DELETE, value = "hard/{id}")
     public ResponseEntity<String> hardDeleteAttendance(@PathVariable long id) {
         try {
             attendanceService.hardDeleteAttendance(id);
             return new ResponseEntity<>("Attendance Deleted!", HttpStatus.OK);
         } catch (OperationNotSupportedException e) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
+            throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
         } catch (Exception e) {
             logger.error("Error in deleteAttendance: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());

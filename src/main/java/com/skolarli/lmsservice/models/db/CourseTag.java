@@ -50,4 +50,8 @@ public class CourseTag extends Tenantable {
         return Objects.equals(tag, courseTag.tag);
     }
 
+    @PreRemove
+    private void removeCourseTags() {
+        course.getCourseTagList().remove(this);
+    }
 }

@@ -223,13 +223,26 @@ public class BatchScheduleServiceImpl implements BatchScheduleService {
         return batchScheduleRepository.save(existingBatchSchedule);
     }
 
-
-    @Override
-    public void deleteBatchSchedule(long id) {
-        BatchSchedule existingBatchSchedule = batchScheduleRepository.findById(id).orElseThrow(
-                () -> new ResourceNotFoundException("BatchSchedule", "Id", id));
+    private void canDelete(BatchSchedule existingBatchSchedule) {
         if (!checkPermissions(existingBatchSchedule)) {
             throw new OperationNotSupportedException("Operation not supported: Permission Denied");
+        }
+        if (existingBatchSchedule.getAttendanceList() != null && !existingBatchSchedule
+                .getAttendanceList().isEmpty()) {
+            throw new OperationNotSupportedException(
+                    "Cannot delete batch schedule with attendance");
+        }
+    }
+
+    @Override
+    public void softDeleteBatchSchedule(long id) {
+        BatchSchedule existingBatchSchedule = batchScheduleRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("BatchSchedule", "Id", id));
+        try {
+            canDelete(existingBatchSchedule);
+        } catch (OperationNotSupportedException e) {
+            logger.error(e.getMessage());
+            throw e;
         }
         existingBatchSchedule.setBatchScheduleIsDeleted(true);
         batchScheduleRepository.save(existingBatchSchedule);
@@ -239,10 +252,12 @@ public class BatchScheduleServiceImpl implements BatchScheduleService {
     public void hardDeleteBatchSchedule(long id) {
         BatchSchedule existingBatchSchedule = batchScheduleRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("BatchSchedule", "Id", id));
-        if (!checkPermissions(existingBatchSchedule)) {
-            throw new OperationNotSupportedException("Operation not supported: Permission Denied");
+        try {
+            canDelete(existingBatchSchedule);
+        } catch (OperationNotSupportedException e) {
+            logger.error(e.getMessage());
+            throw e;
         }
         batchScheduleRepository.delete(existingBatchSchedule);
-
     }
 }
