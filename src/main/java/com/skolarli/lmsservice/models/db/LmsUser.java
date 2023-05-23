@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.Where;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.List;
 import javax.persistence.*;
@@ -100,6 +101,11 @@ public class LmsUser extends Tenantable {
     private VerificationCode verificationCode;
 
     private Boolean userIsDeleted;
+
+    public void setPassword(String password) {
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        this.password = passwordEncoder.encode(password);
+    }
 
     public LmsUser(NewDomainRequest newDomainRequest) {
         this.firstName = newDomainRequest.getFirstName();
