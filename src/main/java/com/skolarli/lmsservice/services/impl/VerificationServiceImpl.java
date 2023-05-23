@@ -1,5 +1,7 @@
 package com.skolarli.lmsservice.services.impl;
 
+import com.skolarli.lmsservice.exception.OperationNotSupportedException;
+import com.skolarli.lmsservice.exception.ResourceNotFoundException;
 import com.skolarli.lmsservice.models.db.LmsUser;
 import com.skolarli.lmsservice.models.db.VerificationCode;
 import com.skolarli.lmsservice.repository.LmsUserRepository;
@@ -62,9 +64,12 @@ public class VerificationServiceImpl implements VerificationService {
     @Override
     public Boolean verifyCode(String token) {
         VerificationCode code = verificationCodeRepository.findByToken(token);
+        if (code == null) {
+            throw new ResourceNotFoundException("Verification code not found");
+        }
         Instant expiryDate = code.getExpiryDate();
         if (expiryDate != null && expiryDate.isBefore(Instant.now())) {
-            return false;
+            throw new OperationNotSupportedException("Verification code expired");
         }
         LmsUser user = code.getUser();
         user.setEmailVerified(true);

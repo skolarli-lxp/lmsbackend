@@ -107,6 +107,10 @@ public class LmsUser extends Tenantable {
         this.password = passwordEncoder.encode(password);
     }
 
+    public void setPasswordWithoutEncoding(String password) {
+        this.password = password;
+    }
+
     public LmsUser(NewDomainRequest newDomainRequest) {
         this.firstName = newDomainRequest.getFirstName();
         this.lastName = newDomainRequest.getLastName();
@@ -128,7 +132,7 @@ public class LmsUser extends Tenantable {
             this.setLastName(lmsUser.getLastName());
         }
         if (lmsUser.getPassword() != null && !lmsUser.getPassword().isEmpty()) {
-            this.setPassword(lmsUser.getPassword());
+            this.setPasswordWithoutEncoding(lmsUser.getPassword());
         }
         if (lmsUser.getPhoneNumber() != null && !lmsUser.getPhoneNumber().isEmpty()) {
             this.setPhoneNumber(lmsUser.getPhoneNumber());
