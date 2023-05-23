@@ -132,6 +132,4 @@ public class BatchController {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
-
-
 }

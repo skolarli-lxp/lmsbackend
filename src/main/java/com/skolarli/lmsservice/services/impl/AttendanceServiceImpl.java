@@ -92,6 +92,7 @@ public class AttendanceServiceImpl implements AttendanceService {
             throw new OperationNotSupportedException("Student Id is required");
         }
         copyAttendanceDetails(newAttendancesForScheduleRequest, attendance);
+        attendance.setAttendanceIsDeleted(false);
         if (batchScheduleId != 0) {
             BatchSchedule batchSchedule = batchScheduleService.getBatchSchedule(batchScheduleId);
             attendance.setBatchSchedule(batchSchedule);

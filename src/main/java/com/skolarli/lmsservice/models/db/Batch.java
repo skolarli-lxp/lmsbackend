@@ -45,7 +45,7 @@ public class Batch extends Tenantable {
     @JsonIdentityReference(alwaysAsId = true)
     private LmsUser instructor;
 
-    @OneToMany(mappedBy = "batch")
+    @OneToMany(mappedBy = "batch", cascade = CascadeType.ALL)
     @JsonIgnoreProperties("batch")
     private List<BatchSchedule> batchSchedules;
 
