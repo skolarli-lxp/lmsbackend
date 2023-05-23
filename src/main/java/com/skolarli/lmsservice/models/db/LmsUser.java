@@ -127,6 +127,9 @@ public class LmsUser extends Tenantable {
         if (lmsUser.getLastName() != null && !lmsUser.getLastName().isEmpty()) {
             this.setLastName(lmsUser.getLastName());
         }
+        if (lmsUser.getPassword() != null && !lmsUser.getPassword().isEmpty()) {
+            this.setPassword(lmsUser.getPassword());
+        }
         if (lmsUser.getPhoneNumber() != null && !lmsUser.getPhoneNumber().isEmpty()) {
             this.setPhoneNumber(lmsUser.getPhoneNumber());
         }
@@ -165,8 +168,6 @@ public class LmsUser extends Tenantable {
         }
         if (lmsUser.getEmailVerified() != null) {
             this.setEmailVerified(lmsUser.getEmailVerified());
-        } else {
-            this.setEmailVerified(false);
         }
     }
 }
