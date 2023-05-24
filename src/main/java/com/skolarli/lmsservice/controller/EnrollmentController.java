@@ -7,6 +7,7 @@ import com.skolarli.lmsservice.models.dto.NewEnrollmentsForBatchRequest;
 import com.skolarli.lmsservice.services.EnrollmentService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.UUID;
 import javax.validation.Valid;
 
 
@@ -30,6 +32,13 @@ public class EnrollmentController {
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<List<Enrollment>> getAllEnrollments(@RequestParam(required = false)
                                                               Long batchId) {
+
+        UUID uuid = UUID.randomUUID();
+        MDC.put("requestId", uuid.toString());
+        logger.info("Received request for getAllEnrollments" + (batchId != null
+                ? " for batchId: " + batchId
+                : ""));
+
         if (batchId != null) {
             try {
                 return new ResponseEntity<>(enrollmentService.getEnrollmentsByBatchId(batchId),
@@ -44,22 +53,36 @@ public class EnrollmentController {
         } catch (Exception e) {
             logger.error("Error in getAllEnrollments: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        } finally {
+            MDC.remove("requestId");
         }
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "{id}")
     public ResponseEntity<Enrollment> getEnrollment(@PathVariable long id) {
+
+        UUID uuid = UUID.randomUUID();
+        MDC.put("requestId", uuid.toString());
+        logger.info("Received request for getEnrollment with id: " + id);
+
         try {
             return new ResponseEntity<>(enrollmentService.getEnrollmentById(id), HttpStatus.OK);
         } catch (Exception e) {
             logger.error("Error in getEnrollment: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        } finally {
+            MDC.remove("requestId");
         }
     }
 
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<Enrollment> addEnrollment(@Valid @RequestBody
                                                     NewEnrollmentRequest request) {
+
+        UUID uuid = UUID.randomUUID();
+        MDC.put("requestId", uuid.toString());
+        logger.info("Received request for addEnrollment for batch: " + request.getBatchId());
+
         Enrollment enrollment = enrollmentService.toEnrollment(request);
         try {
             return new ResponseEntity<>(enrollmentService.save(enrollment), HttpStatus.OK);
@@ -69,6 +92,8 @@ public class EnrollmentController {
         } catch (Exception e) {
             logger.error("Error in addEnrollment: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        } finally {
+            MDC.remove("requestId");
         }
     }
 
@@ -76,6 +101,11 @@ public class EnrollmentController {
     public ResponseEntity<List<Enrollment>> addEnrollmentsForBatch(
             @Valid @RequestBody List<NewEnrollmentsForBatchRequest> request,
             @RequestParam Long batchId) {
+
+        UUID uuid = UUID.randomUUID();
+        MDC.put("requestId", uuid.toString());
+        logger.info("Received request for addEnrollmentsForBatch for batch: " + batchId);
+
         List<Enrollment> enrollments = enrollmentService.toEnrollmentList(request);
         try {
             return new ResponseEntity<>(enrollmentService.saveAllEnrollments(enrollments, batchId),
@@ -86,6 +116,8 @@ public class EnrollmentController {
         } catch (Exception e) {
             logger.error("Error in addEnrollment: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        } finally {
+            MDC.remove("requestId");
         }
     }
 
@@ -93,6 +125,11 @@ public class EnrollmentController {
     public ResponseEntity<Enrollment> updateEnrollment(
             @PathVariable long id,
             @Valid @RequestBody NewEnrollmentRequest request) {
+
+        UUID uuid = UUID.randomUUID();
+        MDC.put("requestId", uuid.toString());
+        logger.info("Received request for updateEnrollment with id: " + id);
+
         Enrollment newEnrollment = enrollmentService.toEnrollment(request);
         Enrollment existingEnrollment = enrollmentService.getEnrollmentById(id);
         existingEnrollment.update(newEnrollment);
@@ -102,11 +139,18 @@ public class EnrollmentController {
         } catch (Exception e) {
             logger.error("Error in updateEnrollment: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        } finally {
+            MDC.remove("requestId");
         }
     }
 
     @RequestMapping(method = RequestMethod.DELETE, value = "{id}")
     public ResponseEntity<String> hardDeleteEnrollment(@PathVariable long id) {
+
+        UUID uuid = UUID.randomUUID();
+        MDC.put("requestId", uuid.toString());
+        logger.info("Received request for hardDeleteEnrollment with id: " + id);
+
         try {
             enrollmentService.hardDeleteEnrollment(id);
             return new ResponseEntity<>("Enrollment Deleted!", HttpStatus.OK);
@@ -115,17 +159,26 @@ public class EnrollmentController {
         } catch (Exception e) {
             logger.error("Error in deleteEnrollment: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        } finally {
+            MDC.remove("requestId");
         }
     }
 
     @RequestMapping(method = RequestMethod.DELETE, value = "soft/{id}")
     public ResponseEntity<String> deleteEnrollment(@PathVariable long id) {
+
+        UUID uuid = UUID.randomUUID();
+        MDC.put("requestId", uuid.toString());
+        logger.info("Received request for deleteEnrollment with id: " + id);
+
         try {
             enrollmentService.softDeleteEnrollment(id);
             return new ResponseEntity<>("Enrollment Deleted!", HttpStatus.OK);
         } catch (Exception e) {
             logger.error("Error in deleteEnrollment: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        } finally {
+            MDC.remove("requestId");
         }
     }
 }

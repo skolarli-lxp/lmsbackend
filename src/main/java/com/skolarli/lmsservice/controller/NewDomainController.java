@@ -12,6 +12,7 @@ import com.skolarli.lmsservice.services.TenantService;
 import com.skolarli.lmsservice.services.VerificationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -20,6 +21,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.UUID;
 import javax.validation.Valid;
 
 /*
@@ -44,9 +46,14 @@ public class NewDomainController {
     @PostMapping(value = "/add")
     public ResponseEntity<NewDomainResponse> addNewDomain(
             @Valid @RequestBody NewDomainRequest newDomainRequest) {
+
+
+        UUID uuid = UUID.randomUUID();
+        MDC.put("requestId", uuid.toString());
         logger.info("Received new domain request. DomainName: "
                 + newDomainRequest.getDomainName()
                 + " Email: " + newDomainRequest.getEmail());
+
         Tenant savedTenant;
         LmsUser savedLmsUser;
         VerificationCode code;
@@ -80,6 +87,7 @@ public class NewDomainController {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
         logger.info("Added new user Email: " + savedLmsUser.getEmail());
+        MDC.remove("requestId");
 
         return new ResponseEntity<>(
                 new NewDomainResponse(savedTenant, savedLmsUser, code), HttpStatus.CREATED);
@@ -88,7 +96,11 @@ public class NewDomainController {
 
     @GetMapping(value = "/isunique")
     public ResponseEntity<String> isUnique(@RequestParam String domainName) {
+
+        UUID uuid = UUID.randomUUID();
+        MDC.put("requestId", uuid.toString());
         logger.info("Checking if domainName " + domainName + " is unique");
+
         domainName = domainName.strip();
         if (domainName == null || domainName.isEmpty()) {
             return new ResponseEntity<>("{\"error\" : \"domainName cannot be null\"}",
@@ -100,6 +112,8 @@ public class NewDomainController {
             return new ResponseEntity<>(responseString, HttpStatus.OK);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        } finally {
+            MDC.remove("requestId");
         }
     }
 }

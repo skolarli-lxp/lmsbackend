@@ -10,6 +10,7 @@ import com.skolarli.lmsservice.services.BatchService;
 import com.skolarli.lmsservice.utils.UserUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 import javax.validation.Valid;
 
 @RestController
@@ -43,6 +45,18 @@ public class BatchScheduleController {
             LocalDate queryStartDate,
             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd")
             LocalDate queryEndDate) {
+
+        UUID uuid = UUID.randomUUID();
+        MDC.put("requestId", uuid.toString());
+        logger.info("Received request for getAllBatchSchedules" + (batchId != null
+                ? " for batchId: " + batchId
+                : "") + (queryStartDate != null
+                ? " for queryStartDate: " + queryStartDate
+                : "") + (queryEndDate != null
+                ? " for queryEndDate: " + queryEndDate
+                : ""));
+
+
         Instant queryStartDateInstant = null;
         Instant queryEndDateAsDate = null;
         if (batchId != null) {
@@ -64,6 +78,8 @@ public class BatchScheduleController {
             } catch (Exception e) {
                 logger.error("Error in getAllBatchSchedules: " + e.getMessage());
                 throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+            } finally {
+                MDC.remove("requestId");
             }
         }
         try {
@@ -72,22 +88,36 @@ public class BatchScheduleController {
         } catch (Exception e) {
             logger.error("Error in getAllBatchSchedules: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        } finally {
+            MDC.remove("requestId");
         }
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "{id}")
     public ResponseEntity<BatchSchedule> getBatchSchedule(@PathVariable long id) {
+
+        UUID uuid = UUID.randomUUID();
+        MDC.put("requestId", uuid.toString());
+        logger.info("Received request for getBatchSchedule for id: " + id);
+
         try {
             return new ResponseEntity<>(batchScheduleService.getBatchSchedule(id), HttpStatus.OK);
         } catch (Exception e) {
             logger.error("Error in getBatchSchedule: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        } finally {
+            MDC.remove("requestId");
         }
     }
 
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<BatchSchedule> addBatchSchedule(
             @Valid @RequestBody NewBatchScheduleRequest request) {
+
+        UUID uuid = UUID.randomUUID();
+        MDC.put("requestId", uuid.toString());
+        logger.info("Received request for addBatchSchedule for batch: " + request.getBatchId());
+
         BatchSchedule batchSchedule = batchScheduleService.toBatchSchedule(request);
 
         try {
@@ -98,6 +128,8 @@ public class BatchScheduleController {
         } catch (Exception e) {
             logger.error("Error in addBatchSchedule: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        } finally {
+            MDC.remove("requestId");
         }
     }
 
@@ -105,6 +137,11 @@ public class BatchScheduleController {
     public ResponseEntity<List<BatchSchedule>> addBatchSchedules(
             @Valid @RequestBody List<NewBatchSchedulesForBatchRequest> request,
             @RequestParam Long batchId) {
+
+        UUID uuid = UUID.randomUUID();
+        MDC.put("requestId", uuid.toString());
+        logger.info("Received request for addBatchSchedules for batch: " + batchId);
+
         List<BatchSchedule> batchSchedules = batchScheduleService.toBatchScheduleList(request);
 
         try {
@@ -115,6 +152,8 @@ public class BatchScheduleController {
         } catch (Exception e) {
             logger.error("Error in addBatchSchedule: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        } finally {
+            MDC.remove("requestId");
         }
     }
 
@@ -122,6 +161,11 @@ public class BatchScheduleController {
     public ResponseEntity<BatchSchedule> updateBatchSchedule(
             @PathVariable Long id,
             @RequestBody NewBatchScheduleRequest request) {
+
+        UUID uuid = UUID.randomUUID();
+        MDC.put("requestId", uuid.toString());
+        logger.info("Received request for updateBatchSchedule for id: " + id);
+
         BatchSchedule batchSchedule = new BatchSchedule();
         if (request.getBatchId() != 0) {
             batchSchedule.setBatch(batchService.getBatch(request.getBatchId()));
@@ -142,11 +186,18 @@ public class BatchScheduleController {
         } catch (Exception e) {
             logger.error("Error in updateBatchSchedule: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        } finally {
+            MDC.remove("requestId");
         }
     }
 
     @RequestMapping(method = RequestMethod.DELETE, value = "{id}")
     public ResponseEntity<String> hardDeleteBatchSchedule(@PathVariable long id) {
+
+        UUID uuid = UUID.randomUUID();
+        MDC.put("requestId", uuid.toString());
+        logger.info("Received request for delete batch schedule for id: " + id);
+
         BatchSchedule batchSchedule = batchScheduleService.getBatchSchedule(id);
         LmsUser currentUser = userUtils.getCurrentUser();
         if (!currentUser.getIsAdmin() && currentUser
@@ -161,11 +212,18 @@ public class BatchScheduleController {
         } catch (Exception e) {
             logger.error("Error in hardDeleteBatchSchedule: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        } finally {
+            MDC.remove("requestId");
         }
     }
 
     @RequestMapping(method = RequestMethod.DELETE, value = "soft/{id}")
     public ResponseEntity<String> deleteBatchSchedule(@PathVariable long id) {
+
+        UUID uuid = UUID.randomUUID();
+        MDC.put("requestId", uuid.toString());
+        logger.info("Received request for soft  delete batch schedule for id: " + id);
+
         BatchSchedule batchSchedule = batchScheduleService.getBatchSchedule(id);
         LmsUser currentUser = userUtils.getCurrentUser();
         if (!currentUser.getIsAdmin() && currentUser
@@ -178,6 +236,8 @@ public class BatchScheduleController {
         } catch (Exception e) {
             logger.error("Error in deleteBatchSchedule: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        } finally {
+            MDC.remove("requestId");
         }
     }
 }

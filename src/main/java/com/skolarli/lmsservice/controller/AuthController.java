@@ -12,6 +12,7 @@ import com.skolarli.lmsservice.services.TenantService;
 import com.skolarli.lmsservice.utils.JwtUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,12 +22,13 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
 import javax.validation.Valid;
 
 @RestController
 public class AuthController {
 
-    final Logger logger = LoggerFactory.getLogger(AuthController.class);
+    private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
     @Autowired
     LmsUserService lmsUserService;
     @Autowired
@@ -44,6 +46,12 @@ public class AuthController {
     public ResponseEntity<?> authenticate(
             @Valid @RequestBody AuthenticationRequest authenticationRequest,
             @RequestHeader(value = "Domain") String domainName) {
+
+        UUID uuid = UUID.randomUUID();
+        MDC.put("requestId", uuid.toString());
+        logger.info("Received Authentication Request for User: "
+                + authenticationRequest.getUsername()
+                + " for domain: " + domainName);
 
         logger.info("Received Authentication Request for User: "
                 + authenticationRequest.getUsername());
@@ -79,6 +87,8 @@ public class AuthController {
         final String jwt = jwtUtil.generateToken(userDetails, tenant.getId());
 
         logger.info("Authenticated User: " + userDetails.getUsername());
+        MDC.remove("requestId");
+
         return ResponseEntity.ok(new AuthenticationResponse(jwt));
     }
 }

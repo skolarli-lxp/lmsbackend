@@ -12,6 +12,7 @@ import com.skolarli.lmsservice.services.VerificationService;
 import com.skolarli.lmsservice.utils.UserUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.UUID;
 import javax.validation.Valid;
 
 @RestController
@@ -37,7 +39,11 @@ public class UserController {
 
     @GetMapping
     public ResponseEntity<List<LmsUser>> getAllUsers() {
+
+        UUID uuid = UUID.randomUUID();
+        MDC.put("requestId", uuid.toString());
         logger.info("Received List All Users request");
+
         LmsUser currentUser = userUtils.getCurrentUser();
         if (!currentUser.getIsAdmin()) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Permission denied");
@@ -47,7 +53,11 @@ public class UserController {
 
     @GetMapping(value = "{id}")
     public ResponseEntity<LmsUser> getUser(@PathVariable long id) {
+
+        UUID uuid = UUID.randomUUID();
+        MDC.put("requestId", uuid.toString());
         logger.info("Received Get User request UserId: " + id);
+
         LmsUser currentUser = userUtils.getCurrentUser();
         if (!currentUser.getIsAdmin() && currentUser.getId() != id) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Permission denied");
@@ -57,7 +67,11 @@ public class UserController {
 
     @GetMapping(value = "email/{email}")
     public ResponseEntity<LmsUser> getUserByEmail(@PathVariable String email) {
+
+        UUID uuid = UUID.randomUUID();
+        MDC.put("requestId", uuid.toString());
         logger.info("Received Get User request Email: " + email);
+
         long tenantId = tenantContext.getTenantId();
         return new ResponseEntity<>(lmsUserService.getLmsUserByEmailAndTenantId(email, tenantId),
                 HttpStatus.OK);
@@ -65,8 +79,11 @@ public class UserController {
 
     @GetMapping(value = "role")
     public ResponseEntity<List<LmsUser>> getUserByRole(@RequestParam("role") Role role) {
-        logger.info("Received Get User request Role: " + role);
-        long tenantId = tenantContext.getTenantId();
+
+        UUID uuid = UUID.randomUUID();
+        MDC.put("requestId", uuid.toString());
+        logger.info("Received getUserByRole request " + role);
+
         return new ResponseEntity<>(lmsUserService.getLmsUsersByRole(role), HttpStatus.OK);
     }
 
@@ -75,7 +92,12 @@ public class UserController {
             @RequestParam(required = false) Long studentId,
             @RequestParam(required = false) String studentEmail) {
 
-        logger.info("Received Get All Enrolled Batches request");
+        UUID uuid = UUID.randomUUID();
+        MDC.put("requestId", uuid.toString());
+
+        logger.info("Received getAllEnrolledBatches request" + (studentId != null ? " studentId: "
+                + studentId : " studentEmail: " + studentEmail));
+
         LmsUser currentUser = userUtils.getCurrentUser();
         if (!currentUser.getIsAdmin() && currentUser.getId() != studentId && !currentUser.getEmail()
                 .equals(studentEmail)) {
@@ -96,16 +118,23 @@ public class UserController {
         } catch (OperationNotSupportedException | ResourceNotFoundException e) {
             logger.error(e.getMessage());
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        } finally {
+            MDC.remove("requestId");
         }
         return null;
-
     }
 
     @GetMapping(value = "getAllBatchesTaught")
     public ResponseEntity<List<Batch>> getAllTaughtBatches(
             @RequestParam(required = false) Long instructorId,
             @RequestParam(required = false) String instructorEmail) {
-        logger.info("Received getAllBatchesTaught request");
+
+        UUID uuid = UUID.randomUUID();
+        MDC.put("requestId", uuid.toString());
+        logger.info("Received getAllBatchesTaught request "
+                + (instructorId != null ? " instructorId: " + instructorId : ""
+                + (instructorEmail != null ? "instructorEmail: " + instructorEmail : "")));
+
         LmsUser currentUser = userUtils.getCurrentUser();
         if (!currentUser.getIsAdmin() && currentUser.getId() != instructorId
                 && !currentUser.getEmail().equals(instructorEmail)) {
@@ -127,13 +156,19 @@ public class UserController {
         } catch (OperationNotSupportedException | ResourceNotFoundException e) {
             logger.error(e.getMessage());
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        } finally {
+            MDC.remove("requestId");
         }
         return null;
     }
 
     @PostMapping
     public ResponseEntity<LmsUser> addNewUser(@Valid @RequestBody LmsUser lmsUser) {
+
+        UUID uuid = UUID.randomUUID();
+        MDC.put("requestId", uuid.toString());
         logger.info("Received new user request Email: " + lmsUser.getEmail());
+
         LmsUser currentUser = userUtils.getCurrentUser();
         if (!currentUser.getIsAdmin()) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Permission denied");
@@ -144,12 +179,18 @@ public class UserController {
         LmsUser savedUser = lmsUserService.saveLmsUser(lmsUser);
         VerificationCode code = verificationService.generateAndSaveVerificationCode(savedUser);
         savedUser.setVerificationCode(code);
+        MDC.remove("requestId");
+
         return new ResponseEntity<LmsUser>(savedUser, HttpStatus.CREATED);
     }
 
     @PutMapping(value = "{id}")
     public ResponseEntity<LmsUser> updateUser(@PathVariable long id, @RequestBody LmsUser lmsUser) {
-        logger.info("Received update user request Email: " + lmsUser.getEmail());
+
+        UUID uuid = UUID.randomUUID();
+        MDC.put("requestId", uuid.toString());
+        logger.info("Received update user request Email: " + id);
+
         LmsUser currentUser = userUtils.getCurrentUser();
         if (!currentUser.getIsAdmin() && currentUser.getId() != id) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Permission denied");
@@ -159,28 +200,42 @@ public class UserController {
             return new ResponseEntity<>(lmsUserService.updateLmsUser(lmsUser, id), HttpStatus.OK);
         } catch (OperationNotSupportedException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        } finally {
+            MDC.remove("requestId");
         }
     }
 
     @DeleteMapping(value = "{id}")
     public ResponseEntity<String> deleteUser(@PathVariable long id) {
+
+        UUID uuid = UUID.randomUUID();
+        MDC.put("requestId", uuid.toString());
         logger.info("Received Delete User request UserId: " + id);
+
         LmsUser currentUser = userUtils.getCurrentUser();
         if (!currentUser.getIsAdmin()) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Permission denied");
         }
         lmsUserService.deleteLmsUser(id);
+        MDC.remove("requestId");
+
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @DeleteMapping(value = "hard/{id}")
     public ResponseEntity<String> hardDeleteUser(@PathVariable long id) {
+
+        UUID uuid = UUID.randomUUID();
+        MDC.put("requestId", uuid.toString());
         logger.info("Received Delete User request UserId: " + id);
+
         LmsUser currentUser = userUtils.getCurrentUser();
         if (!currentUser.getIsAdmin()) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Permission denied");
         }
         lmsUserService.hardDeleteLmsUser(id);
+        MDC.remove("requestId");
+
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
