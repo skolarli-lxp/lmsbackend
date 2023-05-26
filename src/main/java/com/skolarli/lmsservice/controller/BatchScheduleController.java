@@ -59,31 +59,22 @@ public class BatchScheduleController {
 
         Instant queryStartDateInstant = null;
         Instant queryEndDateAsDate = null;
-        if (batchId != null) {
-            if (queryStartDate != null) {
-                queryStartDateInstant = queryStartDate.atStartOfDay().toInstant(
-                        java.time.ZoneOffset.UTC);
-            }
-            if (queryEndDate != null) {
-                queryEndDateAsDate = queryEndDate.atStartOfDay().toInstant(
-                        java.time.ZoneOffset.UTC);
-                // Make it end of day
-                queryEndDateAsDate = queryEndDateAsDate.plusSeconds(86399);
-            }
-            try {
-                return new ResponseEntity<>(
-                        batchScheduleService.getSchedulesForBatch(
-                                batchId, queryStartDateInstant, queryEndDateAsDate),
-                        HttpStatus.OK);
-            } catch (Exception e) {
-                logger.error("Error in getAllBatchSchedules: " + e.getMessage());
-                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
-            } finally {
-                MDC.remove("requestId");
-            }
+
+        if (queryStartDate != null) {
+            queryStartDateInstant = queryStartDate.atStartOfDay().toInstant(
+                    java.time.ZoneOffset.UTC);
         }
+        if (queryEndDate != null) {
+            queryEndDateAsDate = queryEndDate.atStartOfDay().toInstant(
+                    java.time.ZoneOffset.UTC);
+            // Make it end of day
+            queryEndDateAsDate = queryEndDateAsDate.plusSeconds(86399);
+        }
+
         try {
-            return new ResponseEntity<>(batchScheduleService.getAllBatchSchedules(),
+            return new ResponseEntity<>(
+                    batchScheduleService.getSchedulesWithCriteria(
+                            batchId, queryStartDateInstant, queryEndDateAsDate),
                     HttpStatus.OK);
         } catch (Exception e) {
             logger.error("Error in getAllBatchSchedules: " + e.getMessage());
