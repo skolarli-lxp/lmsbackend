@@ -53,6 +53,7 @@ public class Batch extends Tenantable {
 
     private int batchEnrollmentCapacity;
 
+    @Column(columnDefinition = "TEXT")
     private String batchAdditionalInfo;
 
     private long batchFees;

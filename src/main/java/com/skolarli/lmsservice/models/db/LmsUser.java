@@ -115,7 +115,7 @@ public class LmsUser extends Tenantable {
         this.firstName = newDomainRequest.getFirstName();
         this.lastName = newDomainRequest.getLastName();
         this.email = newDomainRequest.getEmail();
-        this.password = newDomainRequest.getPassword();
+        this.setPassword(newDomainRequest.getPassword());
         this.isAdmin = true;
         this.isStudent = false;
         this.isInstructor = false;
