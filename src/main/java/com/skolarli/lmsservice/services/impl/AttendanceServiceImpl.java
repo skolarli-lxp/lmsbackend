@@ -42,7 +42,7 @@ public class AttendanceServiceImpl implements AttendanceService {
     private Boolean checkPermission(Attendance attendance) {
         LmsUser currentUser = userUtils.getCurrentUser();
         return currentUser.getIsAdmin() || currentUser == attendance.getBatchSchedule()
-                .getBatch().getCourse().getCourseOwner();
+                .getBatch().getInstructor();
     }
 
     private void copyAttendanceDetails(NewAttendancesForScheduleRequest currentRequest,
