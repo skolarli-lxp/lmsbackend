@@ -1,5 +1,6 @@
 package com.skolarli.lmsservice.controller;
 
+import com.skolarli.lmsservice.exception.ValidationFailureException;
 import com.skolarli.lmsservice.models.db.BankQuestionMcq;
 import com.skolarli.lmsservice.models.dto.NewBankQuestionMcqRequest;
 import com.skolarli.lmsservice.services.QuestionBankMcqService;
@@ -71,7 +72,6 @@ public class QuestionBankMcqController {
         logger.info("Received request for save question");
         BankQuestionMcq question = null;
         try {
-
             question = questionBankMcqService.toBankQuestionMcq(request);
         } catch (Exception e) {
             logger.error("Error in saveQuestion: " + e.getMessage());
@@ -83,6 +83,8 @@ public class QuestionBankMcqController {
         try {
             BankQuestionMcq savedQuestion = questionBankMcqService.saveQuestion(question);
             return new ResponseEntity<>(savedQuestion, HttpStatus.OK);
+        } catch (ValidationFailureException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         } catch (Exception e) {
             logger.error("Error in saveQuestion: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
@@ -116,6 +118,8 @@ public class QuestionBankMcqController {
             List<BankQuestionMcq> savedQuestions =
                     questionBankMcqService.saveAllQuestions(questions);
             return new ResponseEntity<>(savedQuestions, HttpStatus.OK);
+        } catch (ValidationFailureException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         } catch (Exception e) {
             logger.error("Error in saveQuestion: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
@@ -144,6 +148,8 @@ public class QuestionBankMcqController {
         try {
             BankQuestionMcq updatedQuestion = questionBankMcqService.updateQuestion(question, id);
             return new ResponseEntity<>(updatedQuestion, HttpStatus.OK);
+        } catch (ValidationFailureException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         } catch (Exception e) {
             logger.error("Error in updateQuestion: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());

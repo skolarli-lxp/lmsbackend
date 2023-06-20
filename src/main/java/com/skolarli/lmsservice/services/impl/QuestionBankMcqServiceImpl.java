@@ -2,6 +2,7 @@ package com.skolarli.lmsservice.services.impl;
 
 import com.skolarli.lmsservice.exception.OperationNotSupportedException;
 import com.skolarli.lmsservice.exception.ResourceNotFoundException;
+import com.skolarli.lmsservice.exception.ValidationFailureException;
 import com.skolarli.lmsservice.models.db.BankQuestionMcq;
 import com.skolarli.lmsservice.models.db.Course;
 import com.skolarli.lmsservice.models.db.LmsUser;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -34,21 +36,33 @@ public class QuestionBankMcqServiceImpl implements QuestionBankMcqService {
 
     public BankQuestionMcq toBankQuestionMcq(NewBankQuestionMcqRequest newBankQuestionMcqRequest) {
         BankQuestionMcq bankQuestionMcq = new BankQuestionMcq();
-        bankQuestionMcq.setQuestion(newBankQuestionMcqRequest.getQuestion());
-        bankQuestionMcq.setNumberOfAnswers(newBankQuestionMcqRequest.getNumberOfAnswers());
-        bankQuestionMcq.setQuestionType(newBankQuestionMcqRequest.getQuestionType());
-        bankQuestionMcq.setAnswerType(newBankQuestionMcqRequest.getAnswerType());
-        bankQuestionMcq.setAnswer1(newBankQuestionMcqRequest.getAnswer1());
-        bankQuestionMcq.setAnswer2(newBankQuestionMcqRequest.getAnswer2());
-        bankQuestionMcq.setAnswer3(newBankQuestionMcqRequest.getAnswer3());
-        bankQuestionMcq.setAnswer4(newBankQuestionMcqRequest.getAnswer4());
-        bankQuestionMcq.setAnswer5(newBankQuestionMcqRequest.getAnswer5());
-        bankQuestionMcq.setAnswer6(newBankQuestionMcqRequest.getAnswer6());
-        bankQuestionMcq.setCorrectAnswer(newBankQuestionMcqRequest.getCorrectAnswer());
         if (newBankQuestionMcqRequest.getCourseId() != null) {
             Course course = courseService.getCourseById(newBankQuestionMcqRequest.getCourseId());
             bankQuestionMcq.setCourse(course);
         }
+        bankQuestionMcq.setQuestion(newBankQuestionMcqRequest.getQuestion());
+        bankQuestionMcq.setQuestionType(newBankQuestionMcqRequest.getQuestionType());
+        bankQuestionMcq.setQuestionFormat(newBankQuestionMcqRequest.getQuestionFormat());
+        bankQuestionMcq.setAnswerFormat(newBankQuestionMcqRequest.getAnswerFormat());
+
+        bankQuestionMcq.setNumberOfOptions(newBankQuestionMcqRequest.getNumberOfOptions());
+        bankQuestionMcq.setOption1(newBankQuestionMcqRequest.getOption1());
+        bankQuestionMcq.setOption2(newBankQuestionMcqRequest.getOption2());
+        bankQuestionMcq.setOption3(newBankQuestionMcqRequest.getOption3());
+        bankQuestionMcq.setOption4(newBankQuestionMcqRequest.getOption4());
+        bankQuestionMcq.setOption5(newBankQuestionMcqRequest.getOption5());
+        bankQuestionMcq.setOption6(newBankQuestionMcqRequest.getOption6());
+
+        if (newBankQuestionMcqRequest.getCorrectAnswer() != null) {
+            bankQuestionMcq.setCorrectAnswer(newBankQuestionMcqRequest.getCorrectAnswer()
+                    .stream().map(String::valueOf).collect(Collectors.joining(",")));
+        }
+
+        bankQuestionMcq.setSampleAnswerText(newBankQuestionMcqRequest.getSampleAnswerText());
+        bankQuestionMcq.setSampleAnswerUrl(newBankQuestionMcqRequest.getSampleAnswerUrl());
+        bankQuestionMcq.setNumberOfCorrectAnswers(newBankQuestionMcqRequest
+                .getNumberOfCorrectAnswers());
+
         return bankQuestionMcq;
     }
 
@@ -74,6 +88,9 @@ public class QuestionBankMcqServiceImpl implements QuestionBankMcqService {
 
     @Override
     public BankQuestionMcq saveQuestion(BankQuestionMcq question) {
+        if (!question.validateFields()) {
+            throw new ValidationFailureException("Question fields are not valid");
+        }
         LmsUser currentUser = userUtils.getCurrentUser();
         question.setCreatedBy(currentUser);
         if (checkPermission()) {
@@ -87,7 +104,12 @@ public class QuestionBankMcqServiceImpl implements QuestionBankMcqService {
     @Override
     public List<BankQuestionMcq> saveAllQuestions(List<BankQuestionMcq> questions) {
         LmsUser currentUser = userUtils.getCurrentUser();
-        questions.forEach(question -> question.setCreatedBy(currentUser));
+        questions.forEach(question -> {
+            question.setCreatedBy(currentUser);
+            if (!question.validateFields()) {
+                throw new ValidationFailureException("Question fields are not valid");
+            }
+        });
         if (checkPermission()) {
             return questionBankMcqRepository.saveAll(questions);
         } else {
@@ -105,6 +127,9 @@ public class QuestionBankMcqServiceImpl implements QuestionBankMcqService {
                     + "this operation");
         }
         existingQuestion.update(question);
+        if (!question.validateFields()) {
+            throw new ValidationFailureException("Question fields are not valid");
+        }
         return questionBankMcqRepository.save(existingQuestion);
     }
 

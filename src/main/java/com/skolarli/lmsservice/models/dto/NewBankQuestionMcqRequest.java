@@ -4,6 +4,7 @@ import com.skolarli.lmsservice.models.AnswerFormat;
 import com.skolarli.lmsservice.models.QuestionFormat;
 import lombok.*;
 
+import java.util.List;
 import javax.validation.constraints.NotNull;
 
 @Data
@@ -17,16 +18,28 @@ public class NewBankQuestionMcqRequest {
 
     @NotNull
     private String question;
+
+    private  String questionType;
+
     @NotNull
-    private int numberOfAnswers;
-    private QuestionFormat questionType;
+    private QuestionFormat questionFormat;
     @NotNull
-    private AnswerFormat answerType;
-    private String answer1;
-    private String answer2;
-    private String answer3;
-    private String answer4;
-    private String answer5;
-    private String answer6;
-    private String correctAnswer;
+    private AnswerFormat answerFormat;
+
+    private String sampleAnswerText;
+
+    private String sampleAnswerUrl;
+    @NotNull
+    private int numberOfOptions;
+
+
+    private String option1;
+    private String option2;
+    private String option3;
+    private String option4;
+    private String option5;
+    private String option6;
+
+    private int numberOfCorrectAnswers;
+    List<Integer> correctAnswer;
 }
