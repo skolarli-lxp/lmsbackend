@@ -49,6 +49,8 @@ public class Question extends Tenantable {
     private String questionType;
     private QuestionFormat questionFormat;
     private AnswerFormat answerFormat;
+
+    @Column(columnDefinition = "VARCHAR(8192)")
     private String sampleAnswerText;
 
     private String sampleAnswerUrl;

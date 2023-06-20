@@ -126,6 +126,7 @@ public class QuestionBankMcqServiceImpl implements QuestionBankMcqService {
             throw new OperationNotSupportedException("User does not have permission to perform "
                     + "this operation");
         }
+        existingQuestion.setUpdatedBy(currentUser);
         existingQuestion.update(question);
         if (!question.validateFields()) {
             throw new ValidationFailureException("Question fields are not valid");

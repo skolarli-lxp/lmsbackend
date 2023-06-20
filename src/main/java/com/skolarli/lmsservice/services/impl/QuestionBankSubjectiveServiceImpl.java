@@ -43,21 +43,27 @@ public class QuestionBankSubjectiveServiceImpl implements QuestionBankSubjective
     public BankQuestionSubjective toBankQuestionSubjective(
             NewBankQuestionSubjectiveRequest newBankQuestionSubjectiveRequest) {
         BankQuestionSubjective bankQuestionSubjective = new BankQuestionSubjective();
+
+        if (newBankQuestionSubjectiveRequest.getCourseId() != null) {
+            Course course = courseService.getCourseById(
+                    newBankQuestionSubjectiveRequest.getCourseId());
+            bankQuestionSubjective.setCourse(course);
+        }
         bankQuestionSubjective.setQuestion(newBankQuestionSubjectiveRequest.getQuestion());
         bankQuestionSubjective.setQuestionType(newBankQuestionSubjectiveRequest.getQuestionType());
-        bankQuestionSubjective.setAnswerType(newBankQuestionSubjectiveRequest.getAnswerType());
-        bankQuestionSubjective.setWordCount(newBankQuestionSubjectiveRequest.getWordCount());
+        bankQuestionSubjective.setQuestionFormat(newBankQuestionSubjectiveRequest
+                .getQuestionFormat());
+        bankQuestionSubjective.setAnswerFormat(newBankQuestionSubjectiveRequest.getAnswerFormat());
         bankQuestionSubjective.setSampleAnswerText(newBankQuestionSubjectiveRequest
                 .getSampleAnswerText());
         bankQuestionSubjective.setSampleAnswerUrl(newBankQuestionSubjectiveRequest
                 .getSampleAnswerUrl());
+
+
+        bankQuestionSubjective.setWordCount(newBankQuestionSubjectiveRequest.getWordCount());
         bankQuestionSubjective.setCorrectAnswer(newBankQuestionSubjectiveRequest
                 .getCorrectAnswer());
-        if (newBankQuestionSubjectiveRequest.getCourseId() != null) {
-            Course course = courseService.getCourseById(newBankQuestionSubjectiveRequest
-                    .getCourseId());
-            bankQuestionSubjective.setCourse(course);
-        }
+
         return bankQuestionSubjective;
     }
 

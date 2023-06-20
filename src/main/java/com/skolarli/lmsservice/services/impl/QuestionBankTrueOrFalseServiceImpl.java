@@ -3,6 +3,7 @@ package com.skolarli.lmsservice.services.impl;
 import com.skolarli.lmsservice.exception.OperationNotSupportedException;
 import com.skolarli.lmsservice.exception.ResourceNotFoundException;
 import com.skolarli.lmsservice.models.db.BankQuestionTrueOrFalse;
+import com.skolarli.lmsservice.models.db.Course;
 import com.skolarli.lmsservice.models.db.LmsUser;
 import com.skolarli.lmsservice.models.dto.NewBankQuestionTrueOrFalseRequest;
 import com.skolarli.lmsservice.repository.QuestionBankTrueOrFalseRepository;
@@ -42,22 +43,29 @@ public class QuestionBankTrueOrFalseServiceImpl implements QuestionBankTrueOrFal
     public BankQuestionTrueOrFalse toBankQuestionTrueOrFalse(
             NewBankQuestionTrueOrFalseRequest newBankQuestionTrueOrFalseRequest) {
         BankQuestionTrueOrFalse bankQuestionTrueOrFalse = new BankQuestionTrueOrFalse();
+
+        if (newBankQuestionTrueOrFalseRequest.getCourseId() != null) {
+            Course course = courseService.getCourseById(
+                    newBankQuestionTrueOrFalseRequest.getCourseId());
+            bankQuestionTrueOrFalse.setCourse(course);
+        }
         bankQuestionTrueOrFalse.setQuestion(newBankQuestionTrueOrFalseRequest.getQuestion());
         bankQuestionTrueOrFalse.setQuestionType(
                 newBankQuestionTrueOrFalseRequest.getQuestionType());
-        bankQuestionTrueOrFalse.setAnswerType(newBankQuestionTrueOrFalseRequest.getAnswerType());
+        bankQuestionTrueOrFalse.setQuestionFormat(
+                newBankQuestionTrueOrFalseRequest.getQuestionFormat());
+        bankQuestionTrueOrFalse.setAnswerFormat(
+                newBankQuestionTrueOrFalseRequest.getAnswerFormat());
+        bankQuestionTrueOrFalse.setSampleAnswerText(newBankQuestionTrueOrFalseRequest
+                .getSampleAnswerText());
+        bankQuestionTrueOrFalse.setSampleAnswerUrl(newBankQuestionTrueOrFalseRequest
+                .getSampleAnswerUrl());
+
         bankQuestionTrueOrFalse.setOption1(newBankQuestionTrueOrFalseRequest.getOption1());
         bankQuestionTrueOrFalse.setOption2(newBankQuestionTrueOrFalseRequest.getOption2());
-        bankQuestionTrueOrFalse.setSampleAnswerText(
-                newBankQuestionTrueOrFalseRequest.getSampleAnswerText());
-        bankQuestionTrueOrFalse.setSampleAnswerUrl(
-                newBankQuestionTrueOrFalseRequest.getSampleAnswerUrl());
         bankQuestionTrueOrFalse.setCorrectAnswer(
                 newBankQuestionTrueOrFalseRequest.getCorrectAnswer());
-        if (newBankQuestionTrueOrFalseRequest.getCourseId() != null) {
-            bankQuestionTrueOrFalse.setCourse(courseService
-                    .getCourseById(newBankQuestionTrueOrFalseRequest.getCourseId()));
-        }
+
         return bankQuestionTrueOrFalse;
     }
 
@@ -108,6 +116,7 @@ public class QuestionBankTrueOrFalseServiceImpl implements QuestionBankTrueOrFal
             throw new OperationNotSupportedException("User does not have permission to perform "
                     + "this operation");
         }
+        existingQuestion.setUpdatedBy(currentUser);
         existingQuestion.update(question);
         return questionBankTrueOrFalseRepository.save(existingQuestion);
     }
