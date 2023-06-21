@@ -11,24 +11,7 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @Getter
 @Setter
-public class NewBankQuestionSubjectiveRequest {
-
-    Long courseId;
-
-    @NotNull
-    private String question;
-
-    private String questionType;
-
-    @NotNull
-    private QuestionFormat questionFormat;
-    @NotNull
-    private AnswerFormat answerFormat;
-
-    private String sampleAnswerText;
-
-    private String sampleAnswerUrl;
-
+public class NewBankQuestionSubjectiveRequest extends NewQuestionBankQuestionRequest {
     private int wordCount;
 
     private String correctAnswer;

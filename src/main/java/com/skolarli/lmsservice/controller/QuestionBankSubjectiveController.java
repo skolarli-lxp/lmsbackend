@@ -130,7 +130,7 @@ public class QuestionBankSubjectiveController {
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
     public ResponseEntity<BankQuestionSubjective> updateQuestion(
-            @Valid @RequestBody NewBankQuestionSubjectiveRequest request, @PathVariable long id) {
+             @RequestBody NewBankQuestionSubjectiveRequest request, @PathVariable long id) {
         UUID uuid = UUID.randomUUID();
         MDC.put("requestId", uuid.toString());
         logger.info("Received request for update question with id: " + id);

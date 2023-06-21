@@ -13,7 +13,6 @@ public interface QuestionBankMcqService {
 
     List<BankQuestionMcq> getAllQuestions();
 
-
     BankQuestionMcq saveQuestion(BankQuestionMcq question);
 
     List<BankQuestionMcq> saveAllQuestions(List<BankQuestionMcq> questions);

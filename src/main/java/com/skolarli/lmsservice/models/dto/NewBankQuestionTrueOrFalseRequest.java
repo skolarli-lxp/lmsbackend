@@ -12,23 +12,9 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @Getter
 @Setter
-public class NewBankQuestionTrueOrFalseRequest {
+public class NewBankQuestionTrueOrFalseRequest extends NewQuestionBankQuestionRequest {
 
-    Long courseId;
 
-    @NotNull
-    private String question;
-
-    private String questionType;
-
-    @NotNull
-    private QuestionFormat questionFormat;
-    @NotNull
-    private AnswerFormat answerFormat;
-
-    private String sampleAnswerText;
-
-    private String sampleAnswerUrl;
 
     private String option1 = "True";
     private String option2 = "False";
