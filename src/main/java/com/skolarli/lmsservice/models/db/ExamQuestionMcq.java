@@ -1,9 +1,14 @@
 package com.skolarli.lmsservice.models.db;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.*;
 import org.hibernate.annotations.Check;
 
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Data
@@ -13,11 +18,11 @@ import javax.persistence.Table;
 @Getter
 @Setter
 @Entity
-@Table(name = "questionbank_mcq")
-public class BankQuestionMcq extends Question {
+@Table(name = "examquestions_mcq")
+public class ExamQuestionMcq extends ExamQuestion {
 
-    // String of comma separated correct answers Ex: (1,2,3,4,5,6)
     String correctAnswer;
+    // String of comma separated correct answers Ex: (1,2,3,4,5,6)
     @Check(constraints = "number_of_answers >= 0 AND number_of_answers <=6")
     private int numberOfOptions;
     private String option1;
@@ -28,8 +33,13 @@ public class BankQuestionMcq extends Question {
     private String option6;
     @Check(constraints = "number_of_correct_answers >= 0 AND number_of_correct_answers <=6")
     private int numberOfCorrectAnswers;
+    @ManyToOne
+    @JoinColumn(name = "exam_id")
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+    @JsonIdentityReference(alwaysAsId = true)
+    private Exam exam;
 
-    public void update(BankQuestionMcq bankQuestionMcq) {
+    public void update(ExamQuestionMcq bankQuestionMcq) {
         super.update(bankQuestionMcq);
 
 

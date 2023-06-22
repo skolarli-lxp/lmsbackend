@@ -3,15 +3,9 @@ package com.skolarli.lmsservice.models.db;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import com.skolarli.lmsservice.models.AnswerFormat;
-import com.skolarli.lmsservice.models.QuestionFormat;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
-import java.util.Date;
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -20,16 +14,22 @@ import javax.validation.constraints.NotNull;
 @Getter
 @Setter
 @Entity
-@Table(name = "questionbank_subjective")
-public class BankQuestionSubjective extends Question {
+@Table(name = "examquestions_subjective")
+public class ExamQuestionSubjective extends ExamQuestion {
 
     private int wordCount;
 
     @Column(columnDefinition = "TEXT")
     private String correctAnswer;
 
+    @ManyToOne
+    @JoinColumn(name = "exam_id")
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+    @JsonIdentityReference(alwaysAsId = true)
+    private Exam exam;
 
-    public void update(BankQuestionSubjective bankQuestionSubjective) {
+
+    public void update(ExamQuestionSubjective bankQuestionSubjective) {
         super.update(bankQuestionSubjective);
 
         if (bankQuestionSubjective.getWordCount() != 0) {
