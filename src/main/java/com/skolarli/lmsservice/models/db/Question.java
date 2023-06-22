@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.skolarli.lmsservice.models.AnswerFormat;
+import com.skolarli.lmsservice.models.DifficultyLevel;
 import com.skolarli.lmsservice.models.QuestionFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -47,6 +48,8 @@ public class Question extends Tenantable {
     private String question;
 
     private String questionType;
+
+    private DifficultyLevel difficultyLevel;
     private QuestionFormat questionFormat;
     private AnswerFormat answerFormat;
 
@@ -72,6 +75,9 @@ public class Question extends Tenantable {
         }
         if (question.getQuestionType() != null) {
             this.questionType = question.getQuestionType();
+        }
+        if (question.getDifficultyLevel() != null) {
+            this.difficultyLevel = question.getDifficultyLevel();
         }
         if (question.getQuestionFormat() != null) {
             this.questionFormat = question.getQuestionFormat();

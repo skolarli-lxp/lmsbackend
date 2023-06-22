@@ -52,6 +52,9 @@ public class QuestionBankTrueOrFalseServiceImpl implements QuestionBankTrueOrFal
         bankQuestionTrueOrFalse.setQuestion(newBankQuestionTrueOrFalseRequest.getQuestion());
         bankQuestionTrueOrFalse.setQuestionType(
                 newBankQuestionTrueOrFalseRequest.getQuestionType());
+        bankQuestionTrueOrFalse.setDifficultyLevel(newBankQuestionTrueOrFalseRequest
+                .getDifficultyLevel());
+
         bankQuestionTrueOrFalse.setQuestionFormat(
                 newBankQuestionTrueOrFalseRequest.getQuestionFormat());
         bankQuestionTrueOrFalse.setAnswerFormat(

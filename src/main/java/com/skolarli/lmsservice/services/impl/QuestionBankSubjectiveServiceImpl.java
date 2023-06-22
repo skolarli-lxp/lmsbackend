@@ -51,6 +51,9 @@ public class QuestionBankSubjectiveServiceImpl implements QuestionBankSubjective
         }
         bankQuestionSubjective.setQuestion(newBankQuestionSubjectiveRequest.getQuestion());
         bankQuestionSubjective.setQuestionType(newBankQuestionSubjectiveRequest.getQuestionType());
+        bankQuestionSubjective.setDifficultyLevel(newBankQuestionSubjectiveRequest
+                .getDifficultyLevel());
+
         bankQuestionSubjective.setQuestionFormat(newBankQuestionSubjectiveRequest
                 .getQuestionFormat());
         bankQuestionSubjective.setAnswerFormat(newBankQuestionSubjectiveRequest.getAnswerFormat());

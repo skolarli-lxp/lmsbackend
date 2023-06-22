@@ -42,6 +42,7 @@ public class QuestionBankMcqServiceImpl implements QuestionBankMcqService {
         }
         bankQuestionMcq.setQuestion(newBankQuestionMcqRequest.getQuestion());
         bankQuestionMcq.setQuestionType(newBankQuestionMcqRequest.getQuestionType());
+        bankQuestionMcq.setDifficultyLevel(newBankQuestionMcqRequest.getDifficultyLevel());
         bankQuestionMcq.setQuestionFormat(newBankQuestionMcqRequest.getQuestionFormat());
         bankQuestionMcq.setAnswerFormat(newBankQuestionMcqRequest.getAnswerFormat());
 

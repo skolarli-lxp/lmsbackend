@@ -1,6 +1,7 @@
 package com.skolarli.lmsservice.models.dto;
 
 import com.skolarli.lmsservice.models.AnswerFormat;
+import com.skolarli.lmsservice.models.DifficultyLevel;
 import com.skolarli.lmsservice.models.QuestionFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,6 +22,8 @@ public class NewQuestionBankQuestionRequest {
     private String question;
 
     private String questionType;
+
+    private DifficultyLevel difficultyLevel;
 
     @NotNull
     private QuestionFormat questionFormat;
