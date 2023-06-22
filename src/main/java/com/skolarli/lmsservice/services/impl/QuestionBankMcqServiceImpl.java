@@ -57,6 +57,8 @@ public class QuestionBankMcqServiceImpl implements QuestionBankMcqService {
         if (newBankQuestionMcqRequest.getCorrectAnswer() != null) {
             bankQuestionMcq.setCorrectAnswer(newBankQuestionMcqRequest.getCorrectAnswer()
                     .stream().map(String::valueOf).collect(Collectors.joining(",")));
+        } else {
+            bankQuestionMcq.setCorrectAnswer("");
         }
 
         bankQuestionMcq.setSampleAnswerText(newBankQuestionMcqRequest.getSampleAnswerText());

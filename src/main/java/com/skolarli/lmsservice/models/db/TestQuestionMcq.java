@@ -62,13 +62,6 @@ public class BankQuestionMcq extends Question {
         }
     }
 
-    private String[] splitCorrectAnswers(String correctAnswer) {
-        if (correctAnswer == null || correctAnswer.isEmpty()) {
-            return new String[0];
-        }
-        return correctAnswer.split(",");
-    }
-
     public Boolean validateFields() {
         /*
         Validate the value of fields
@@ -78,8 +71,7 @@ public class BankQuestionMcq extends Question {
             values
          */
 
-        if (this.getNumberOfCorrectAnswers() != splitCorrectAnswers(
-                this.getCorrectAnswer()).length) {
+        if (this.getNumberOfCorrectAnswers() != this.getCorrectAnswer().split(",").length) {
             return false;
         }
 
