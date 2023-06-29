@@ -1,26 +1,28 @@
 package com.skolarli.lmsservice.services;
 
-import com.skolarli.lmsservice.models.db.BankQuestionTrueOrFalse;
-import com.skolarli.lmsservice.models.dto.NewBankQuestionTrueOrFalseRequest;
+import com.skolarli.lmsservice.models.db.Exam;
+import com.skolarli.lmsservice.models.db.ExamQuestionTrueOrFalse;
+import com.skolarli.lmsservice.models.dto.NewExamQuestionTrueOrFalseRequest;
 
 import java.util.List;
 
 public interface ExamQuestionTrueOrFalseService {
 
-    BankQuestionTrueOrFalse toBankQuestionTrueOrFalse(
-            NewBankQuestionTrueOrFalseRequest newBankQuestionTrueOrFalseRequest);
+    ExamQuestionTrueOrFalse toExamQuestionTrueOrFalse(
+            NewExamQuestionTrueOrFalseRequest newExamQuestionTrueOrFalseRequest);
 
 
-    BankQuestionTrueOrFalse getQuestion(long id);
+    ExamQuestionTrueOrFalse getQuestion(long id);
 
-    List<BankQuestionTrueOrFalse> getAllQuestions();
+    List<ExamQuestionTrueOrFalse> getAllQuestions();
 
 
-    BankQuestionTrueOrFalse saveQuestion(BankQuestionTrueOrFalse question);
+    ExamQuestionTrueOrFalse saveQuestion(ExamQuestionTrueOrFalse question, Exam exam);
 
-    List<BankQuestionTrueOrFalse> saveAllQuestions(List<BankQuestionTrueOrFalse> questions);
+    List<ExamQuestionTrueOrFalse> saveAllQuestions(List<ExamQuestionTrueOrFalse> questions,
+                                                   Exam exam);
 
-    BankQuestionTrueOrFalse updateQuestion(BankQuestionTrueOrFalse question, long id);
+    ExamQuestionTrueOrFalse updateQuestion(ExamQuestionTrueOrFalse question, long id);
 
     void hardDeleteQuestion(long id);
 }

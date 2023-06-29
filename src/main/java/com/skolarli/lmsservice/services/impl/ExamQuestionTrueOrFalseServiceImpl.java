@@ -2,14 +2,12 @@ package com.skolarli.lmsservice.services.impl;
 
 import com.skolarli.lmsservice.exception.OperationNotSupportedException;
 import com.skolarli.lmsservice.exception.ResourceNotFoundException;
-import com.skolarli.lmsservice.models.db.BankQuestionTrueOrFalse;
-import com.skolarli.lmsservice.models.db.Course;
+import com.skolarli.lmsservice.models.db.Exam;
+import com.skolarli.lmsservice.models.db.ExamQuestionTrueOrFalse;
 import com.skolarli.lmsservice.models.db.LmsUser;
-import com.skolarli.lmsservice.models.dto.NewBankQuestionTrueOrFalseRequest;
-import com.skolarli.lmsservice.repository.QuestionBankTrueOrFalseRepository;
-import com.skolarli.lmsservice.services.CourseService;
+import com.skolarli.lmsservice.models.dto.NewExamQuestionTrueOrFalseRequest;
+import com.skolarli.lmsservice.repository.ExamQuestionTrueOrFalseRepository;
 import com.skolarli.lmsservice.services.ExamQuestionTrueOrFalseService;
-import com.skolarli.lmsservice.services.QuestionBankTrueOrFalseService;
 import com.skolarli.lmsservice.utils.UserUtils;
 import org.springframework.stereotype.Service;
 
@@ -20,80 +18,70 @@ import java.util.List;
 @Service
 public class ExamQuestionTrueOrFalseServiceImpl implements ExamQuestionTrueOrFalseService {
 
-    final QuestionBankTrueOrFalseRepository questionBankTrueOrFalseRepository;
+    final ExamQuestionTrueOrFalseRepository examQuestionTrueOrFalseRepository;
     final UserUtils userUtils;
 
-    final CourseService courseService;
 
-    public ExamQuestionTrueOrFalseServiceImpl(QuestionBankTrueOrFalseRepository
-                                                      questionBankTrueOrFalseRepository,
-                                              UserUtils userUtils,
-                                              CourseService courseService) {
-        this.questionBankTrueOrFalseRepository = questionBankTrueOrFalseRepository;
+    public ExamQuestionTrueOrFalseServiceImpl(ExamQuestionTrueOrFalseRepository
+                                                      examQuestionTrueOrFalseRepository,
+                                              UserUtils userUtils) {
+        this.examQuestionTrueOrFalseRepository = examQuestionTrueOrFalseRepository;
         this.userUtils = userUtils;
-        this.courseService = courseService;
     }
 
-    private Boolean checkPermission() {
+    private Boolean checkPermission(Exam exam) {
         LmsUser currentUser = userUtils.getCurrentUser();
-        return currentUser.getIsAdmin() || currentUser.getIsInstructor();
+        return currentUser.getIsAdmin() || currentUser == exam.getCreatedBy();
     }
 
 
     @Override
-    public BankQuestionTrueOrFalse toBankQuestionTrueOrFalse(
-            NewBankQuestionTrueOrFalseRequest newBankQuestionTrueOrFalseRequest) {
-        BankQuestionTrueOrFalse bankQuestionTrueOrFalse = new BankQuestionTrueOrFalse();
+    public ExamQuestionTrueOrFalse toExamQuestionTrueOrFalse(
+            NewExamQuestionTrueOrFalseRequest newExamQuestionTrueOrFalseRequest) {
+        ExamQuestionTrueOrFalse examQuestionTrueOrFalse = new ExamQuestionTrueOrFalse();
 
-        if (newBankQuestionTrueOrFalseRequest.getCourseId() != null) {
-            Course course = courseService.getCourseById(
-                    newBankQuestionTrueOrFalseRequest.getCourseId());
-            bankQuestionTrueOrFalse.setCourse(course);
-        }
-        bankQuestionTrueOrFalse.setQuestion(newBankQuestionTrueOrFalseRequest.getQuestion());
-        bankQuestionTrueOrFalse.setQuestionType(
-                newBankQuestionTrueOrFalseRequest.getQuestionType());
-        bankQuestionTrueOrFalse.setDifficultyLevel(newBankQuestionTrueOrFalseRequest
+        examQuestionTrueOrFalse.setQuestion(newExamQuestionTrueOrFalseRequest.getQuestion());
+        examQuestionTrueOrFalse.setQuestionType(
+                newExamQuestionTrueOrFalseRequest.getQuestionType());
+        examQuestionTrueOrFalse.setDifficultyLevel(newExamQuestionTrueOrFalseRequest
                 .getDifficultyLevel());
 
-        bankQuestionTrueOrFalse.setQuestionFormat(
-                newBankQuestionTrueOrFalseRequest.getQuestionFormat());
-        bankQuestionTrueOrFalse.setAnswerFormat(
-                newBankQuestionTrueOrFalseRequest.getAnswerFormat());
-        bankQuestionTrueOrFalse.setSampleAnswerText(newBankQuestionTrueOrFalseRequest
+        examQuestionTrueOrFalse.setQuestionFormat(
+                newExamQuestionTrueOrFalseRequest.getQuestionFormat());
+        examQuestionTrueOrFalse.setAnswerFormat(
+                newExamQuestionTrueOrFalseRequest.getAnswerFormat());
+        examQuestionTrueOrFalse.setSampleAnswerText(newExamQuestionTrueOrFalseRequest
                 .getSampleAnswerText());
-        bankQuestionTrueOrFalse.setSampleAnswerUrl(newBankQuestionTrueOrFalseRequest
+        examQuestionTrueOrFalse.setSampleAnswerUrl(newExamQuestionTrueOrFalseRequest
                 .getSampleAnswerUrl());
 
-        bankQuestionTrueOrFalse.setOption1(newBankQuestionTrueOrFalseRequest.getOption1());
-        bankQuestionTrueOrFalse.setOption2(newBankQuestionTrueOrFalseRequest.getOption2());
-        bankQuestionTrueOrFalse.setCorrectAnswer(
-                newBankQuestionTrueOrFalseRequest.getCorrectAnswer());
+        examQuestionTrueOrFalse.setOption1(newExamQuestionTrueOrFalseRequest.getOption1());
+        examQuestionTrueOrFalse.setOption2(newExamQuestionTrueOrFalseRequest.getOption2());
+        examQuestionTrueOrFalse.setCorrectAnswer(
+                newExamQuestionTrueOrFalseRequest.getCorrectAnswer());
 
-        return bankQuestionTrueOrFalse;
+        return examQuestionTrueOrFalse;
     }
 
     @Override
-    public BankQuestionTrueOrFalse getQuestion(long id) {
-        List<BankQuestionTrueOrFalse> bankQuestionTrueOrFalses =
-                questionBankTrueOrFalseRepository.findAllById(new ArrayList<>(List.of(id)));
-        if (bankQuestionTrueOrFalses.size() == 0) {
+    public ExamQuestionTrueOrFalse getQuestion(long id) {
+        List<ExamQuestionTrueOrFalse> examQuestionTrueOrFalses =
+                examQuestionTrueOrFalseRepository.findAllById(new ArrayList<>(List.of(id)));
+        if (examQuestionTrueOrFalses.size() == 0) {
             throw new ResourceNotFoundException("Question with Id " + id + " not found");
         }
-        return bankQuestionTrueOrFalses.get(0);
+        return examQuestionTrueOrFalses.get(0);
     }
 
     @Override
-    public List<BankQuestionTrueOrFalse> getAllQuestions() {
-        return questionBankTrueOrFalseRepository.findAll();
+    public List<ExamQuestionTrueOrFalse> getAllQuestions() {
+        return examQuestionTrueOrFalseRepository.findAll();
     }
 
     @Override
-    public BankQuestionTrueOrFalse saveQuestion(BankQuestionTrueOrFalse question) {
-        LmsUser currentUser = userUtils.getCurrentUser();
-        question.setCreatedBy(currentUser);
-        if (checkPermission()) {
-            return questionBankTrueOrFalseRepository.save(question);
+    public ExamQuestionTrueOrFalse saveQuestion(ExamQuestionTrueOrFalse question, Exam exam) {
+        if (checkPermission(exam)) {
+            return examQuestionTrueOrFalseRepository.save(question);
         } else {
             throw new OperationNotSupportedException("User does not have permission to perform "
                     + "this operation");
@@ -101,11 +89,10 @@ public class ExamQuestionTrueOrFalseServiceImpl implements ExamQuestionTrueOrFal
     }
 
     @Override
-    public List<BankQuestionTrueOrFalse> saveAllQuestions(List<BankQuestionTrueOrFalse> questions) {
-        LmsUser currentUser = userUtils.getCurrentUser();
-        questions.forEach(question -> question.setCreatedBy(currentUser));
-        if (checkPermission()) {
-            return questionBankTrueOrFalseRepository.saveAll(questions);
+    public List<ExamQuestionTrueOrFalse> saveAllQuestions(List<ExamQuestionTrueOrFalse> questions,
+                                                          Exam exam) {
+        if (checkPermission(exam)) {
+            return examQuestionTrueOrFalseRepository.saveAll(questions);
         } else {
             throw new OperationNotSupportedException("User does not have permission to perform "
                     + "this operation");
@@ -113,26 +100,26 @@ public class ExamQuestionTrueOrFalseServiceImpl implements ExamQuestionTrueOrFal
     }
 
     @Override
-    public BankQuestionTrueOrFalse updateQuestion(BankQuestionTrueOrFalse question, long id) {
+    public ExamQuestionTrueOrFalse updateQuestion(ExamQuestionTrueOrFalse question, long id) {
         LmsUser currentUser = userUtils.getCurrentUser();
-        BankQuestionTrueOrFalse existingQuestion = getQuestion(id);
-        if (!currentUser.getIsAdmin() && existingQuestion.getCreatedBy() != currentUser) {
+        ExamQuestionTrueOrFalse existingQuestion = getQuestion(id);
+        if (!checkPermission(existingQuestion.getExam())) {
             throw new OperationNotSupportedException("User does not have permission to perform "
                     + "this operation");
         }
-        existingQuestion.setUpdatedBy(currentUser);
         existingQuestion.update(question);
-        return questionBankTrueOrFalseRepository.save(existingQuestion);
+        return examQuestionTrueOrFalseRepository.save(existingQuestion);
     }
 
     @Override
     public void hardDeleteQuestion(long id) {
         LmsUser currentUser = userUtils.getCurrentUser();
-        BankQuestionTrueOrFalse existingQuestion = getQuestion(id);
-        if (!currentUser.getIsAdmin() && existingQuestion.getCreatedBy() != currentUser) {
+        ExamQuestionTrueOrFalse existingQuestion = getQuestion(id);
+        if (!checkPermission(existingQuestion.getExam())) {
             throw new OperationNotSupportedException("User does not have permission to perform "
                     + "this operation");
         }
-        questionBankTrueOrFalseRepository.delete(existingQuestion);
+
+        examQuestionTrueOrFalseRepository.delete(existingQuestion);
     }
 }

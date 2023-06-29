@@ -2,14 +2,12 @@ package com.skolarli.lmsservice.services.impl;
 
 import com.skolarli.lmsservice.exception.OperationNotSupportedException;
 import com.skolarli.lmsservice.exception.ResourceNotFoundException;
-import com.skolarli.lmsservice.models.db.BankQuestionSubjective;
-import com.skolarli.lmsservice.models.db.Course;
+import com.skolarli.lmsservice.models.db.Exam;
+import com.skolarli.lmsservice.models.db.ExamQuestionSubjective;
 import com.skolarli.lmsservice.models.db.LmsUser;
-import com.skolarli.lmsservice.models.dto.NewBankQuestionSubjectiveRequest;
-import com.skolarli.lmsservice.repository.QuestionBankSubjectiveRepository;
-import com.skolarli.lmsservice.services.CourseService;
+import com.skolarli.lmsservice.models.dto.NewExamQuestionSubjectiveRequest;
+import com.skolarli.lmsservice.repository.ExamQuestionSubjectiveRepository;
 import com.skolarli.lmsservice.services.ExamQuestionSubjectiveService;
-import com.skolarli.lmsservice.services.QuestionBankSubjectiveService;
 import com.skolarli.lmsservice.utils.UserUtils;
 import org.springframework.stereotype.Service;
 
@@ -20,61 +18,53 @@ import java.util.List;
 @Service
 public class ExamQuestionSubjectiveServiceImpl implements ExamQuestionSubjectiveService {
 
-    final QuestionBankSubjectiveRepository questionBankSubjectiveRepository;
+    final ExamQuestionSubjectiveRepository examQuestionSubjectiveRepository;
     final UserUtils userUtils;
 
-    final CourseService courseService;
 
-    public ExamQuestionSubjectiveServiceImpl(QuestionBankSubjectiveRepository
-                                                     questionBankSubjectiveRepository,
-                                             UserUtils userUtils,
-                                             CourseService courseService) {
-        this.questionBankSubjectiveRepository = questionBankSubjectiveRepository;
+    public ExamQuestionSubjectiveServiceImpl(ExamQuestionSubjectiveRepository
+                                                     examQuestionSubjectiveRepository,
+                                             UserUtils userUtils) {
+        this.examQuestionSubjectiveRepository = examQuestionSubjectiveRepository;
         this.userUtils = userUtils;
-        this.courseService = courseService;
     }
 
-    private Boolean checkPermission() {
+    private Boolean checkPermission(Exam exam) {
         LmsUser currentUser = userUtils.getCurrentUser();
-        return currentUser.getIsAdmin() || currentUser.getIsInstructor();
+        return currentUser.getIsAdmin() || currentUser == exam.getCreatedBy();
     }
 
 
     @Override
-    public BankQuestionSubjective toBankQuestionSubjective(
-            NewBankQuestionSubjectiveRequest newBankQuestionSubjectiveRequest) {
-        BankQuestionSubjective bankQuestionSubjective = new BankQuestionSubjective();
+    public ExamQuestionSubjective toExamQuestionSubjective(
+            NewExamQuestionSubjectiveRequest newExamQuestionSubjectiveRequest) {
+        ExamQuestionSubjective examQuestionSubjective = new ExamQuestionSubjective();
 
-        if (newBankQuestionSubjectiveRequest.getCourseId() != null) {
-            Course course = courseService.getCourseById(
-                    newBankQuestionSubjectiveRequest.getCourseId());
-            bankQuestionSubjective.setCourse(course);
-        }
-        bankQuestionSubjective.setQuestion(newBankQuestionSubjectiveRequest.getQuestion());
-        bankQuestionSubjective.setQuestionType(newBankQuestionSubjectiveRequest.getQuestionType());
-        bankQuestionSubjective.setDifficultyLevel(newBankQuestionSubjectiveRequest
+        examQuestionSubjective.setQuestion(newExamQuestionSubjectiveRequest.getQuestion());
+        examQuestionSubjective.setQuestionType(newExamQuestionSubjectiveRequest.getQuestionType());
+        examQuestionSubjective.setDifficultyLevel(newExamQuestionSubjectiveRequest
                 .getDifficultyLevel());
 
-        bankQuestionSubjective.setQuestionFormat(newBankQuestionSubjectiveRequest
+        examQuestionSubjective.setQuestionFormat(newExamQuestionSubjectiveRequest
                 .getQuestionFormat());
-        bankQuestionSubjective.setAnswerFormat(newBankQuestionSubjectiveRequest.getAnswerFormat());
-        bankQuestionSubjective.setSampleAnswerText(newBankQuestionSubjectiveRequest
+        examQuestionSubjective.setAnswerFormat(newExamQuestionSubjectiveRequest.getAnswerFormat());
+        examQuestionSubjective.setSampleAnswerText(newExamQuestionSubjectiveRequest
                 .getSampleAnswerText());
-        bankQuestionSubjective.setSampleAnswerUrl(newBankQuestionSubjectiveRequest
+        examQuestionSubjective.setSampleAnswerUrl(newExamQuestionSubjectiveRequest
                 .getSampleAnswerUrl());
 
 
-        bankQuestionSubjective.setWordCount(newBankQuestionSubjectiveRequest.getWordCount());
-        bankQuestionSubjective.setCorrectAnswer(newBankQuestionSubjectiveRequest
+        examQuestionSubjective.setWordCount(newExamQuestionSubjectiveRequest.getWordCount());
+        examQuestionSubjective.setCorrectAnswer(newExamQuestionSubjectiveRequest
                 .getCorrectAnswer());
 
-        return bankQuestionSubjective;
+        return examQuestionSubjective;
     }
 
     @Override
-    public BankQuestionSubjective getQuestion(long id) {
-        List<BankQuestionSubjective> bankQuestionMcqs =
-                questionBankSubjectiveRepository.findAllById(new ArrayList<>(List.of(id)));
+    public ExamQuestionSubjective getQuestion(long id) {
+        List<ExamQuestionSubjective> bankQuestionMcqs =
+                examQuestionSubjectiveRepository.findAllById(new ArrayList<>(List.of(id)));
         if (bankQuestionMcqs.size() == 0) {
             throw new ResourceNotFoundException("Question with Id " + id + " not found");
         }
@@ -82,16 +72,15 @@ public class ExamQuestionSubjectiveServiceImpl implements ExamQuestionSubjective
     }
 
     @Override
-    public List<BankQuestionSubjective> getAllQuestions() {
-        return questionBankSubjectiveRepository.findAll();
+    public List<ExamQuestionSubjective> getAllQuestions() {
+        return examQuestionSubjectiveRepository.findAll();
     }
 
     @Override
-    public BankQuestionSubjective saveQuestion(BankQuestionSubjective question) {
+    public ExamQuestionSubjective saveQuestion(ExamQuestionSubjective question, Exam exam) {
         LmsUser currentUser = userUtils.getCurrentUser();
-        question.setCreatedBy(currentUser);
-        if (checkPermission()) {
-            return questionBankSubjectiveRepository.save(question);
+        if (checkPermission(exam)) {
+            return examQuestionSubjectiveRepository.save(question);
         } else {
             throw new UnsupportedOperationException("User does not have permission to perform "
                     + "this operation");
@@ -99,11 +88,10 @@ public class ExamQuestionSubjectiveServiceImpl implements ExamQuestionSubjective
     }
 
     @Override
-    public List<BankQuestionSubjective> saveAllQuestions(List<BankQuestionSubjective> questions) {
-        LmsUser currentUser = userUtils.getCurrentUser();
-        questions.forEach(question -> question.setCreatedBy(currentUser));
-        if (checkPermission()) {
-            return questionBankSubjectiveRepository.saveAll(questions);
+    public List<ExamQuestionSubjective> saveAllQuestions(List<ExamQuestionSubjective> questions,
+                                                         Exam exam) {
+        if (checkPermission(exam)) {
+            return examQuestionSubjectiveRepository.saveAll(questions);
         } else {
             throw new OperationNotSupportedException("User does not have permission to perform "
                     + "this operation");
@@ -111,25 +99,23 @@ public class ExamQuestionSubjectiveServiceImpl implements ExamQuestionSubjective
     }
 
     @Override
-    public BankQuestionSubjective updateQuestion(BankQuestionSubjective question, long id) {
-        LmsUser currentUser = userUtils.getCurrentUser();
-        BankQuestionSubjective existingQuestion = getQuestion(id);
-        if (!currentUser.getIsAdmin() && existingQuestion.getCreatedBy() != currentUser) {
+    public ExamQuestionSubjective updateQuestion(ExamQuestionSubjective question, long id) {
+        ExamQuestionSubjective existingQuestion = getQuestion(id);
+        if (!checkPermission(existingQuestion.getExam())) {
             throw new OperationNotSupportedException("User does not have permission to perform "
                     + "this operation");
         }
         existingQuestion.update(question);
-        return questionBankSubjectiveRepository.save(existingQuestion);
+        return examQuestionSubjectiveRepository.save(existingQuestion);
     }
 
     @Override
     public void hardDeleteQuestion(long id) {
-        LmsUser currentUser = userUtils.getCurrentUser();
-        BankQuestionSubjective existingQuestion = getQuestion(id);
-        if (!currentUser.getIsAdmin() && existingQuestion.getCreatedBy() != currentUser) {
+        ExamQuestionSubjective existingQuestion = getQuestion(id);
+        if (!checkPermission(existingQuestion.getExam())) {
             throw new OperationNotSupportedException("User does not have permission to perform "
                     + "this operation");
         }
-        questionBankSubjectiveRepository.delete(existingQuestion);
+        examQuestionSubjectiveRepository.delete(existingQuestion);
     }
 }

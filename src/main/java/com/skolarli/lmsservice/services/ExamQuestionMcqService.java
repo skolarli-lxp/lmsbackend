@@ -1,23 +1,27 @@
 package com.skolarli.lmsservice.services;
 
 import com.skolarli.lmsservice.models.db.BankQuestionMcq;
+import com.skolarli.lmsservice.models.db.Exam;
+import com.skolarli.lmsservice.models.db.ExamQuestionMcq;
 import com.skolarli.lmsservice.models.dto.NewBankQuestionMcqRequest;
+import com.skolarli.lmsservice.models.dto.NewExamQuestionMcqRequest;
+import com.skolarli.lmsservice.models.dto.NewExamQuestionRequest;
 
 import java.util.List;
 
 public interface ExamQuestionMcqService {
 
-    BankQuestionMcq toBankQuestionMcq(NewBankQuestionMcqRequest newBankQuestionMcqRequest);
+    ExamQuestionMcq toExamQuestionMcq(NewExamQuestionMcqRequest newExamQuestionMcqRequest);
 
-    BankQuestionMcq getQuestion(long id);
+    ExamQuestionMcq getQuestion(long id);
 
-    List<BankQuestionMcq> getAllQuestions();
+    List<ExamQuestionMcq> getAllQuestions();
 
-    BankQuestionMcq saveQuestion(BankQuestionMcq question);
+    ExamQuestionMcq saveQuestion(ExamQuestionMcq question, Exam exam);
 
-    List<BankQuestionMcq> saveAllQuestions(List<BankQuestionMcq> questions);
+    List<ExamQuestionMcq> saveAllQuestions(List<ExamQuestionMcq> questions, Exam exam);
 
-    BankQuestionMcq updateQuestion(BankQuestionMcq question, long id);
+    ExamQuestionMcq updateQuestion(ExamQuestionMcq question, long id);
 
     void hardDeleteQuestion(long id);
 }

@@ -1,26 +1,28 @@
 package com.skolarli.lmsservice.services;
 
-import com.skolarli.lmsservice.models.db.BankQuestionSubjective;
-import com.skolarli.lmsservice.models.dto.NewBankQuestionSubjectiveRequest;
+import com.skolarli.lmsservice.models.db.Exam;
+import com.skolarli.lmsservice.models.db.ExamQuestionSubjective;
+import com.skolarli.lmsservice.models.dto.NewExamQuestionSubjectiveRequest;
 
 import java.util.List;
 
 public interface ExamQuestionSubjectiveService {
 
-    BankQuestionSubjective toBankQuestionSubjective(
-            NewBankQuestionSubjectiveRequest newBankQuestionSubjectiveRequest);
+    ExamQuestionSubjective toExamQuestionSubjective(
+            NewExamQuestionSubjectiveRequest newExamQuestionSubjectiveRequest);
 
 
-    BankQuestionSubjective getQuestion(long id);
+    ExamQuestionSubjective getQuestion(long id);
 
-    List<BankQuestionSubjective> getAllQuestions();
+    List<ExamQuestionSubjective> getAllQuestions();
 
 
-    BankQuestionSubjective saveQuestion(BankQuestionSubjective question);
+    ExamQuestionSubjective saveQuestion(ExamQuestionSubjective question, Exam exam);
 
-    List<BankQuestionSubjective> saveAllQuestions(List<BankQuestionSubjective> questions);
+    List<ExamQuestionSubjective> saveAllQuestions(List<ExamQuestionSubjective> questions,
+                                                  Exam exam);
 
-    BankQuestionSubjective updateQuestion(BankQuestionSubjective question, long id);
+    ExamQuestionSubjective updateQuestion(ExamQuestionSubjective question, long id);
 
     void hardDeleteQuestion(long id);
 }
