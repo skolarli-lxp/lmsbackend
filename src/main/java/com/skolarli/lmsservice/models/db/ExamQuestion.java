@@ -36,7 +36,7 @@ public class ExamQuestion extends Tenantable {
 
     private String sampleAnswerUrl;
 
-    private int weightage;
+    private int marks;
 
 
     public void update(ExamQuestion question) {
@@ -61,8 +61,8 @@ public class ExamQuestion extends Tenantable {
         if (question.getSampleAnswerUrl() != null) {
             this.sampleAnswerUrl = question.getSampleAnswerUrl();
         }
-        if (question.getWeightage() != 0) {
-            this.weightage = question.getWeightage();
+        if (question.getMarks() != 0) {
+            this.marks = question.getMarks();
         }
 
     }

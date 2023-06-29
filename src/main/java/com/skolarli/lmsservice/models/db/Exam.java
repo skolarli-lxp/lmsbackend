@@ -49,6 +49,8 @@ public class Exam extends Tenantable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    private String examName;
+
     private String examType;
 
     private String durationMins;

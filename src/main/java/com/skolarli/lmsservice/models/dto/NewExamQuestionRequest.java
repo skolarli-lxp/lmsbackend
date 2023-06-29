@@ -14,7 +14,7 @@ import javax.validation.constraints.NotNull;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class NewQuestionBankQuestionRequest {
+public class NewExamQuestionRequest {
     Long courseId;
 
     @NotNull
@@ -32,4 +32,6 @@ public class NewQuestionBankQuestionRequest {
     private String sampleAnswerText;
 
     private String sampleAnswerUrl;
+
+    private Integer marks;
 }
