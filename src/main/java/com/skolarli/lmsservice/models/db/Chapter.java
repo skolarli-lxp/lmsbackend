@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import com.skolarli.lmsservice.models.dto.ChapterSortOrderResponse;
+import com.skolarli.lmsservice.models.dto.course.ChapterSortOrderResponse;
 import lombok.*;
 import org.hibernate.annotations.Where;
 

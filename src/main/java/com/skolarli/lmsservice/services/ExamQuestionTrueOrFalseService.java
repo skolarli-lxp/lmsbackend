@@ -2,7 +2,7 @@ package com.skolarli.lmsservice.services;
 
 import com.skolarli.lmsservice.models.db.Exam;
 import com.skolarli.lmsservice.models.db.ExamQuestionTrueOrFalse;
-import com.skolarli.lmsservice.models.dto.NewExamQuestionTrueOrFalseRequest;
+import com.skolarli.lmsservice.models.dto.exam.NewExamQuestionTrueOrFalseRequest;
 
 import java.util.List;
 

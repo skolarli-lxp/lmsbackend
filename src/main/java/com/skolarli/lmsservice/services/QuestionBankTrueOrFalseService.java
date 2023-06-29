@@ -1,10 +1,7 @@
 package com.skolarli.lmsservice.services;
 
-import com.skolarli.lmsservice.models.db.BankQuestionMcq;
-import com.skolarli.lmsservice.models.db.BankQuestionSubjective;
 import com.skolarli.lmsservice.models.db.BankQuestionTrueOrFalse;
-import com.skolarli.lmsservice.models.dto.NewBankQuestionMcqRequest;
-import com.skolarli.lmsservice.models.dto.NewBankQuestionTrueOrFalseRequest;
+import com.skolarli.lmsservice.models.dto.questionbank.NewBankQuestionTrueOrFalseRequest;
 
 import java.util.List;
 

@@ -6,7 +6,7 @@ import com.skolarli.lmsservice.exception.ValidationFailureException;
 import com.skolarli.lmsservice.models.db.Exam;
 import com.skolarli.lmsservice.models.db.ExamQuestionMcq;
 import com.skolarli.lmsservice.models.db.LmsUser;
-import com.skolarli.lmsservice.models.dto.NewExamQuestionMcqRequest;
+import com.skolarli.lmsservice.models.dto.exam.NewExamQuestionMcqRequest;
 import com.skolarli.lmsservice.repository.ExamQuestionMcqRepository;
 import com.skolarli.lmsservice.services.ExamQuestionMcqService;
 import com.skolarli.lmsservice.utils.UserUtils;

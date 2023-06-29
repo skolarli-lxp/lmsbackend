@@ -2,8 +2,8 @@ package com.skolarli.lmsservice.controller;
 
 import com.skolarli.lmsservice.exception.OperationNotSupportedException;
 import com.skolarli.lmsservice.models.db.Enrollment;
-import com.skolarli.lmsservice.models.dto.NewEnrollmentRequest;
-import com.skolarli.lmsservice.models.dto.NewEnrollmentsForBatchRequest;
+import com.skolarli.lmsservice.models.dto.course.NewEnrollmentRequest;
+import com.skolarli.lmsservice.models.dto.course.NewEnrollmentsForBatchRequest;
 import com.skolarli.lmsservice.services.EnrollmentService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

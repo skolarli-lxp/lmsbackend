@@ -4,7 +4,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.skolarli.lmsservice.AbstractContainerBaseTest;
-import com.skolarli.lmsservice.models.dto.NewDomainRequest;
+import com.skolarli.lmsservice.models.dto.core.NewDomainRequest;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -1,10 +1,10 @@
 package com.skolarli.lmsservice.services;
 
 import com.skolarli.lmsservice.models.db.Lesson;
-import com.skolarli.lmsservice.models.dto.LessonSortOrderRequest;
-import com.skolarli.lmsservice.models.dto.LessonSortOrderResponse;
-import com.skolarli.lmsservice.models.dto.LessonUpdateRequest;
-import com.skolarli.lmsservice.models.dto.NewLessonRequest;
+import com.skolarli.lmsservice.models.dto.course.LessonSortOrderRequest;
+import com.skolarli.lmsservice.models.dto.course.LessonSortOrderResponse;
+import com.skolarli.lmsservice.models.dto.course.LessonUpdateRequest;
+import com.skolarli.lmsservice.models.dto.course.NewLessonRequest;
 
 import java.util.List;
 

@@ -2,7 +2,7 @@ package com.skolarli.lmsservice.controller;
 
 import com.skolarli.lmsservice.exception.OperationNotSupportedException;
 import com.skolarli.lmsservice.models.db.Lesson;
-import com.skolarli.lmsservice.models.dto.*;
+import com.skolarli.lmsservice.models.dto.course.*;
 import com.skolarli.lmsservice.services.LessonService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

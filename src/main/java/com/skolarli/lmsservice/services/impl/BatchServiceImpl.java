@@ -4,7 +4,7 @@ import com.skolarli.lmsservice.exception.OperationNotSupportedException;
 import com.skolarli.lmsservice.exception.ResourceNotFoundException;
 import com.skolarli.lmsservice.models.db.Batch;
 import com.skolarli.lmsservice.models.db.LmsUser;
-import com.skolarli.lmsservice.models.dto.NewBatchRequest;
+import com.skolarli.lmsservice.models.dto.course.NewBatchRequest;
 import com.skolarli.lmsservice.repository.BatchRepository;
 import com.skolarli.lmsservice.services.BatchService;
 import com.skolarli.lmsservice.services.CourseService;

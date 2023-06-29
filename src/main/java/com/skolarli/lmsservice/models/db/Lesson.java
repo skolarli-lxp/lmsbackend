@@ -3,7 +3,7 @@ package com.skolarli.lmsservice.models.db;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import com.skolarli.lmsservice.models.dto.LessonSortOrderResponse;
+import com.skolarli.lmsservice.models.dto.course.LessonSortOrderResponse;
 import lombok.*;
 import org.hibernate.annotations.Where;
 

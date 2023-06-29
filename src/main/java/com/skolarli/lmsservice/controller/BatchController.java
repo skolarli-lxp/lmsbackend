@@ -3,7 +3,7 @@ package com.skolarli.lmsservice.controller;
 import com.skolarli.lmsservice.exception.OperationNotSupportedException;
 import com.skolarli.lmsservice.models.db.Batch;
 import com.skolarli.lmsservice.models.db.BatchSchedule;
-import com.skolarli.lmsservice.models.dto.NewBatchRequest;
+import com.skolarli.lmsservice.models.dto.course.NewBatchRequest;
 import com.skolarli.lmsservice.services.BatchService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -10,7 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.skolarli.lmsservice.models.db.LmsUser;
 import com.skolarli.lmsservice.models.db.Tenant;
 import com.skolarli.lmsservice.models.db.VerificationCode;
-import com.skolarli.lmsservice.models.dto.NewDomainRequest;
+import com.skolarli.lmsservice.models.dto.core.NewDomainRequest;
 import com.skolarli.lmsservice.services.LmsUserService;
 import com.skolarli.lmsservice.services.TenantService;
 import com.skolarli.lmsservice.services.VerificationService;
@@ -28,7 +28,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.time.Instant;
-import java.util.Calendar;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest

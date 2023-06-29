@@ -6,7 +6,7 @@ import com.skolarli.lmsservice.exception.ValidationFailureException;
 import com.skolarli.lmsservice.models.db.BankQuestionMcq;
 import com.skolarli.lmsservice.models.db.Course;
 import com.skolarli.lmsservice.models.db.LmsUser;
-import com.skolarli.lmsservice.models.dto.NewBankQuestionMcqRequest;
+import com.skolarli.lmsservice.models.dto.questionbank.NewBankQuestionMcqRequest;
 import com.skolarli.lmsservice.repository.QuestionBankMcqRepository;
 import com.skolarli.lmsservice.services.CourseService;
 import com.skolarli.lmsservice.services.QuestionBankMcqService;

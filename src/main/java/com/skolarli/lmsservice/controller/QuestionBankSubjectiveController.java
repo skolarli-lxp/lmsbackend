@@ -1,8 +1,7 @@
 package com.skolarli.lmsservice.controller;
 
 import com.skolarli.lmsservice.models.db.BankQuestionSubjective;
-import com.skolarli.lmsservice.models.db.BankQuestionSubjective;
-import com.skolarli.lmsservice.models.dto.NewBankQuestionSubjectiveRequest;
+import com.skolarli.lmsservice.models.dto.questionbank.NewBankQuestionSubjectiveRequest;
 import com.skolarli.lmsservice.services.QuestionBankSubjectiveService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

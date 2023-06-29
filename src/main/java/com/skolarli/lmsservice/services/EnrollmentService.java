@@ -1,8 +1,8 @@
 package com.skolarli.lmsservice.services;
 
 import com.skolarli.lmsservice.models.db.Enrollment;
-import com.skolarli.lmsservice.models.dto.NewEnrollmentRequest;
-import com.skolarli.lmsservice.models.dto.NewEnrollmentsForBatchRequest;
+import com.skolarli.lmsservice.models.dto.course.NewEnrollmentRequest;
+import com.skolarli.lmsservice.models.dto.course.NewEnrollmentsForBatchRequest;
 
 import java.util.List;
 

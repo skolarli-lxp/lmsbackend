@@ -5,7 +5,7 @@ import com.skolarli.lmsservice.exception.ResourceNotFoundException;
 import com.skolarli.lmsservice.models.db.BankQuestionSubjective;
 import com.skolarli.lmsservice.models.db.Course;
 import com.skolarli.lmsservice.models.db.LmsUser;
-import com.skolarli.lmsservice.models.dto.NewBankQuestionSubjectiveRequest;
+import com.skolarli.lmsservice.models.dto.questionbank.NewBankQuestionSubjectiveRequest;
 import com.skolarli.lmsservice.repository.QuestionBankSubjectiveRepository;
 import com.skolarli.lmsservice.services.CourseService;
 import com.skolarli.lmsservice.services.QuestionBankSubjectiveService;

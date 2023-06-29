@@ -1,8 +1,8 @@
 package com.skolarli.lmsservice.services;
 
 import com.skolarli.lmsservice.models.db.BatchSchedule;
-import com.skolarli.lmsservice.models.dto.NewBatchScheduleRequest;
-import com.skolarli.lmsservice.models.dto.NewBatchSchedulesForBatchRequest;
+import com.skolarli.lmsservice.models.dto.course.NewBatchScheduleRequest;
+import com.skolarli.lmsservice.models.dto.course.NewBatchSchedulesForBatchRequest;
 
 import java.time.Instant;
 import java.util.List;

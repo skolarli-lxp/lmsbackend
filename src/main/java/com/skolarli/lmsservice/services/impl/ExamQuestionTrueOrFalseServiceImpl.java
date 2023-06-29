@@ -5,7 +5,7 @@ import com.skolarli.lmsservice.exception.ResourceNotFoundException;
 import com.skolarli.lmsservice.models.db.Exam;
 import com.skolarli.lmsservice.models.db.ExamQuestionTrueOrFalse;
 import com.skolarli.lmsservice.models.db.LmsUser;
-import com.skolarli.lmsservice.models.dto.NewExamQuestionTrueOrFalseRequest;
+import com.skolarli.lmsservice.models.dto.exam.NewExamQuestionTrueOrFalseRequest;
 import com.skolarli.lmsservice.repository.ExamQuestionTrueOrFalseRepository;
 import com.skolarli.lmsservice.services.ExamQuestionTrueOrFalseService;
 import com.skolarli.lmsservice.utils.UserUtils;
@@ -101,7 +101,6 @@ public class ExamQuestionTrueOrFalseServiceImpl implements ExamQuestionTrueOrFal
 
     @Override
     public ExamQuestionTrueOrFalse updateQuestion(ExamQuestionTrueOrFalse question, long id) {
-        LmsUser currentUser = userUtils.getCurrentUser();
         ExamQuestionTrueOrFalse existingQuestion = getQuestion(id);
         if (!checkPermission(existingQuestion.getExam())) {
             throw new OperationNotSupportedException("User does not have permission to perform "
@@ -113,7 +112,6 @@ public class ExamQuestionTrueOrFalseServiceImpl implements ExamQuestionTrueOrFal
 
     @Override
     public void hardDeleteQuestion(long id) {
-        LmsUser currentUser = userUtils.getCurrentUser();
         ExamQuestionTrueOrFalse existingQuestion = getQuestion(id);
         if (!checkPermission(existingQuestion.getExam())) {
             throw new OperationNotSupportedException("User does not have permission to perform "

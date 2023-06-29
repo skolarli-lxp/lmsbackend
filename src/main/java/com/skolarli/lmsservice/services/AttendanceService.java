@@ -1,8 +1,8 @@
 package com.skolarli.lmsservice.services;
 
 import com.skolarli.lmsservice.models.db.Attendance;
-import com.skolarli.lmsservice.models.dto.NewAttendanceRequest;
-import com.skolarli.lmsservice.models.dto.NewAttendancesForScheduleRequest;
+import com.skolarli.lmsservice.models.dto.course.NewAttendanceRequest;
+import com.skolarli.lmsservice.models.dto.course.NewAttendancesForScheduleRequest;
 
 import java.util.List;
 

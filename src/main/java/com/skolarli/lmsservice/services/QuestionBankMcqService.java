@@ -1,7 +1,7 @@
 package com.skolarli.lmsservice.services;
 
 import com.skolarli.lmsservice.models.db.BankQuestionMcq;
-import com.skolarli.lmsservice.models.dto.NewBankQuestionMcqRequest;
+import com.skolarli.lmsservice.models.dto.questionbank.NewBankQuestionMcqRequest;
 
 import java.util.List;
 

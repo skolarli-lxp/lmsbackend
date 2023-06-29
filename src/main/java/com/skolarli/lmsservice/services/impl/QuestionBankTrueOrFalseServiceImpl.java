@@ -5,7 +5,7 @@ import com.skolarli.lmsservice.exception.ResourceNotFoundException;
 import com.skolarli.lmsservice.models.db.BankQuestionTrueOrFalse;
 import com.skolarli.lmsservice.models.db.Course;
 import com.skolarli.lmsservice.models.db.LmsUser;
-import com.skolarli.lmsservice.models.dto.NewBankQuestionTrueOrFalseRequest;
+import com.skolarli.lmsservice.models.dto.questionbank.NewBankQuestionTrueOrFalseRequest;
 import com.skolarli.lmsservice.repository.QuestionBankTrueOrFalseRepository;
 import com.skolarli.lmsservice.services.CourseService;
 import com.skolarli.lmsservice.services.QuestionBankTrueOrFalseService;
