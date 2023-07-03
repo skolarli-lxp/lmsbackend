@@ -5,13 +5,12 @@ import com.skolarli.lmsservice.exception.ResourceNotFoundException;
 import com.skolarli.lmsservice.exception.ValidationFailureException;
 import com.skolarli.lmsservice.models.db.Exam;
 import com.skolarli.lmsservice.models.db.LmsUser;
+import com.skolarli.lmsservice.models.dto.exam.DeleteExamQuestionsRequest;
 import com.skolarli.lmsservice.models.dto.exam.NewExamQuestionsAllTypesRequest;
 import com.skolarli.lmsservice.models.dto.exam.NewExamQuestionsAllTypesResponse;
 import com.skolarli.lmsservice.models.dto.exam.NewExamRequest;
 import com.skolarli.lmsservice.repository.ExamRepository;
-import com.skolarli.lmsservice.services.BatchService;
-import com.skolarli.lmsservice.services.CourseService;
-import com.skolarli.lmsservice.services.ExamService;
+import com.skolarli.lmsservice.services.*;
 import com.skolarli.lmsservice.utils.UserUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,15 +30,26 @@ public class ExamServiceImpl implements ExamService {
 
     BatchService batchService;
 
+    ExamQuestionMcqService examQuestionMcqService;
+
+    ExamQuestionTrueOrFalseService examQuestionTrueOrFalseService;
+
+    ExamQuestionSubjectiveService examQuestionSubjectiveService;
     UserUtils userUtils;
 
     public ExamServiceImpl(ExamRepository examRepository,
                            CourseService courseService,
                            BatchService batchService,
+                           ExamQuestionMcqService examQuestionMcqService,
+                           ExamQuestionTrueOrFalseService examQuestionTrueOrFalseService,
+                           ExamQuestionSubjectiveService examQuestionSubjectiveService,
                            UserUtils userUtils) {
         this.examRepository = examRepository;
         this.courseService = courseService;
         this.batchService = batchService;
+        this.examQuestionMcqService = examQuestionMcqService;
+        this.examQuestionTrueOrFalseService = examQuestionTrueOrFalseService;
+        this.examQuestionSubjectiveService = examQuestionSubjectiveService;
         this.userUtils = userUtils;
     }
 
@@ -92,6 +102,16 @@ public class ExamServiceImpl implements ExamService {
     @Override
     public List<Exam> getAllExams() {
         return examRepository.findAll();
+    }
+
+    @Override
+    public List<Exam> getAllExamsForCourse(Long courseId) {
+        return examRepository.findAllByCourse_Id(courseId);
+    }
+
+    @Override
+    public List<Exam> getAllExamsForBatch(Long batchId) {
+        return examRepository.findAllByBatch_Id(batchId);
     }
 
     @Override
@@ -194,5 +214,24 @@ public class ExamServiceImpl implements ExamService {
                     + "this operation");
         }
         examRepository.delete(existingExam);
+    }
+
+    @Override
+    public void deleteQuestions(Long examId, DeleteExamQuestionsRequest questionIds) {
+        Exam existingExam = getExam(examId);
+        if (existingExam == null) {
+            logger.error("Exam with Id " + examId + " not found");
+            throw new ResourceNotFoundException("Exam with Id " + examId + " not found");
+        }
+        if (!checkPermission()) {
+            logger.error("User does not have permission to perform this operation");
+            throw new OperationNotSupportedException("User does not have permission to perform "
+                    + "this operation");
+        }
+        examQuestionMcqService.hardDeleteQuestions(questionIds.getMcqQuestionsIds(), existingExam);
+        examQuestionSubjectiveService.hardDeleteQuestions(questionIds.getSubjectiveQuestionsIds(),
+                existingExam);
+        examQuestionTrueOrFalseService.hardDeleteQuestions(questionIds.getTrueOrFalseQuestionsIds(),
+                existingExam);
     }
 }

@@ -135,4 +135,14 @@ public class ExamQuestionMcqServiceImpl implements ExamQuestionMcqService {
         }
         examQuestionMcqRepository.deleteById(id);
     }
+
+    @Override
+    public void hardDeleteQuestions(List<Long> ids, Exam exam) {
+        if (checkPermission(exam)) {
+            examQuestionMcqRepository.deleteAllById(ids);
+        } else {
+            throw new OperationNotSupportedException("User does not have permission to perform "
+                    + "this operation");
+        }
+    }
 }

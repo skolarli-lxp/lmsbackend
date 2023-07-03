@@ -120,4 +120,14 @@ public class ExamQuestionTrueOrFalseServiceImpl implements ExamQuestionTrueOrFal
 
         examQuestionTrueOrFalseRepository.delete(existingQuestion);
     }
+
+    @Override
+    public void hardDeleteQuestions(List<Long> ids, Exam exam) {
+        if (checkPermission(exam)) {
+            examQuestionTrueOrFalseRepository.deleteAllById(ids);
+        } else {
+            throw new OperationNotSupportedException("User does not have permission to perform "
+                    + "this operation");
+        }
+    }
 }

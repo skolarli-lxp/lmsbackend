@@ -118,4 +118,14 @@ public class ExamQuestionSubjectiveServiceImpl implements ExamQuestionSubjective
         }
         examQuestionSubjectiveRepository.delete(existingQuestion);
     }
+
+    @Override
+    public void hardDeleteQuestions(List<Long> ids, Exam exam) {
+        if (checkPermission(exam)) {
+            examQuestionSubjectiveRepository.deleteAllById(ids);
+        } else {
+            throw new OperationNotSupportedException("User does not have permission to perform "
+                    + "this operation");
+        }
+    }
 }

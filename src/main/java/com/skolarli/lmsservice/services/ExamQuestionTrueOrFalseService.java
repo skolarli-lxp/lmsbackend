@@ -25,4 +25,6 @@ public interface ExamQuestionTrueOrFalseService {
     ExamQuestionTrueOrFalse updateQuestion(ExamQuestionTrueOrFalse question, long id);
 
     void hardDeleteQuestion(long id);
+
+    void hardDeleteQuestions(List<Long> ids, Exam exam);
 }

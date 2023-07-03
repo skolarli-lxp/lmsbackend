@@ -25,4 +25,6 @@ public interface ExamQuestionSubjectiveService {
     ExamQuestionSubjective updateQuestion(ExamQuestionSubjective question, long id);
 
     void hardDeleteQuestion(long id);
+
+    void hardDeleteQuestions(List<Long> ids, Exam exam);
 }
