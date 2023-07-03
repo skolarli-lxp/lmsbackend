@@ -2,6 +2,7 @@ package com.skolarli.lmsservice.services;
 
 import com.skolarli.lmsservice.models.db.Exam;
 import com.skolarli.lmsservice.models.dto.exam.NewExamQuestionsAllTypesRequest;
+import com.skolarli.lmsservice.models.dto.exam.NewExamQuestionsAllTypesResponse;
 import com.skolarli.lmsservice.models.dto.exam.NewExamRequest;
 
 import java.util.List;
@@ -12,15 +13,13 @@ public interface ExamService {
 
     List<Exam> getAllExams();
 
-    List<NewExamQuestionsAllTypesRequest> getAllQuestions(Long id);
+    NewExamQuestionsAllTypesResponse getAllQuestions(Long id);
 
-    Exam saveExam(NewExamRequest examRequest);
+    Exam saveExam(Exam exam);
 
-    List<Exam> saveAllExams(List<NewExamRequest> examRequests);
+    Exam addQuestionsToExam(NewExamQuestionsAllTypesRequest newExamQuestionRequest, long id);
 
-    Exam addQuestionToExam(NewExamQuestionsAllTypesRequest newExamQuestionRequest, long id);
-
-    Exam updateExams(NewExamRequest exam, long id);
+    Exam updateExams(Exam exam, long id);
 
     void hardDeleteExam(long id);
 }

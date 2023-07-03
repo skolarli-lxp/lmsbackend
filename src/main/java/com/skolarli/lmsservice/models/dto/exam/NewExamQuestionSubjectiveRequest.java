@@ -1,5 +1,6 @@
 package com.skolarli.lmsservice.models.dto.exam;
 
+import com.skolarli.lmsservice.models.db.ExamQuestionSubjective;
 import lombok.*;
 
 @Data
@@ -11,4 +12,12 @@ public class NewExamQuestionSubjectiveRequest extends NewExamQuestionRequest {
     private int wordCount;
 
     private String correctAnswer;
+
+    public ExamQuestionSubjective toExamQuestionSubjective() {
+        ExamQuestionSubjective examQuestionSubjective = new ExamQuestionSubjective();
+        super.toExamQuestion(examQuestionSubjective);
+        examQuestionSubjective.setWordCount(wordCount);
+        examQuestionSubjective.setCorrectAnswer(correctAnswer);
+        return examQuestionSubjective;
+    }
 }

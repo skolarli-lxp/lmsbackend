@@ -3,6 +3,7 @@ package com.skolarli.lmsservice.models.dto.exam;
 import com.skolarli.lmsservice.models.AnswerFormat;
 import com.skolarli.lmsservice.models.DifficultyLevel;
 import com.skolarli.lmsservice.models.QuestionFormat;
+import com.skolarli.lmsservice.models.db.ExamQuestion;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,8 +16,6 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @NoArgsConstructor
 public class NewExamQuestionRequest {
-    Long courseId;
-
     @NotNull
     private String question;
 
@@ -34,4 +33,15 @@ public class NewExamQuestionRequest {
     private String sampleAnswerUrl;
 
     private Integer marks;
+
+    public void toExamQuestion(ExamQuestion examQuestion) {
+        examQuestion.setQuestion(question);
+        examQuestion.setQuestionType(questionType);
+        examQuestion.setDifficultyLevel(difficultyLevel);
+        examQuestion.setQuestionFormat(questionFormat);
+        examQuestion.setAnswerFormat(answerFormat);
+        examQuestion.setSampleAnswerText(sampleAnswerText);
+        examQuestion.setSampleAnswerUrl(sampleAnswerUrl);
+        examQuestion.setMarks(marks);
+    }
 }

@@ -14,4 +14,5 @@ public class NewExamQuestionsAllTypesRequest {
     List<NewExamQuestionMcqRequest> mcqQuestions;
     List<NewExamQuestionSubjectiveRequest> subjectiveQuestions;
     List<NewExamQuestionTrueOrFalseRequest> trueOrFalseQuestions;
+
 }

@@ -1,5 +1,8 @@
 package com.skolarli.lmsservice.models.dto.exam;
 
+import com.skolarli.lmsservice.models.db.ExamQuestionMcq;
+import com.skolarli.lmsservice.models.db.ExamQuestionSubjective;
+import com.skolarli.lmsservice.models.db.ExamQuestionTrueOrFalse;
 import lombok.*;
 
 import java.util.List;
@@ -11,7 +14,7 @@ import java.util.List;
 @Setter
 public class NewExamQuestionsAllTypesResponse {
 
-    List<NewExamQuestionMcqRequest> mcqQuestions;
-    List<NewExamQuestionSubjectiveRequest> subjectiveQuestions;
-    List<NewExamQuestionTrueOrFalseRequest> trueOrFalseQuestions;
+    List<ExamQuestionMcq> mcqQuestions;
+    List<ExamQuestionSubjective> subjectiveQuestions;
+    List<ExamQuestionTrueOrFalse> trueOrFalseQuestions;
 }

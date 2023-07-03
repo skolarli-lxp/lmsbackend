@@ -1,11 +1,20 @@
 package com.skolarli.lmsservice.services.impl;
 
+import com.skolarli.lmsservice.exception.OperationNotSupportedException;
 import com.skolarli.lmsservice.exception.ResourceNotFoundException;
+import com.skolarli.lmsservice.exception.ValidationFailureException;
 import com.skolarli.lmsservice.models.db.Exam;
+import com.skolarli.lmsservice.models.db.LmsUser;
 import com.skolarli.lmsservice.models.dto.exam.NewExamQuestionsAllTypesRequest;
+import com.skolarli.lmsservice.models.dto.exam.NewExamQuestionsAllTypesResponse;
 import com.skolarli.lmsservice.models.dto.exam.NewExamRequest;
 import com.skolarli.lmsservice.repository.ExamRepository;
+import com.skolarli.lmsservice.services.BatchService;
+import com.skolarli.lmsservice.services.CourseService;
 import com.skolarli.lmsservice.services.ExamService;
+import com.skolarli.lmsservice.utils.UserUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -14,11 +23,59 @@ import java.util.List;
 
 @Service
 public class ExamServiceImpl implements ExamService {
+    private static final Logger logger = LoggerFactory.getLogger(ExamServiceImpl.class);
 
     ExamRepository examRepository;
 
-    public ExamServiceImpl(ExamRepository examRepository) {
+    CourseService courseService;
+
+    BatchService batchService;
+
+    UserUtils userUtils;
+
+    public ExamServiceImpl(ExamRepository examRepository,
+                           CourseService courseService,
+                           BatchService batchService,
+                           UserUtils userUtils) {
         this.examRepository = examRepository;
+        this.courseService = courseService;
+        this.batchService = batchService;
+        this.userUtils = userUtils;
+    }
+
+    private Boolean checkPermission() {
+        LmsUser currentUser = userUtils.getCurrentUser();
+        return currentUser.getIsAdmin() || currentUser.getIsInstructor();
+    }
+
+    public Exam toExam(NewExamRequest request) {
+        Exam exam = new Exam();
+
+        if (request.getCourseId() != null) {
+            exam.setCourse(courseService.getCourseById(request.getCourseId()));
+        }
+        if (request.getBatchId() != null) {
+            exam.setBatch(batchService.getBatch(request.getBatchId()));
+        }
+
+        exam.setExamName(request.getExamName());
+        exam.setExamType(request.getExamType());
+        exam.setDurationMins(request.getDurationMins());
+        exam.setExamPublishDate(request.getExamPublishDate());
+        exam.setExamExpiryDate(request.getExamExpiryDate());
+        exam.setTotalMarks(request.getTotalMarks());
+        exam.setPassingMarks(request.getPassingMarks());
+
+        if (request.getMcqQuestions() != null) {
+            exam.setExamQuestionMcqs(request.toExamQuestionMcqList());
+        }
+        if (request.getSubjectiveQuestions() != null) {
+            exam.setExamQuestionSubjectives(request.toExamQuestionSubjectiveList());
+        }
+        if (request.getTrueOrFalseQuestions() != null) {
+            exam.setExamQuestionTrueOrFalses(request.toExamQuestionTrueOrFalseList());
+        }
+        return exam;
     }
 
 
@@ -38,32 +95,104 @@ public class ExamServiceImpl implements ExamService {
     }
 
     @Override
-    public List<NewExamQuestionsAllTypesRequest> getAllQuestions(Long id) {
+    public NewExamQuestionsAllTypesResponse getAllQuestions(Long id) {
+        Exam existingExam = getExam(id);
+        if (existingExam != null) {
+            return existingExam.getExamQuestions();
+        }
         return null;
     }
 
     @Override
-    public Exam saveExam(NewExamRequest examRequest) {
-        return null;
+    public Exam saveExam(Exam exam) {
+        LmsUser currentUser = userUtils.getCurrentUser();
+
+        if (!exam.validateFields()) {
+            logger.error("Exam fields validation failed");
+            throw new ValidationFailureException("Exam fields are not valid");
+        }
+        if (!checkPermission()) {
+            logger.error("User does not have permission to perform this operation");
+            throw new OperationNotSupportedException("User does not have permission to perform "
+                    + "this operation");
+        }
+
+        exam.setCreatedBy(currentUser);
+        return examRepository.save(exam);
+    }
+
+
+    @Override
+    public Exam addQuestionsToExam(NewExamQuestionsAllTypesRequest newExamQuestionRequest,
+                                   long id) {
+        Exam existingExam = getExam(id);
+        if (existingExam == null) {
+            logger.error("Exam with Id " + id + " not found");
+            throw new ResourceNotFoundException("Exam with Id " + id + " not found");
+        }
+        if (!checkPermission()) {
+            logger.error("User does not have permission to perform this operation");
+            throw new OperationNotSupportedException("User does not have permission to perform "
+                    + "this operation");
+        }
+
+        if (newExamQuestionRequest.getMcqQuestions() != null) {
+            existingExam.addMcqQuestions(newExamQuestionRequest.getMcqQuestions());
+        }
+        if (newExamQuestionRequest.getSubjectiveQuestions() != null) {
+            existingExam.addSubjectiveQuestions(newExamQuestionRequest.getSubjectiveQuestions());
+        }
+        if (newExamQuestionRequest.getTrueOrFalseQuestions() != null) {
+            existingExam.addTrueOrFalseQuestions(newExamQuestionRequest.getTrueOrFalseQuestions());
+        }
+
+        if (!existingExam.validateFields()) {
+            logger.error("Exam fields validation failed");
+            throw new ValidationFailureException("Exam fields are not valid");
+        }
+
+        LmsUser currentUser = userUtils.getCurrentUser();
+        existingExam.setUpdatedBy(currentUser);
+
+        return examRepository.save(existingExam);
     }
 
     @Override
-    public List<Exam> saveAllExams(List<NewExamRequest> exams) {
-        return null;
-    }
+    public Exam updateExams(Exam exam, long id) {
+        Exam existingExam = getExam(id);
+        if (existingExam == null) {
+            logger.error("Exam with Id " + id + " not found");
+            throw new ResourceNotFoundException("Exam with Id " + id + " not found");
+        }
+        existingExam.update(exam);
+        if (!existingExam.validateFields()) {
+            logger.error("Exam fields validation failed");
+            throw new ValidationFailureException("Exam fields are not valid");
+        }
+        if (!checkPermission()) {
+            logger.error("User does not have permission to perform this operation");
+            throw new OperationNotSupportedException("User does not have permission to perform "
+                    + "this operation");
+        }
 
-    @Override
-    public Exam addQuestionToExam(NewExamQuestionsAllTypesRequest newExamQuestionRequest, long id) {
-        return null;
-    }
+        LmsUser currentUser = userUtils.getCurrentUser();
+        exam.setUpdatedBy(currentUser);
 
-    @Override
-    public Exam updateExams(NewExamRequest exam, long id) {
-        return null;
+        return examRepository.save(existingExam);
     }
 
     @Override
     public void hardDeleteExam(long id) {
-
+        Exam existingExam = getExam(id);
+        if (existingExam == null) {
+            logger.error("Exam with Id " + id + " not found");
+            throw new ResourceNotFoundException("Exam with Id " + id + " not found");
+        }
+        if (!checkPermission()) {
+            logger.error("User does not have permission to perform this operation");
+            throw new OperationNotSupportedException("User does not have permission to perform "
+                    + "this operation");
+        }
+        examRepository.delete(existingExam);
     }
 }

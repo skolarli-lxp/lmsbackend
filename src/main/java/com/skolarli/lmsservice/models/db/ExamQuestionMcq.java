@@ -21,8 +21,8 @@ import javax.persistence.Table;
 @Table(name = "examquestions_mcq")
 public class ExamQuestionMcq extends ExamQuestion {
 
-    String correctAnswer;
     // String of comma separated correct answers Ex: (1,2,3,4,5,6)
+    String correctAnswer;
     @Check(constraints = "number_of_answers >= 0 AND number_of_answers <=6")
     private int numberOfOptions;
     private String option1;
