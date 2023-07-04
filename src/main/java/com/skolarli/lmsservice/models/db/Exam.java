@@ -189,6 +189,8 @@ public class Exam extends Tenantable {
         List<ExamQuestionMcq> examQuestionMcqs = newExamQuestionMcqRequests.stream()
                 .map(NewExamQuestionMcqRequest::toExamQuestionMcq)
                 .collect(Collectors.toList());
+        examQuestionMcqs.forEach(examQuestionMcq -> examQuestionMcq.setExam(this));
+
         if (this.examQuestionMcqs == null) {
             this.examQuestionMcqs = examQuestionMcqs;
         } else {
@@ -202,6 +204,8 @@ public class Exam extends Tenantable {
                 .stream()
                 .map(NewExamQuestionSubjectiveRequest::toExamQuestionSubjective)
                 .collect(Collectors.toList());
+        examQuestionSubjectives.forEach(examQuestionSubjective
+                -> examQuestionSubjective.setExam(this));
         if (this.examQuestionSubjectives == null) {
             this.examQuestionSubjectives = examQuestionSubjectives;
         } else {
@@ -215,6 +219,8 @@ public class Exam extends Tenantable {
                 .stream()
                 .map(NewExamQuestionTrueOrFalseRequest::toExamQuestionTrueOrFalse)
                 .collect(Collectors.toList());
+        examQuestionTrueOrFalses.forEach(examQuestionTrueOrFalse -> examQuestionTrueOrFalse
+                .setExam(this));
         if (this.examQuestionTrueOrFalses == null) {
             this.examQuestionTrueOrFalses = examQuestionTrueOrFalses;
         } else {
