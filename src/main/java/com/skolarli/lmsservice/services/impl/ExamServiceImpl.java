@@ -78,12 +78,17 @@ public class ExamServiceImpl implements ExamService {
 
         if (request.getMcqQuestions() != null) {
             exam.setExamQuestionMcqs(request.toExamQuestionMcqList());
+            exam.getExamQuestionMcqs().forEach(examQuestionMcq -> examQuestionMcq.setExam(exam));
         }
         if (request.getSubjectiveQuestions() != null) {
             exam.setExamQuestionSubjectives(request.toExamQuestionSubjectiveList());
+            exam.getExamQuestionSubjectives().forEach(examQuestionSubjective
+                    -> examQuestionSubjective.setExam(exam));
         }
         if (request.getTrueOrFalseQuestions() != null) {
             exam.setExamQuestionTrueOrFalses(request.toExamQuestionTrueOrFalseList());
+            exam.getExamQuestionTrueOrFalses().forEach(examQuestionTrueOrFalse
+                    -> examQuestionTrueOrFalse.setExam(exam));
         }
         return exam;
     }
@@ -118,7 +123,7 @@ public class ExamServiceImpl implements ExamService {
     public NewExamQuestionsAllTypesResponse getAllQuestions(Long id) {
         Exam existingExam = getExam(id);
         if (existingExam != null) {
-            return existingExam.getExamQuestions();
+            return existingExam.fetchAllExamQuestions();
         }
         return null;
     }

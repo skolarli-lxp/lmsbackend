@@ -1,14 +1,9 @@
 package com.skolarli.lmsservice.models.db;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIdentityReference;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.*;
 import org.hibernate.annotations.Check;
 
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Data
@@ -24,7 +19,7 @@ public class ExamQuestionMcq extends ExamQuestion {
     // String of comma separated correct answers Ex: (1,2,3,4,5,6)
     String correctAnswer;
     @Check(constraints = "number_of_answers >= 0 AND number_of_answers <=6")
-    private int numberOfOptions;
+    private Integer numberOfOptions;
     private String option1;
     private String option2;
     private String option3;
@@ -32,18 +27,13 @@ public class ExamQuestionMcq extends ExamQuestion {
     private String option5;
     private String option6;
     @Check(constraints = "number_of_correct_answers >= 0 AND number_of_correct_answers <=6")
-    private int numberOfCorrectAnswers;
-    @ManyToOne
-    @JoinColumn(name = "exam_id")
-    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-    @JsonIdentityReference(alwaysAsId = true)
-    private Exam exam;
+    private Integer numberOfCorrectAnswers;
 
     public void update(ExamQuestionMcq bankQuestionMcq) {
         super.update(bankQuestionMcq);
 
 
-        if (bankQuestionMcq.getNumberOfOptions() != 0) {
+        if (bankQuestionMcq.getNumberOfOptions() != null) {
             this.setNumberOfOptions(bankQuestionMcq.getNumberOfOptions());
         }
         if (bankQuestionMcq.getOption1() != null) {
@@ -64,7 +54,7 @@ public class ExamQuestionMcq extends ExamQuestion {
         if (bankQuestionMcq.getOption6() != null) {
             this.setOption6(bankQuestionMcq.getOption6());
         }
-        if (bankQuestionMcq.getNumberOfCorrectAnswers() != 0) {
+        if (bankQuestionMcq.getNumberOfCorrectAnswers() != null) {
             this.setNumberOfCorrectAnswers(bankQuestionMcq.getNumberOfCorrectAnswers());
         }
         if (bankQuestionMcq.getCorrectAnswer() != null) {

@@ -1,5 +1,8 @@
 package com.skolarli.lmsservice.models.db;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.skolarli.lmsservice.models.AnswerFormat;
 import com.skolarli.lmsservice.models.DifficultyLevel;
 import com.skolarli.lmsservice.models.QuestionFormat;
@@ -36,7 +39,13 @@ public class ExamQuestion extends Tenantable {
 
     private String sampleAnswerUrl;
 
-    private int marks;
+    private Integer marks;
+
+    @ManyToOne
+    @JoinColumn(name = "exam_id")
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+    @JsonIdentityReference(alwaysAsId = true)
+    private Exam exam;
 
 
     public void update(ExamQuestion question) {
@@ -61,8 +70,11 @@ public class ExamQuestion extends Tenantable {
         if (question.getSampleAnswerUrl() != null) {
             this.sampleAnswerUrl = question.getSampleAnswerUrl();
         }
-        if (question.getMarks() != 0) {
+        if (question.getMarks() != null) {
             this.marks = question.getMarks();
+        }
+        if (question.getExam() != null) {
+            this.exam = question.getExam();
         }
 
     }

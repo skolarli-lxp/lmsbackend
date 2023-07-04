@@ -3,7 +3,6 @@ package com.skolarli.lmsservice.models.db;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.skolarli.lmsservice.models.dto.exam.NewExamQuestionMcqRequest;
 import com.skolarli.lmsservice.models.dto.exam.NewExamQuestionSubjectiveRequest;
@@ -73,15 +72,12 @@ public class Exam extends Tenantable {
 
 
     @OneToMany(mappedBy = "exam", cascade = CascadeType.ALL)
-    @JsonIgnoreProperties("exam")
     private List<ExamQuestionMcq> examQuestionMcqs;
 
     @OneToMany(mappedBy = "exam", cascade = CascadeType.ALL)
-    @JsonIgnoreProperties("exam")
     private List<ExamQuestionSubjective> examQuestionSubjectives;
 
     @OneToMany(mappedBy = "exam", cascade = CascadeType.ALL)
-    @JsonIgnoreProperties("exam")
     private List<ExamQuestionTrueOrFalse> examQuestionTrueOrFalses;
 
 
@@ -180,7 +176,7 @@ public class Exam extends Tenantable {
         return true;
     }
 
-    public NewExamQuestionsAllTypesResponse getExamQuestions() {
+    public NewExamQuestionsAllTypesResponse fetchAllExamQuestions() {
         NewExamQuestionsAllTypesResponse newExamQuestionsAllTypesResponse
                 = new NewExamQuestionsAllTypesResponse();
         newExamQuestionsAllTypesResponse.setMcqQuestions(examQuestionMcqs);

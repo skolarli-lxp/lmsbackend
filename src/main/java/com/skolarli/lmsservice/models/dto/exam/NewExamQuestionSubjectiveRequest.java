@@ -9,7 +9,7 @@ import lombok.*;
 @Getter
 @Setter
 public class NewExamQuestionSubjectiveRequest extends NewExamQuestionRequest {
-    private int wordCount;
+    private Integer wordCount;
 
     private String correctAnswer;
 

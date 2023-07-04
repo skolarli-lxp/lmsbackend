@@ -1,14 +1,9 @@
 package com.skolarli.lmsservice.models.db;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIdentityReference;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.*;
 import org.hibernate.annotations.Check;
 
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Data
@@ -26,13 +21,6 @@ public class ExamQuestionTrueOrFalse extends ExamQuestion {
 
     @Check(constraints = "correct_answer == 0 OR correct_answer == 1")
     private Integer correctAnswer;
-
-    @ManyToOne
-    @JoinColumn(name = "exam_id")
-    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-    @JsonIdentityReference(alwaysAsId = true)
-    private Exam exam;
-
 
     public void update(ExamQuestionTrueOrFalse bankQuestionTrueOrFalse) {
         super.update(bankQuestionTrueOrFalse);

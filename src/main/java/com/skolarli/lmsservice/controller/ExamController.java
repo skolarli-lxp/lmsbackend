@@ -16,16 +16,17 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.UUID;
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/exam")
 public class ExamController {
     /*
-    removequestions  by ID
-
+    TODO:
     add exam qn to QB
     add QB qn to exam
 
+    Choose Question Bank questions for an exam
      */
     final Logger logger = LoggerFactory.getLogger(ExamController.class);
 
@@ -113,7 +114,7 @@ public class ExamController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<Exam> saveExam(@RequestBody NewExamRequest request) {
+    public ResponseEntity<Exam> saveExam(@Valid  @RequestBody NewExamRequest request) {
         UUID uuid = UUID.randomUUID();
         MDC.put("requestId", uuid.toString());
         logger.info("Received request adding exam");

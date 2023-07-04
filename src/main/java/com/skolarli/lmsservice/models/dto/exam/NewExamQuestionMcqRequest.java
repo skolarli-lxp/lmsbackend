@@ -15,7 +15,7 @@ import javax.validation.constraints.NotNull;
 public class NewExamQuestionMcqRequest extends NewExamQuestionRequest {
     List<Integer> correctAnswer;
     @NotNull
-    private int numberOfOptions;
+    private Integer numberOfOptions;
     private String option1;
     private String option2;
     private String option3;

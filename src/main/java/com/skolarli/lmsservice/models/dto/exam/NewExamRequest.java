@@ -9,6 +9,7 @@ import lombok.*;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.validation.constraints.NotNull;
 
 @Data
 @AllArgsConstructor
@@ -21,6 +22,7 @@ public class NewExamRequest {
 
     Long batchId;
 
+    @NotNull
     private String examName;
 
     private String examType;
