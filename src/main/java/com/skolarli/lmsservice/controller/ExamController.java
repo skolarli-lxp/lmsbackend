@@ -187,7 +187,7 @@ public class ExamController {
 
     @RequestMapping(method = RequestMethod.DELETE, value = "/{examId}/questions")
     public ResponseEntity<Void> deleteQuestions(@PathVariable Long examId,
-                                                @RequestParam DeleteExamQuestionsRequest request) {
+                                                @RequestBody DeleteExamQuestionsRequest request) {
         UUID uuid = UUID.randomUUID();
         MDC.put("requestId", uuid.toString());
         logger.info("Received request deleting questions for exam id: " + examId);
