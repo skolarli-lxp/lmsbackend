@@ -61,7 +61,7 @@ public class SwaggerConfig implements WebMvcConfigurer {
 
     private SecurityReference securityReference() {
         AuthorizationScope[] authorizationScopes = {
-                new AuthorizationScope("global", "accessEverything")
+            new AuthorizationScope("global", "accessEverything")
         };
         return SecurityReference.builder()
                 .reference("Authorization")
@@ -70,7 +70,8 @@ public class SwaggerConfig implements WebMvcConfigurer {
     }
 
     private ApiKey apiKey() {
-        return new ApiKey("Authorization", "Authorization", "header");
+        return new ApiKey("Authorization",
+                "Authorization", "header");
     }
 
     @Bean
