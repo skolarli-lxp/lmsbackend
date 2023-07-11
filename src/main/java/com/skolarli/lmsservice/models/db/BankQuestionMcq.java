@@ -14,7 +14,7 @@ import javax.persistence.Table;
 @Setter
 @Entity
 @Table(name = "questionbank_mcq")
-public class BankQuestionMcq extends Question {
+public class BankQuestionMcq extends BankQuestion {
 
     // String of comma separated correct answers Ex: (1,2,3,4,5,6)
     String correctAnswer;

@@ -1,17 +1,8 @@
 package com.skolarli.lmsservice.models.db;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIdentityReference;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import com.skolarli.lmsservice.models.AnswerFormat;
-import com.skolarli.lmsservice.models.QuestionFormat;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
-import java.util.Date;
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -21,7 +12,7 @@ import javax.validation.constraints.NotNull;
 @Setter
 @Entity
 @Table(name = "questionbank_subjective")
-public class BankQuestionSubjective extends Question {
+public class BankQuestionSubjective extends BankQuestion {
 
     private int wordCount;
 

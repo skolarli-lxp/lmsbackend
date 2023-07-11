@@ -33,6 +33,10 @@ public class ExamQuestionMcqServiceImpl implements ExamQuestionMcqService {
     public ExamQuestionMcq toExamQuestionMcq(NewExamQuestionMcqRequest newExamQuestionMcqRequest) {
         ExamQuestionMcq examQuestionMcq = new ExamQuestionMcq();
         examQuestionMcq.setQuestion(newExamQuestionMcqRequest.getQuestion());
+        if (newExamQuestionMcqRequest.getResourceFileRequest() != null) {
+            examQuestionMcq.setQuestionResourceFile(
+                    newExamQuestionMcqRequest.getResourceFileRequest().toResourceFile());
+        }
         examQuestionMcq.setQuestionType(newExamQuestionMcqRequest.getQuestionType());
         examQuestionMcq.setDifficultyLevel(newExamQuestionMcqRequest.getDifficultyLevel());
         examQuestionMcq.setQuestionFormat(newExamQuestionMcqRequest.getQuestionFormat());

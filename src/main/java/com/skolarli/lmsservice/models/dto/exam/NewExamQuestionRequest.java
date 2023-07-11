@@ -4,6 +4,7 @@ import com.skolarli.lmsservice.models.AnswerFormat;
 import com.skolarli.lmsservice.models.DifficultyLevel;
 import com.skolarli.lmsservice.models.QuestionFormat;
 import com.skolarli.lmsservice.models.db.ExamQuestion;
+import com.skolarli.lmsservice.models.dto.questionbank.NewQuestionResourceFileRequest;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -39,7 +40,9 @@ public class NewExamQuestionRequest {
 
     public void toExamQuestion(ExamQuestion examQuestion) {
         examQuestion.setQuestion(question);
-        examQuestion.setQuestionResourceFile(resourceFileRequest.toResourceFile());
+        if (resourceFileRequest != null) {
+            examQuestion.setQuestionResourceFile(resourceFileRequest.toResourceFile());
+        }
         examQuestion.setQuestionType(questionType);
         examQuestion.setDifficultyLevel(difficultyLevel);
         examQuestion.setQuestionFormat(questionFormat);

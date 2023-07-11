@@ -41,6 +41,10 @@ public class ExamQuestionTrueOrFalseServiceImpl implements ExamQuestionTrueOrFal
         ExamQuestionTrueOrFalse examQuestionTrueOrFalse = new ExamQuestionTrueOrFalse();
 
         examQuestionTrueOrFalse.setQuestion(newExamQuestionTrueOrFalseRequest.getQuestion());
+        if (newExamQuestionTrueOrFalseRequest.getResourceFileRequest() != null) {
+            examQuestionTrueOrFalse.setQuestionResourceFile(
+                    newExamQuestionTrueOrFalseRequest.getResourceFileRequest().toResourceFile());
+        }
         examQuestionTrueOrFalse.setQuestionType(
                 newExamQuestionTrueOrFalseRequest.getQuestionType());
         examQuestionTrueOrFalse.setDifficultyLevel(newExamQuestionTrueOrFalseRequest

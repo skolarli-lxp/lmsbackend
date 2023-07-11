@@ -1,18 +1,9 @@
 package com.skolarli.lmsservice.models.db;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIdentityReference;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import com.skolarli.lmsservice.models.AnswerFormat;
-import com.skolarli.lmsservice.models.QuestionFormat;
 import lombok.*;
 import org.hibernate.annotations.Check;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
-import java.util.Date;
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -22,7 +13,7 @@ import javax.validation.constraints.NotNull;
 @Setter
 @Entity
 @Table(name = "questionbank_tf")
-public class BankQuestionTrueOrFalse extends Question {
+public class BankQuestionTrueOrFalse extends BankQuestion {
 
     private String option1 = "True";
     private String option2 = "False";

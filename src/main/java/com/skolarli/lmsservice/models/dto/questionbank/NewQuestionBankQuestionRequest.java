@@ -20,6 +20,8 @@ public class NewQuestionBankQuestionRequest {
     @NotNull
     private String question;
 
+    private NewQuestionResourceFileRequest resourceFileRequest;
+
     private String questionType;
 
     private DifficultyLevel difficultyLevel;
