@@ -19,6 +19,9 @@ public class NewExamQuestionRequest {
     @NotNull
     private String question;
 
+    private NewQuestionResourceFileRequest resourceFileRequest;
+
+
     private String questionType;
 
     private DifficultyLevel difficultyLevel;
@@ -36,6 +39,7 @@ public class NewExamQuestionRequest {
 
     public void toExamQuestion(ExamQuestion examQuestion) {
         examQuestion.setQuestion(question);
+        examQuestion.setQuestionResourceFile(resourceFileRequest.toResourceFile());
         examQuestion.setQuestionType(questionType);
         examQuestion.setDifficultyLevel(difficultyLevel);
         examQuestion.setQuestionFormat(questionFormat);

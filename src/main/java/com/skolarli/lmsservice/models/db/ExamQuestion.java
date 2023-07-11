@@ -28,6 +28,10 @@ public class ExamQuestion extends Tenantable {
     @NotNull
     private String question;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "resource_id", referencedColumnName = "id")
+    private ResourceFile questionResourceFile;
+
     private String questionType;
 
     private DifficultyLevel difficultyLevel;
@@ -51,6 +55,13 @@ public class ExamQuestion extends Tenantable {
     public void update(ExamQuestion question) {
         if (question.getQuestion() != null) {
             this.question = question.getQuestion();
+        }
+        if (question.getQuestionResourceFile() != null) {
+            if (this.questionResourceFile != null) {
+                this.questionResourceFile.update(question.getQuestionResourceFile());
+            } else {
+                this.questionResourceFile = question.getQuestionResourceFile();
+            }
         }
         if (question.getQuestionType() != null) {
             this.questionType = question.getQuestionType();
