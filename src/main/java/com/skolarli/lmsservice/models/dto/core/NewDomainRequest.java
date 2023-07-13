@@ -17,12 +17,19 @@ public class NewDomainRequest {
     private String domainName;
     @NotNull
     private String companyName;
+
+    private String tagLine;
+
+    private  String corporateEmail;
+    private String logoUrl;
     @NotNull
     private String countryCode;
     @NotNull
     private String phoneNumber;
     @NotNull
     private String currency;
+    @NotNull
+    private String timeZone;
 
     // Company Data - Optional
     private String address;

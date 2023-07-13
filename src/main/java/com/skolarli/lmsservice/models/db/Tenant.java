@@ -28,14 +28,23 @@ public class Tenant {
     @NotNull
     private String companyName;
 
+    private String tagLine;
+
     @NotNull
     private String countryCode;
 
     @NotNull
     private String phoneNumber;
 
+    private String corporateEmail;
+
+    private String logoUrl;
+
     @NotNull
     private String currency;
+
+    @NotNull
+    private String timeZone;
 
     private String website;
     private String address;
@@ -52,6 +61,10 @@ public class Tenant {
         this.countryCode = newDomainRequest.getCountryCode();
         this.phoneNumber = newDomainRequest.getPhoneNumber();
         this.currency = newDomainRequest.getCurrency();
+        this.timeZone = newDomainRequest.getTimeZone();
+        this.corporateEmail = newDomainRequest.getCorporateEmail();
+        this.logoUrl = newDomainRequest.getLogoUrl();
+        this.tagLine = newDomainRequest.getTagLine();
         if (newDomainRequest.getWebsite() != null) {
             this.website = newDomainRequest.getWebsite();
         }
@@ -72,8 +85,20 @@ public class Tenant {
         if (tenant.getCompanyName() != null && !tenant.getCompanyName().isEmpty()) {
             this.setCompanyName(tenant.getCompanyName());
         }
+        if (tenant.getTagLine() != null && !tenant.getTagLine().isEmpty()) {
+            this.setTagLine(tenant.getTagLine());
+        }
+        if (tenant.getCorporateEmail() != null && !tenant.getCorporateEmail().isEmpty()) {
+            this.setCorporateEmail(tenant.getCorporateEmail());
+        }
+        if (tenant.getLogoUrl() != null && !tenant.getLogoUrl().isEmpty()) {
+            this.setLogoUrl(tenant.getLogoUrl());
+        }
         if (tenant.getCountryCode() != null && !tenant.getCountryCode().isEmpty()) {
             this.setCountryCode(tenant.getCountryCode());
+        }
+        if (this.getTimeZone() != null && !this.getTimeZone().isEmpty()) {
+            this.setTimeZone(tenant.getTimeZone());
         }
         if (tenant.getPhoneNumber() != null && !tenant.getPhoneNumber().isEmpty()) {
             this.setPhoneNumber(tenant.getPhoneNumber());

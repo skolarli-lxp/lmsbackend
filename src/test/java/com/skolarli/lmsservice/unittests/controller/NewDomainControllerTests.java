@@ -53,9 +53,19 @@ class NewDomainControllerTests {
 
     @BeforeEach
     public void setup() {
-        newDomainRequest = new NewDomainRequest("mydomainname", "MyAwesomeCompany", "+91",
-                "1234561234", "INR", null, "myawesomewebsite.com", "Jaya",
-                "Nair", "jaya@skolarli.com", "mymockpassword");
+        newDomainRequest = new NewDomainRequest();
+        newDomainRequest.setDomainName("mydomainname");
+        newDomainRequest.setCompanyName("MyAwesomeCompany");
+        newDomainRequest.setCountryCode("+91");
+        newDomainRequest.setPhoneNumber("1234561234");
+        newDomainRequest.setCurrency("INR");
+        newDomainRequest.setWebsite("myawesomewebsite.com");
+        newDomainRequest.setFirstName("Jaya");
+        newDomainRequest.setLastName("Nair");
+        newDomainRequest.setEmail("jaya@skolarli.com");
+        newDomainRequest.setPassword("mymockpassword");
+        newDomainRequest.setTimeZone("Asia/Kolkata");
+
         lmsUser = new LmsUser();
         lmsUser.setId(1);
         lmsUser.setFirstName("Jaya");
