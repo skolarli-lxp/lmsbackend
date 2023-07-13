@@ -98,18 +98,14 @@ public class ChapterServiceImpl implements ChapterService {
     }
 
     @Override
-    public Chapter updateChapter(Chapter chapter, long id) {
+    public Chapter updateChapter(NewChapterRequest request, long id) {
         Chapter existingChapter = chapterRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Chapter", "Id", id));
         if (!checkPermission(existingChapter)) {
             throw new OperationNotSupportedException("User does not have permissions to "
                     + "update this chapter");
         }
-        if (chapter.getChapterIsDeleted() != null) {
-            logger.error("Cannot change deleted status. Use delete APIs instead");
-            chapter.setChapterIsDeleted(null);
-        }
-        existingChapter.update(chapter);
+        existingChapter.update(request);
         return chapterRepository.save(existingChapter);
     }
 

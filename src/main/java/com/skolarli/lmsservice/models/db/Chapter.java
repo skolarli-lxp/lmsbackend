@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.skolarli.lmsservice.models.dto.course.ChapterSortOrderResponse;
+import com.skolarli.lmsservice.models.dto.course.NewChapterRequest;
 import lombok.*;
 import org.hibernate.annotations.Where;
 
@@ -75,6 +76,21 @@ public class Chapter extends Tenantable {
         }
         if (chapter.getChapterSortOrder() != 0) {
             this.setChapterSortOrder(chapter.getChapterSortOrder());
+        }
+    }
+
+    public void update(NewChapterRequest newChapterRequest) {
+        if (newChapterRequest.getChapterName() != null
+                && !newChapterRequest.getChapterName().isEmpty()) {
+            this.setChapterName(newChapterRequest.getChapterName());
+        }
+        if (newChapterRequest.getChapterDescription() != null
+                && !newChapterRequest.getChapterDescription().isEmpty()) {
+            this.setChapterDescription(newChapterRequest.getChapterDescription());
+        }
+
+        if (newChapterRequest.getChapterSortOrder() != 0) {
+            this.setChapterSortOrder(newChapterRequest.getChapterSortOrder());
         }
     }
 

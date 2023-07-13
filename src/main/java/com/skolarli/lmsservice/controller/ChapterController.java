@@ -126,9 +126,9 @@ public class ChapterController {
         MDC.put("requestId", uuid.toString());
         logger.info("Received request for updateChapter with id: " + id);
 
-        Chapter chapter = chapterService.toChapter(newChapterRequest);
         try {
-            return new ResponseEntity<>(chapterService.updateChapter(chapter, id), HttpStatus.OK);
+            return new ResponseEntity<>(chapterService.updateChapter(newChapterRequest, id),
+                    HttpStatus.OK);
         } catch (Exception e) {
             logger.error("Error in updateChapter: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
