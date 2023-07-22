@@ -1,7 +1,7 @@
 package com.skolarli.lmsservice.unittests.services.impl;
 
-import com.skolarli.lmsservice.repository.AttendanceRepository;
-import com.skolarli.lmsservice.services.impl.AttendanceServiceImpl;
+import com.skolarli.lmsservice.repository.course.AttendanceRepository;
+import com.skolarli.lmsservice.services.impl.course.AttendanceServiceImpl;
 import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;

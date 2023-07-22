@@ -2,7 +2,7 @@ package com.skolarli.lmsservice.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.skolarli.lmsservice.AbstractContainerBaseTest;
-import com.skolarli.lmsservice.services.CourseService;
+import com.skolarli.lmsservice.services.course.CourseService;
 import org.junit.Rule;
 import org.junit.jupiter.api.*;
 import org.junit.rules.ExpectedException;

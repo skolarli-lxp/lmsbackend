@@ -20,7 +20,7 @@ public class TenantAspect {
     @PersistenceContext
     private EntityManager entityManager;
 
-    @Before("execution(* com.skolarli.lmsservice.repository.TenantableRepository+.find*(..))")
+    @Before("execution(* com.skolarli.lmsservice.repository.core.TenantableRepository+.find*(..))")
     public void beforeFindOfTenantableRepository() {
         entityManager
                 .unwrap(Session.class)

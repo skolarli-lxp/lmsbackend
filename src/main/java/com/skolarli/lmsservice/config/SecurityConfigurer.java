@@ -1,7 +1,7 @@
 package com.skolarli.lmsservice.config;
 
 import com.skolarli.lmsservice.filters.JwtRequestFilter;
-import com.skolarli.lmsservice.services.LmsUserDetailsService;
+import com.skolarli.lmsservice.services.core.LmsUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;

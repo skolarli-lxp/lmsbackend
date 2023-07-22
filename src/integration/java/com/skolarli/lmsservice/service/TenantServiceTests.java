@@ -11,7 +11,7 @@ import com.skolarli.lmsservice.authentications.TenantAuthenticationToken;
 import com.skolarli.lmsservice.exception.OperationNotSupportedException;
 import com.skolarli.lmsservice.exception.ResourceNotFoundException;
 import com.skolarli.lmsservice.models.db.core.Tenant;
-import com.skolarli.lmsservice.services.TenantService;
+import com.skolarli.lmsservice.services.core.TenantService;
 import org.junit.Rule;
 import org.junit.jupiter.api.*;
 import org.junit.rules.ExpectedException;

@@ -1,8 +1,8 @@
 package com.skolarli.lmsservice.filters;
 
 import com.skolarli.lmsservice.authentications.TenantAuthenticationToken;
-import com.skolarli.lmsservice.services.LmsUserDetailsService;
-import com.skolarli.lmsservice.services.TenantService;
+import com.skolarli.lmsservice.services.core.LmsUserDetailsService;
+import com.skolarli.lmsservice.services.core.TenantService;
 import com.skolarli.lmsservice.utils.JwtUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
