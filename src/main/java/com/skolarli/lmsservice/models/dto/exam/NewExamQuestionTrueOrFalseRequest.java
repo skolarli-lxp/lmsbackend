@@ -1,7 +1,7 @@
 package com.skolarli.lmsservice.models.dto.exam;
 
 import com.skolarli.lmsservice.models.constraints.ValidTrueFalseValue;
-import com.skolarli.lmsservice.models.db.ExamQuestionTrueOrFalse;
+import com.skolarli.lmsservice.models.db.exam.ExamQuestionTrueOrFalse;
 import lombok.*;
 
 @Data

@@ -1,7 +1,11 @@
-package com.skolarli.lmsservice.models.db;
+package com.skolarli.lmsservice.models.db.core;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.skolarli.lmsservice.models.db.course.Attendance;
+import com.skolarli.lmsservice.models.db.course.Batch;
+import com.skolarli.lmsservice.models.db.course.Course;
+import com.skolarli.lmsservice.models.db.course.Enrollment;
 import com.skolarli.lmsservice.models.dto.core.NewDomainRequest;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

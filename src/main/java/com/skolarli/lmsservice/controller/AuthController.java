@@ -2,8 +2,8 @@ package com.skolarli.lmsservice.controller;
 
 import com.skolarli.lmsservice.authentications.TenantAuthenticationToken;
 import com.skolarli.lmsservice.contexts.TenantContext;
-import com.skolarli.lmsservice.models.db.LmsUser;
-import com.skolarli.lmsservice.models.db.Tenant;
+import com.skolarli.lmsservice.models.db.core.LmsUser;
+import com.skolarli.lmsservice.models.db.core.Tenant;
 import com.skolarli.lmsservice.models.dto.core.AuthenticationRequest;
 import com.skolarli.lmsservice.models.dto.core.AuthenticationResponse;
 import com.skolarli.lmsservice.services.LmsUserDetailsService;

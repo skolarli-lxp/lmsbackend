@@ -2,7 +2,9 @@ package com.skolarli.lmsservice.unittests.models.db;
 
 import com.skolarli.lmsservice.models.DeliveryFormat;
 import com.skolarli.lmsservice.models.DiscountType;
-import com.skolarli.lmsservice.models.db.*;
+import com.skolarli.lmsservice.models.db.course.Batch;
+import com.skolarli.lmsservice.models.db.course.Chapter;
+import com.skolarli.lmsservice.models.db.course.Course;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;

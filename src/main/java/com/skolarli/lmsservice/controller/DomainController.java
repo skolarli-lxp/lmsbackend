@@ -2,8 +2,8 @@ package com.skolarli.lmsservice.controller;
 
 
 import com.skolarli.lmsservice.exception.OperationNotSupportedException;
-import com.skolarli.lmsservice.models.db.LmsUser;
-import com.skolarli.lmsservice.models.db.Tenant;
+import com.skolarli.lmsservice.models.db.core.LmsUser;
+import com.skolarli.lmsservice.models.db.core.Tenant;
 import com.skolarli.lmsservice.services.TenantService;
 import com.skolarli.lmsservice.utils.UserUtils;
 import org.slf4j.Logger;

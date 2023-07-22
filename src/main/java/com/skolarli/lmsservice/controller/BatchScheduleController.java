@@ -1,8 +1,8 @@
 package com.skolarli.lmsservice.controller;
 
 import com.skolarli.lmsservice.exception.OperationNotSupportedException;
-import com.skolarli.lmsservice.models.db.BatchSchedule;
-import com.skolarli.lmsservice.models.db.LmsUser;
+import com.skolarli.lmsservice.models.db.core.LmsUser;
+import com.skolarli.lmsservice.models.db.course.BatchSchedule;
 import com.skolarli.lmsservice.models.dto.course.NewBatchScheduleRequest;
 import com.skolarli.lmsservice.models.dto.course.NewBatchSchedulesForBatchRequest;
 import com.skolarli.lmsservice.services.BatchScheduleService;

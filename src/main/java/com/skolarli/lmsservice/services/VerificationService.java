@@ -1,7 +1,7 @@
 package com.skolarli.lmsservice.services;
 
-import com.skolarli.lmsservice.models.db.LmsUser;
-import com.skolarli.lmsservice.models.db.VerificationCode;
+import com.skolarli.lmsservice.models.db.core.LmsUser;
+import com.skolarli.lmsservice.models.db.core.VerificationCode;
 
 import java.util.List;
 

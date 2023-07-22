@@ -1,6 +1,6 @@
 package com.skolarli.lmsservice.repository;
 
-import com.skolarli.lmsservice.models.db.Tenant;
+import com.skolarli.lmsservice.models.db.core.Tenant;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

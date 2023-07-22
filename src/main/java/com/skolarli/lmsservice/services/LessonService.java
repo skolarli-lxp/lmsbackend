@@ -1,6 +1,6 @@
 package com.skolarli.lmsservice.services;
 
-import com.skolarli.lmsservice.models.db.Lesson;
+import com.skolarli.lmsservice.models.db.course.Lesson;
 import com.skolarli.lmsservice.models.dto.course.LessonSortOrderRequest;
 import com.skolarli.lmsservice.models.dto.course.LessonSortOrderResponse;
 import com.skolarli.lmsservice.models.dto.course.LessonUpdateRequest;

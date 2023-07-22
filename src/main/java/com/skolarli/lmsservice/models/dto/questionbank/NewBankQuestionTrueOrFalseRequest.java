@@ -11,7 +11,6 @@ import lombok.*;
 public class NewBankQuestionTrueOrFalseRequest extends NewQuestionBankQuestionRequest {
 
 
-
     private String option1 = "True";
     private String option2 = "False";
 

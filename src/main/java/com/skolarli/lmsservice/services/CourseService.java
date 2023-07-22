@@ -1,6 +1,6 @@
 package com.skolarli.lmsservice.services;
 
-import com.skolarli.lmsservice.models.db.Course;
+import com.skolarli.lmsservice.models.db.course.Course;
 
 import java.util.List;
 

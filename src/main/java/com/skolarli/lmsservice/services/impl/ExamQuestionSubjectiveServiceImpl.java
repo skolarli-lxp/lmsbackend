@@ -2,9 +2,9 @@ package com.skolarli.lmsservice.services.impl;
 
 import com.skolarli.lmsservice.exception.OperationNotSupportedException;
 import com.skolarli.lmsservice.exception.ResourceNotFoundException;
-import com.skolarli.lmsservice.models.db.Exam;
-import com.skolarli.lmsservice.models.db.ExamQuestionSubjective;
-import com.skolarli.lmsservice.models.db.LmsUser;
+import com.skolarli.lmsservice.models.db.core.LmsUser;
+import com.skolarli.lmsservice.models.db.exam.Exam;
+import com.skolarli.lmsservice.models.db.exam.ExamQuestionSubjective;
 import com.skolarli.lmsservice.models.dto.exam.NewExamQuestionSubjectiveRequest;
 import com.skolarli.lmsservice.repository.ExamQuestionSubjectiveRepository;
 import com.skolarli.lmsservice.services.ExamQuestionSubjectiveService;

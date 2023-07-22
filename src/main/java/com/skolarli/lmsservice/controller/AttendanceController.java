@@ -1,7 +1,7 @@
 package com.skolarli.lmsservice.controller;
 
 import com.skolarli.lmsservice.exception.OperationNotSupportedException;
-import com.skolarli.lmsservice.models.db.Attendance;
+import com.skolarli.lmsservice.models.db.course.Attendance;
 import com.skolarli.lmsservice.models.dto.course.NewAttendanceRequest;
 import com.skolarli.lmsservice.models.dto.course.NewAttendancesForScheduleRequest;
 import com.skolarli.lmsservice.services.AttendanceService;

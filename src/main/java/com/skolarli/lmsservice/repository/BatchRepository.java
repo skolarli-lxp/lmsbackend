@@ -1,6 +1,6 @@
 package com.skolarli.lmsservice.repository;
 
-import com.skolarli.lmsservice.models.db.Batch;
+import com.skolarli.lmsservice.models.db.course.Batch;
 
 import java.util.List;
 

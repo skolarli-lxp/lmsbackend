@@ -1,9 +1,10 @@
-package com.skolarli.lmsservice.models.db;
+package com.skolarli.lmsservice.models.db.course;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.skolarli.lmsservice.models.db.core.Tenantable;
 import com.skolarli.lmsservice.models.dto.course.ChapterSortOrderResponse;
 import com.skolarli.lmsservice.models.dto.course.NewChapterRequest;
 import lombok.*;

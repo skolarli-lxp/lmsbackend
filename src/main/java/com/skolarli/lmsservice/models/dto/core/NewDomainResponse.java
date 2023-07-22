@@ -1,8 +1,8 @@
 package com.skolarli.lmsservice.models.dto.core;
 
-import com.skolarli.lmsservice.models.db.LmsUser;
-import com.skolarli.lmsservice.models.db.Tenant;
-import com.skolarli.lmsservice.models.db.VerificationCode;
+import com.skolarli.lmsservice.models.db.core.LmsUser;
+import com.skolarli.lmsservice.models.db.core.Tenant;
+import com.skolarli.lmsservice.models.db.core.VerificationCode;
 import lombok.Data;
 
 @Data
@@ -12,7 +12,7 @@ public class NewDomainResponse {
     private String domainName;
     private String companyName;
 
-    private  String tagLine;
+    private String tagLine;
 
     private String corporateEmail;
     private String logoUrl;

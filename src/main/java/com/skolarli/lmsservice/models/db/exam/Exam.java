@@ -1,9 +1,13 @@
-package com.skolarli.lmsservice.models.db;
+package com.skolarli.lmsservice.models.db.exam;
 
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.skolarli.lmsservice.models.db.core.LmsUser;
+import com.skolarli.lmsservice.models.db.core.Tenantable;
+import com.skolarli.lmsservice.models.db.course.Batch;
+import com.skolarli.lmsservice.models.db.course.Course;
 import com.skolarli.lmsservice.models.dto.exam.NewExamQuestionMcqRequest;
 import com.skolarli.lmsservice.models.dto.exam.NewExamQuestionSubjectiveRequest;
 import com.skolarli.lmsservice.models.dto.exam.NewExamQuestionTrueOrFalseRequest;

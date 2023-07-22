@@ -1,5 +1,6 @@
-package com.skolarli.lmsservice.models.db;
+package com.skolarli.lmsservice.models.db.questionbank;
 
+import com.skolarli.lmsservice.models.db.core.Tenantable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

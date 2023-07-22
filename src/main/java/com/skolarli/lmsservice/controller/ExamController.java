@@ -1,6 +1,6 @@
 package com.skolarli.lmsservice.controller;
 
-import com.skolarli.lmsservice.models.db.Exam;
+import com.skolarli.lmsservice.models.db.exam.Exam;
 import com.skolarli.lmsservice.models.dto.exam.DeleteExamQuestionsRequest;
 import com.skolarli.lmsservice.models.dto.exam.NewExamQuestionsAllTypesRequest;
 import com.skolarli.lmsservice.models.dto.exam.NewExamQuestionsAllTypesResponse;
@@ -114,7 +114,7 @@ public class ExamController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<Exam> saveExam(@Valid  @RequestBody NewExamRequest request) {
+    public ResponseEntity<Exam> saveExam(@Valid @RequestBody NewExamRequest request) {
         UUID uuid = UUID.randomUUID();
         MDC.put("requestId", uuid.toString());
         logger.info("Received request adding exam");

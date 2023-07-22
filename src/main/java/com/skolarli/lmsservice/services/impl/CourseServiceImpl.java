@@ -2,9 +2,9 @@ package com.skolarli.lmsservice.services.impl;
 
 import com.skolarli.lmsservice.exception.OperationNotSupportedException;
 import com.skolarli.lmsservice.exception.ResourceNotFoundException;
-import com.skolarli.lmsservice.models.db.Course;
-import com.skolarli.lmsservice.models.db.CourseTag;
-import com.skolarli.lmsservice.models.db.LmsUser;
+import com.skolarli.lmsservice.models.db.core.LmsUser;
+import com.skolarli.lmsservice.models.db.course.Course;
+import com.skolarli.lmsservice.models.db.course.CourseTag;
 import com.skolarli.lmsservice.repository.CourseRepository;
 import com.skolarli.lmsservice.repository.CourseTagRepository;
 import com.skolarli.lmsservice.services.CourseService;

@@ -20,7 +20,7 @@ public class NewDomainRequest {
 
     private String tagLine;
 
-    private  String corporateEmail;
+    private String corporateEmail;
     private String logoUrl;
     @NotNull
     private String countryCode;

@@ -1,4 +1,4 @@
-package com.skolarli.lmsservice.models.db;
+package com.skolarli.lmsservice.models.db.course;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
@@ -7,6 +7,8 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.skolarli.lmsservice.models.BatchStatus;
 import com.skolarli.lmsservice.models.DeliveryFormat;
 import com.skolarli.lmsservice.models.DiscountType;
+import com.skolarli.lmsservice.models.db.core.LmsUser;
+import com.skolarli.lmsservice.models.db.core.Tenantable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

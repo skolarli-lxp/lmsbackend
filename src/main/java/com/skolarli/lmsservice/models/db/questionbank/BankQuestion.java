@@ -1,4 +1,4 @@
-package com.skolarli.lmsservice.models.db;
+package com.skolarli.lmsservice.models.db.questionbank;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
@@ -6,11 +6,17 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.skolarli.lmsservice.models.AnswerFormat;
 import com.skolarli.lmsservice.models.DifficultyLevel;
 import com.skolarli.lmsservice.models.QuestionFormat;
+import com.skolarli.lmsservice.models.db.core.LmsUser;
+import com.skolarli.lmsservice.models.db.core.Tenantable;
+import com.skolarli.lmsservice.models.db.course.Course;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
+import java.util.Date;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
@@ -19,8 +25,24 @@ import javax.validation.constraints.NotNull;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ExamQuestion extends Tenantable {
+public class BankQuestion extends Tenantable {
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "course_id")
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+    @JsonIdentityReference(alwaysAsId = true)
+    Course course;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "created_by")
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+    @JsonIdentityReference(alwaysAsId = true)
+    LmsUser createdBy;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "updated_by")
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+    @JsonIdentityReference(alwaysAsId = true)
+    LmsUser updatedBy;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -43,16 +65,18 @@ public class ExamQuestion extends Tenantable {
 
     private String sampleAnswerUrl;
 
-    private Integer marks;
+    private int testAdditionCount;
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "created_time", nullable = false, updatable = false)
+    @CreationTimestamp
+    private Date createdTime;
 
-    @ManyToOne
-    @JoinColumn(name = "exam_id")
-    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-    @JsonIdentityReference(alwaysAsId = true)
-    private Exam exam;
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "last_updated_time", nullable = false)
+    @UpdateTimestamp
+    private Date lastUpdatedTime;
 
-
-    public void update(ExamQuestion question) {
+    public void update(BankQuestion question) {
         if (question.getQuestion() != null) {
             this.question = question.getQuestion();
         }
@@ -81,12 +105,8 @@ public class ExamQuestion extends Tenantable {
         if (question.getSampleAnswerUrl() != null) {
             this.sampleAnswerUrl = question.getSampleAnswerUrl();
         }
-        if (question.getMarks() != null) {
-            this.marks = question.getMarks();
+        if (question.getCourse() != null) {
+            this.course = question.getCourse();
         }
-        if (question.getExam() != null) {
-            this.exam = question.getExam();
-        }
-
     }
 }

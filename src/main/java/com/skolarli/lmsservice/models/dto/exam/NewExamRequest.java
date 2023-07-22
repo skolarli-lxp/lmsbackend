@@ -1,9 +1,9 @@
 package com.skolarli.lmsservice.models.dto.exam;
 
 
-import com.skolarli.lmsservice.models.db.ExamQuestionMcq;
-import com.skolarli.lmsservice.models.db.ExamQuestionSubjective;
-import com.skolarli.lmsservice.models.db.ExamQuestionTrueOrFalse;
+import com.skolarli.lmsservice.models.db.exam.ExamQuestionMcq;
+import com.skolarli.lmsservice.models.db.exam.ExamQuestionSubjective;
+import com.skolarli.lmsservice.models.db.exam.ExamQuestionTrueOrFalse;
 import lombok.*;
 
 import java.time.ZonedDateTime;

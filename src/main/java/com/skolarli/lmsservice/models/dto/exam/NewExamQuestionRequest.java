@@ -3,7 +3,7 @@ package com.skolarli.lmsservice.models.dto.exam;
 import com.skolarli.lmsservice.models.AnswerFormat;
 import com.skolarli.lmsservice.models.DifficultyLevel;
 import com.skolarli.lmsservice.models.QuestionFormat;
-import com.skolarli.lmsservice.models.db.ExamQuestion;
+import com.skolarli.lmsservice.models.db.exam.ExamQuestion;
 import com.skolarli.lmsservice.models.dto.questionbank.NewQuestionResourceFileRequest;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

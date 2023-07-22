@@ -1,7 +1,7 @@
 package com.skolarli.lmsservice.services;
 
 import com.skolarli.lmsservice.contexts.TenantContext;
-import com.skolarli.lmsservice.models.db.LmsUser;
+import com.skolarli.lmsservice.models.db.core.LmsUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

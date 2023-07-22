@@ -1,4 +1,4 @@
-package com.skolarli.lmsservice.models.db;
+package com.skolarli.lmsservice.models.db.core;
 
 import com.skolarli.lmsservice.exception.OperationNotSupportedException;
 import com.skolarli.lmsservice.models.dto.core.NewDomainRequest;

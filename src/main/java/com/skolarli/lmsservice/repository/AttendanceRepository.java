@@ -1,6 +1,6 @@
 package com.skolarli.lmsservice.repository;
 
-import com.skolarli.lmsservice.models.db.Attendance;
+import com.skolarli.lmsservice.models.db.course.Attendance;
 
 import java.util.List;
 

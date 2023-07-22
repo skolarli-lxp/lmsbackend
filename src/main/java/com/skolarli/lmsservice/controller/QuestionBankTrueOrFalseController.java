@@ -1,6 +1,6 @@
 package com.skolarli.lmsservice.controller;
 
-import com.skolarli.lmsservice.models.db.BankQuestionTrueOrFalse;
+import com.skolarli.lmsservice.models.db.questionbank.BankQuestionTrueOrFalse;
 import com.skolarli.lmsservice.models.dto.questionbank.NewBankQuestionTrueOrFalseRequest;
 import com.skolarli.lmsservice.services.QuestionBankTrueOrFalseService;
 import org.slf4j.Logger;

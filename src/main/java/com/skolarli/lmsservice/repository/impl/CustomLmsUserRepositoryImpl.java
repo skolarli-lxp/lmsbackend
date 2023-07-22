@@ -1,6 +1,6 @@
 package com.skolarli.lmsservice.repository.impl;
 
-import com.skolarli.lmsservice.models.db.LmsUser;
+import com.skolarli.lmsservice.models.db.core.LmsUser;
 import com.skolarli.lmsservice.repository.CustomLmsUserRepository;
 
 import javax.persistence.EntityManager;

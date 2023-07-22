@@ -1,7 +1,7 @@
 package com.skolarli.lmsservice.controller;
 
 import com.skolarli.lmsservice.exception.ValidationFailureException;
-import com.skolarli.lmsservice.models.db.BankQuestionMcq;
+import com.skolarli.lmsservice.models.db.questionbank.BankQuestionMcq;
 import com.skolarli.lmsservice.models.dto.questionbank.NewBankQuestionMcqRequest;
 import com.skolarli.lmsservice.services.QuestionBankMcqService;
 import org.slf4j.Logger;

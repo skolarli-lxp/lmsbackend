@@ -2,9 +2,9 @@ package com.skolarli.lmsservice.services.impl;
 
 import com.skolarli.lmsservice.exception.OperationNotSupportedException;
 import com.skolarli.lmsservice.exception.ResourceNotFoundException;
-import com.skolarli.lmsservice.models.db.Batch;
-import com.skolarli.lmsservice.models.db.Enrollment;
-import com.skolarli.lmsservice.models.db.LmsUser;
+import com.skolarli.lmsservice.models.db.core.LmsUser;
+import com.skolarli.lmsservice.models.db.course.Batch;
+import com.skolarli.lmsservice.models.db.course.Enrollment;
 import com.skolarli.lmsservice.models.dto.course.NewEnrollmentRequest;
 import com.skolarli.lmsservice.models.dto.course.NewEnrollmentsForBatchRequest;
 import com.skolarli.lmsservice.repository.EnrollmentRepository;

@@ -1,7 +1,7 @@
 package com.skolarli.lmsservice.aspects;
 
 import com.skolarli.lmsservice.contexts.TenantContext;
-import com.skolarli.lmsservice.models.db.Tenantable;
+import com.skolarli.lmsservice.models.db.core.Tenantable;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.hibernate.Session;

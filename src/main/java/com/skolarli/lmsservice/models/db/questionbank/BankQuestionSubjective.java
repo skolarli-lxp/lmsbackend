@@ -1,4 +1,4 @@
-package com.skolarli.lmsservice.models.db;
+package com.skolarli.lmsservice.models.db.questionbank;
 
 import lombok.*;
 
@@ -13,19 +13,19 @@ import javax.persistence.Table;
 @Getter
 @Setter
 @Entity
-@Table(name = "examquestions_subjective")
-public class ExamQuestionSubjective extends ExamQuestion {
+@Table(name = "questionbank_subjective")
+public class BankQuestionSubjective extends BankQuestion {
 
-    private Integer wordCount;
+    private int wordCount;
 
     @Column(columnDefinition = "TEXT")
     private String correctAnswer;
 
 
-    public void update(ExamQuestionSubjective bankQuestionSubjective) {
+    public void update(BankQuestionSubjective bankQuestionSubjective) {
         super.update(bankQuestionSubjective);
 
-        if (bankQuestionSubjective.getWordCount() != null) {
+        if (bankQuestionSubjective.getWordCount() != 0) {
             this.setWordCount(bankQuestionSubjective.getWordCount());
         }
         if (bankQuestionSubjective.getCorrectAnswer() != null) {

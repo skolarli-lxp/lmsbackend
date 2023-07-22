@@ -7,9 +7,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.skolarli.lmsservice.authentications.TenantAuthenticationToken;
-import com.skolarli.lmsservice.models.db.Course;
-import com.skolarli.lmsservice.models.db.CourseTag;
-import com.skolarli.lmsservice.models.db.LmsUser;
+import com.skolarli.lmsservice.models.db.core.LmsUser;
+import com.skolarli.lmsservice.models.db.course.Course;
+import com.skolarli.lmsservice.models.db.course.CourseTag;
 import com.skolarli.lmsservice.services.CourseService;
 import com.skolarli.lmsservice.services.LmsUserService;
 import com.skolarli.lmsservice.utils.UserUtils;
@@ -36,23 +36,20 @@ class CourseControllerTests {
 
     @Autowired
     MockMvc mockMvc;
-    @Autowired
-    private ObjectMapper mapper;
-
-    @MockBean
-    private CourseService courseService;
-    @MockBean
-    private LmsUserService lmsUserService;
-    @MockBean
-    private UserUtils userUtils;
-
     Course newCourse;
     Course updatedCourse;
     Course existingCourse;
     LmsUser lmsUser;
     LmsUser lmsUserNonAdmin;
     List<CourseTag> courseTagList;
-
+    @Autowired
+    private ObjectMapper mapper;
+    @MockBean
+    private CourseService courseService;
+    @MockBean
+    private LmsUserService lmsUserService;
+    @MockBean
+    private UserUtils userUtils;
 
     @BeforeEach
     public void setup() {

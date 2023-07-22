@@ -1,6 +1,6 @@
 package com.skolarli.lmsservice.services;
 
-import com.skolarli.lmsservice.models.db.BankQuestionTrueOrFalse;
+import com.skolarli.lmsservice.models.db.questionbank.BankQuestionTrueOrFalse;
 import com.skolarli.lmsservice.models.dto.questionbank.NewBankQuestionTrueOrFalseRequest;
 
 import java.util.List;

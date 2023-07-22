@@ -1,7 +1,7 @@
 package com.skolarli.lmsservice.services;
 
-import com.skolarli.lmsservice.models.db.Exam;
-import com.skolarli.lmsservice.models.db.ExamQuestionSubjective;
+import com.skolarli.lmsservice.models.db.exam.Exam;
+import com.skolarli.lmsservice.models.db.exam.ExamQuestionSubjective;
 import com.skolarli.lmsservice.models.dto.exam.NewExamQuestionSubjectiveRequest;
 
 import java.util.List;

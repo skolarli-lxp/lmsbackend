@@ -1,4 +1,4 @@
-package com.skolarli.lmsservice.models.db;
+package com.skolarli.lmsservice.models.db.exam;
 
 import lombok.*;
 import org.hibernate.annotations.Check;

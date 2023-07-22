@@ -1,6 +1,6 @@
 package com.skolarli.lmsservice.services;
 
-import com.skolarli.lmsservice.models.db.Tenant;
+import com.skolarli.lmsservice.models.db.core.Tenant;
 
 import java.util.List;
 

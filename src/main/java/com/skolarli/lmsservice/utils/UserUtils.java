@@ -1,6 +1,6 @@
 package com.skolarli.lmsservice.utils;
 
-import com.skolarli.lmsservice.models.db.LmsUser;
+import com.skolarli.lmsservice.models.db.core.LmsUser;
 import com.skolarli.lmsservice.services.LmsUserService;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;

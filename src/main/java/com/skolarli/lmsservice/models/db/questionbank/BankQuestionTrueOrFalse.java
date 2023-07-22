@@ -1,9 +1,10 @@
-package com.skolarli.lmsservice.models.db;
+package com.skolarli.lmsservice.models.db.questionbank;
 
 import lombok.*;
 import org.hibernate.annotations.Check;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
 @Data
 @EqualsAndHashCode(callSuper = true)

@@ -1,6 +1,6 @@
 package com.skolarli.lmsservice.services;
 
-import com.skolarli.lmsservice.models.db.BankQuestionSubjective;
+import com.skolarli.lmsservice.models.db.questionbank.BankQuestionSubjective;
 import com.skolarli.lmsservice.models.dto.questionbank.NewBankQuestionSubjectiveRequest;
 
 import java.util.List;

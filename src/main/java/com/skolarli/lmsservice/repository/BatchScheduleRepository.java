@@ -1,6 +1,6 @@
 package com.skolarli.lmsservice.repository;
 
-import com.skolarli.lmsservice.models.db.BatchSchedule;
+import com.skolarli.lmsservice.models.db.course.BatchSchedule;
 
 import java.time.Instant;
 import java.util.List;

@@ -1,7 +1,7 @@
 package com.skolarli.lmsservice.controller;
 
 import com.skolarli.lmsservice.exception.OperationNotSupportedException;
-import com.skolarli.lmsservice.models.db.Enrollment;
+import com.skolarli.lmsservice.models.db.course.Enrollment;
 import com.skolarli.lmsservice.models.dto.course.NewEnrollmentRequest;
 import com.skolarli.lmsservice.models.dto.course.NewEnrollmentsForBatchRequest;
 import com.skolarli.lmsservice.services.EnrollmentService;

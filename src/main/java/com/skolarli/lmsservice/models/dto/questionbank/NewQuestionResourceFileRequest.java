@@ -1,6 +1,6 @@
 package com.skolarli.lmsservice.models.dto.questionbank;
 
-import com.skolarli.lmsservice.models.db.ResourceFile;
+import com.skolarli.lmsservice.models.db.questionbank.ResourceFile;
 import lombok.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

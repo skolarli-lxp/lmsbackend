@@ -12,7 +12,9 @@ import javax.validation.Payload;
 @Constraint(validatedBy = TrueFalseValueValidator.class)
 public @interface ValidTrueFalseValue {
     String message() default "Invalid integer value";
+
     Class<?>[] groups() default {};
+
     Class<? extends Payload>[] payload() default {};
 }
 

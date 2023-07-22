@@ -1,7 +1,7 @@
 package com.skolarli.lmsservice.repository;
 
-import com.skolarli.lmsservice.models.db.LmsUser;
-import com.skolarli.lmsservice.models.db.VerificationCode;
+import com.skolarli.lmsservice.models.db.core.LmsUser;
+import com.skolarli.lmsservice.models.db.core.VerificationCode;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface VerificationCodeRepository extends JpaRepository<VerificationCode, Long> {

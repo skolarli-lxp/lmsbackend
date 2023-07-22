@@ -1,6 +1,6 @@
 package com.skolarli.lmsservice.services;
 
-import com.skolarli.lmsservice.models.db.Exam;
+import com.skolarli.lmsservice.models.db.exam.Exam;
 import com.skolarli.lmsservice.models.dto.exam.DeleteExamQuestionsRequest;
 import com.skolarli.lmsservice.models.dto.exam.NewExamQuestionsAllTypesRequest;
 import com.skolarli.lmsservice.models.dto.exam.NewExamQuestionsAllTypesResponse;

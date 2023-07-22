@@ -1,6 +1,6 @@
 package com.skolarli.lmsservice.services;
 
-import com.skolarli.lmsservice.models.db.BatchSchedule;
+import com.skolarli.lmsservice.models.db.course.BatchSchedule;
 import com.skolarli.lmsservice.models.dto.course.NewBatchScheduleRequest;
 import com.skolarli.lmsservice.models.dto.course.NewBatchSchedulesForBatchRequest;
 

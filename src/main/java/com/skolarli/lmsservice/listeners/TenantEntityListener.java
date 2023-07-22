@@ -1,7 +1,7 @@
 package com.skolarli.lmsservice.listeners;
 
 import com.skolarli.lmsservice.contexts.TenantContext;
-import com.skolarli.lmsservice.models.db.Tenantable;
+import com.skolarli.lmsservice.models.db.core.Tenantable;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.EntityNotFoundException;

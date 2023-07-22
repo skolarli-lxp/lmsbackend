@@ -1,4 +1,4 @@
-package com.skolarli.lmsservice.models.db;
+package com.skolarli.lmsservice.models.db.exam;
 
 import lombok.*;
 import org.hibernate.annotations.Check;
@@ -13,13 +13,13 @@ import javax.persistence.Table;
 @Getter
 @Setter
 @Entity
-@Table(name = "questionbank_mcq")
-public class BankQuestionMcq extends BankQuestion {
+@Table(name = "examquestions_mcq")
+public class ExamQuestionMcq extends ExamQuestion {
 
     // String of comma separated correct answers Ex: (1,2,3,4,5,6)
     String correctAnswer;
     @Check(constraints = "number_of_answers >= 0 AND number_of_answers <=6")
-    private int numberOfOptions;
+    private Integer numberOfOptions;
     private String option1;
     private String option2;
     private String option3;
@@ -27,13 +27,13 @@ public class BankQuestionMcq extends BankQuestion {
     private String option5;
     private String option6;
     @Check(constraints = "number_of_correct_answers >= 0 AND number_of_correct_answers <=6")
-    private int numberOfCorrectAnswers;
+    private Integer numberOfCorrectAnswers;
 
-    public void update(BankQuestionMcq bankQuestionMcq) {
+    public void update(ExamQuestionMcq bankQuestionMcq) {
         super.update(bankQuestionMcq);
 
 
-        if (bankQuestionMcq.getNumberOfOptions() != 0) {
+        if (bankQuestionMcq.getNumberOfOptions() != null) {
             this.setNumberOfOptions(bankQuestionMcq.getNumberOfOptions());
         }
         if (bankQuestionMcq.getOption1() != null) {
@@ -54,19 +54,12 @@ public class BankQuestionMcq extends BankQuestion {
         if (bankQuestionMcq.getOption6() != null) {
             this.setOption6(bankQuestionMcq.getOption6());
         }
-        if (bankQuestionMcq.getNumberOfCorrectAnswers() != 0) {
+        if (bankQuestionMcq.getNumberOfCorrectAnswers() != null) {
             this.setNumberOfCorrectAnswers(bankQuestionMcq.getNumberOfCorrectAnswers());
         }
         if (bankQuestionMcq.getCorrectAnswer() != null) {
             this.setCorrectAnswer(bankQuestionMcq.getCorrectAnswer());
         }
-    }
-
-    private String[] splitCorrectAnswers(String correctAnswer) {
-        if (correctAnswer == null || correctAnswer.isEmpty()) {
-            return new String[0];
-        }
-        return correctAnswer.split(",");
     }
 
     public Boolean validateFields() {
@@ -78,8 +71,7 @@ public class BankQuestionMcq extends BankQuestion {
             values
          */
 
-        if (this.getNumberOfCorrectAnswers() != splitCorrectAnswers(
-                this.getCorrectAnswer()).length) {
+        if (this.getNumberOfCorrectAnswers() != this.getCorrectAnswer().split(",").length) {
             return false;
         }
 

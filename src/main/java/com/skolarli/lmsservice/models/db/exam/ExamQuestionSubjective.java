@@ -1,8 +1,10 @@
-package com.skolarli.lmsservice.models.db;
+package com.skolarli.lmsservice.models.db.exam;
 
 import lombok.*;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -11,19 +13,19 @@ import javax.persistence.*;
 @Getter
 @Setter
 @Entity
-@Table(name = "questionbank_subjective")
-public class BankQuestionSubjective extends BankQuestion {
+@Table(name = "examquestions_subjective")
+public class ExamQuestionSubjective extends ExamQuestion {
 
-    private int wordCount;
+    private Integer wordCount;
 
     @Column(columnDefinition = "TEXT")
     private String correctAnswer;
 
 
-    public void update(BankQuestionSubjective bankQuestionSubjective) {
+    public void update(ExamQuestionSubjective bankQuestionSubjective) {
         super.update(bankQuestionSubjective);
 
-        if (bankQuestionSubjective.getWordCount() != 0) {
+        if (bankQuestionSubjective.getWordCount() != null) {
             this.setWordCount(bankQuestionSubjective.getWordCount());
         }
         if (bankQuestionSubjective.getCorrectAnswer() != null) {

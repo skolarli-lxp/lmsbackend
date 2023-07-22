@@ -1,6 +1,6 @@
 package com.skolarli.lmsservice.repository;
 
-import com.skolarli.lmsservice.models.db.Chapter;
+import com.skolarli.lmsservice.models.db.course.Chapter;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;

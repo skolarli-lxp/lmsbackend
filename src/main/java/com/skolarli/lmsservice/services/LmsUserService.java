@@ -1,8 +1,8 @@
 package com.skolarli.lmsservice.services;
 
 import com.skolarli.lmsservice.models.Role;
-import com.skolarli.lmsservice.models.db.Batch;
-import com.skolarli.lmsservice.models.db.LmsUser;
+import com.skolarli.lmsservice.models.db.core.LmsUser;
+import com.skolarli.lmsservice.models.db.course.Batch;
 
 import java.util.List;
 

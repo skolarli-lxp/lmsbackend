@@ -1,4 +1,4 @@
-package com.skolarli.lmsservice.models.db;
+package com.skolarli.lmsservice.models.db.core;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.skolarli.lmsservice.listeners.TenantEntityListener;

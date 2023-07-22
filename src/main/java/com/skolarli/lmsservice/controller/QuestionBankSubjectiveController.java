@@ -1,6 +1,6 @@
 package com.skolarli.lmsservice.controller;
 
-import com.skolarli.lmsservice.models.db.BankQuestionSubjective;
+import com.skolarli.lmsservice.models.db.questionbank.BankQuestionSubjective;
 import com.skolarli.lmsservice.models.dto.questionbank.NewBankQuestionSubjectiveRequest;
 import com.skolarli.lmsservice.services.QuestionBankSubjectiveService;
 import org.slf4j.Logger;
@@ -129,7 +129,7 @@ public class QuestionBankSubjectiveController {
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
     public ResponseEntity<BankQuestionSubjective> updateQuestion(
-             @RequestBody NewBankQuestionSubjectiveRequest request, @PathVariable long id) {
+            @RequestBody NewBankQuestionSubjectiveRequest request, @PathVariable long id) {
         UUID uuid = UUID.randomUUID();
         MDC.put("requestId", uuid.toString());
         logger.info("Received request for update question with id: " + id);

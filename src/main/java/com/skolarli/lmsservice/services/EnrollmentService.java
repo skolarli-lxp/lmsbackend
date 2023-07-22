@@ -1,6 +1,6 @@
 package com.skolarli.lmsservice.services;
 
-import com.skolarli.lmsservice.models.db.Enrollment;
+import com.skolarli.lmsservice.models.db.course.Enrollment;
 import com.skolarli.lmsservice.models.dto.course.NewEnrollmentRequest;
 import com.skolarli.lmsservice.models.dto.course.NewEnrollmentsForBatchRequest;
 
