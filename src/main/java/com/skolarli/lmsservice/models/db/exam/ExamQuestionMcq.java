@@ -18,7 +18,7 @@ public class ExamQuestionMcq extends ExamQuestion {
 
     // String of comma separated correct answers Ex: (1,2,3,4,5,6)
     String correctAnswer;
-    @Check(constraints = "number_of_answers >= 0 AND number_of_answers <=6")
+    @Check(constraints = "number_of_options >= 0 AND number_of_options <=6")
     private Integer numberOfOptions;
     private String option1;
     private String option2;
