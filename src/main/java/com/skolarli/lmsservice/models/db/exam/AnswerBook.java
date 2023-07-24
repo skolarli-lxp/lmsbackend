@@ -29,7 +29,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "answer_books")
 public class AnswerBook extends Tenantable {
-    private static final Logger logger = LoggerFactory.getLogger(Exam.class);
+    private static final Logger logger = LoggerFactory.getLogger(AnswerBook.class);
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
