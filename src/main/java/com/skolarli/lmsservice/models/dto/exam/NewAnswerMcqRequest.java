@@ -12,8 +12,6 @@ import org.slf4j.LoggerFactory;
 public class NewAnswerMcqRequest {
     private static final Logger logger = LoggerFactory.getLogger(NewAnswerMcqRequest.class);
 
-    private Long answerBookId;
-
     private Long questionId;
 
     private Integer answer;

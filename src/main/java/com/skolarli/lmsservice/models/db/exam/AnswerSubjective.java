@@ -23,7 +23,7 @@ import javax.persistence.*;
 public class AnswerSubjective extends Tenantable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "answer_book_id")
@@ -65,4 +65,22 @@ public class AnswerSubjective extends Tenantable {
     @Column(name = "last_updated_time", nullable = false)
     @UpdateTimestamp
     private Date lastUpdatedTime;
+
+    public void update(AnswerSubjective answerSubjective) {
+        if (answerSubjective.getAnswer() != null) {
+            this.answer = answerSubjective.getAnswer();
+        }
+        if (answerSubjective.getMarksGiven() != null) {
+            this.marksGiven = answerSubjective.getMarksGiven();
+        }
+        if (answerSubjective.getEvaluatorRemarks() != null) {
+            this.evaluatorRemarks = answerSubjective.getEvaluatorRemarks();
+        }
+        if (answerSubjective.getStudentRemarks() != null) {
+            this.studentRemarks = answerSubjective.getStudentRemarks();
+        }
+        if (answerSubjective.getUpdatedBy() != null) {
+            this.updatedBy = answerSubjective.getUpdatedBy();
+        }
+    }
 }

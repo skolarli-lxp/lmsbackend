@@ -35,7 +35,7 @@ public class AnswerTrueFalse extends Tenantable {
     @JoinColumn(name = "question_id")
     ExamQuestionTrueOrFalse question;
 
-    private int answer;
+    private Integer answer;
 
     private Double marksGiven;
 
@@ -64,4 +64,22 @@ public class AnswerTrueFalse extends Tenantable {
     @Column(name = "last_updated_time", nullable = false)
     @UpdateTimestamp
     private Date lastUpdatedTime;
+
+    public void update(AnswerTrueFalse answerTrueFalse) {
+        if (answerTrueFalse.getAnswer() != null) {
+            this.answer = answerTrueFalse.getAnswer();
+        }
+        if (answerTrueFalse.getMarksGiven() != null) {
+            this.marksGiven = answerTrueFalse.getMarksGiven();
+        }
+        if (answerTrueFalse.getEvaluatorRemarks() != null) {
+            this.evaluatorRemarks = answerTrueFalse.getEvaluatorRemarks();
+        }
+        if (answerTrueFalse.getStudentRemarks() != null) {
+            this.studentRemarks = answerTrueFalse.getStudentRemarks();
+        }
+        if (answerTrueFalse.getUpdatedBy() != null) {
+            this.updatedBy = answerTrueFalse.getUpdatedBy();
+        }
+    }
 }

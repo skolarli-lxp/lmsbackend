@@ -24,7 +24,7 @@ import javax.persistence.*;
 public class AnswerMcq extends Tenantable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "answer_book_id")
@@ -37,7 +37,7 @@ public class AnswerMcq extends Tenantable {
     ExamQuestionMcq question;
 
     @Check(constraints = "answers >= 0 AND answer <=6")
-    private int answer;
+    private Integer answer;
 
     private Double marksGiven;
 
@@ -66,4 +66,25 @@ public class AnswerMcq extends Tenantable {
     @Column(name = "last_updated_time", nullable = false)
     @UpdateTimestamp
     private Date lastUpdatedTime;
+
+    public void update(AnswerMcq answerMcq) {
+        if (answerMcq.getQuestion() != null) {
+            this.question = answerMcq.getQuestion();
+        }
+        if (answerMcq.getAnswer() != null) {
+            this.answer = answerMcq.getAnswer();
+        }
+        if (answerMcq.getMarksGiven() != null) {
+            this.marksGiven = answerMcq.getMarksGiven();
+        }
+        if (answerMcq.getEvaluatorRemarks() != null) {
+            this.evaluatorRemarks = answerMcq.getEvaluatorRemarks();
+        }
+        if (answerMcq.getStudentRemarks() != null) {
+            this.studentRemarks = answerMcq.getStudentRemarks();
+        }
+        if (answerMcq.getLastUpdatedTime() != null) {
+            this.lastUpdatedTime = answerMcq.getLastUpdatedTime();
+        }
+    }
 }

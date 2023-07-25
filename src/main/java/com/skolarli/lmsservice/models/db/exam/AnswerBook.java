@@ -33,7 +33,7 @@ public class AnswerBook extends Tenantable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "exam_id")
@@ -49,23 +49,23 @@ public class AnswerBook extends Tenantable {
 
     AnswerBookStatus status;
 
-    private int totalMarks;
+    private Integer totalMarks;
 
-    private int obtainedMarks;
+    private Integer obtainedMarks;
 
-    private int additionalMarks;
+    private Integer additionalMarks;
 
-    private int totalQuestions;
+    private Integer totalQuestions;
 
-    private int attemptedQuestions;
+    private Integer attemptedQuestions;
 
-    private int correctAnswers;
+    private Integer correctAnswers;
 
-    private int incorrectAnswers;
+    private Integer incorrectAnswers;
 
-    private int totalDuration;
+    private Integer totalDuration;
 
-    private int timeTaken;
+    private Integer timeTaken;
 
     private ZonedDateTime sessionStartTime;
 
@@ -121,4 +121,77 @@ public class AnswerBook extends Tenantable {
     @Column(name = "last_updated_time", nullable = false)
     @UpdateTimestamp
     private Date lastUpdatedTime;
+
+    public void update(AnswerBook answerBook) {
+        if (answerBook.getStatus() != null) {
+            this.setStatus(answerBook.getStatus());
+        }
+        if (answerBook.getTotalMarks() != null) {
+            this.setTotalMarks(answerBook.getTotalMarks());
+        }
+        if (answerBook.getObtainedMarks() != null) {
+            this.setObtainedMarks(answerBook.getObtainedMarks());
+        }
+        if (answerBook.getAdditionalMarks() != null) {
+            this.setAdditionalMarks(answerBook.getAdditionalMarks());
+        }
+        if (answerBook.getTotalQuestions() != null) {
+            this.setTotalQuestions(answerBook.getTotalQuestions());
+        }
+        if (answerBook.getAttemptedQuestions() != null) {
+            this.setAttemptedQuestions(answerBook.getAttemptedQuestions());
+        }
+        if (answerBook.getCorrectAnswers() != null) {
+            this.setCorrectAnswers(answerBook.getCorrectAnswers());
+        }
+        if (answerBook.getIncorrectAnswers() != null) {
+            this.setIncorrectAnswers(answerBook.getIncorrectAnswers());
+        }
+        if (answerBook.getTotalDuration() != null) {
+            this.setTotalDuration(answerBook.getTotalDuration());
+        }
+        if (answerBook.getTimeTaken() != null) {
+            this.setTimeTaken(answerBook.getTimeTaken());
+        }
+        if (answerBook.getSessionStartTime() != null) {
+            this.setSessionStartTime(answerBook.getSessionStartTime());
+        }
+        if (answerBook.getSessionEndTime() != null) {
+            this.setSessionEndTime(answerBook.getSessionEndTime());
+        }
+        if (answerBook.getRemarks() != null) {
+            this.setRemarks(answerBook.getRemarks());
+        }
+        if (answerBook.getMcqAnswers() != null) {
+            if (this.getMcqAnswers() != null) {
+                this.getMcqAnswers().addAll(answerBook.getMcqAnswers());
+            } else {
+                this.setMcqAnswers(answerBook.getMcqAnswers());
+            }
+        }
+        if (answerBook.getSubjectiveAnswers() != null) {
+            if (this.getSubjectiveAnswers() != null) {
+                this.getSubjectiveAnswers().addAll(answerBook.getSubjectiveAnswers());
+            } else {
+                this.setSubjectiveAnswers(answerBook.getSubjectiveAnswers());
+            }
+        }
+        if (answerBook.getTrueFalseAnswers() != null) {
+            if (this.getTrueFalseAnswers() != null) {
+                this.getTrueFalseAnswers().addAll(answerBook.getTrueFalseAnswers());
+            } else {
+                this.setTrueFalseAnswers(answerBook.getTrueFalseAnswers());
+            }
+        }
+        if (answerBook.getCourse() != null) {
+            this.setCourse(answerBook.getCourse());
+        }
+        if (answerBook.getBatch() != null) {
+            this.setBatch(answerBook.getBatch());
+        }
+        // Created by should not be updated
+        if (answerBook.getUpdatedBy() != null) {
+            this.setUpdatedBy(answerBook.getUpdatedBy());
+        }
+    }
 }
