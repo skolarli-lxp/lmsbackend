@@ -122,6 +122,10 @@ public class AnswerBook extends Tenantable {
     @UpdateTimestamp
     private Date lastUpdatedTime;
 
+    public Boolean validate() {
+        return true;
+    }
+
     public void update(AnswerBook answerBook) {
         if (answerBook.getStatus() != null) {
             this.setStatus(answerBook.getStatus());

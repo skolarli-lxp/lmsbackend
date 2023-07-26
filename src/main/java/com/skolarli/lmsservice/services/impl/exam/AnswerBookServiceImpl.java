@@ -1,17 +1,24 @@
 package com.skolarli.lmsservice.services.impl.exam;
 
+import com.skolarli.lmsservice.exception.ResourceNotFoundException;
+import com.skolarli.lmsservice.exception.ValidationFailureException;
 import com.skolarli.lmsservice.models.db.exam.AnswerBook;
 import com.skolarli.lmsservice.models.db.exam.AnswerMcq;
 import com.skolarli.lmsservice.models.db.exam.AnswerSubjective;
 import com.skolarli.lmsservice.models.db.exam.AnswerTrueFalse;
 import com.skolarli.lmsservice.models.dto.exam.AddAnswerBookAnswerRequest;
 import com.skolarli.lmsservice.models.dto.exam.NewAnswerBookRequest;
+import com.skolarli.lmsservice.repository.exam.AnswerBookRepository;
+import com.skolarli.lmsservice.repository.exam.AnswerMcqRepository;
+import com.skolarli.lmsservice.repository.exam.AnswerSubjectiveRepository;
+import com.skolarli.lmsservice.repository.exam.AnswerTrueFalseRepository;
 import com.skolarli.lmsservice.services.core.LmsUserService;
 import com.skolarli.lmsservice.services.course.BatchService;
 import com.skolarli.lmsservice.services.course.CourseService;
 import com.skolarli.lmsservice.services.exam.AnswerBookAnswerService;
 import com.skolarli.lmsservice.services.exam.AnswerBookService;
 import com.skolarli.lmsservice.services.exam.ExamService;
+import com.skolarli.lmsservice.utils.UserUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,14 +35,34 @@ public class AnswerBookServiceImpl implements AnswerBookService {
     BatchService batchService;
     AnswerBookAnswerService answerBookAnswerService;
 
+    AnswerBookRepository answerBookRepository;
+
+    AnswerMcqRepository answerMcqRepository;
+
+    AnswerSubjectiveRepository answerSubjectiveRepository;
+    AnswerTrueFalseRepository answerTrueFalseRepository;
+
+    UserUtils userUtils;
+
+
     public AnswerBookServiceImpl(ExamService examService, LmsUserService lmsUserService,
                                  AnswerBookAnswerService answerBookAnswerService,
-                                 CourseService courseService, BatchService batchService) {
+                                 CourseService courseService, BatchService batchService,
+                                 AnswerBookRepository answerBookRepository,
+                                 AnswerMcqRepository answerMcqRepository,
+                                 AnswerSubjectiveRepository answerSubjectiveRepository,
+                                 AnswerTrueFalseRepository answerTrueFalseRepository,
+                                 UserUtils userUtils) {
         this.examService = examService;
         this.lmsUserService = lmsUserService;
         this.answerBookAnswerService = answerBookAnswerService;
         this.courseService = courseService;
         this.batchService = batchService;
+        this.answerBookRepository = answerBookRepository;
+        this.answerMcqRepository = answerMcqRepository;
+        this.answerSubjectiveRepository = answerSubjectiveRepository;
+        this.answerTrueFalseRepository = answerTrueFalseRepository;
+        this.userUtils = userUtils;
     }
 
     @Override
@@ -85,59 +112,124 @@ public class AnswerBookServiceImpl implements AnswerBookService {
     }
 
     @Override
-    public List<AnswerBook> findAllByExam_Id(Long examId) {
-        return null;
+    public List<AnswerBook> findAllByExamId(Long examId) {
+        return answerBookRepository.findAllByExam_Id(examId);
     }
 
     @Override
-    public List<AnswerBook> findAllByExam_IdAndStudent_Id(Long examId, Long studentId) {
-        return null;
+    public List<AnswerBook> findAllByExamIdAndStudentId(Long examId, Long studentId) {
+        return answerBookRepository.findAllByExam_IdAndStudent_Id(examId, studentId);
     }
 
     @Override
     public AnswerBook getAnswerBookById(Long id) {
-        return null;
+        List<AnswerBook> answerBooks = answerBookRepository.findAllById(List.of(id));
+        if (answerBooks != null && !answerBooks.isEmpty()) {
+            return answerBooks.get(0);
+        } else {
+            throw new ResourceNotFoundException("Answer Book not found with id " + id);
+        }
+    }
+
+    @Override
+    public List<AnswerBook> findAllAnswerBooks() {
+        return answerBookRepository.findAll();
     }
 
     @Override
     public AnswerBook saveAnswerBook(AnswerBook answerBook) {
-        return null;
-    }
-
-    @Override
-    public AnswerBook saveAnswerBook(NewAnswerBookRequest newAnswerBookRequest) {
-        return null;
+        if (!answerBook.validate()) {
+            throw new ValidationFailureException("Invalid Answer Book");
+        }
+        answerBook.setCreatedBy(userUtils.getCurrentUser());
+        return answerBookRepository.save(answerBook);
     }
 
     @Override
     public AnswerBook updateAnswerBook(AnswerBook answerBook, Long id) {
-        return null;
+        AnswerBook existingAnswerBook = getAnswerBookById(id);
+        if (existingAnswerBook == null) {
+            throw new ResourceNotFoundException("Answer Book not found with id " + id);
+        }
+        existingAnswerBook.update(answerBook);
+        existingAnswerBook.setUpdatedBy(userUtils.getCurrentUser());
+        if (!answerBook.validate()) {
+            throw new ValidationFailureException("Invalid Answer Book");
+        }
+        return answerBookRepository.save(existingAnswerBook);
     }
 
     @Override
-    public AnswerBook addMcqAnswers(AnswerBook answerBook, List<AnswerMcq> answerMcqs) {
-        return null;
+    public void addMcqAnswers(List<AnswerMcq> answerMcqs, AnswerBook answerBook) {
+
+        if (answerBook.getMcqAnswers() == null) {
+            answerBook.setMcqAnswers(answerMcqs);
+        } else {
+            answerBook.getMcqAnswers().addAll(answerMcqs);
+        }
     }
 
     @Override
-    public AnswerBook addTrueFalseAnswers(AnswerBook answerBook,
-                                          List<AnswerTrueFalse> answerTrueFalses) {
-        return null;
+    public void addTrueFalseAnswers(List<AnswerTrueFalse> answerTrueFalses,
+                                    AnswerBook answerBook) {
+        if (answerBook.getTrueFalseAnswers() == null) {
+            answerBook.setTrueFalseAnswers(answerTrueFalses);
+        } else {
+            answerBook.getTrueFalseAnswers().addAll(answerTrueFalses);
+        }
     }
 
     @Override
-    public AnswerBook addSubjectiveAnswers(AnswerBook answerBook,
-                                           List<AnswerSubjective> answerSubjectives) {
-        return null;
+    public void addSubjectiveAnswers(List<AnswerSubjective> answerSubjectives,
+                                     AnswerBook answerBook) {
+        if (answerBook.getSubjectiveAnswers() == null) {
+            answerBook.setSubjectiveAnswers(answerSubjectives);
+        } else {
+            answerBook.getSubjectiveAnswers().addAll(answerSubjectives);
+        }
     }
 
     @Override
-    public AnswerBook addAnswers(AddAnswerBookAnswerRequest addAnswerBookAnswerRequest, Long id) {
-        return null;
+    public AnswerBook addAnswers(AddAnswerBookAnswerRequest addAnswerBookAnswerRequest,
+                                 Long answerBookId) {
+        AnswerBook existingAnswerBook = getAnswerBookById(answerBookId);
+        if (existingAnswerBook == null) {
+            throw new ResourceNotFoundException("Answer Book not found with id " + answerBookId);
+        }
+        if (addAnswerBookAnswerRequest.getMcqAnswers() != null) {
+            List<AnswerMcq> answerMcqs = addAnswerBookAnswerRequest.getMcqAnswers().stream()
+                    .map(newAnswerMcqRequest -> answerBookAnswerService
+                            .toAnswerMcq(newAnswerMcqRequest, existingAnswerBook))
+                    .collect(Collectors.toList());
+            addMcqAnswers(answerMcqs, existingAnswerBook);
+        }
+        if (addAnswerBookAnswerRequest.getTrueFalseAnswers() != null) {
+            List<AnswerTrueFalse> answerTrueFalses = addAnswerBookAnswerRequest
+                    .getTrueFalseAnswers().stream()
+                    .map(newAnswerTrueFalseRequest -> answerBookAnswerService
+                            .toAnswerTrueFalse(newAnswerTrueFalseRequest, existingAnswerBook))
+                    .collect(Collectors.toList());
+            addTrueFalseAnswers(answerTrueFalses, existingAnswerBook);
+        }
+        if (addAnswerBookAnswerRequest.getSubjectiveAnswers() != null) {
+            List<AnswerSubjective> answerSubjectives = addAnswerBookAnswerRequest
+                    .getSubjectiveAnswers().stream()
+                    .map(newAnswerSubjectiveRequest -> answerBookAnswerService
+                            .toAnswerSubjective(newAnswerSubjectiveRequest, existingAnswerBook))
+                    .collect(Collectors.toList());
+            addSubjectiveAnswers(answerSubjectives, existingAnswerBook);
+        }
+
+        answerBookRepository.save(existingAnswerBook);
+        return existingAnswerBook;
     }
 
     @Override
     public void deleteAnswerBook(Long id) {
-
+        AnswerBook answerBook = getAnswerBookById(id);
+        if (answerBook == null) {
+            throw new ResourceNotFoundException("Answer Book not found with id " + id);
+        }
+        answerBookRepository.delete(answerBook);
     }
 }

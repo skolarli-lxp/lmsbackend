@@ -13,24 +13,23 @@ public interface AnswerBookService {
 
     AnswerBook toAnswerBook(NewAnswerBookRequest newAnswerBookRequest);
 
-    List<AnswerBook> findAllByExam_Id(Long examId);
+    List<AnswerBook> findAllByExamId(Long examId);
 
-    List<AnswerBook> findAllByExam_IdAndStudent_Id(Long examId, Long studentId);
+    List<AnswerBook> findAllByExamIdAndStudentId(Long examId, Long studentId);
 
     AnswerBook getAnswerBookById(Long id);
 
-    AnswerBook saveAnswerBook(AnswerBook answerBook);
+    List<AnswerBook> findAllAnswerBooks();
 
-    AnswerBook saveAnswerBook(NewAnswerBookRequest newAnswerBookRequest);
+    AnswerBook saveAnswerBook(AnswerBook answerBook);
 
     AnswerBook updateAnswerBook(AnswerBook answerBook, Long id);
 
-    AnswerBook addMcqAnswers(AnswerBook answerBook, List<AnswerMcq> answerMcqs);
+    void addMcqAnswers(List<AnswerMcq> answerMcqs, AnswerBook answerBook);
 
-    AnswerBook addTrueFalseAnswers(AnswerBook answerBook, List<AnswerTrueFalse> answerTrueFalses);
+    void addTrueFalseAnswers(List<AnswerTrueFalse> answerTrueFalses, AnswerBook answerBook);
 
-    AnswerBook addSubjectiveAnswers(AnswerBook answerBook,
-                                    List<AnswerSubjective> answerSubjectives);
+    void addSubjectiveAnswers(List<AnswerSubjective> answerSubjectives, AnswerBook answerBook);
 
     AnswerBook addAnswers(AddAnswerBookAnswerRequest addAnswerBookAnswerRequest, Long id);
 
