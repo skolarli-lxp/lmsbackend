@@ -7,6 +7,7 @@ import com.skolarli.lmsservice.models.Role;
 import com.skolarli.lmsservice.models.db.core.LmsUser;
 import com.skolarli.lmsservice.models.db.core.VerificationCode;
 import com.skolarli.lmsservice.models.db.course.Batch;
+import com.skolarli.lmsservice.models.dto.core.GetLmsUserResponse;
 import com.skolarli.lmsservice.services.core.LmsUserService;
 import com.skolarli.lmsservice.services.core.VerificationService;
 import com.skolarli.lmsservice.utils.UserUtils;
@@ -65,8 +66,8 @@ public class UserController {
         return new ResponseEntity<>(lmsUserService.getLmsUserById(id), HttpStatus.OK);
     }
 
-    @GetMapping(value = "email/{email}")
-    public ResponseEntity<LmsUser> getUserByEmail(@PathVariable String email) {
+    @GetMapping(value = "email2/{email}")
+    public ResponseEntity<LmsUser> getUserByEmail2(@PathVariable String email) {
 
         UUID uuid = UUID.randomUUID();
         MDC.put("requestId", uuid.toString());
@@ -75,6 +76,18 @@ public class UserController {
         long tenantId = tenantContext.getTenantId();
         return new ResponseEntity<>(lmsUserService.getLmsUserByEmailAndTenantId(email, tenantId),
                 HttpStatus.OK);
+    }
+
+    @GetMapping(value = "email/{email}")
+    public ResponseEntity<GetLmsUserResponse> getUserByEmail(@PathVariable String email) {
+
+        UUID uuid = UUID.randomUUID();
+        MDC.put("requestId", uuid.toString());
+        logger.info("Received Get User request Email: " + email);
+
+        long tenantId = tenantContext.getTenantId();
+        LmsUser user = lmsUserService.getLmsUserByEmailAndTenantId(email, tenantId);
+        return new ResponseEntity<>(new GetLmsUserResponse(user), HttpStatus.OK);
     }
 
     @GetMapping(value = "role")

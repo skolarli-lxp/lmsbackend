@@ -87,19 +87,19 @@ public class LmsUser extends Tenantable {
     @Column(columnDefinition = "bit(1) default false")
     private Boolean emailVerified;
 
-    @OneToMany(mappedBy = "courseOwner")
+    @OneToMany(mappedBy = "courseOwner", fetch = FetchType.LAZY)
     @JsonIgnoreProperties("courseOwner") // To avoid infinite recursion during serialization
     private List<Course> courses;
 
-    @OneToMany(mappedBy = "instructor")
+    @OneToMany(mappedBy = "instructor", fetch = FetchType.LAZY)
     @JsonIgnoreProperties("instructor")
     private List<Batch> batches;
 
-    @OneToMany(mappedBy = "student")
+    @OneToMany(mappedBy = "student", fetch = FetchType.LAZY)
     @JsonIgnoreProperties("student")
     private List<Attendance> attendanceList;
 
-    @OneToMany(mappedBy = "student")
+    @OneToMany(mappedBy = "student", fetch = FetchType.LAZY)
     @JsonIgnoreProperties("student")
     private List<Enrollment> enrollments;
 
