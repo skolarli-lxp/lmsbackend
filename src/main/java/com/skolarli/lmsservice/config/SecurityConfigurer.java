@@ -33,8 +33,8 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
         http.cors().and()
                 .authorizeHttpRequests()
                 .antMatchers("/authenticate", "/gethealthnoauth", "/newdomain/*",
-                        "/verify/*", "/swagger-ui.html", "/swagger-ui/**", "/v2/api-docs/**",
-                        "/swagger"
+                        "/verify/*", "/passwordreset/*",
+                        "/swagger-ui.html", "/swagger-ui/**", "/v2/api-docs/**", "/swagger"
                                 + "-resources/**", "/swagger-ui/**", "/webjars/**", "/actuator/**"
                                 + "/h2" + "-console/**")
                 .permitAll()

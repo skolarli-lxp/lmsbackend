@@ -6,13 +6,19 @@ import com.skolarli.lmsservice.models.Role;
 import com.skolarli.lmsservice.models.db.core.LmsUser;
 import com.skolarli.lmsservice.models.db.course.Batch;
 import com.skolarli.lmsservice.models.db.course.Enrollment;
+import com.skolarli.lmsservice.models.dto.core.PasswordResetTokenResponse;
 import com.skolarli.lmsservice.repository.core.LmsUserRepository;
 import com.skolarli.lmsservice.services.core.LmsUserService;
+import net.bytebuddy.utility.RandomString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -158,6 +164,45 @@ public class LmsUserServiceImpl implements LmsUserService {
         existingUser.update(lmsUser);
         lmsUserRepository.save(existingUser);
         return existingUser;
+    }
+
+    @Override
+    public PasswordResetTokenResponse createAndGetPasswordResetToken(LmsUser lmsUser) {
+        String token = RandomString.make(64);
+        ZonedDateTime expiryDate = Instant.now().plusSeconds(24 * 60 * 60)
+                .atZone(ZoneId.systemDefault());
+
+        lmsUser.setPasswordResetToken(token);
+        lmsUser.setPasswordResetTokenExpiry(expiryDate);
+        lmsUser.setPasswordResetRequested(true);
+        lmsUserRepository.save(lmsUser);
+
+        return new PasswordResetTokenResponse(token, expiryDate);
+    }
+
+    @Override
+    public void resetPassword(String token, String newPassword) {
+        LmsUser lmsUser = lmsUserRepository.findByPasswordResetToken(token);
+        if (lmsUser == null) {
+            throw new ResourceNotFoundException("Invalid token");
+        }
+        if (lmsUser.getPasswordResetRequested()) {
+            if (lmsUser.getPasswordResetTokenExpiry().isAfter(Instant.now().atZone(
+                    ZoneId.systemDefault()))) {
+                String oldPasswordEncoded = lmsUser.getPassword();
+                if (oldPasswordEncoded.equals(new BCryptPasswordEncoder().encode(newPassword))) {
+                    throw new OperationNotSupportedException("New password cannot "
+                            + "be same as old password");
+                }
+                lmsUser.setPassword(newPassword);
+                lmsUser.setPasswordResetRequested(false);
+                lmsUserRepository.save(lmsUser);
+            } else {
+                throw new OperationNotSupportedException("Password reset token has expired");
+            }
+        } else {
+            throw new OperationNotSupportedException("Invalid request for password reset");
+        }
     }
 
     @Override

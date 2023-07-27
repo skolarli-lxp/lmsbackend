@@ -14,6 +14,7 @@ import lombok.Setter;
 import org.hibernate.annotations.Where;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import java.time.ZonedDateTime;
 import java.util.List;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -23,8 +24,10 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "users", uniqueConstraints = @UniqueConstraint(name = "useremail",
-        columnNames = {"email", "tenantId"}))
+@Table(name = "users", uniqueConstraints = {
+    @UniqueConstraint(name = "useremail", columnNames = {"email", "tenantId"}),
+    @UniqueConstraint(name = "passwordtoken", columnNames = {"passwordResetToken"})
+})
 @Where(clause = "user_is_deleted is null or user_is_deleted = false")
 public class LmsUser extends Tenantable {
     @Id
@@ -106,7 +109,14 @@ public class LmsUser extends Tenantable {
 
     private Boolean userIsDeleted;
 
+    private Boolean passwordResetRequested;
+
+    private String passwordResetToken;
+
+    private ZonedDateTime passwordResetTokenExpiry;
+
     public void setPassword(String password) {
+        //This is used by default during Json deserialization
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         this.password = passwordEncoder.encode(password);
     }
