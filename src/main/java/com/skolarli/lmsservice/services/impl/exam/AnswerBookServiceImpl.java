@@ -112,12 +112,17 @@ public class AnswerBookServiceImpl implements AnswerBookService {
     }
 
     @Override
-    public List<AnswerBook> findAllByExamId(Long examId) {
+    public List<AnswerBook> getAllByExamId(Long examId) {
         return answerBookRepository.findAllByExam_Id(examId);
     }
 
     @Override
-    public List<AnswerBook> findAllByExamIdAndStudentId(Long examId, Long studentId) {
+    public List<AnswerBook> getAllByStudentId(Long studentId) {
+        return answerBookRepository.findAllByStudent_Id(studentId);
+    }
+
+    @Override
+    public List<AnswerBook> getAllByExamIdAndStudentId(Long examId, Long studentId) {
         return answerBookRepository.findAllByExam_IdAndStudent_Id(examId, studentId);
     }
 
@@ -132,7 +137,7 @@ public class AnswerBookServiceImpl implements AnswerBookService {
     }
 
     @Override
-    public List<AnswerBook> findAllAnswerBooks() {
+    public List<AnswerBook> getAllAnswerBooks() {
         return answerBookRepository.findAll();
     }
 

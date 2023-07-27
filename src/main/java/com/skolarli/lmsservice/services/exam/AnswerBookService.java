@@ -13,13 +13,15 @@ public interface AnswerBookService {
 
     AnswerBook toAnswerBook(NewAnswerBookRequest newAnswerBookRequest);
 
-    List<AnswerBook> findAllByExamId(Long examId);
+    List<AnswerBook> getAllByExamId(Long examId);
 
-    List<AnswerBook> findAllByExamIdAndStudentId(Long examId, Long studentId);
+    List<AnswerBook> getAllByStudentId(Long studentId);
+
+    List<AnswerBook> getAllByExamIdAndStudentId(Long examId, Long studentId);
 
     AnswerBook getAnswerBookById(Long id);
 
-    List<AnswerBook> findAllAnswerBooks();
+    List<AnswerBook> getAllAnswerBooks();
 
     AnswerBook saveAnswerBook(AnswerBook answerBook);
 
