@@ -1,5 +1,6 @@
 package com.skolarli.lmsservice.models.db.exam;
 
+import com.skolarli.lmsservice.models.db.questionbank.BankQuestionTrueOrFalse;
 import lombok.*;
 import org.hibernate.annotations.Check;
 
@@ -21,6 +22,12 @@ public class ExamQuestionTrueOrFalse extends ExamQuestion {
 
     @Check(constraints = "correct_answer == 0 OR correct_answer == 1")
     private Integer correctAnswer;
+
+    public ExamQuestionTrueOrFalse(BankQuestionTrueOrFalse bankQuestionTrueOrFalse,
+                                   Integer marks, Exam exam) {
+        super(bankQuestionTrueOrFalse, marks, exam);
+        this.correctAnswer = bankQuestionTrueOrFalse.getCorrectAnswer();
+    }
 
     public void update(ExamQuestionTrueOrFalse bankQuestionTrueOrFalse) {
         super.update(bankQuestionTrueOrFalse);

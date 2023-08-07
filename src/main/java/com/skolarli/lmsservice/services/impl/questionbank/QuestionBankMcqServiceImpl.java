@@ -5,10 +5,13 @@ import com.skolarli.lmsservice.exception.ResourceNotFoundException;
 import com.skolarli.lmsservice.exception.ValidationFailureException;
 import com.skolarli.lmsservice.models.db.core.LmsUser;
 import com.skolarli.lmsservice.models.db.course.Course;
+import com.skolarli.lmsservice.models.db.exam.Exam;
+import com.skolarli.lmsservice.models.db.exam.ExamQuestionMcq;
 import com.skolarli.lmsservice.models.db.questionbank.BankQuestionMcq;
 import com.skolarli.lmsservice.models.dto.questionbank.NewBankQuestionMcqRequest;
 import com.skolarli.lmsservice.repository.questionbank.QuestionBankMcqRepository;
 import com.skolarli.lmsservice.services.course.CourseService;
+import com.skolarli.lmsservice.services.exam.ExamService;
 import com.skolarli.lmsservice.services.questionbank.QuestionBankMcqService;
 import com.skolarli.lmsservice.utils.UserUtils;
 import org.springframework.stereotype.Service;
@@ -26,12 +29,16 @@ public class QuestionBankMcqServiceImpl implements QuestionBankMcqService {
 
     final UserUtils userUtils;
 
+    final ExamService examService;
+
     public QuestionBankMcqServiceImpl(QuestionBankMcqRepository questionBankMcqRepository,
                                       UserUtils userUtils,
-                                      CourseService courseService) {
+                                      CourseService courseService,
+                                      ExamService examService) {
         this.questionBankMcqRepository = questionBankMcqRepository;
         this.userUtils = userUtils;
         this.courseService = courseService;
+        this.examService = examService;
     }
 
     public BankQuestionMcq toBankQuestionMcq(NewBankQuestionMcqRequest newBankQuestionMcqRequest) {
@@ -76,6 +83,30 @@ public class QuestionBankMcqServiceImpl implements QuestionBankMcqService {
     private Boolean checkPermission() {
         LmsUser currentUser = userUtils.getCurrentUser();
         return currentUser.getIsAdmin() || currentUser.getIsInstructor();
+    }
+
+    public ExamQuestionMcq toExamQuestionMcq(BankQuestionMcq bankQuestionMcq,
+                                             Integer marks,
+                                             Exam existingExam) {
+        ExamQuestionMcq examQuestionMcq = new ExamQuestionMcq(bankQuestionMcq, marks, existingExam);
+        return examQuestionMcq;
+    }
+
+    @Override
+    public List<ExamQuestionMcq> toExamQuestionMcq(List<BankQuestionMcq> bankQuestionMcqs,
+                                                       List<Integer> marks,
+                                                       Long examId) {
+        Exam existingExam = examService.getExam(examId);
+        if (existingExam == null) {
+            throw new ResourceNotFoundException("Exam with Id " + examId + " not found");
+        }
+
+        List<ExamQuestionMcq> examQuestionMcqs = new ArrayList<>();
+        for (int i = 0; i < bankQuestionMcqs.size(); i++) {
+            examQuestionMcqs.add(toExamQuestionMcq(bankQuestionMcqs.get(i), marks.get(i),
+                    existingExam));
+        }
+        return examQuestionMcqs;
     }
 
     @Override

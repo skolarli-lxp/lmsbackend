@@ -2,6 +2,7 @@ package com.skolarli.lmsservice.services.exam;
 
 import com.skolarli.lmsservice.models.db.exam.Exam;
 import com.skolarli.lmsservice.models.db.exam.ExamQuestionTrueOrFalse;
+import com.skolarli.lmsservice.models.db.questionbank.BankQuestionTrueOrFalse;
 import com.skolarli.lmsservice.models.dto.exam.NewExamQuestionTrueOrFalseRequest;
 
 import java.util.List;
@@ -11,6 +12,8 @@ public interface ExamQuestionTrueOrFalseService {
     ExamQuestionTrueOrFalse toExamQuestionTrueOrFalse(
             NewExamQuestionTrueOrFalseRequest newExamQuestionTrueOrFalseRequest);
 
+    List<BankQuestionTrueOrFalse> toBankQuestionTrueOrFalse(List<ExamQuestionTrueOrFalse>
+                                                              examQuestionTrueOrFalse);
 
     ExamQuestionTrueOrFalse getQuestion(long id);
 

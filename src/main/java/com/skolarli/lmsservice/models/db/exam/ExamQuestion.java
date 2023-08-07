@@ -7,6 +7,7 @@ import com.skolarli.lmsservice.models.AnswerFormat;
 import com.skolarli.lmsservice.models.DifficultyLevel;
 import com.skolarli.lmsservice.models.QuestionFormat;
 import com.skolarli.lmsservice.models.db.core.Tenantable;
+import com.skolarli.lmsservice.models.db.questionbank.BankQuestion;
 import com.skolarli.lmsservice.models.db.questionbank.ResourceFile;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -52,6 +53,19 @@ public class ExamQuestion extends Tenantable {
     @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
     @JsonIdentityReference(alwaysAsId = true)
     private Exam exam;
+
+    public ExamQuestion(BankQuestion bankQuestion, Integer marks, Exam exam) {
+        this.question = bankQuestion.getQuestion();
+        this.questionResourceFile = bankQuestion.getQuestionResourceFile();
+        this.questionType = bankQuestion.getQuestionType();
+        this.difficultyLevel = bankQuestion.getDifficultyLevel();
+        this.questionFormat = bankQuestion.getQuestionFormat();
+        this.answerFormat = bankQuestion.getAnswerFormat();
+        this.sampleAnswerText = bankQuestion.getSampleAnswerText();
+        this.sampleAnswerUrl = bankQuestion.getSampleAnswerUrl();
+        this.marks = marks;
+        this.exam = exam;
+    }
 
 
     public void update(ExamQuestion question) {

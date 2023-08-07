@@ -4,10 +4,13 @@ import com.skolarli.lmsservice.exception.OperationNotSupportedException;
 import com.skolarli.lmsservice.exception.ResourceNotFoundException;
 import com.skolarli.lmsservice.models.db.core.LmsUser;
 import com.skolarli.lmsservice.models.db.course.Course;
+import com.skolarli.lmsservice.models.db.exam.Exam;
+import com.skolarli.lmsservice.models.db.exam.ExamQuestionSubjective;
 import com.skolarli.lmsservice.models.db.questionbank.BankQuestionSubjective;
 import com.skolarli.lmsservice.models.dto.questionbank.NewBankQuestionSubjectiveRequest;
 import com.skolarli.lmsservice.repository.questionbank.QuestionBankSubjectiveRepository;
 import com.skolarli.lmsservice.services.course.CourseService;
+import com.skolarli.lmsservice.services.exam.ExamService;
 import com.skolarli.lmsservice.services.questionbank.QuestionBankSubjectiveService;
 import com.skolarli.lmsservice.utils.UserUtils;
 import org.springframework.stereotype.Service;
@@ -24,13 +27,17 @@ public class QuestionBankSubjectiveServiceImpl implements QuestionBankSubjective
 
     final CourseService courseService;
 
+    final ExamService examService;
+
     public QuestionBankSubjectiveServiceImpl(QuestionBankSubjectiveRepository
                                                      questionBankSubjectiveRepository,
                                              UserUtils userUtils,
-                                             CourseService courseService) {
+                                             CourseService courseService,
+                                             ExamService examService) {
         this.questionBankSubjectiveRepository = questionBankSubjectiveRepository;
         this.userUtils = userUtils;
         this.courseService = courseService;
+        this.examService = examService;
     }
 
     private Boolean checkPermission() {
@@ -68,6 +75,35 @@ public class QuestionBankSubjectiveServiceImpl implements QuestionBankSubjective
                 .getCorrectAnswer());
 
         return bankQuestionSubjective;
+    }
+
+    public ExamQuestionSubjective toExamQuestionSubjective(
+            BankQuestionSubjective bankQuestionSubjective,
+            Integer marks,
+            Exam existingExam) {
+
+        ExamQuestionSubjective examQuestionSubjective = new ExamQuestionSubjective(
+                bankQuestionSubjective, marks, existingExam);
+        return examQuestionSubjective;
+    }
+
+    @Override
+    public List<ExamQuestionSubjective> toExamQuestionSubjective(
+            List<BankQuestionSubjective> bankQuestionSubjective,
+            List<Integer> marks,
+            Long examId) {
+
+        Exam existingExam = examService.getExam(examId);
+        if (existingExam == null) {
+            throw new ResourceNotFoundException("Exam with Id " + examId + " not found");
+        }
+
+        List<ExamQuestionSubjective> examQuestionSubjectives = new ArrayList<>();
+        for (int i = 0; i < bankQuestionSubjective.size(); i++) {
+            examQuestionSubjectives.add(toExamQuestionSubjective(
+                    bankQuestionSubjective.get(i), marks.get(i), existingExam));
+        }
+        return examQuestionSubjectives;
     }
 
     @Override

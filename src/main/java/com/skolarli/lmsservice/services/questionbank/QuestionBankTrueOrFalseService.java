@@ -1,5 +1,6 @@
 package com.skolarli.lmsservice.services.questionbank;
 
+import com.skolarli.lmsservice.models.db.exam.ExamQuestionTrueOrFalse;
 import com.skolarli.lmsservice.models.db.questionbank.BankQuestionTrueOrFalse;
 import com.skolarli.lmsservice.models.dto.questionbank.NewBankQuestionTrueOrFalseRequest;
 
@@ -10,6 +11,9 @@ public interface QuestionBankTrueOrFalseService {
     BankQuestionTrueOrFalse toBankQuestionTrueOrFalse(
             NewBankQuestionTrueOrFalseRequest newBankQuestionTrueOrFalseRequest);
 
+    List<ExamQuestionTrueOrFalse> toExamQuestionTrueOrFalse(
+            List<BankQuestionTrueOrFalse> bankQuestionTrueOrFalse, List<Integer> marks,
+            Long examId);
 
     BankQuestionTrueOrFalse getQuestion(long id);
 

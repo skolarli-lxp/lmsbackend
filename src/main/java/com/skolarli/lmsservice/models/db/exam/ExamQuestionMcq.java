@@ -1,5 +1,6 @@
 package com.skolarli.lmsservice.models.db.exam;
 
+import com.skolarli.lmsservice.models.db.questionbank.BankQuestionMcq;
 import lombok.*;
 import org.hibernate.annotations.Check;
 
@@ -28,6 +29,19 @@ public class ExamQuestionMcq extends ExamQuestion {
     private String option6;
     @Check(constraints = "number_of_correct_answers >= 0 AND number_of_correct_answers <=6")
     private Integer numberOfCorrectAnswers;
+
+    public ExamQuestionMcq(BankQuestionMcq bankQuestionMcq, Integer marks, Exam exam) {
+        super(bankQuestionMcq, marks, exam);
+        this.numberOfOptions = bankQuestionMcq.getNumberOfOptions();
+        this.option1 = bankQuestionMcq.getOption1();
+        this.option2 = bankQuestionMcq.getOption2();
+        this.option3 = bankQuestionMcq.getOption3();
+        this.option4 = bankQuestionMcq.getOption4();
+        this.option5 = bankQuestionMcq.getOption5();
+        this.option6 = bankQuestionMcq.getOption6();
+        this.numberOfCorrectAnswers = bankQuestionMcq.getNumberOfCorrectAnswers();
+        this.correctAnswer = bankQuestionMcq.getCorrectAnswer();
+    }
 
     public void update(ExamQuestionMcq bankQuestionMcq) {
         super.update(bankQuestionMcq);

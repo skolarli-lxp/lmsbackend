@@ -2,6 +2,7 @@ package com.skolarli.lmsservice.services.exam;
 
 import com.skolarli.lmsservice.models.db.exam.Exam;
 import com.skolarli.lmsservice.models.db.exam.ExamQuestionMcq;
+import com.skolarli.lmsservice.models.db.questionbank.BankQuestionMcq;
 import com.skolarli.lmsservice.models.dto.exam.NewExamQuestionMcqRequest;
 
 import java.util.List;
@@ -9,6 +10,8 @@ import java.util.List;
 public interface ExamQuestionMcqService {
 
     ExamQuestionMcq toExamQuestionMcq(NewExamQuestionMcqRequest newExamQuestionMcqRequest);
+
+    List<BankQuestionMcq> toBankQuestionMcq(List<ExamQuestionMcq> examQuestionMcq);
 
     ExamQuestionMcq getQuestion(long id);
 

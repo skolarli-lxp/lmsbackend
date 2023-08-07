@@ -1,5 +1,6 @@
 package com.skolarli.lmsservice.models.db.exam;
 
+import com.skolarli.lmsservice.models.db.questionbank.BankQuestionSubjective;
 import lombok.*;
 
 import javax.persistence.Column;
@@ -20,6 +21,13 @@ public class ExamQuestionSubjective extends ExamQuestion {
 
     @Column(columnDefinition = "TEXT")
     private String correctAnswer;
+
+    public ExamQuestionSubjective(BankQuestionSubjective bankQuestionSubjective,
+                                  Integer marks, Exam exam) {
+        super(bankQuestionSubjective, marks, exam);
+        this.wordCount = bankQuestionSubjective.getWordCount();
+        this.correctAnswer = bankQuestionSubjective.getCorrectAnswer();
+    }
 
 
     public void update(ExamQuestionSubjective bankQuestionSubjective) {

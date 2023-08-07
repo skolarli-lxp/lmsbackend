@@ -5,6 +5,7 @@ import com.skolarli.lmsservice.exception.ResourceNotFoundException;
 import com.skolarli.lmsservice.models.db.core.LmsUser;
 import com.skolarli.lmsservice.models.db.exam.Exam;
 import com.skolarli.lmsservice.models.db.exam.ExamQuestionSubjective;
+import com.skolarli.lmsservice.models.db.questionbank.BankQuestionSubjective;
 import com.skolarli.lmsservice.models.dto.exam.NewExamQuestionSubjectiveRequest;
 import com.skolarli.lmsservice.repository.exam.ExamQuestionSubjectiveRepository;
 import com.skolarli.lmsservice.services.exam.ExamQuestionSubjectiveService;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -59,6 +61,18 @@ public class ExamQuestionSubjectiveServiceImpl implements ExamQuestionSubjective
                 .getCorrectAnswer());
 
         return examQuestionSubjective;
+    }
+
+    public BankQuestionSubjective toBankQuestionSubjective(ExamQuestionSubjective
+                                                                       examQuestionSubjective) {
+        return new BankQuestionSubjective(examQuestionSubjective);
+    }
+
+    @Override
+    public List<BankQuestionSubjective> toBankQuestionSubjective(List<ExamQuestionSubjective>
+                                                                         examQuestionSubjectives) {
+        return examQuestionSubjectives.stream().map(this::toBankQuestionSubjective)
+                .collect(Collectors.toList());
     }
 
     @Override

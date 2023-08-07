@@ -5,6 +5,7 @@ import com.skolarli.lmsservice.exception.ResourceNotFoundException;
 import com.skolarli.lmsservice.models.db.core.LmsUser;
 import com.skolarli.lmsservice.models.db.exam.Exam;
 import com.skolarli.lmsservice.models.db.exam.ExamQuestionTrueOrFalse;
+import com.skolarli.lmsservice.models.db.questionbank.BankQuestionTrueOrFalse;
 import com.skolarli.lmsservice.models.dto.exam.NewExamQuestionTrueOrFalseRequest;
 import com.skolarli.lmsservice.repository.exam.ExamQuestionTrueOrFalseRepository;
 import com.skolarli.lmsservice.services.exam.ExamQuestionTrueOrFalseService;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -65,6 +67,18 @@ public class ExamQuestionTrueOrFalseServiceImpl implements ExamQuestionTrueOrFal
                 newExamQuestionTrueOrFalseRequest.getCorrectAnswer());
 
         return examQuestionTrueOrFalse;
+    }
+
+    public BankQuestionTrueOrFalse toBankQuestionTrueOrFalse(ExamQuestionTrueOrFalse
+                                                                     examQuestionTrueOrFalse) {
+        return new BankQuestionTrueOrFalse(examQuestionTrueOrFalse);
+    }
+
+    @Override
+    public List<BankQuestionTrueOrFalse> toBankQuestionTrueOrFalse(
+            List<ExamQuestionTrueOrFalse> examQuestionTrueOrFalses) {
+        return examQuestionTrueOrFalses.stream().map(this::toBankQuestionTrueOrFalse)
+                .collect(Collectors.toList());
     }
 
     @Override

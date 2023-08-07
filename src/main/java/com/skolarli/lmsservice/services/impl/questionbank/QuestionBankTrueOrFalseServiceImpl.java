@@ -4,10 +4,15 @@ import com.skolarli.lmsservice.exception.OperationNotSupportedException;
 import com.skolarli.lmsservice.exception.ResourceNotFoundException;
 import com.skolarli.lmsservice.models.db.core.LmsUser;
 import com.skolarli.lmsservice.models.db.course.Course;
+import com.skolarli.lmsservice.models.db.exam.Exam;
+import com.skolarli.lmsservice.models.db.exam.ExamQuestionSubjective;
+import com.skolarli.lmsservice.models.db.exam.ExamQuestionTrueOrFalse;
+import com.skolarli.lmsservice.models.db.questionbank.BankQuestionSubjective;
 import com.skolarli.lmsservice.models.db.questionbank.BankQuestionTrueOrFalse;
 import com.skolarli.lmsservice.models.dto.questionbank.NewBankQuestionTrueOrFalseRequest;
 import com.skolarli.lmsservice.repository.questionbank.QuestionBankTrueOrFalseRepository;
 import com.skolarli.lmsservice.services.course.CourseService;
+import com.skolarli.lmsservice.services.exam.ExamService;
 import com.skolarli.lmsservice.services.questionbank.QuestionBankTrueOrFalseService;
 import com.skolarli.lmsservice.utils.UserUtils;
 import org.springframework.stereotype.Service;
@@ -24,13 +29,17 @@ public class QuestionBankTrueOrFalseServiceImpl implements QuestionBankTrueOrFal
 
     final CourseService courseService;
 
+    ExamService examService;
+
     public QuestionBankTrueOrFalseServiceImpl(QuestionBankTrueOrFalseRepository
                                                       questionBankTrueOrFalseRepository,
                                               UserUtils userUtils,
-                                              CourseService courseService) {
+                                              CourseService courseService,
+                                              ExamService examService) {
         this.questionBankTrueOrFalseRepository = questionBankTrueOrFalseRepository;
         this.userUtils = userUtils;
         this.courseService = courseService;
+        this.examService = examService;
     }
 
     private Boolean checkPermission() {
@@ -70,6 +79,31 @@ public class QuestionBankTrueOrFalseServiceImpl implements QuestionBankTrueOrFal
                 newBankQuestionTrueOrFalseRequest.getCorrectAnswer());
 
         return bankQuestionTrueOrFalse;
+    }
+
+    public ExamQuestionTrueOrFalse toExamQuestionTrueOrFalse(
+            BankQuestionTrueOrFalse bankQuestionTrueOrFalse, Integer marks,
+            Exam existingExam) {
+
+        ExamQuestionTrueOrFalse examQuestionTrueOrFalse = new ExamQuestionTrueOrFalse(
+                bankQuestionTrueOrFalse, marks, existingExam);
+        return examQuestionTrueOrFalse;
+    }
+
+    @Override
+    public List<ExamQuestionTrueOrFalse> toExamQuestionTrueOrFalse(
+            List<BankQuestionTrueOrFalse> bankQuestionTrueOrFalse, List<Integer> marks,
+            Long examId) {
+        Exam existingExam = examService.getExam(examId);
+        if (existingExam == null) {
+            throw new ResourceNotFoundException("Exam with Id " + examId + " not found");
+        }
+        List<ExamQuestionTrueOrFalse> examQuestionTrueOrFalses = new ArrayList<>();
+        for (int i = 0; i < bankQuestionTrueOrFalse.size(); i++) {
+            examQuestionTrueOrFalses.add(toExamQuestionTrueOrFalse(
+                    bankQuestionTrueOrFalse.get(i), marks.get(i), existingExam));
+        }
+        return examQuestionTrueOrFalses;
     }
 
     @Override

@@ -6,6 +6,7 @@ import com.skolarli.lmsservice.exception.ValidationFailureException;
 import com.skolarli.lmsservice.models.db.core.LmsUser;
 import com.skolarli.lmsservice.models.db.exam.Exam;
 import com.skolarli.lmsservice.models.db.exam.ExamQuestionMcq;
+import com.skolarli.lmsservice.models.db.questionbank.BankQuestionMcq;
 import com.skolarli.lmsservice.models.dto.exam.NewExamQuestionMcqRequest;
 import com.skolarli.lmsservice.repository.exam.ExamQuestionMcqRepository;
 import com.skolarli.lmsservice.services.exam.ExamQuestionMcqService;
@@ -63,6 +64,16 @@ public class ExamQuestionMcqServiceImpl implements ExamQuestionMcqService {
                 .getNumberOfCorrectAnswers());
 
         return examQuestionMcq;
+    }
+
+
+    public BankQuestionMcq toBankQuestionMcq(ExamQuestionMcq examQuestionMcq) {
+        return new BankQuestionMcq(examQuestionMcq);
+    }
+
+    @Override
+    public List<BankQuestionMcq> toBankQuestionMcq(List<ExamQuestionMcq> examQuestionMcqs) {
+        return examQuestionMcqs.stream().map(this::toBankQuestionMcq).collect(Collectors.toList());
     }
 
     private Boolean checkPermission(Exam exam) {

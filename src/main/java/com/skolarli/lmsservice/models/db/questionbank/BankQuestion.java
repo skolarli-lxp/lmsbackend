@@ -9,6 +9,7 @@ import com.skolarli.lmsservice.models.QuestionFormat;
 import com.skolarli.lmsservice.models.db.core.LmsUser;
 import com.skolarli.lmsservice.models.db.core.Tenantable;
 import com.skolarli.lmsservice.models.db.course.Course;
+import com.skolarli.lmsservice.models.db.exam.ExamQuestion;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -66,6 +67,7 @@ public class BankQuestion extends Tenantable {
     private String sampleAnswerUrl;
 
     private int testAdditionCount;
+
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_time", nullable = false, updatable = false)
     @CreationTimestamp
@@ -75,6 +77,20 @@ public class BankQuestion extends Tenantable {
     @Column(name = "last_updated_time", nullable = false)
     @UpdateTimestamp
     private Date lastUpdatedTime;
+
+    public BankQuestion(ExamQuestion examQuestion) {
+        if (examQuestion.getExam() != null && examQuestion.getExam().getCreatedBy() != null) {
+            this.createdBy = examQuestion.getExam().getCreatedBy();
+        }
+        this.question = examQuestion.getQuestion();
+        this.questionResourceFile = examQuestion.getQuestionResourceFile();
+        this.questionType = examQuestion.getQuestionType();
+        this.difficultyLevel = examQuestion.getDifficultyLevel();
+        this.questionFormat = examQuestion.getQuestionFormat();
+        this.answerFormat = examQuestion.getAnswerFormat();
+        this.sampleAnswerText = examQuestion.getSampleAnswerText();
+        this.sampleAnswerUrl = examQuestion.getSampleAnswerUrl();
+    }
 
     public void update(BankQuestion question) {
         if (question.getQuestion() != null) {
