@@ -11,7 +11,9 @@ public interface ExamQuestionMcqService {
 
     ExamQuestionMcq toExamQuestionMcq(NewExamQuestionMcqRequest newExamQuestionMcqRequest);
 
-    List<BankQuestionMcq> toBankQuestionMcq(List<ExamQuestionMcq> examQuestionMcq);
+
+    List<BankQuestionMcq> toBankQuestionMcq(List<Long> examQuestionMcq);
+
 
     ExamQuestionMcq getQuestion(long id);
 

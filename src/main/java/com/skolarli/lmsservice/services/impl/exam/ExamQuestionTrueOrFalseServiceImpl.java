@@ -76,7 +76,9 @@ public class ExamQuestionTrueOrFalseServiceImpl implements ExamQuestionTrueOrFal
 
     @Override
     public List<BankQuestionTrueOrFalse> toBankQuestionTrueOrFalse(
-            List<ExamQuestionTrueOrFalse> examQuestionTrueOrFalses) {
+            List<Long> examQuestionTrueOrFalseIds) {
+        List<ExamQuestionTrueOrFalse> examQuestionTrueOrFalses =
+                examQuestionTrueOrFalseRepository.findAllById(examQuestionTrueOrFalseIds);
         return examQuestionTrueOrFalses.stream().map(this::toBankQuestionTrueOrFalse)
                 .collect(Collectors.toList());
     }

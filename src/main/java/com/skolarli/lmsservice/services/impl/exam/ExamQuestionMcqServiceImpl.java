@@ -72,7 +72,9 @@ public class ExamQuestionMcqServiceImpl implements ExamQuestionMcqService {
     }
 
     @Override
-    public List<BankQuestionMcq> toBankQuestionMcq(List<ExamQuestionMcq> examQuestionMcqs) {
+    public List<BankQuestionMcq> toBankQuestionMcq(List<Long> examQuestionMcqIds) {
+        List<ExamQuestionMcq> examQuestionMcqs =
+                examQuestionMcqRepository.findAllById(examQuestionMcqIds);
         return examQuestionMcqs.stream().map(this::toBankQuestionMcq).collect(Collectors.toList());
     }
 

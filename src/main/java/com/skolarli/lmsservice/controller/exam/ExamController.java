@@ -1,10 +1,7 @@
 package com.skolarli.lmsservice.controller.exam;
 
 import com.skolarli.lmsservice.models.db.exam.Exam;
-import com.skolarli.lmsservice.models.dto.exam.DeleteExamQuestionsRequest;
-import com.skolarli.lmsservice.models.dto.exam.NewExamQuestionsAllTypesRequest;
-import com.skolarli.lmsservice.models.dto.exam.NewExamQuestionsAllTypesResponse;
-import com.skolarli.lmsservice.models.dto.exam.NewExamRequest;
+import com.skolarli.lmsservice.models.dto.exam.*;
 import com.skolarli.lmsservice.services.exam.ExamService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -143,6 +140,24 @@ public class ExamController {
                     HttpStatus.OK);
         } catch (Exception e) {
             logger.error("Error in addQuestions: " + e.getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        } finally {
+            MDC.remove("requestId");
+        }
+    }
+
+    @RequestMapping(method = RequestMethod.POST, value = "/addtoqb")
+    public ResponseEntity<AddExamQuestionToQbResponse> addExamQuestionToQb(
+            @RequestBody AddExamQuestionToQbRequest request) {
+        UUID uuid = UUID.randomUUID();
+        MDC.put("requestId", uuid.toString());
+        logger.info("Received request adding exam question to QB");
+
+        try {
+            return new ResponseEntity<>(examService.addExamQuestionToQuestionBank(request),
+                    HttpStatus.OK);
+        } catch (Exception e) {
+            logger.error("Error in addExamQuestionToQb: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         } finally {
             MDC.remove("requestId");

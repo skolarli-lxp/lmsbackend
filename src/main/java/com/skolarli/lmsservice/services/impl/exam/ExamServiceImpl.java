@@ -5,11 +5,14 @@ import com.skolarli.lmsservice.exception.ResourceNotFoundException;
 import com.skolarli.lmsservice.exception.ValidationFailureException;
 import com.skolarli.lmsservice.models.db.core.LmsUser;
 import com.skolarli.lmsservice.models.db.exam.Exam;
-import com.skolarli.lmsservice.models.dto.exam.DeleteExamQuestionsRequest;
-import com.skolarli.lmsservice.models.dto.exam.NewExamQuestionsAllTypesRequest;
-import com.skolarli.lmsservice.models.dto.exam.NewExamQuestionsAllTypesResponse;
-import com.skolarli.lmsservice.models.dto.exam.NewExamRequest;
+import com.skolarli.lmsservice.models.db.questionbank.BankQuestionMcq;
+import com.skolarli.lmsservice.models.db.questionbank.BankQuestionSubjective;
+import com.skolarli.lmsservice.models.db.questionbank.BankQuestionTrueOrFalse;
+import com.skolarli.lmsservice.models.dto.exam.*;
 import com.skolarli.lmsservice.repository.exam.ExamRepository;
+import com.skolarli.lmsservice.repository.questionbank.QuestionBankMcqRepository;
+import com.skolarli.lmsservice.repository.questionbank.QuestionBankSubjectiveRepository;
+import com.skolarli.lmsservice.repository.questionbank.QuestionBankTrueOrFalseRepository;
 import com.skolarli.lmsservice.services.course.BatchService;
 import com.skolarli.lmsservice.services.course.CourseService;
 import com.skolarli.lmsservice.services.exam.ExamQuestionMcqService;
@@ -30,6 +33,9 @@ public class ExamServiceImpl implements ExamService {
     private static final Logger logger = LoggerFactory.getLogger(ExamServiceImpl.class);
 
     ExamRepository examRepository;
+    QuestionBankMcqRepository questionBankMcqRepository;
+    QuestionBankSubjectiveRepository questionBankSubjectiveRepository;
+    QuestionBankTrueOrFalseRepository questionBankTrueOrFalseRepository;
 
     CourseService courseService;
 
@@ -43,6 +49,9 @@ public class ExamServiceImpl implements ExamService {
     UserUtils userUtils;
 
     public ExamServiceImpl(ExamRepository examRepository,
+                           QuestionBankMcqRepository questionBankMcqRepository,
+                           QuestionBankSubjectiveRepository questionBankSubjectiveRepository,
+                           QuestionBankTrueOrFalseRepository questionBankTrueOrFalseRepository,
                            CourseService courseService,
                            BatchService batchService,
                            ExamQuestionMcqService examQuestionMcqService,
@@ -50,6 +59,9 @@ public class ExamServiceImpl implements ExamService {
                            ExamQuestionSubjectiveService examQuestionSubjectiveService,
                            UserUtils userUtils) {
         this.examRepository = examRepository;
+        this.questionBankMcqRepository = questionBankMcqRepository;
+        this.questionBankSubjectiveRepository = questionBankSubjectiveRepository;
+        this.questionBankTrueOrFalseRepository = questionBankTrueOrFalseRepository;
         this.courseService = courseService;
         this.batchService = batchService;
         this.examQuestionMcqService = examQuestionMcqService;
@@ -243,5 +255,41 @@ public class ExamServiceImpl implements ExamService {
                 existingExam);
         examQuestionTrueOrFalseService.hardDeleteQuestions(questionIds.getTrueOrFalseQuestionsIds(),
                 existingExam);
+    }
+
+    @Override
+    public AddExamQuestionToQbResponse addExamQuestionToQuestionBank(AddExamQuestionToQbRequest
+                                                                             request) {
+        List<Long> mcqQuestions = request.getMcqQuestionsList();
+        List<Long> subjectiveQuestions = request.getSubjectiveQuestionsList();
+        List<Long> trueOrFalseQuestions = request.getTrueOrFalseQuestionsList();
+
+        AddExamQuestionToQbResponse response = new AddExamQuestionToQbResponse();
+
+        if (mcqQuestions != null) {
+            List<BankQuestionMcq> bankQuestionMcqs = examQuestionMcqService
+                    .toBankQuestionMcq(mcqQuestions);
+            List<BankQuestionMcq> savedQuestions = questionBankMcqRepository
+                    .saveAll(bankQuestionMcqs);
+            response.setMcqQuestionsList(savedQuestions);
+        }
+
+        if (subjectiveQuestions != null) {
+            List<BankQuestionSubjective> bankQuestionSubjectives = examQuestionSubjectiveService
+                    .toBankQuestionSubjective(subjectiveQuestions);
+            List<BankQuestionSubjective> savedQuestions = questionBankSubjectiveRepository
+                    .saveAll(bankQuestionSubjectives);
+            response.setSubjectiveQuestionsList(savedQuestions);
+        }
+
+        if (trueOrFalseQuestions != null) {
+            List<BankQuestionTrueOrFalse> bankQuestionTrueOrFalses = examQuestionTrueOrFalseService
+                    .toBankQuestionTrueOrFalse(trueOrFalseQuestions);
+            List<BankQuestionTrueOrFalse> savedQuestions = questionBankTrueOrFalseRepository
+                    .saveAll(bankQuestionTrueOrFalses);
+            response.setTrueOrFalseQuestionsList(savedQuestions);
+        }
+
+        return response;
     }
 }

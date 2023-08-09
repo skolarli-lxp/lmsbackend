@@ -1,10 +1,7 @@
 package com.skolarli.lmsservice.services.exam;
 
 import com.skolarli.lmsservice.models.db.exam.Exam;
-import com.skolarli.lmsservice.models.dto.exam.DeleteExamQuestionsRequest;
-import com.skolarli.lmsservice.models.dto.exam.NewExamQuestionsAllTypesRequest;
-import com.skolarli.lmsservice.models.dto.exam.NewExamQuestionsAllTypesResponse;
-import com.skolarli.lmsservice.models.dto.exam.NewExamRequest;
+import com.skolarli.lmsservice.models.dto.exam.*;
 
 import java.util.List;
 
@@ -30,4 +27,7 @@ public interface ExamService {
     void hardDeleteExam(long id);
 
     void deleteQuestions(Long examId, DeleteExamQuestionsRequest request);
+
+    AddExamQuestionToQbResponse addExamQuestionToQuestionBank(AddExamQuestionToQbRequest
+                                                                      request);
 }

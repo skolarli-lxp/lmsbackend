@@ -12,8 +12,8 @@ public interface ExamQuestionTrueOrFalseService {
     ExamQuestionTrueOrFalse toExamQuestionTrueOrFalse(
             NewExamQuestionTrueOrFalseRequest newExamQuestionTrueOrFalseRequest);
 
-    List<BankQuestionTrueOrFalse> toBankQuestionTrueOrFalse(List<ExamQuestionTrueOrFalse>
-                                                              examQuestionTrueOrFalse);
+    List<BankQuestionTrueOrFalse> toBankQuestionTrueOrFalse(List<Long>
+                                                                    examQuestionTrueOrFalse);
 
     ExamQuestionTrueOrFalse getQuestion(long id);
 

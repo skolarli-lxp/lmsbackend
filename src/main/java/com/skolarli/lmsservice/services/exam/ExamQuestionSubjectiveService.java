@@ -12,7 +12,7 @@ public interface ExamQuestionSubjectiveService {
     ExamQuestionSubjective toExamQuestionSubjective(
             NewExamQuestionSubjectiveRequest newExamQuestionSubjectiveRequest);
 
-    List<BankQuestionSubjective> toBankQuestionSubjective(List<ExamQuestionSubjective>
+    List<BankQuestionSubjective> toBankQuestionSubjective(List<Long>
                                                             examQuestionSubjective);
 
     ExamQuestionSubjective getQuestion(long id);

@@ -64,13 +64,16 @@ public class ExamQuestionSubjectiveServiceImpl implements ExamQuestionSubjective
     }
 
     public BankQuestionSubjective toBankQuestionSubjective(ExamQuestionSubjective
-                                                                       examQuestionSubjective) {
+                                                                   examQuestionSubjective) {
         return new BankQuestionSubjective(examQuestionSubjective);
     }
 
     @Override
-    public List<BankQuestionSubjective> toBankQuestionSubjective(List<ExamQuestionSubjective>
-                                                                         examQuestionSubjectives) {
+    public List<BankQuestionSubjective> toBankQuestionSubjective(
+            List<Long> examQuestionSubjectiveIds) {
+
+        List<ExamQuestionSubjective> examQuestionSubjectives =
+                examQuestionSubjectiveRepository.findAllById(examQuestionSubjectiveIds);
         return examQuestionSubjectives.stream().map(this::toBankQuestionSubjective)
                 .collect(Collectors.toList());
     }
