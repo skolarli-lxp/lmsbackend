@@ -1,8 +1,10 @@
 package com.skolarli.lmsservice.controller.questionbank;
 
 import com.skolarli.lmsservice.exception.ValidationFailureException;
+import com.skolarli.lmsservice.models.db.exam.ExamQuestionMcq;
 import com.skolarli.lmsservice.models.db.questionbank.BankQuestionMcq;
 import com.skolarli.lmsservice.models.dto.questionbank.NewBankQuestionMcqRequest;
+import com.skolarli.lmsservice.models.dto.questionbank.ToExamQuestionRequest;
 import com.skolarli.lmsservice.services.questionbank.QuestionBankMcqService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -128,6 +130,32 @@ public class QuestionBankMcqController {
         }
     }
 
+    @RequestMapping(value = "/addtoexam", method = RequestMethod.POST)
+    public ResponseEntity<List<ExamQuestionMcq>> addQuestionsToExam(
+            @RequestParam Long examId, @Valid @RequestBody ToExamQuestionRequest request) {
+        UUID uuid = UUID.randomUUID();
+        MDC.put("requestId", uuid.toString());
+        logger.info("Received request for add questions to exam with id: " + examId);
+
+        if (!request.isValid()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Invalid request. Number of questions should be equal to number of marks");
+        }
+
+        List<ExamQuestionMcq> questions = null;
+        try {
+            questions = questionBankMcqService.toExamQuestionMcq(request.getBankQuestionIds(),
+                    request.getMarks(), examId);
+        } catch (Exception e) {
+            logger.error("Error in addQuestionsToExam: " + e.getMessage());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        } finally {
+            MDC.remove("requestId");
+        }
+
+        return new ResponseEntity<>(questions, HttpStatus.OK);
+    }
+
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
     public ResponseEntity<BankQuestionMcq> updateQuestion(
             @RequestBody NewBankQuestionMcqRequest request, @PathVariable long id) {
@@ -174,6 +202,4 @@ public class QuestionBankMcqController {
             MDC.remove("requestId");
         }
     }
-
-
 }

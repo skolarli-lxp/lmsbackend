@@ -106,6 +106,10 @@ public class QuestionBankMcqServiceImpl implements QuestionBankMcqService {
             throw new ResourceNotFoundException("Exam with Id " + examId + " not found");
         }
 
+        if (bankQuestionMcqIds.size() != marks.size()) {
+            throw new ValidationFailureException("Number of questions and marks should be same");
+        }
+
         List<BankQuestionMcq> bankQuestionMcqs =
                 questionBankMcqRepository.findAllById(bankQuestionMcqIds);
 

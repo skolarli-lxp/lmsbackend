@@ -1,7 +1,9 @@
 package com.skolarli.lmsservice.controller.questionbank;
 
+import com.skolarli.lmsservice.models.db.exam.ExamQuestionSubjective;
 import com.skolarli.lmsservice.models.db.questionbank.BankQuestionSubjective;
 import com.skolarli.lmsservice.models.dto.questionbank.NewBankQuestionSubjectiveRequest;
+import com.skolarli.lmsservice.models.dto.questionbank.ToExamQuestionRequest;
 import com.skolarli.lmsservice.services.questionbank.QuestionBankSubjectiveService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -125,6 +127,34 @@ public class QuestionBankSubjectiveController {
         } finally {
             MDC.remove("requestId");
         }
+    }
+
+    @RequestMapping(value = "/addtoexam", method = RequestMethod.POST)
+    public ResponseEntity<List<ExamQuestionSubjective>> addQuestionsToExam(
+            @RequestParam Long examId, @Valid @RequestBody ToExamQuestionRequest request) {
+        UUID uuid = UUID.randomUUID();
+        MDC.put("requestId", uuid.toString());
+        logger.info("Received request for add questions to exam with id: " + examId);
+
+        if (!request.isValid()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Invalid request. Number of questions should be equal to number of marks");
+        }
+
+        List<ExamQuestionSubjective> questions = null;
+        try {
+            questions = questionBankSubjectiveService.toExamQuestionSubjective(
+                    request.getBankQuestionIds(),
+                    request.getMarks(),
+                    examId);
+        } catch (Exception e) {
+            logger.error("Error in addQuestionsToExam: " + e.getMessage());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        } finally {
+            MDC.remove("requestId");
+        }
+
+        return new ResponseEntity<>(questions, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
