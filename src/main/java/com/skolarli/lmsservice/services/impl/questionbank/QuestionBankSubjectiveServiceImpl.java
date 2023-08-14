@@ -8,6 +8,7 @@ import com.skolarli.lmsservice.models.db.exam.Exam;
 import com.skolarli.lmsservice.models.db.exam.ExamQuestionSubjective;
 import com.skolarli.lmsservice.models.db.questionbank.BankQuestionSubjective;
 import com.skolarli.lmsservice.models.dto.questionbank.NewBankQuestionSubjectiveRequest;
+import com.skolarli.lmsservice.repository.exam.ExamQuestionSubjectiveRepository;
 import com.skolarli.lmsservice.repository.questionbank.QuestionBankSubjectiveRepository;
 import com.skolarli.lmsservice.services.course.CourseService;
 import com.skolarli.lmsservice.services.exam.ExamService;
@@ -23,6 +24,8 @@ import java.util.List;
 public class QuestionBankSubjectiveServiceImpl implements QuestionBankSubjectiveService {
 
     final QuestionBankSubjectiveRepository questionBankSubjectiveRepository;
+
+    final ExamQuestionSubjectiveRepository examQuestionSubjectiveRepository;
     final UserUtils userUtils;
 
     final CourseService courseService;
@@ -31,10 +34,13 @@ public class QuestionBankSubjectiveServiceImpl implements QuestionBankSubjective
 
     public QuestionBankSubjectiveServiceImpl(QuestionBankSubjectiveRepository
                                                      questionBankSubjectiveRepository,
+                                             ExamQuestionSubjectiveRepository
+                                                     examQuestionSubjectiveRepository,
                                              UserUtils userUtils,
                                              CourseService courseService,
                                              ExamService examService) {
         this.questionBankSubjectiveRepository = questionBankSubjectiveRepository;
+        this.examQuestionSubjectiveRepository = examQuestionSubjectiveRepository;
         this.userUtils = userUtils;
         this.courseService = courseService;
         this.examService = examService;
@@ -89,7 +95,7 @@ public class QuestionBankSubjectiveServiceImpl implements QuestionBankSubjective
 
     @Override
     public List<ExamQuestionSubjective> toExamQuestionSubjective(
-            List<BankQuestionSubjective> bankQuestionSubjective,
+            List<Long> bankQuestionSubjectiveIds,
             List<Integer> marks,
             Long examId) {
 
@@ -98,12 +104,17 @@ public class QuestionBankSubjectiveServiceImpl implements QuestionBankSubjective
             throw new ResourceNotFoundException("Exam with Id " + examId + " not found");
         }
 
+        List<BankQuestionSubjective> bankQuestionSubjective =
+                questionBankSubjectiveRepository.findAllById(bankQuestionSubjectiveIds);
+
         List<ExamQuestionSubjective> examQuestionSubjectives = new ArrayList<>();
         for (int i = 0; i < bankQuestionSubjective.size(); i++) {
             examQuestionSubjectives.add(toExamQuestionSubjective(
                     bankQuestionSubjective.get(i), marks.get(i), existingExam));
         }
-        return examQuestionSubjectives;
+        List<ExamQuestionSubjective> savedExamQuestionSubjectives =
+                examQuestionSubjectiveRepository.saveAll(examQuestionSubjectives);
+        return savedExamQuestionSubjectives;
     }
 
     @Override

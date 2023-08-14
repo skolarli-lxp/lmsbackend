@@ -12,7 +12,7 @@ public interface QuestionBankTrueOrFalseService {
             NewBankQuestionTrueOrFalseRequest newBankQuestionTrueOrFalseRequest);
 
     List<ExamQuestionTrueOrFalse> toExamQuestionTrueOrFalse(
-            List<BankQuestionTrueOrFalse> bankQuestionTrueOrFalse, List<Integer> marks,
+            List<Long> bankQuestionTrueOrFalse, List<Integer> marks,
             Long examId);
 
     BankQuestionTrueOrFalse getQuestion(long id);

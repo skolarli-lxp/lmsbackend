@@ -10,9 +10,9 @@ public interface QuestionBankMcqService {
 
     BankQuestionMcq toBankQuestionMcq(NewBankQuestionMcqRequest newBankQuestionMcqRequest);
 
-    List<ExamQuestionMcq> toExamQuestionMcq(List<BankQuestionMcq> bankQuestionMcq,
-                                      List<Integer> marks,
-                                      Long examId);
+    List<ExamQuestionMcq> toExamQuestionMcq(List<Long> bankQuestionMcq,
+                                            List<Integer> marks,
+                                            Long examId);
 
     BankQuestionMcq getQuestion(long id);
 

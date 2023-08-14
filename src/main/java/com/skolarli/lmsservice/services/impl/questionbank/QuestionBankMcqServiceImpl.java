@@ -9,6 +9,7 @@ import com.skolarli.lmsservice.models.db.exam.Exam;
 import com.skolarli.lmsservice.models.db.exam.ExamQuestionMcq;
 import com.skolarli.lmsservice.models.db.questionbank.BankQuestionMcq;
 import com.skolarli.lmsservice.models.dto.questionbank.NewBankQuestionMcqRequest;
+import com.skolarli.lmsservice.repository.exam.ExamQuestionMcqRepository;
 import com.skolarli.lmsservice.repository.questionbank.QuestionBankMcqRepository;
 import com.skolarli.lmsservice.services.course.CourseService;
 import com.skolarli.lmsservice.services.exam.ExamService;
@@ -25,6 +26,8 @@ import java.util.stream.Collectors;
 public class QuestionBankMcqServiceImpl implements QuestionBankMcqService {
 
     final QuestionBankMcqRepository questionBankMcqRepository;
+
+    final ExamQuestionMcqRepository examQuestionMcqRepository;
     final CourseService courseService;
 
     final UserUtils userUtils;
@@ -32,10 +35,12 @@ public class QuestionBankMcqServiceImpl implements QuestionBankMcqService {
     final ExamService examService;
 
     public QuestionBankMcqServiceImpl(QuestionBankMcqRepository questionBankMcqRepository,
+                                        ExamQuestionMcqRepository examQuestionMcqRepository,
                                       UserUtils userUtils,
                                       CourseService courseService,
                                       ExamService examService) {
         this.questionBankMcqRepository = questionBankMcqRepository;
+        this.examQuestionMcqRepository = examQuestionMcqRepository;
         this.userUtils = userUtils;
         this.courseService = courseService;
         this.examService = examService;
@@ -93,20 +98,24 @@ public class QuestionBankMcqServiceImpl implements QuestionBankMcqService {
     }
 
     @Override
-    public List<ExamQuestionMcq> toExamQuestionMcq(List<BankQuestionMcq> bankQuestionMcqs,
-                                                       List<Integer> marks,
-                                                       Long examId) {
+    public List<ExamQuestionMcq> toExamQuestionMcq(List<Long> bankQuestionMcqIds,
+                                                   List<Integer> marks,
+                                                   Long examId) {
         Exam existingExam = examService.getExam(examId);
         if (existingExam == null) {
             throw new ResourceNotFoundException("Exam with Id " + examId + " not found");
         }
+
+        List<BankQuestionMcq> bankQuestionMcqs =
+                questionBankMcqRepository.findAllById(bankQuestionMcqIds);
 
         List<ExamQuestionMcq> examQuestionMcqs = new ArrayList<>();
         for (int i = 0; i < bankQuestionMcqs.size(); i++) {
             examQuestionMcqs.add(toExamQuestionMcq(bankQuestionMcqs.get(i), marks.get(i),
                     existingExam));
         }
-        return examQuestionMcqs;
+        List<ExamQuestionMcq> savedQuestions = examQuestionMcqRepository.saveAll(examQuestionMcqs);
+        return savedQuestions;
     }
 
     @Override

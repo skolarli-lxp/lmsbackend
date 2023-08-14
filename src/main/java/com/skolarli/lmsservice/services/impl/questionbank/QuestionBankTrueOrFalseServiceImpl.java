@@ -5,11 +5,10 @@ import com.skolarli.lmsservice.exception.ResourceNotFoundException;
 import com.skolarli.lmsservice.models.db.core.LmsUser;
 import com.skolarli.lmsservice.models.db.course.Course;
 import com.skolarli.lmsservice.models.db.exam.Exam;
-import com.skolarli.lmsservice.models.db.exam.ExamQuestionSubjective;
 import com.skolarli.lmsservice.models.db.exam.ExamQuestionTrueOrFalse;
-import com.skolarli.lmsservice.models.db.questionbank.BankQuestionSubjective;
 import com.skolarli.lmsservice.models.db.questionbank.BankQuestionTrueOrFalse;
 import com.skolarli.lmsservice.models.dto.questionbank.NewBankQuestionTrueOrFalseRequest;
+import com.skolarli.lmsservice.repository.exam.ExamQuestionTrueOrFalseRepository;
 import com.skolarli.lmsservice.repository.questionbank.QuestionBankTrueOrFalseRepository;
 import com.skolarli.lmsservice.services.course.CourseService;
 import com.skolarli.lmsservice.services.exam.ExamService;
@@ -25,6 +24,8 @@ import java.util.List;
 public class QuestionBankTrueOrFalseServiceImpl implements QuestionBankTrueOrFalseService {
 
     final QuestionBankTrueOrFalseRepository questionBankTrueOrFalseRepository;
+
+    final ExamQuestionTrueOrFalseRepository examQuestionTrueOrFalseRepository;
     final UserUtils userUtils;
 
     final CourseService courseService;
@@ -33,10 +34,13 @@ public class QuestionBankTrueOrFalseServiceImpl implements QuestionBankTrueOrFal
 
     public QuestionBankTrueOrFalseServiceImpl(QuestionBankTrueOrFalseRepository
                                                       questionBankTrueOrFalseRepository,
+                                              ExamQuestionTrueOrFalseRepository
+                                                      examQuestionTrueOrFalseRepository,
                                               UserUtils userUtils,
                                               CourseService courseService,
                                               ExamService examService) {
         this.questionBankTrueOrFalseRepository = questionBankTrueOrFalseRepository;
+        this.examQuestionTrueOrFalseRepository = examQuestionTrueOrFalseRepository;
         this.userUtils = userUtils;
         this.courseService = courseService;
         this.examService = examService;
@@ -92,18 +96,23 @@ public class QuestionBankTrueOrFalseServiceImpl implements QuestionBankTrueOrFal
 
     @Override
     public List<ExamQuestionTrueOrFalse> toExamQuestionTrueOrFalse(
-            List<BankQuestionTrueOrFalse> bankQuestionTrueOrFalse, List<Integer> marks,
+            List<Long> bankQuestionTrueOrFalseIds, List<Integer> marks,
             Long examId) {
         Exam existingExam = examService.getExam(examId);
         if (existingExam == null) {
             throw new ResourceNotFoundException("Exam with Id " + examId + " not found");
         }
+        List<BankQuestionTrueOrFalse> bankQuestionTrueOrFalse =
+                questionBankTrueOrFalseRepository.findAllById(bankQuestionTrueOrFalseIds);
         List<ExamQuestionTrueOrFalse> examQuestionTrueOrFalses = new ArrayList<>();
         for (int i = 0; i < bankQuestionTrueOrFalse.size(); i++) {
             examQuestionTrueOrFalses.add(toExamQuestionTrueOrFalse(
                     bankQuestionTrueOrFalse.get(i), marks.get(i), existingExam));
         }
-        return examQuestionTrueOrFalses;
+
+        List<ExamQuestionTrueOrFalse> savedQuestions =
+                examQuestionTrueOrFalseRepository.saveAll(examQuestionTrueOrFalses);
+        return savedQuestions;
     }
 
     @Override
