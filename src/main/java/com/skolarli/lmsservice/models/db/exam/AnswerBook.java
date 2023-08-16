@@ -123,6 +123,7 @@ public class AnswerBook extends Tenantable {
     private Date lastUpdatedTime;
 
     public Boolean validate() {
+        //TODO: Add validation logic
         return true;
     }
 

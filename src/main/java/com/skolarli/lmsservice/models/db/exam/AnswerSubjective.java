@@ -3,6 +3,8 @@ package com.skolarli.lmsservice.models.db.exam;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.skolarli.lmsservice.exception.OperationNotSupportedException;
+import com.skolarli.lmsservice.models.EvaluationResult;
 import com.skolarli.lmsservice.models.db.core.LmsUser;
 import com.skolarli.lmsservice.models.db.core.Tenantable;
 import lombok.*;
@@ -41,6 +43,8 @@ public class AnswerSubjective extends Tenantable {
     private Double marksGiven;
 
     private String evaluatorRemarks;
+
+    private EvaluationResult evaluationResult = EvaluationResult.NOT_EVALUATED;
 
     private String studentRemarks;
 
@@ -82,5 +86,18 @@ public class AnswerSubjective extends Tenantable {
         if (answerSubjective.getUpdatedBy() != null) {
             this.updatedBy = answerSubjective.getUpdatedBy();
         }
+    }
+
+    public void manualEvaluate(Double marksGiven,
+                               String evaluatorRemarks,
+                               EvaluationResult evaluationResult) {
+        if (marksGiven <= this.question.getMarks().doubleValue()) {
+            this.marksGiven = marksGiven;
+        } else {
+            throw new OperationNotSupportedException(
+                    "Marks given cannot be greater than total marks");
+        }
+        this.evaluatorRemarks = evaluatorRemarks;
+        this.evaluationResult = evaluationResult;
     }
 }

@@ -2,6 +2,7 @@ package com.skolarli.lmsservice.services.impl.exam;
 
 import com.skolarli.lmsservice.exception.ResourceNotFoundException;
 import com.skolarli.lmsservice.exception.ValidationFailureException;
+import com.skolarli.lmsservice.models.AnswerBookStatus;
 import com.skolarli.lmsservice.models.db.exam.AnswerBook;
 import com.skolarli.lmsservice.models.db.exam.AnswerMcq;
 import com.skolarli.lmsservice.models.db.exam.AnswerSubjective;
@@ -161,6 +162,17 @@ public class AnswerBookServiceImpl implements AnswerBookService {
         if (!answerBook.validate()) {
             throw new ValidationFailureException("Invalid Answer Book");
         }
+        return answerBookRepository.save(existingAnswerBook);
+    }
+
+    @Override
+    public AnswerBook updateStatus(AnswerBookStatus status, Long id) {
+        AnswerBook existingAnswerBook = getAnswerBookById(id);
+        if (existingAnswerBook == null) {
+            throw new ResourceNotFoundException("Answer Book not found with id " + id);
+        }
+        existingAnswerBook.setStatus(status);
+        existingAnswerBook.setUpdatedBy(userUtils.getCurrentUser());
         return answerBookRepository.save(existingAnswerBook);
     }
 

@@ -3,6 +3,8 @@ package com.skolarli.lmsservice.models.db.exam;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.skolarli.lmsservice.exception.OperationNotSupportedException;
+import com.skolarli.lmsservice.models.EvaluationResult;
 import com.skolarli.lmsservice.models.db.core.LmsUser;
 import com.skolarli.lmsservice.models.db.core.Tenantable;
 import lombok.*;
@@ -40,6 +42,8 @@ public class AnswerTrueFalse extends Tenantable {
     private Double marksGiven;
 
     private String evaluatorRemarks;
+
+    private EvaluationResult evaluationResult = EvaluationResult.NOT_EVALUATED;
 
     private String studentRemarks;
 
@@ -81,5 +85,34 @@ public class AnswerTrueFalse extends Tenantable {
         if (answerTrueFalse.getUpdatedBy() != null) {
             this.updatedBy = answerTrueFalse.getUpdatedBy();
         }
+    }
+
+    public void autoEvaluate() {
+        if (this.answer == null) {
+            this.evaluationResult = EvaluationResult.INCORRECT;
+            this.evaluatorRemarks = "No answer provided";
+            this.marksGiven = 0.0;
+            return;
+        }
+        if (this.answer.equals(this.question.getCorrectAnswer())) {
+            this.evaluationResult = EvaluationResult.CORRECT;
+            this.marksGiven = this.question.getMarks().doubleValue();
+        } else {
+            this.evaluationResult = EvaluationResult.INCORRECT;
+            this.marksGiven = 0.0;
+        }
+    }
+
+    public void manualEvaluate(Double marksGiven,
+                               String evaluatorRemarks,
+                               EvaluationResult evaluationResult) {
+        if (marksGiven <= this.question.getMarks().doubleValue()) {
+            this.marksGiven = marksGiven;
+        } else {
+            throw new OperationNotSupportedException(
+                    "Marks given cannot be greater than total marks");
+        }
+        this.evaluatorRemarks = evaluatorRemarks;
+        this.evaluationResult = evaluationResult;
     }
 }

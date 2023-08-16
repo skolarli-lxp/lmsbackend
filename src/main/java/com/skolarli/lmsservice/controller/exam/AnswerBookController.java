@@ -1,5 +1,6 @@
 package com.skolarli.lmsservice.controller.exam;
 
+import com.skolarli.lmsservice.models.AnswerBookStatus;
 import com.skolarli.lmsservice.models.db.exam.AnswerBook;
 import com.skolarli.lmsservice.models.dto.exam.AddAnswerBookAnswerRequest;
 import com.skolarli.lmsservice.models.dto.exam.NewAnswerBookRequest;
@@ -118,9 +119,9 @@ public class AnswerBookController {
     }
 
     @RequestMapping(method = RequestMethod.POST, path = "/{id}/questions")
-    public ResponseEntity<AnswerBook> submitAnswerBook(@PathVariable Long id,
-                                                       @RequestBody AddAnswerBookAnswerRequest
-                                                               request) {
+    public ResponseEntity<AnswerBook> addAnswerToAnswerBook(@PathVariable Long id,
+                                                            @RequestBody AddAnswerBookAnswerRequest
+                                                                    request) {
         UUID uuid = UUID.randomUUID();
         MDC.put("requestId", uuid.toString());
         logger.info("Received request for add answers to answebook for id: " + id);
@@ -148,6 +149,23 @@ public class AnswerBookController {
             return ResponseEntity.ok(answerBookService.updateAnswerBook(answerBook, id));
         } catch (Exception e) {
             logger.error("Error in updateAnswerBook: " + e.getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        } finally {
+            MDC.remove("requestId");
+        }
+    }
+
+    @RequestMapping(method = RequestMethod.PUT, path = "/status/{id}")
+    public ResponseEntity<AnswerBook> updateAnswerBookStatus(@RequestParam AnswerBookStatus status,
+                                                             @PathVariable Long id) {
+        UUID uuid = UUID.randomUUID();
+        MDC.put("requestId", uuid.toString());
+        logger.info("Received request for updateAnswerBookStatus for id: " + id);
+
+        try {
+            return ResponseEntity.ok(answerBookService.updateStatus(status, id));
+        } catch (Exception e) {
+            logger.error("Error in updateAnswerBookStatus: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         } finally {
             MDC.remove("requestId");

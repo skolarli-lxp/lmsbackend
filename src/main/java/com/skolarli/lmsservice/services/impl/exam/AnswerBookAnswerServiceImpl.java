@@ -14,15 +14,16 @@ import com.skolarli.lmsservice.services.exam.ExamQuestionTrueOrFalseService;
 import org.springframework.stereotype.Service;
 
 @Service
-public class AnswerBookAnswerServiceIml implements AnswerBookAnswerService {
+public class AnswerBookAnswerServiceImpl implements AnswerBookAnswerService {
 
     ExamQuestionSubjectiveService examQuestionSubjectiveService;
     ExamQuestionTrueOrFalseService examQuestionTrueOrFalseService;
     ExamQuestionMcqService examQuestionMcqService;
 
-    public AnswerBookAnswerServiceIml(ExamQuestionSubjectiveService examQuestionSubjectiveService,
-                                      ExamQuestionTrueOrFalseService examQuestionTrueOrFalseService,
-                                      ExamQuestionMcqService examQuestionMcqService) {
+    public AnswerBookAnswerServiceImpl(ExamQuestionSubjectiveService examQuestionSubjectiveService,
+                                       ExamQuestionTrueOrFalseService
+                                               examQuestionTrueOrFalseService,
+                                       ExamQuestionMcqService examQuestionMcqService) {
         this.examQuestionSubjectiveService = examQuestionSubjectiveService;
         this.examQuestionTrueOrFalseService = examQuestionTrueOrFalseService;
         this.examQuestionMcqService = examQuestionMcqService;
@@ -37,6 +38,7 @@ public class AnswerBookAnswerServiceIml implements AnswerBookAnswerService {
         answerMcq.setQuestion(examQuestionMcqService.getQuestion(newAnswerMcqRequest
                 .getQuestionId()));
         answerMcq.setStudentRemarks(newAnswerMcqRequest.getStudentRemarks());
+        answerMcq.autoEvaluate();
         return answerMcq;
     }
 
@@ -62,6 +64,7 @@ public class AnswerBookAnswerServiceIml implements AnswerBookAnswerService {
         answerTrueFalse.setQuestion(examQuestionTrueOrFalseService.getQuestion(
                 newAnswerTrueFalseRequest.getQuestionId()));
         answerTrueFalse.setStudentRemarks(newAnswerTrueFalseRequest.getStudentRemarks());
+        answerTrueFalse.autoEvaluate();
         return answerTrueFalse;
     }
 }

@@ -1,5 +1,6 @@
 package com.skolarli.lmsservice.services.exam;
 
+import com.skolarli.lmsservice.models.AnswerBookStatus;
 import com.skolarli.lmsservice.models.db.exam.AnswerBook;
 import com.skolarli.lmsservice.models.db.exam.AnswerMcq;
 import com.skolarli.lmsservice.models.db.exam.AnswerSubjective;
@@ -26,6 +27,8 @@ public interface AnswerBookService {
     AnswerBook saveAnswerBook(AnswerBook answerBook);
 
     AnswerBook updateAnswerBook(AnswerBook answerBook, Long id);
+
+    AnswerBook updateStatus(AnswerBookStatus status, Long id);
 
     void addMcqAnswers(List<AnswerMcq> answerMcqs, AnswerBook answerBook);
 
