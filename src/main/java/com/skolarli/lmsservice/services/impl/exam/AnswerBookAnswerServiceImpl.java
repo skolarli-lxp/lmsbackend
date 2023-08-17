@@ -13,6 +13,8 @@ import com.skolarli.lmsservice.services.exam.ExamQuestionSubjectiveService;
 import com.skolarli.lmsservice.services.exam.ExamQuestionTrueOrFalseService;
 import org.springframework.stereotype.Service;
 
+import java.util.stream.Collectors;
+
 @Service
 public class AnswerBookAnswerServiceImpl implements AnswerBookAnswerService {
 
@@ -34,7 +36,10 @@ public class AnswerBookAnswerServiceImpl implements AnswerBookAnswerService {
 
         AnswerMcq answerMcq = new AnswerMcq();
         answerMcq.setAnswerBook(answerBook);
-        answerMcq.setAnswer(newAnswerMcqRequest.getAnswer());
+        answerMcq.setAnswer(
+                newAnswerMcqRequest.getAnswer().stream().map(
+                        String::valueOf).collect(Collectors.joining(","))
+        );
         answerMcq.setQuestion(examQuestionMcqService.getQuestion(newAnswerMcqRequest
                 .getQuestionId()));
         answerMcq.setStudentRemarks(newAnswerMcqRequest.getStudentRemarks());

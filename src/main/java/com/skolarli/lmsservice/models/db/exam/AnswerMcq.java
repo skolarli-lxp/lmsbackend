@@ -12,8 +12,12 @@ import org.hibernate.annotations.Check;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 import javax.persistence.*;
+import javax.persistence.criteria.CriteriaBuilder;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -39,7 +43,7 @@ public class AnswerMcq extends Tenantable {
     ExamQuestionMcq question;
 
     @Check(constraints = "answers >= 0 AND answer <=6")
-    private Integer answer;
+    private String  answer;
 
     private Double marksGiven;
 
@@ -92,6 +96,22 @@ public class AnswerMcq extends Tenantable {
         }
     }
 
+    private Boolean equateAnswers(String correctAnswer, String givenAnswer) {
+        List<Integer> correctAnswers = Arrays.stream(correctAnswer.split(","))
+                .map(Integer::parseInt).collect(Collectors.toList());
+        List<Integer> givenAnswers = Arrays.stream(givenAnswer.split(","))
+                .map(Integer::parseInt).collect(Collectors.toList());
+        if (correctAnswers.size() != givenAnswers.size()) {
+            return false;
+        }
+        for (Integer answer : correctAnswers) {
+            if (!givenAnswers.contains(answer)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public void autoEvaluate() {
         if (this.answer == null) {
             this.evaluationResult = EvaluationResult.INCORRECT;
@@ -99,7 +119,7 @@ public class AnswerMcq extends Tenantable {
             this.marksGiven = 0.0;
             return;
         }
-        if (this.answer.equals(this.question.getCorrectAnswer())) {
+        if (equateAnswers(this.question.getCorrectAnswer(), this.answer)) {
             this.evaluationResult = EvaluationResult.CORRECT;
             this.marksGiven = this.question.getMarks().doubleValue();
         } else {

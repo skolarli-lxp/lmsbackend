@@ -4,6 +4,8 @@ import lombok.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -14,7 +16,7 @@ public class NewAnswerMcqRequest {
 
     private Long questionId;
 
-    private Integer answer;
+    private List<Integer> answer;
 
     private String studentRemarks;
 }
