@@ -4,6 +4,7 @@ import com.skolarli.lmsservice.models.db.exam.AnswerBook;
 import com.skolarli.lmsservice.models.db.exam.AnswerMcq;
 import com.skolarli.lmsservice.models.db.exam.AnswerSubjective;
 import com.skolarli.lmsservice.models.db.exam.AnswerTrueFalse;
+import com.skolarli.lmsservice.models.dto.exam.AnswerEvaulationRequest;
 import com.skolarli.lmsservice.models.dto.exam.NewAnswerMcqRequest;
 import com.skolarli.lmsservice.models.dto.exam.NewAnswerSubjectiveRequest;
 import com.skolarli.lmsservice.models.dto.exam.NewAnswerTrueFalseRequest;
@@ -13,6 +14,7 @@ import com.skolarli.lmsservice.services.exam.ExamQuestionSubjectiveService;
 import com.skolarli.lmsservice.services.exam.ExamQuestionTrueOrFalseService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -23,8 +25,7 @@ public class AnswerBookAnswerServiceImpl implements AnswerBookAnswerService {
     ExamQuestionMcqService examQuestionMcqService;
 
     public AnswerBookAnswerServiceImpl(ExamQuestionSubjectiveService examQuestionSubjectiveService,
-                                       ExamQuestionTrueOrFalseService
-                                               examQuestionTrueOrFalseService,
+                                       ExamQuestionTrueOrFalseService examQuestionTrueOrFalseService,
                                        ExamQuestionMcqService examQuestionMcqService) {
         this.examQuestionSubjectiveService = examQuestionSubjectiveService;
         this.examQuestionTrueOrFalseService = examQuestionTrueOrFalseService;
@@ -48,8 +49,7 @@ public class AnswerBookAnswerServiceImpl implements AnswerBookAnswerService {
     }
 
     @Override
-    public AnswerSubjective toAnswerSubjective(NewAnswerSubjectiveRequest
-                                                       newAnswerSubjectiveRequest,
+    public AnswerSubjective toAnswerSubjective(NewAnswerSubjectiveRequest newAnswerSubjectiveRequest,
                                                AnswerBook answerBook) {
         AnswerSubjective answerSubjective = new AnswerSubjective();
         answerSubjective.setAnswerBook(answerBook);
@@ -71,5 +71,69 @@ public class AnswerBookAnswerServiceImpl implements AnswerBookAnswerService {
         answerTrueFalse.setStudentRemarks(newAnswerTrueFalseRequest.getStudentRemarks());
         answerTrueFalse.autoEvaluate();
         return answerTrueFalse;
+    }
+
+    @Override
+    public void manualEvaluateMcqAnswers(AnswerBook answerBook,
+                                         List<AnswerEvaulationRequest> mcqEvaluationRequests) {
+        List<AnswerMcq> mcqAnswers = answerBook.getMcqAnswers();
+        if (mcqAnswers == null) {
+            return;
+        }
+        List<Long> idList = mcqAnswers.stream().map(AnswerMcq::getId).collect(Collectors.toList());
+
+
+        for (AnswerEvaulationRequest mcqEvaluationRequest : mcqEvaluationRequests) {
+            Long mcqAnswerId = mcqEvaluationRequest.getAnswerBookAnswerId();
+            if (idList.contains(mcqAnswerId)) {
+                AnswerMcq answerMcq = mcqAnswers.stream().filter(
+                        answer -> answer.getId().equals(mcqAnswerId)).findFirst().get();
+                answerMcq.manualEvaluate(mcqEvaluationRequest.getMarksGiven(),
+                        mcqEvaluationRequest.getEvaluatorRemarks(),
+                        mcqEvaluationRequest.getEvaluationResult());
+            }
+        }
+    }
+
+    @Override
+    public void manualEvaluateSubjectiveAnswers(AnswerBook answerBook,
+                                                List<AnswerEvaulationRequest> subjectiveEvaluationRequests) {
+        List<AnswerSubjective> subjectiveAnswers = answerBook.getSubjectiveAnswers();
+        if (subjectiveAnswers == null) {
+            return;
+        }
+        List<Long> idList = subjectiveAnswers.stream().map(AnswerSubjective::getId).collect(Collectors.toList());
+
+        for (AnswerEvaulationRequest subjectiveEvalRequest : subjectiveEvaluationRequests) {
+            Long subjectiveAnswerId = subjectiveEvalRequest.getAnswerBookAnswerId();
+            if (idList.contains(subjectiveAnswerId)) {
+                AnswerSubjective answerSubjective = subjectiveAnswers.stream().filter(
+                        answer -> answer.getId().equals(subjectiveAnswerId)).findFirst().get();
+                answerSubjective.manualEvaluate(subjectiveEvalRequest.getMarksGiven(),
+                        subjectiveEvalRequest.getEvaluatorRemarks(),
+                        subjectiveEvalRequest.getEvaluationResult());
+            }
+        }
+    }
+
+    @Override
+    public void manualEvaluateTrueFalseAnswers(AnswerBook answerBook,
+                                               List<AnswerEvaulationRequest> trueFalseEvaluationRequests) {
+        List<AnswerTrueFalse> trueFalseAnswers = answerBook.getTrueFalseAnswers();
+        if (trueFalseAnswers == null) {
+            return;
+        }
+        List<Long> idList = trueFalseAnswers.stream().map(AnswerTrueFalse::getId).collect(Collectors.toList());
+
+        for (AnswerEvaulationRequest trueFalseEvalRequest : trueFalseEvaluationRequests) {
+            Long trueFalseAnswerId = trueFalseEvalRequest.getAnswerBookAnswerId();
+            if (idList.contains(trueFalseAnswerId)) {
+                AnswerTrueFalse answerTrueFalse = trueFalseAnswers.stream().filter(
+                        answer -> answer.getId().equals(trueFalseAnswerId)).findFirst().get();
+                answerTrueFalse.manualEvaluate(trueFalseEvalRequest.getMarksGiven(),
+                        trueFalseEvalRequest.getEvaluatorRemarks(),
+                        trueFalseEvalRequest.getEvaluationResult());
+            }
+        }
     }
 }

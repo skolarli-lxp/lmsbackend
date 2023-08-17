@@ -25,7 +25,7 @@ import javax.persistence.*;
 public class AnswerTrueFalse extends Tenantable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "answer_book_id")

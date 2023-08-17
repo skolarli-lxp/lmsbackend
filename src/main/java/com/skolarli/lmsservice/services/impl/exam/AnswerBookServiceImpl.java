@@ -242,14 +242,26 @@ public class AnswerBookServiceImpl implements AnswerBookService {
         return existingAnswerBook;
     }
 
+    @Override
     public void evaluateAnswerBook(Long answerBookId,
                                    AnswerBookEvaulationRequest request) {
         AnswerBook answerBook = getAnswerBookById(answerBookId);
         if (answerBook == null) {
             throw new ResourceNotFoundException("Answer Book not found with id " + answerBookId);
         }
-
-
+        if (request.getMcqAnswerEvaluations() != null) {
+            answerBookAnswerService.manualEvaluateMcqAnswers(answerBook,
+                    request.getMcqAnswerEvaluations());
+        }
+        if (request.getSubjectiveAnswerEvaluations() != null) {
+            answerBookAnswerService.manualEvaluateSubjectiveAnswers(answerBook,
+                    request.getSubjectiveAnswerEvaluations());
+        }
+        if (request.getTrueFalseAnswerEvaluations() != null) {
+            answerBookAnswerService.manualEvaluateTrueFalseAnswers(answerBook,
+                    request.getTrueFalseAnswerEvaluations());
+        }
+        answerBookRepository.save(answerBook);
     }
 
     @Override

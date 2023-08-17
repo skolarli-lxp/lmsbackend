@@ -6,6 +6,7 @@ import com.skolarli.lmsservice.models.db.exam.AnswerMcq;
 import com.skolarli.lmsservice.models.db.exam.AnswerSubjective;
 import com.skolarli.lmsservice.models.db.exam.AnswerTrueFalse;
 import com.skolarli.lmsservice.models.dto.exam.AddAnswerBookAnswerRequest;
+import com.skolarli.lmsservice.models.dto.exam.AnswerBookEvaulationRequest;
 import com.skolarli.lmsservice.models.dto.exam.NewAnswerBookRequest;
 
 import java.util.List;
@@ -38,6 +39,7 @@ public interface AnswerBookService {
 
     AnswerBook addAnswers(AddAnswerBookAnswerRequest addAnswerBookAnswerRequest, Long id);
 
-    void deleteAnswerBook(Long id);
+    void evaluateAnswerBook(Long answerBookId, AnswerBookEvaulationRequest request);
 
+    void deleteAnswerBook(Long id);
 }
