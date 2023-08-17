@@ -3,6 +3,7 @@ package com.skolarli.lmsservice.controller.exam;
 import com.skolarli.lmsservice.models.AnswerBookStatus;
 import com.skolarli.lmsservice.models.db.exam.AnswerBook;
 import com.skolarli.lmsservice.models.dto.exam.AddAnswerBookAnswerRequest;
+import com.skolarli.lmsservice.models.dto.exam.AnswerBookEvaulationRequest;
 import com.skolarli.lmsservice.models.dto.exam.NewAnswerBookRequest;
 import com.skolarli.lmsservice.services.exam.AnswerBookService;
 import org.slf4j.Logger;
@@ -29,9 +30,8 @@ public class AnswerBookController {
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity<List<AnswerBook>> getAllAnswerBooks(
-            @RequestParam(required = false) Long examId,
-            @RequestParam(required = false) Long studentId) {
+    public ResponseEntity<List<AnswerBook>> getAllAnswerBooks(@RequestParam(required = false) Long examId,
+                                                              @RequestParam(required = false) Long studentId) {
 
         UUID uuid = UUID.randomUUID();
         MDC.put("requestId", uuid.toString());
@@ -42,12 +42,10 @@ public class AnswerBookController {
         if (examId != null) {
             if (studentId != null) {
                 try {
-                    return ResponseEntity.ok(answerBookService.getAllByExamIdAndStudentId(examId,
-                            studentId));
+                    return ResponseEntity.ok(answerBookService.getAllByExamIdAndStudentId(examId, studentId));
                 } catch (Exception e) {
                     logger.error("Error in getAllAnswerBooks: " + e.getMessage());
-                    throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
-                            e.getMessage());
+                    throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
                 } finally {
                     MDC.remove("requestId");
                 }
@@ -56,8 +54,7 @@ public class AnswerBookController {
                     return ResponseEntity.ok(answerBookService.getAllByExamId(examId));
                 } catch (Exception e) {
                     logger.error("Error in getAllAnswerBooks: " + e.getMessage());
-                    throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
-                            e.getMessage());
+                    throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
                 } finally {
                     MDC.remove("requestId");
                 }
@@ -100,8 +97,7 @@ public class AnswerBookController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<AnswerBook> createAnswerBook(@Valid @RequestBody NewAnswerBookRequest
-                                                               request) {
+    public ResponseEntity<AnswerBook> createAnswerBook(@Valid @RequestBody NewAnswerBookRequest request) {
         UUID uuid = UUID.randomUUID();
         MDC.put("requestId", uuid.toString());
         logger.info("Received request for createAnswerBook for exam: " + request.getExamId());
@@ -120,8 +116,7 @@ public class AnswerBookController {
 
     @RequestMapping(method = RequestMethod.POST, path = "/{id}/questions")
     public ResponseEntity<AnswerBook> addAnswerToAnswerBook(@PathVariable Long id,
-                                                            @RequestBody AddAnswerBookAnswerRequest
-                                                                    request) {
+                                                            @RequestBody AddAnswerBookAnswerRequest request) {
         UUID uuid = UUID.randomUUID();
         MDC.put("requestId", uuid.toString());
         logger.info("Received request for add answers to answebook for id: " + id);
@@ -130,6 +125,24 @@ public class AnswerBookController {
             return ResponseEntity.ok(answerBookService.addAnswers(request, id));
         } catch (Exception e) {
             logger.error("Error in submitAnswerBook: " + e.getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        } finally {
+            MDC.remove("requestId");
+        }
+    }
+
+    @RequestMapping(method = RequestMethod.PUT, path = "/{id}/evaluate")
+    public ResponseEntity<String> evaluateAnswerBook(@PathVariable Long id,
+                                                     @RequestBody AnswerBookEvaulationRequest request) {
+        UUID uuid = UUID.randomUUID();
+        MDC.put("requestId", uuid.toString());
+        logger.info("Received request for evaluateAnswerBook for id: " + id);
+
+        try {
+            answerBookService.evaluateAnswerBook(id, request);
+            return ResponseEntity.ok("OK");
+        } catch (Exception e) {
+            logger.error("Error in evaluateAnswerBook: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         } finally {
             MDC.remove("requestId");
@@ -188,6 +201,4 @@ public class AnswerBookController {
             MDC.remove("requestId");
         }
     }
-
-
 }
