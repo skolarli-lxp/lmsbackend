@@ -8,6 +8,7 @@ import com.skolarli.lmsservice.models.db.exam.AnswerMcq;
 import com.skolarli.lmsservice.models.db.exam.AnswerSubjective;
 import com.skolarli.lmsservice.models.db.exam.AnswerTrueFalse;
 import com.skolarli.lmsservice.models.dto.exam.AddAnswerBookAnswerRequest;
+import com.skolarli.lmsservice.models.dto.exam.AnswerBookEvaulationRequest;
 import com.skolarli.lmsservice.models.dto.exam.NewAnswerBookRequest;
 import com.skolarli.lmsservice.repository.exam.AnswerBookRepository;
 import com.skolarli.lmsservice.repository.exam.AnswerMcqRepository;
@@ -239,6 +240,16 @@ public class AnswerBookServiceImpl implements AnswerBookService {
 
         answerBookRepository.save(existingAnswerBook);
         return existingAnswerBook;
+    }
+
+    public void evaluateAnswerBook(Long answerBookId,
+                                   AnswerBookEvaulationRequest request) {
+        AnswerBook answerBook = getAnswerBookById(answerBookId);
+        if (answerBook == null) {
+            throw new ResourceNotFoundException("Answer Book not found with id " + answerBookId);
+        }
+
+
     }
 
     @Override

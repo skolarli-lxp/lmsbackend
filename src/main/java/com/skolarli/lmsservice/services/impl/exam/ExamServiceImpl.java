@@ -224,6 +224,28 @@ public class ExamServiceImpl implements ExamService {
     }
 
     @Override
+    public Exam nullifyFields(List<String> fieldNames, long id) {
+        Exam existingExam = getExam(id);
+        if (existingExam == null) {
+            logger.error("Exam with Id " + id + " not found");
+            throw new ResourceNotFoundException("Exam with Id " + id + " not found");
+        }
+        if (!checkPermission()) {
+            logger.error("User does not have permission to perform this operation");
+            throw new OperationNotSupportedException("User does not have permission to perform "
+                    + "this operation");
+        }
+        if (fieldNames.contains("courseId")) {
+            existingExam.setCourse(null);
+        }
+        if (fieldNames.contains("batchId")) {
+            existingExam.setBatch(null);
+        }
+        Exam savedExam = examRepository.save(existingExam);
+        return savedExam;
+    }
+
+    @Override
     public void hardDeleteExam(long id) {
         Exam existingExam = getExam(id);
         if (existingExam == null) {

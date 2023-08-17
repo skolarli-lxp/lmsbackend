@@ -183,6 +183,23 @@ public class ExamController {
         }
     }
 
+    @RequestMapping(method = RequestMethod.PUT, value = "/deletefields/{id}")
+    public ResponseEntity<Exam> nullifyFields(@RequestBody List<String> request,
+                                           @PathVariable Long id) {
+        UUID uuid = UUID.randomUUID();
+        MDC.put("requestId", uuid.toString());
+        logger.info("Received request nullifying fields for exam id: " + id);
+
+        try {
+            return new ResponseEntity<>(examService.nullifyFields(request, id), HttpStatus.OK);
+        } catch (Exception e) {
+            logger.error("Error in nullifyFields: " + e.getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        } finally {
+            MDC.remove("requestId");
+        }
+    }
+
     @RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
     public ResponseEntity<Void> deleteExam(@PathVariable Long id) {
         UUID uuid = UUID.randomUUID();

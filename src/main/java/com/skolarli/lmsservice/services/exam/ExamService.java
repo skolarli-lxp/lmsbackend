@@ -24,6 +24,8 @@ public interface ExamService {
 
     Exam updateExams(Exam exam, long id);
 
+    Exam nullifyFields(List<String> fieldNames, long id);
+
     void hardDeleteExam(long id);
 
     void deleteQuestions(Long examId, DeleteExamQuestionsRequest request);

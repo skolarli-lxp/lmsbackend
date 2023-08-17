@@ -75,7 +75,7 @@ public class Exam extends Tenantable {
     private Integer passingMarks;
 
 
-    @OneToMany(mappedBy = "exam", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "exam", cascade = CascadeType.ALL)
     private List<ExamQuestionMcq> examQuestionMcqs;
 
     @OneToMany(mappedBy = "exam", cascade = CascadeType.ALL, orphanRemoval = true)
