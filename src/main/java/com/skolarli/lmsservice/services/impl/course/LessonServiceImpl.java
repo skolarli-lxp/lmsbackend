@@ -55,9 +55,8 @@ public class LessonServiceImpl implements LessonService {
         if (newLessonRequest.getLessonSortOrder() == 0) {
             newLessonRequest.setLessonSortOrder(lessonRepository.findMaxLessonSortOrder(chapterId)
                     + 1);
-        } else {
-            lesson.setLessonSortOrder(newLessonRequest.getLessonSortOrder());
         }
+        lesson.setLessonSortOrder(newLessonRequest.getLessonSortOrder());
 
         // Lesson Video Related info
         lesson.setVideoId(newLessonRequest.getVideoId());

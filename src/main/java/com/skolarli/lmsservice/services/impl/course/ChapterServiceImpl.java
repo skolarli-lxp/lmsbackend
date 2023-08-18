@@ -54,9 +54,9 @@ public class ChapterServiceImpl implements ChapterService {
 
         if (newChapterRequest.getChapterSortOrder() == 0) {
             newChapterRequest.setChapterSortOrder(getHighestSortOrder(courseId) + 1);
-        } else {
-            chapter.setChapterSortOrder(newChapterRequest.getChapterSortOrder());
         }
+
+        chapter.setChapterSortOrder(newChapterRequest.getChapterSortOrder());
         chapter.setCourse(courseService.getCourseById(courseId));
         chapter.setChapterIsDeleted(false);
 
