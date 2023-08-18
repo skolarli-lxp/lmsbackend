@@ -5,6 +5,9 @@ import com.skolarli.lmsservice.exception.ResourceNotFoundException;
 import com.skolarli.lmsservice.exception.ValidationFailureException;
 import com.skolarli.lmsservice.models.db.core.LmsUser;
 import com.skolarli.lmsservice.models.db.exam.Exam;
+import com.skolarli.lmsservice.models.db.exam.ExamQuestionMcq;
+import com.skolarli.lmsservice.models.db.exam.ExamQuestionSubjective;
+import com.skolarli.lmsservice.models.db.exam.ExamQuestionTrueOrFalse;
 import com.skolarli.lmsservice.models.db.questionbank.BankQuestionMcq;
 import com.skolarli.lmsservice.models.db.questionbank.BankQuestionSubjective;
 import com.skolarli.lmsservice.models.db.questionbank.BankQuestionTrueOrFalse;
@@ -256,6 +259,47 @@ public class ExamServiceImpl implements ExamService {
         exam.setUpdatedBy(currentUser);
 
         return examRepository.save(existingExam);
+    }
+
+    @Override
+    public Exam updateSortOrder(QuestionSortOrderRequest questionSortOrderRequest, Long examId) {
+        Exam existingExam = getExam(examId);
+
+        List<ExamQuestionMcq> examQuestionMcqs = existingExam.getExamQuestionMcqs();
+        List<IndividualQuestionSortOrder> mcqSortOrderList = questionSortOrderRequest.getMcqQuestions();
+        for (IndividualQuestionSortOrder individualQuestionSortOrder : mcqSortOrderList) {
+            for (ExamQuestionMcq examQuestionMcq : examQuestionMcqs) {
+                if (examQuestionMcq.getId() == individualQuestionSortOrder.getQuestionId()) {
+                    examQuestionMcq.setQuestionSortOrder(individualQuestionSortOrder.getQuestionSortOrder());
+                    break;
+                }
+            }
+        }
+
+        List<ExamQuestionSubjective> examQuestionSubjectives = existingExam.getExamQuestionSubjectives();
+        List<IndividualQuestionSortOrder> subjectiveSortOrderList = questionSortOrderRequest.getSubjectiveQuestions();
+        for (IndividualQuestionSortOrder individualQuestionSortOrder : subjectiveSortOrderList) {
+            for (ExamQuestionSubjective examQuestionSubjective : examQuestionSubjectives) {
+                if (examQuestionSubjective.getId() == individualQuestionSortOrder.getQuestionId()) {
+                    examQuestionSubjective.setQuestionSortOrder(individualQuestionSortOrder.getQuestionSortOrder());
+                    break;
+                }
+            }
+        }
+
+        List<ExamQuestionTrueOrFalse> examQuestionTrueOrFalses = existingExam.getExamQuestionTrueOrFalses();
+        List<IndividualQuestionSortOrder> trueOrFalseSortOrderList = questionSortOrderRequest.getTrueOrFalseQuestions();
+        for (IndividualQuestionSortOrder individualQuestionSortOrder : trueOrFalseSortOrderList) {
+            for (ExamQuestionTrueOrFalse examQuestionTrueOrFalse : examQuestionTrueOrFalses) {
+                if (examQuestionTrueOrFalse.getId() == individualQuestionSortOrder.getQuestionId()) {
+                    examQuestionTrueOrFalse.setQuestionSortOrder(individualQuestionSortOrder.getQuestionSortOrder());
+                    break;
+                }
+            }
+        }
+
+        Exam savedExam = examRepository.save(existingExam);
+        return  savedExam;
     }
 
     @Override

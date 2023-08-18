@@ -110,9 +110,8 @@ public class ChapterServiceImpl implements ChapterService {
     }
 
     @Override
-    public List<ChapterSortOrderResponse> updateChaptersSortOrder(
-            Long courseId,
-            List<ChapterSortOrderRequest> chaptersSortOrderList) {
+    public List<ChapterSortOrderResponse> updateChaptersSortOrder(Long courseId,
+                                                                  List<ChapterSortOrderRequest> chaptersSortOrderList) {
         List<Chapter> chapters = getChaptersByCourseId(courseId);
         for (Chapter chapter : chapters) {
             for (ChapterSortOrderRequest chapterSortOrder : chaptersSortOrderList) {

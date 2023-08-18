@@ -183,9 +183,27 @@ public class ExamController {
         }
     }
 
+    @RequestMapping(method = RequestMethod.PUT, value = "/{id}/updatesortorder")
+    public ResponseEntity<QuestionSortOrderResponse> updateSortOrder(@RequestBody QuestionSortOrderRequest request,
+                                                @PathVariable Long id) {
+        UUID uuid = UUID.randomUUID();
+        MDC.put("requestId", uuid.toString());
+        logger.info("Received request updating exam sort order for id: " + id);
+
+        try {
+            Exam savedExam = examService.updateSortOrder(request, id);
+            return new ResponseEntity<>(savedExam.toQuestionSortOrderResponse(), HttpStatus.OK);
+        } catch (Exception e) {
+            logger.error("Error in updateSortOrder: " + e.getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        } finally {
+            MDC.remove("requestId");
+        }
+    }
+
     @RequestMapping(method = RequestMethod.PUT, value = "/deletefields/{id}")
     public ResponseEntity<Exam> nullifyFields(@RequestBody List<String> request,
-                                           @PathVariable Long id) {
+                                              @PathVariable Long id) {
         UUID uuid = UUID.randomUUID();
         MDC.put("requestId", uuid.toString());
         logger.info("Received request nullifying fields for exam id: " + id);

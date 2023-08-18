@@ -8,10 +8,7 @@ import com.skolarli.lmsservice.models.db.core.LmsUser;
 import com.skolarli.lmsservice.models.db.core.Tenantable;
 import com.skolarli.lmsservice.models.db.course.Batch;
 import com.skolarli.lmsservice.models.db.course.Course;
-import com.skolarli.lmsservice.models.dto.exam.NewExamQuestionMcqRequest;
-import com.skolarli.lmsservice.models.dto.exam.NewExamQuestionSubjectiveRequest;
-import com.skolarli.lmsservice.models.dto.exam.NewExamQuestionTrueOrFalseRequest;
-import com.skolarli.lmsservice.models.dto.exam.NewExamQuestionsAllTypesResponse;
+import com.skolarli.lmsservice.models.dto.exam.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -230,5 +227,29 @@ public class Exam extends Tenantable {
         } else {
             this.examQuestionTrueOrFalses.addAll(examQuestionTrueOrFalses);
         }
+    }
+
+    public QuestionSortOrderResponse toQuestionSortOrderResponse() {
+        QuestionSortOrderResponse questionSortOrderResponse = new QuestionSortOrderResponse();
+        questionSortOrderResponse.setExamId(this.id);
+        List<IndividualQuestionSortOrder> mcqQuestions = this.examQuestionMcqs.stream()
+                .map(examQuestionMcq -> new IndividualQuestionSortOrder(examQuestionMcq.getId(),
+                        examQuestionMcq.getQuestionSortOrder()))
+                .collect(Collectors.toList());
+        List<IndividualQuestionSortOrder> subjectiveQuestions = this.examQuestionSubjectives.stream()
+                .map(examQuestionSubjective -> new IndividualQuestionSortOrder(
+                        examQuestionSubjective.getId(),
+                        examQuestionSubjective.getQuestionSortOrder()))
+                .collect(Collectors.toList());
+        List<IndividualQuestionSortOrder> trueOrFalseQuestions = this.examQuestionTrueOrFalses
+                .stream()
+                .map(examQuestionTrueOrFalse -> new IndividualQuestionSortOrder(
+                        examQuestionTrueOrFalse.getId(),
+                        examQuestionTrueOrFalse.getQuestionSortOrder()))
+                .collect(Collectors.toList());
+        questionSortOrderResponse.setMcqQuestions(mcqQuestions);
+        questionSortOrderResponse.setSubjectiveQuestions(subjectiveQuestions);
+        questionSortOrderResponse.setTrueOrFalseQuestions(trueOrFalseQuestions);
+        return questionSortOrderResponse;
     }
 }
