@@ -38,6 +38,8 @@ public class NewExamQuestionRequest {
 
     private Integer marks;
 
+    private Integer questionSortOrder;
+
     public void toExamQuestion(ExamQuestion examQuestion) {
         examQuestion.setQuestion(question);
         if (resourceFileRequest != null) {
@@ -50,5 +52,6 @@ public class NewExamQuestionRequest {
         examQuestion.setSampleAnswerText(sampleAnswerText);
         examQuestion.setSampleAnswerUrl(sampleAnswerUrl);
         examQuestion.setMarks(marks);
+        examQuestion.setQuestionSortOrder(questionSortOrder);
     }
 }

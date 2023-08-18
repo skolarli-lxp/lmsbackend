@@ -6,7 +6,6 @@ import com.skolarli.lmsservice.models.db.core.LmsUser;
 import com.skolarli.lmsservice.models.db.exam.Exam;
 import com.skolarli.lmsservice.models.db.exam.ExamQuestionSubjective;
 import com.skolarli.lmsservice.models.db.questionbank.BankQuestionSubjective;
-import com.skolarli.lmsservice.models.dto.exam.NewExamQuestionSubjectiveRequest;
 import com.skolarli.lmsservice.repository.exam.ExamQuestionSubjectiveRepository;
 import com.skolarli.lmsservice.services.exam.ExamQuestionSubjectiveService;
 import com.skolarli.lmsservice.utils.UserUtils;
@@ -34,33 +33,6 @@ public class ExamQuestionSubjectiveServiceImpl implements ExamQuestionSubjective
     private Boolean checkPermission(Exam exam) {
         LmsUser currentUser = userUtils.getCurrentUser();
         return currentUser.getIsAdmin() || currentUser == exam.getCreatedBy();
-    }
-
-
-    @Override
-    public ExamQuestionSubjective toExamQuestionSubjective(
-            NewExamQuestionSubjectiveRequest newExamQuestionSubjectiveRequest) {
-        ExamQuestionSubjective examQuestionSubjective = new ExamQuestionSubjective();
-
-        examQuestionSubjective.setQuestion(newExamQuestionSubjectiveRequest.getQuestion());
-        examQuestionSubjective.setQuestionType(newExamQuestionSubjectiveRequest.getQuestionType());
-        examQuestionSubjective.setDifficultyLevel(newExamQuestionSubjectiveRequest
-                .getDifficultyLevel());
-
-        examQuestionSubjective.setQuestionFormat(newExamQuestionSubjectiveRequest
-                .getQuestionFormat());
-        examQuestionSubjective.setAnswerFormat(newExamQuestionSubjectiveRequest.getAnswerFormat());
-        examQuestionSubjective.setSampleAnswerText(newExamQuestionSubjectiveRequest
-                .getSampleAnswerText());
-        examQuestionSubjective.setSampleAnswerUrl(newExamQuestionSubjectiveRequest
-                .getSampleAnswerUrl());
-
-
-        examQuestionSubjective.setWordCount(newExamQuestionSubjectiveRequest.getWordCount());
-        examQuestionSubjective.setCorrectAnswer(newExamQuestionSubjectiveRequest
-                .getCorrectAnswer());
-
-        return examQuestionSubjective;
     }
 
     public BankQuestionSubjective toBankQuestionSubjective(ExamQuestionSubjective
@@ -91,6 +63,11 @@ public class ExamQuestionSubjectiveServiceImpl implements ExamQuestionSubjective
     @Override
     public List<ExamQuestionSubjective> getAllQuestions() {
         return examQuestionSubjectiveRepository.findAll();
+    }
+
+    @Override
+    public Integer getMaxQuestionSortOrder(Long examId) {
+        return examQuestionSubjectiveRepository.findMaxQuestionSortOrder(examId);
     }
 
     @Override

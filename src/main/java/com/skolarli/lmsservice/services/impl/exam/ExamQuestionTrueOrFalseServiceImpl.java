@@ -6,7 +6,6 @@ import com.skolarli.lmsservice.models.db.core.LmsUser;
 import com.skolarli.lmsservice.models.db.exam.Exam;
 import com.skolarli.lmsservice.models.db.exam.ExamQuestionTrueOrFalse;
 import com.skolarli.lmsservice.models.db.questionbank.BankQuestionTrueOrFalse;
-import com.skolarli.lmsservice.models.dto.exam.NewExamQuestionTrueOrFalseRequest;
 import com.skolarli.lmsservice.repository.exam.ExamQuestionTrueOrFalseRepository;
 import com.skolarli.lmsservice.services.exam.ExamQuestionTrueOrFalseService;
 import com.skolarli.lmsservice.utils.UserUtils;
@@ -36,39 +35,6 @@ public class ExamQuestionTrueOrFalseServiceImpl implements ExamQuestionTrueOrFal
         return currentUser.getIsAdmin() || currentUser == exam.getCreatedBy();
     }
 
-
-    @Override
-    public ExamQuestionTrueOrFalse toExamQuestionTrueOrFalse(
-            NewExamQuestionTrueOrFalseRequest newExamQuestionTrueOrFalseRequest) {
-        ExamQuestionTrueOrFalse examQuestionTrueOrFalse = new ExamQuestionTrueOrFalse();
-
-        examQuestionTrueOrFalse.setQuestion(newExamQuestionTrueOrFalseRequest.getQuestion());
-        if (newExamQuestionTrueOrFalseRequest.getResourceFileRequest() != null) {
-            examQuestionTrueOrFalse.setQuestionResourceFile(
-                    newExamQuestionTrueOrFalseRequest.getResourceFileRequest().toResourceFile());
-        }
-        examQuestionTrueOrFalse.setQuestionType(
-                newExamQuestionTrueOrFalseRequest.getQuestionType());
-        examQuestionTrueOrFalse.setDifficultyLevel(newExamQuestionTrueOrFalseRequest
-                .getDifficultyLevel());
-
-        examQuestionTrueOrFalse.setQuestionFormat(
-                newExamQuestionTrueOrFalseRequest.getQuestionFormat());
-        examQuestionTrueOrFalse.setAnswerFormat(
-                newExamQuestionTrueOrFalseRequest.getAnswerFormat());
-        examQuestionTrueOrFalse.setSampleAnswerText(newExamQuestionTrueOrFalseRequest
-                .getSampleAnswerText());
-        examQuestionTrueOrFalse.setSampleAnswerUrl(newExamQuestionTrueOrFalseRequest
-                .getSampleAnswerUrl());
-
-        examQuestionTrueOrFalse.setOption1(newExamQuestionTrueOrFalseRequest.getOption1());
-        examQuestionTrueOrFalse.setOption2(newExamQuestionTrueOrFalseRequest.getOption2());
-        examQuestionTrueOrFalse.setCorrectAnswer(
-                newExamQuestionTrueOrFalseRequest.getCorrectAnswer());
-
-        return examQuestionTrueOrFalse;
-    }
-
     public BankQuestionTrueOrFalse toBankQuestionTrueOrFalse(ExamQuestionTrueOrFalse
                                                                      examQuestionTrueOrFalse) {
         return new BankQuestionTrueOrFalse(examQuestionTrueOrFalse);
@@ -96,6 +62,11 @@ public class ExamQuestionTrueOrFalseServiceImpl implements ExamQuestionTrueOrFal
     @Override
     public List<ExamQuestionTrueOrFalse> getAllQuestions() {
         return examQuestionTrueOrFalseRepository.findAll();
+    }
+
+    @Override
+    public Integer getMaxQuestionSortOrder(Long examId) {
+        return examQuestionTrueOrFalseRepository.findMaxQuestionSortOrder(examId);
     }
 
     @Override

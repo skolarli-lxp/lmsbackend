@@ -163,7 +163,6 @@ public class ExamServiceImpl implements ExamService {
         return examRepository.save(exam);
     }
 
-
     @Override
     public Exam addQuestionsToExam(NewExamQuestionsAllTypesRequest newExamQuestionRequest,
                                    long id) {
@@ -179,12 +178,48 @@ public class ExamServiceImpl implements ExamService {
         }
 
         if (newExamQuestionRequest.getMcqQuestions() != null) {
+            Integer mcqMaxSortOrder = examQuestionMcqService.getMaxQuestionSortOrder(id);
+            for (NewExamQuestionMcqRequest newExamQuestionMcqRequest : newExamQuestionRequest.getMcqQuestions()) {
+                if (newExamQuestionMcqRequest.getQuestionSortOrder() == null) {
+                    newExamQuestionMcqRequest.setQuestionSortOrder(mcqMaxSortOrder + 1);
+                    mcqMaxSortOrder++;
+                } else {
+                    if (newExamQuestionMcqRequest.getQuestionSortOrder() > mcqMaxSortOrder) {
+                        mcqMaxSortOrder = newExamQuestionMcqRequest.getQuestionSortOrder();
+                    }
+                }
+            }
             existingExam.addMcqQuestions(newExamQuestionRequest.getMcqQuestions());
         }
+
         if (newExamQuestionRequest.getSubjectiveQuestions() != null) {
+            Integer subjectiveMaxSortOrder = examQuestionSubjectiveService.getMaxQuestionSortOrder(id);
+            for (NewExamQuestionSubjectiveRequest newExamQuestionSubjectiveRequest :
+                    newExamQuestionRequest.getSubjectiveQuestions()) {
+                if (newExamQuestionSubjectiveRequest.getQuestionSortOrder() == null) {
+                    newExamQuestionSubjectiveRequest.setQuestionSortOrder(subjectiveMaxSortOrder + 1);
+                    subjectiveMaxSortOrder++;
+                } else {
+                    if (newExamQuestionSubjectiveRequest.getQuestionSortOrder() > subjectiveMaxSortOrder) {
+                        subjectiveMaxSortOrder = newExamQuestionSubjectiveRequest.getQuestionSortOrder();
+                    }
+                }
+            }
             existingExam.addSubjectiveQuestions(newExamQuestionRequest.getSubjectiveQuestions());
         }
         if (newExamQuestionRequest.getTrueOrFalseQuestions() != null) {
+            Integer trueOrFalseMaxSortOrder = examQuestionTrueOrFalseService.getMaxQuestionSortOrder(id);
+            for (NewExamQuestionTrueOrFalseRequest newExamQuestionTrueOrFalseRequest :
+                    newExamQuestionRequest.getTrueOrFalseQuestions()) {
+                if (newExamQuestionTrueOrFalseRequest.getQuestionSortOrder() == null) {
+                    newExamQuestionTrueOrFalseRequest.setQuestionSortOrder(trueOrFalseMaxSortOrder + 1);
+                    trueOrFalseMaxSortOrder++;
+                } else {
+                    if (newExamQuestionTrueOrFalseRequest.getQuestionSortOrder() > trueOrFalseMaxSortOrder) {
+                        trueOrFalseMaxSortOrder = newExamQuestionTrueOrFalseRequest.getQuestionSortOrder();
+                    }
+                }
+            }
             existingExam.addTrueOrFalseQuestions(newExamQuestionRequest.getTrueOrFalseQuestions());
         }
 

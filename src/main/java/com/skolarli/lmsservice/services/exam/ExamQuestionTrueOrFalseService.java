@@ -9,21 +9,17 @@ import java.util.List;
 
 public interface ExamQuestionTrueOrFalseService {
 
-    ExamQuestionTrueOrFalse toExamQuestionTrueOrFalse(
-            NewExamQuestionTrueOrFalseRequest newExamQuestionTrueOrFalseRequest);
-
-    List<BankQuestionTrueOrFalse> toBankQuestionTrueOrFalse(List<Long>
-                                                                    examQuestionTrueOrFalse);
+    List<BankQuestionTrueOrFalse> toBankQuestionTrueOrFalse(List<Long> examQuestionTrueOrFalse);
 
     ExamQuestionTrueOrFalse getQuestion(long id);
 
     List<ExamQuestionTrueOrFalse> getAllQuestions();
 
+    Integer getMaxQuestionSortOrder(Long examId);
 
     ExamQuestionTrueOrFalse saveQuestion(ExamQuestionTrueOrFalse question, Exam exam);
 
-    List<ExamQuestionTrueOrFalse> saveAllQuestions(List<ExamQuestionTrueOrFalse> questions,
-                                                   Exam exam);
+    List<ExamQuestionTrueOrFalse> saveAllQuestions(List<ExamQuestionTrueOrFalse> questions, Exam exam);
 
     ExamQuestionTrueOrFalse updateQuestion(ExamQuestionTrueOrFalse question, long id);
 

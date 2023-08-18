@@ -31,41 +31,6 @@ public class ExamQuestionMcqServiceImpl implements ExamQuestionMcqService {
         this.userUtils = userUtils;
     }
 
-    public ExamQuestionMcq toExamQuestionMcq(NewExamQuestionMcqRequest newExamQuestionMcqRequest) {
-        ExamQuestionMcq examQuestionMcq = new ExamQuestionMcq();
-        examQuestionMcq.setQuestion(newExamQuestionMcqRequest.getQuestion());
-        if (newExamQuestionMcqRequest.getResourceFileRequest() != null) {
-            examQuestionMcq.setQuestionResourceFile(
-                    newExamQuestionMcqRequest.getResourceFileRequest().toResourceFile());
-        }
-        examQuestionMcq.setQuestionType(newExamQuestionMcqRequest.getQuestionType());
-        examQuestionMcq.setDifficultyLevel(newExamQuestionMcqRequest.getDifficultyLevel());
-        examQuestionMcq.setQuestionFormat(newExamQuestionMcqRequest.getQuestionFormat());
-        examQuestionMcq.setAnswerFormat(newExamQuestionMcqRequest.getAnswerFormat());
-
-        examQuestionMcq.setNumberOfOptions(newExamQuestionMcqRequest.getNumberOfOptions());
-        examQuestionMcq.setOption1(newExamQuestionMcqRequest.getOption1());
-        examQuestionMcq.setOption2(newExamQuestionMcqRequest.getOption2());
-        examQuestionMcq.setOption3(newExamQuestionMcqRequest.getOption3());
-        examQuestionMcq.setOption4(newExamQuestionMcqRequest.getOption4());
-        examQuestionMcq.setOption5(newExamQuestionMcqRequest.getOption5());
-        examQuestionMcq.setOption6(newExamQuestionMcqRequest.getOption6());
-
-        if (newExamQuestionMcqRequest.getCorrectAnswer() != null) {
-            examQuestionMcq.setCorrectAnswer(newExamQuestionMcqRequest.getCorrectAnswer()
-                    .stream().map(String::valueOf).collect(Collectors.joining(",")));
-        } else {
-            examQuestionMcq.setCorrectAnswer("");
-        }
-
-        examQuestionMcq.setSampleAnswerText(newExamQuestionMcqRequest.getSampleAnswerText());
-        examQuestionMcq.setSampleAnswerUrl(newExamQuestionMcqRequest.getSampleAnswerUrl());
-        examQuestionMcq.setNumberOfCorrectAnswers(newExamQuestionMcqRequest
-                .getNumberOfCorrectAnswers());
-
-        return examQuestionMcq;
-    }
-
 
     public BankQuestionMcq toBankQuestionMcq(ExamQuestionMcq examQuestionMcq) {
         return new BankQuestionMcq(examQuestionMcq);
@@ -111,6 +76,11 @@ public class ExamQuestionMcqServiceImpl implements ExamQuestionMcqService {
             throw new OperationNotSupportedException("User does not have permission to perform "
                     + "this operation");
         }
+    }
+
+    @Override
+    public Integer getMaxQuestionSortOrder(Long examId) {
+        return examQuestionMcqRepository.findMaxQuestionSortOrder(examId);
     }
 
     @Override

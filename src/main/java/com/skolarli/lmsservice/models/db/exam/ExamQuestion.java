@@ -48,6 +48,8 @@ public class ExamQuestion extends Tenantable {
 
     private Integer marks;
 
+    private Integer questionSortOrder;
+
     @ManyToOne
     @JoinColumn(name = "exam_id")
     @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
@@ -100,9 +102,11 @@ public class ExamQuestion extends Tenantable {
         if (question.getMarks() != null) {
             this.marks = question.getMarks();
         }
+        if (question.getQuestionSortOrder() != null) {
+            this.questionSortOrder = question.getQuestionSortOrder();
+        }
         if (question.getExam() != null) {
             this.exam = question.getExam();
         }
-
     }
 }

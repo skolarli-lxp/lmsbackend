@@ -9,21 +9,17 @@ import java.util.List;
 
 public interface ExamQuestionSubjectiveService {
 
-    ExamQuestionSubjective toExamQuestionSubjective(
-            NewExamQuestionSubjectiveRequest newExamQuestionSubjectiveRequest);
-
-    List<BankQuestionSubjective> toBankQuestionSubjective(List<Long>
-                                                            examQuestionSubjective);
+    List<BankQuestionSubjective> toBankQuestionSubjective(List<Long> examQuestionSubjective);
 
     ExamQuestionSubjective getQuestion(long id);
 
     List<ExamQuestionSubjective> getAllQuestions();
 
+    Integer getMaxQuestionSortOrder(Long examId);
 
     ExamQuestionSubjective saveQuestion(ExamQuestionSubjective question, Exam exam);
 
-    List<ExamQuestionSubjective> saveAllQuestions(List<ExamQuestionSubjective> questions,
-                                                  Exam exam);
+    List<ExamQuestionSubjective> saveAllQuestions(List<ExamQuestionSubjective> questions, Exam exam);
 
     ExamQuestionSubjective updateQuestion(ExamQuestionSubjective question, long id);
 

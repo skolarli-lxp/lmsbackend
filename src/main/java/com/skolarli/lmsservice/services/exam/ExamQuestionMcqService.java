@@ -9,15 +9,13 @@ import java.util.List;
 
 public interface ExamQuestionMcqService {
 
-    ExamQuestionMcq toExamQuestionMcq(NewExamQuestionMcqRequest newExamQuestionMcqRequest);
-
-
     List<BankQuestionMcq> toBankQuestionMcq(List<Long> examQuestionMcq);
-
 
     ExamQuestionMcq getQuestion(long id);
 
     List<ExamQuestionMcq> getAllQuestions();
+
+    Integer getMaxQuestionSortOrder(Long examId);
 
     ExamQuestionMcq saveQuestion(ExamQuestionMcq question, Exam exam);
 
