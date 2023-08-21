@@ -1,5 +1,7 @@
 package com.skolarli.lmsservice.controller.exam;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.skolarli.lmsservice.models.db.exam.Exam;
 import com.skolarli.lmsservice.models.dto.exam.*;
 import com.skolarli.lmsservice.services.exam.ExamService;
@@ -182,6 +184,49 @@ public class ExamController {
             MDC.remove("requestId");
         }
     }
+
+    @RequestMapping(method = RequestMethod.PUT, value = "/{id}/updatequestion")
+    public ResponseEntity<Exam> updateQuestion(@RequestBody String requestString,
+                                               @PathVariable Long id,
+                                               @RequestParam(required = true) Long questionId,
+                                               @RequestParam(required = true) String questionType) {
+        UUID uuid = UUID.randomUUID();
+        MDC.put("requestId", uuid.toString());
+        logger.info("Received request updating exam question for id: " + id);
+
+        NewExamQuestionRequest request = null;
+        try {
+            if (questionType.equalsIgnoreCase("MCQ")) {
+                request = deserialize(requestString, NewExamQuestionMcqRequest.class);
+            } else if (questionType.equalsIgnoreCase("Subjective")) {
+                request = deserialize(requestString, NewExamQuestionSubjectiveRequest.class);
+            } else if (questionType.equalsIgnoreCase("TrueOrFalse")) {
+                request = deserialize(requestString, NewExamQuestionTrueOrFalseRequest.class);
+            } else {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid question type: " + questionType);
+            }
+        } catch (JsonProcessingException e) {
+            logger.error("Error in updateQuestion: " + e.getMessage());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
+
+        try {
+            return new ResponseEntity<>(examService.updateExamQuestion(request, id, questionId, questionType),
+                    HttpStatus.OK);
+        } catch (Exception e) {
+            logger.error("Error in updateQuestion: " + e.getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        } finally {
+            MDC.remove("requestId");
+        }
+    }
+
+    private <T extends NewExamQuestionRequest> T deserialize(String json, Class<T> targetType)
+            throws JsonProcessingException {
+            ObjectMapper objectMapper = new ObjectMapper();
+            return objectMapper.readValue(json, targetType);
+    }
+
 
     @RequestMapping(method = RequestMethod.PUT, value = "/{id}/updatesortorder")
     public ResponseEntity<QuestionSortOrderResponse> updateSortOrder(@RequestBody QuestionSortOrderRequest request,

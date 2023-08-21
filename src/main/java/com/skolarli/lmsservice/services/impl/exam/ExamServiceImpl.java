@@ -267,39 +267,93 @@ public class ExamServiceImpl implements ExamService {
 
         List<ExamQuestionMcq> examQuestionMcqs = existingExam.getExamQuestionMcqs();
         List<IndividualQuestionSortOrder> mcqSortOrderList = questionSortOrderRequest.getMcqQuestions();
-        for (IndividualQuestionSortOrder individualQuestionSortOrder : mcqSortOrderList) {
-            for (ExamQuestionMcq examQuestionMcq : examQuestionMcqs) {
-                if (examQuestionMcq.getId() == individualQuestionSortOrder.getQuestionId()) {
-                    examQuestionMcq.setQuestionSortOrder(individualQuestionSortOrder.getQuestionSortOrder());
-                    break;
+        if (mcqSortOrderList != null && examQuestionMcqs != null) {
+            for (IndividualQuestionSortOrder individualQuestionSortOrder : mcqSortOrderList) {
+                for (ExamQuestionMcq examQuestionMcq : examQuestionMcqs) {
+                    if (examQuestionMcq.getId() == individualQuestionSortOrder.getQuestionId()) {
+                        examQuestionMcq.setQuestionSortOrder(individualQuestionSortOrder.getQuestionSortOrder());
+                        break;
+                    }
                 }
             }
         }
 
         List<ExamQuestionSubjective> examQuestionSubjectives = existingExam.getExamQuestionSubjectives();
         List<IndividualQuestionSortOrder> subjectiveSortOrderList = questionSortOrderRequest.getSubjectiveQuestions();
-        for (IndividualQuestionSortOrder individualQuestionSortOrder : subjectiveSortOrderList) {
-            for (ExamQuestionSubjective examQuestionSubjective : examQuestionSubjectives) {
-                if (examQuestionSubjective.getId() == individualQuestionSortOrder.getQuestionId()) {
-                    examQuestionSubjective.setQuestionSortOrder(individualQuestionSortOrder.getQuestionSortOrder());
-                    break;
+        if (subjectiveSortOrderList != null && examQuestionSubjectives != null) {
+            for (IndividualQuestionSortOrder individualQuestionSortOrder : subjectiveSortOrderList) {
+                for (ExamQuestionSubjective examQuestionSubjective : examQuestionSubjectives) {
+                    if (examQuestionSubjective.getId() == individualQuestionSortOrder.getQuestionId()) {
+                        examQuestionSubjective.setQuestionSortOrder(individualQuestionSortOrder.getQuestionSortOrder());
+                        break;
+                    }
                 }
             }
         }
 
         List<ExamQuestionTrueOrFalse> examQuestionTrueOrFalses = existingExam.getExamQuestionTrueOrFalses();
         List<IndividualQuestionSortOrder> trueOrFalseSortOrderList = questionSortOrderRequest.getTrueOrFalseQuestions();
-        for (IndividualQuestionSortOrder individualQuestionSortOrder : trueOrFalseSortOrderList) {
-            for (ExamQuestionTrueOrFalse examQuestionTrueOrFalse : examQuestionTrueOrFalses) {
-                if (examQuestionTrueOrFalse.getId() == individualQuestionSortOrder.getQuestionId()) {
-                    examQuestionTrueOrFalse.setQuestionSortOrder(individualQuestionSortOrder.getQuestionSortOrder());
-                    break;
+        if (trueOrFalseSortOrderList != null && examQuestionTrueOrFalses != null) {
+            for (
+                    IndividualQuestionSortOrder individualQuestionSortOrder : trueOrFalseSortOrderList) {
+                for (ExamQuestionTrueOrFalse examQuestionTrueOrFalse : examQuestionTrueOrFalses) {
+                    if (examQuestionTrueOrFalse.getId() == individualQuestionSortOrder.getQuestionId()) {
+                        examQuestionTrueOrFalse.setQuestionSortOrder(individualQuestionSortOrder.getQuestionSortOrder());
+                        break;
+                    }
                 }
             }
         }
 
         Exam savedExam = examRepository.save(existingExam);
-        return  savedExam;
+        return savedExam;
+    }
+
+    @Override
+    public Exam updateExamQuestion(NewExamQuestionRequest newExamQuestionRequest, Long examId,
+                                   Long questionId, String questionType) {
+        Exam existingExam = getExam(examId);
+        if (existingExam == null) {
+            logger.error("Exam with Id " + examId + " not found");
+            throw new ResourceNotFoundException("Exam with Id " + examId + " not found");
+        }
+
+        if (!checkPermission()) {
+            logger.error("User does not have permission to perform this operation");
+            throw new OperationNotSupportedException("User does not have permission to perform "
+                    + "this operation");
+        }
+
+        if (questionType.equalsIgnoreCase("MCQ")) {
+            for (ExamQuestionMcq examQuestionMcq : existingExam.getExamQuestionMcqs()) {
+                if (examQuestionMcq.getId() == questionId) {
+                    ExamQuestionMcq newExamQuestionMcq =
+                            ((NewExamQuestionMcqRequest) newExamQuestionRequest).toExamQuestionMcq();
+                    examQuestionMcq.update(newExamQuestionMcq);
+                }
+            }
+        } else if (questionType.equalsIgnoreCase("Subjective")) {
+            for (ExamQuestionSubjective examQuestionSubjective : existingExam.getExamQuestionSubjectives()) {
+                if (examQuestionSubjective.getId() == questionId) {
+                    ExamQuestionSubjective newExamQuestionSubjective =
+                            ((NewExamQuestionSubjectiveRequest) newExamQuestionRequest).toExamQuestionSubjective();
+                    examQuestionSubjective.update(newExamQuestionSubjective);
+                }
+            }
+        } else if (questionType.equalsIgnoreCase("TrueOrFalse")) {
+            for (ExamQuestionTrueOrFalse examQuestionTrueOrFalse : existingExam.getExamQuestionTrueOrFalses()) {
+                if (examQuestionTrueOrFalse.getId() == questionId) {
+                    ExamQuestionTrueOrFalse newExamQuestionTrueOrFalse =
+                            ((NewExamQuestionTrueOrFalseRequest) newExamQuestionRequest).toExamQuestionTrueOrFalse();
+                    examQuestionTrueOrFalse.update(newExamQuestionTrueOrFalse);
+                }
+            }
+        } else {
+            logger.error("Invalid question type");
+            throw new ValidationFailureException("Invalid question type");
+        }
+        Exam savedExam = examRepository.save(existingExam);
+        return savedExam;
     }
 
     @Override

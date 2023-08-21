@@ -26,6 +26,9 @@ public interface ExamService {
 
     Exam updateSortOrder(QuestionSortOrderRequest questionSortOrderRequest, Long examId);
 
+    Exam updateExamQuestion(NewExamQuestionRequest newExamQuestionRequest, Long examId,
+                            Long questionId, String questionType);
+
     Exam nullifyFields(List<String> fieldNames, long id);
 
     void hardDeleteExam(long id);
