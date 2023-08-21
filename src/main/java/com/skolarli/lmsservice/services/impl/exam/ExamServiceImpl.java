@@ -294,11 +294,11 @@ public class ExamServiceImpl implements ExamService {
         List<ExamQuestionTrueOrFalse> examQuestionTrueOrFalses = existingExam.getExamQuestionTrueOrFalses();
         List<IndividualQuestionSortOrder> trueOrFalseSortOrderList = questionSortOrderRequest.getTrueOrFalseQuestions();
         if (trueOrFalseSortOrderList != null && examQuestionTrueOrFalses != null) {
-            for (
-                    IndividualQuestionSortOrder individualQuestionSortOrder : trueOrFalseSortOrderList) {
+            for (IndividualQuestionSortOrder individualQuestionSortOrder : trueOrFalseSortOrderList) {
                 for (ExamQuestionTrueOrFalse examQuestionTrueOrFalse : examQuestionTrueOrFalses) {
                     if (examQuestionTrueOrFalse.getId() == individualQuestionSortOrder.getQuestionId()) {
-                        examQuestionTrueOrFalse.setQuestionSortOrder(individualQuestionSortOrder.getQuestionSortOrder());
+                        examQuestionTrueOrFalse.setQuestionSortOrder(individualQuestionSortOrder
+                                .getQuestionSortOrder());
                         break;
                     }
                 }

@@ -223,14 +223,14 @@ public class ExamController {
 
     private <T extends NewExamQuestionRequest> T deserialize(String json, Class<T> targetType)
             throws JsonProcessingException {
-            ObjectMapper objectMapper = new ObjectMapper();
-            return objectMapper.readValue(json, targetType);
+        ObjectMapper objectMapper = new ObjectMapper();
+        return objectMapper.readValue(json, targetType);
     }
 
 
     @RequestMapping(method = RequestMethod.PUT, value = "/{id}/updatesortorder")
     public ResponseEntity<QuestionSortOrderResponse> updateSortOrder(@RequestBody QuestionSortOrderRequest request,
-                                                @PathVariable Long id) {
+                                                                     @PathVariable Long id) {
         UUID uuid = UUID.randomUUID();
         MDC.put("requestId", uuid.toString());
         logger.info("Received request updating exam sort order for id: " + id);
