@@ -7,6 +7,7 @@ import com.skolarli.lmsservice.exception.OperationNotSupportedException;
 import com.skolarli.lmsservice.models.EvaluationResult;
 import com.skolarli.lmsservice.models.db.core.LmsUser;
 import com.skolarli.lmsservice.models.db.core.Tenantable;
+import com.skolarli.lmsservice.models.dto.exam.NewAnswerResponse;
 import lombok.*;
 import org.hibernate.annotations.Check;
 import org.hibernate.annotations.CreationTimestamp;
@@ -17,7 +18,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.persistence.*;
-import javax.persistence.criteria.CriteriaBuilder;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -26,7 +26,9 @@ import javax.persistence.criteria.CriteriaBuilder;
 @Getter
 @Setter
 @Entity
-@Table(name = "mcq_answers")
+@Table(name = "mcq_answers", uniqueConstraints = {
+    @UniqueConstraint(name = "uniqquestion", columnNames = {"answer_book_id", "question_id"})
+})
 public class AnswerMcq extends Tenantable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,12 +42,14 @@ public class AnswerMcq extends Tenantable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "question_id")
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+    @JsonIdentityReference(alwaysAsId = true)
     ExamQuestionMcq question;
 
     @Check(constraints = "answers >= 0 AND answer <=6")
-    private String  answer;
+    private String answer;
 
-    private Double marksGiven;
+    private double marksGiven;
 
     private String evaluatorRemarks;
 
@@ -76,13 +80,10 @@ public class AnswerMcq extends Tenantable {
     private Date lastUpdatedTime;
 
     public void update(AnswerMcq answerMcq) {
-        if (answerMcq.getQuestion() != null) {
-            this.question = answerMcq.getQuestion();
-        }
         if (answerMcq.getAnswer() != null) {
             this.answer = answerMcq.getAnswer();
         }
-        if (answerMcq.getMarksGiven() != null) {
+        if (answerMcq.getMarksGiven() != 0) {
             this.marksGiven = answerMcq.getMarksGiven();
         }
         if (answerMcq.getEvaluatorRemarks() != null) {
@@ -97,6 +98,11 @@ public class AnswerMcq extends Tenantable {
     }
 
     private Boolean equateAnswers(String correctAnswer, String givenAnswer) {
+        if ((correctAnswer == null || correctAnswer.isEmpty()) && (givenAnswer == null || givenAnswer.isEmpty())) {
+            return true;
+        } else if (correctAnswer == null || correctAnswer.isEmpty() || givenAnswer == null || givenAnswer.isEmpty()) {
+            return false;
+        }
         List<Integer> correctAnswers = Arrays.stream(correctAnswer.split(","))
                 .map(Integer::parseInt).collect(Collectors.toList());
         List<Integer> givenAnswers = Arrays.stream(givenAnswer.split(","))
@@ -121,7 +127,7 @@ public class AnswerMcq extends Tenantable {
         }
         if (equateAnswers(this.question.getCorrectAnswer(), this.answer)) {
             this.evaluationResult = EvaluationResult.CORRECT;
-            this.marksGiven = this.question.getMarks().doubleValue();
+            this.marksGiven = this.question.getMarks() == null ? 0.0 : this.question.getMarks().doubleValue();
         } else {
             this.evaluationResult = EvaluationResult.INCORRECT;
             this.marksGiven = 0.0;
@@ -139,5 +145,14 @@ public class AnswerMcq extends Tenantable {
         }
         this.evaluatorRemarks = evaluatorRemarks;
         this.evaluationResult = evaluationResult;
+    }
+
+    public NewAnswerResponse toNewAnswerResponse() {
+        NewAnswerResponse newAnswerResponse = new NewAnswerResponse();
+        newAnswerResponse.setAnswer(this.answer);
+        newAnswerResponse.setAnswerBookId(this.answerBook.getId());
+        newAnswerResponse.setQuestionId(this.question.getId());
+        newAnswerResponse.setAnswerId(this.id);
+        return newAnswerResponse;
     }
 }

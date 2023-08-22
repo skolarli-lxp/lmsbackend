@@ -5,9 +5,7 @@ import com.skolarli.lmsservice.models.db.exam.AnswerBook;
 import com.skolarli.lmsservice.models.db.exam.AnswerMcq;
 import com.skolarli.lmsservice.models.db.exam.AnswerSubjective;
 import com.skolarli.lmsservice.models.db.exam.AnswerTrueFalse;
-import com.skolarli.lmsservice.models.dto.exam.AddAnswerBookAnswerRequest;
-import com.skolarli.lmsservice.models.dto.exam.AnswerBookEvaulationRequest;
-import com.skolarli.lmsservice.models.dto.exam.NewAnswerBookRequest;
+import com.skolarli.lmsservice.models.dto.exam.*;
 
 import java.util.List;
 
@@ -31,6 +29,12 @@ public interface AnswerBookService {
 
     AnswerBook updateStatus(AnswerBookStatus status, Long id);
 
+    NewAnswerResponse addAnswerToAnswerBook(NewAnswerMcqRequest newAnswerMcqRequest, Long id);
+
+    NewAnswerResponse addAnswerToAnswerBook(NewAnswerSubjectiveRequest newAnswerMcqRequest, Long id);
+
+    NewAnswerResponse addAnswerToAnswerBook(NewAnswerTrueFalseRequest newAnswerMcqRequest, Long id);
+
     void addMcqAnswers(List<AnswerMcq> answerMcqs, AnswerBook answerBook);
 
     void addTrueFalseAnswers(List<AnswerTrueFalse> answerTrueFalses, AnswerBook answerBook);
@@ -40,6 +44,15 @@ public interface AnswerBookService {
     AnswerBook addAnswers(AddAnswerBookAnswerRequest addAnswerBookAnswerRequest, Long id);
 
     void evaluateAnswerBook(Long answerBookId, AnswerBookEvaulationRequest request);
+
+    NewAnswerResponse updateAnswerBookAnswer(UpdateAnswerMcqRequest updateAnswerMcqRequest, Long answerBookId,
+                                             Long answerId);
+
+    NewAnswerResponse updateAnswerBookAnswer(UpdateAnswerSubjectiveRequest updateAnswerMcqRequest, Long answerBookId,
+                                             Long answerId);
+
+    NewAnswerResponse updateAnswerBookAnswer(UpdateAnswerTrueFalseRequest updateAnswerMcqRequest, Long answerBookId,
+                                             Long answerId);
 
     void deleteAnswerBook(Long id);
 }

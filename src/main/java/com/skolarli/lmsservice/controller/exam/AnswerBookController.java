@@ -1,10 +1,10 @@
 package com.skolarli.lmsservice.controller.exam;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.skolarli.lmsservice.models.AnswerBookStatus;
 import com.skolarli.lmsservice.models.db.exam.AnswerBook;
-import com.skolarli.lmsservice.models.dto.exam.AddAnswerBookAnswerRequest;
-import com.skolarli.lmsservice.models.dto.exam.AnswerBookEvaulationRequest;
-import com.skolarli.lmsservice.models.dto.exam.NewAnswerBookRequest;
+import com.skolarli.lmsservice.models.dto.exam.*;
 import com.skolarli.lmsservice.services.exam.AnswerBookService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -114,7 +114,7 @@ public class AnswerBookController {
         }
     }
 
-    @RequestMapping(method = RequestMethod.POST, path = "/{id}/questions")
+    @RequestMapping(method = RequestMethod.POST, path = "/{id}/answers")
     public ResponseEntity<AnswerBook> addAnswerToAnswerBook(@PathVariable Long id,
                                                             @RequestBody AddAnswerBookAnswerRequest request) {
         UUID uuid = UUID.randomUUID();
@@ -124,11 +124,62 @@ public class AnswerBookController {
         try {
             return ResponseEntity.ok(answerBookService.addAnswers(request, id));
         } catch (Exception e) {
-            logger.error("Error in submitAnswerBook: " + e.getMessage());
+            logger.error("Error in addAnswersToAnswerBook: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         } finally {
             MDC.remove("requestId");
         }
+    }
+
+    @RequestMapping(method = RequestMethod.POST, path = "/{id}/singleanswer")
+    public ResponseEntity<NewAnswerResponse> addSingleAnswerToAnswerBook(@PathVariable Long id,
+                                                                         @RequestParam String questionType,
+                                                                         @RequestBody String answer) {
+        UUID uuid = UUID.randomUUID();
+        MDC.put("requestId", uuid.toString());
+        logger.info("Received request for add answer to answebook for id: " + id);
+        NewAnswerMcqRequest newAnswerMcqRequest = null;
+        NewAnswerSubjectiveRequest newAnswerSubjectiveRequest = null;
+        NewAnswerTrueFalseRequest newAnswerTrueFalseRequest = null;
+
+        try {
+            if (questionType.equalsIgnoreCase("MCQ")) {
+                newAnswerMcqRequest = deserialize(answer, NewAnswerMcqRequest.class);
+            } else if (questionType.equalsIgnoreCase("Subjective")) {
+                newAnswerSubjectiveRequest = deserialize(answer, NewAnswerSubjectiveRequest.class);
+            } else if (questionType.equalsIgnoreCase("TrueOrFalse")) {
+                newAnswerTrueFalseRequest = deserialize(answer, NewAnswerTrueFalseRequest.class);
+            } else {
+                throw new Exception("Invalid question type");
+            }
+        } catch (Exception e) {
+            logger.error("Error in processing Json: " + e.getMessage());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        } finally {
+            MDC.remove("requestId");
+        }
+
+        NewAnswerResponse response = null;
+        try {
+            if (questionType.equalsIgnoreCase("MCQ")) {
+                response = answerBookService.addAnswerToAnswerBook(newAnswerMcqRequest, id);
+            } else if (questionType.equalsIgnoreCase("Subjective")) {
+                response = answerBookService.addAnswerToAnswerBook(newAnswerSubjectiveRequest, id);
+            } else if (questionType.equalsIgnoreCase("TrueOrFalse")) {
+                response = answerBookService.addAnswerToAnswerBook(newAnswerTrueFalseRequest, id);
+            }
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            logger.error("Error in addSingleAnswerToAnswerBook: " + e.getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        } finally {
+            MDC.remove("requestId");
+        }
+    }
+
+    private <T> T deserialize(String json, Class<T> targetType) throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        return objectMapper.readValue(json, targetType);
     }
 
     @RequestMapping(method = RequestMethod.PUT, path = "/{id}/evaluate")
@@ -179,6 +230,57 @@ public class AnswerBookController {
             return ResponseEntity.ok(answerBookService.updateStatus(status, id));
         } catch (Exception e) {
             logger.error("Error in updateAnswerBookStatus: " + e.getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        } finally {
+            MDC.remove("requestId");
+        }
+    }
+
+    @RequestMapping(method = RequestMethod.PUT, path = "/{id}/answer")
+    public ResponseEntity<NewAnswerResponse> updateAnswerBookAnswer(@PathVariable Long id,
+                                                             @RequestParam String questionType,
+                                                             @RequestParam Long answerId,
+                                                             @RequestBody String answer) {
+        UUID uuid = UUID.randomUUID();
+        MDC.put("requestId", uuid.toString());
+        logger.info("Received request for updateAnswerBookAnswer for id: " + id);
+
+        UpdateAnswerMcqRequest updateAnswerMcqRequest = null;
+        UpdateAnswerSubjectiveRequest updateAnswerSubjectiveRequest = null;
+        UpdateAnswerTrueFalseRequest updateAnswerTrueFalseRequest = null;
+
+        try {
+            if (questionType.equalsIgnoreCase("MCQ")) {
+                updateAnswerMcqRequest = deserialize(answer, UpdateAnswerMcqRequest.class);
+            } else if (questionType.equalsIgnoreCase("Subjective")) {
+                updateAnswerSubjectiveRequest = deserialize(answer, UpdateAnswerSubjectiveRequest.class);
+            } else if (questionType.equalsIgnoreCase("TrueOrFalse")) {
+                updateAnswerTrueFalseRequest = deserialize(answer, UpdateAnswerTrueFalseRequest.class);
+            } else {
+                throw new Exception("Invalid question type");
+            }
+        } catch (Exception e) {
+            logger.error("Error in processing Json: " + e.getMessage());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        } finally {
+            MDC.remove("requestId");
+        }
+
+        try {
+            if (questionType.equalsIgnoreCase("MCQ")) {
+                return ResponseEntity.ok(answerBookService.updateAnswerBookAnswer(updateAnswerMcqRequest, id,
+                        answerId));
+            } else if (questionType.equalsIgnoreCase("Subjective")) {
+                return ResponseEntity.ok(answerBookService.updateAnswerBookAnswer(updateAnswerSubjectiveRequest, id,
+                        answerId));
+            } else if (questionType.equalsIgnoreCase("TrueOrFalse")) {
+                return ResponseEntity.ok(answerBookService.updateAnswerBookAnswer(updateAnswerTrueFalseRequest, id,
+                        answerId));
+            } else {
+                throw new Exception("Invalid question type");
+            }
+        } catch (Exception e) {
+            logger.error("Error in updateAnswerBookAnswer: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         } finally {
             MDC.remove("requestId");

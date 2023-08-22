@@ -7,6 +7,7 @@ import com.skolarli.lmsservice.exception.OperationNotSupportedException;
 import com.skolarli.lmsservice.models.EvaluationResult;
 import com.skolarli.lmsservice.models.db.core.LmsUser;
 import com.skolarli.lmsservice.models.db.core.Tenantable;
+import com.skolarli.lmsservice.models.dto.exam.NewAnswerResponse;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -21,7 +22,9 @@ import javax.persistence.*;
 @Getter
 @Setter
 @Entity
-@Table(name = "subjective_answers")
+@Table(name = "subjective_answers", uniqueConstraints = {
+    @UniqueConstraint(name = "uniqquestion", columnNames = {"answer_book_id", "question_id"})
+})
 public class AnswerSubjective extends Tenantable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,12 +38,14 @@ public class AnswerSubjective extends Tenantable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "question_id")
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+    @JsonIdentityReference(alwaysAsId = true)
     ExamQuestionSubjective question;
 
     @Column(columnDefinition = "TEXT")
     private String answer;
 
-    private Double marksGiven;
+    private double marksGiven;
 
     private String evaluatorRemarks;
 
@@ -74,7 +79,7 @@ public class AnswerSubjective extends Tenantable {
         if (answerSubjective.getAnswer() != null) {
             this.answer = answerSubjective.getAnswer();
         }
-        if (answerSubjective.getMarksGiven() != null) {
+        if (answerSubjective.getMarksGiven() != 0) {
             this.marksGiven = answerSubjective.getMarksGiven();
         }
         if (answerSubjective.getEvaluatorRemarks() != null) {
@@ -99,5 +104,14 @@ public class AnswerSubjective extends Tenantable {
         }
         this.evaluatorRemarks = evaluatorRemarks;
         this.evaluationResult = evaluationResult;
+    }
+
+    public NewAnswerResponse toNewAnswerResponse() {
+        NewAnswerResponse newAnswerResponse = new NewAnswerResponse();
+        newAnswerResponse.setAnswerBookId(this.answerBook.getId());
+        newAnswerResponse.setQuestionId(this.question.getId());
+        newAnswerResponse.setAnswerId(this.id);
+        newAnswerResponse.setAnswer(this.answer);
+        return newAnswerResponse;
     }
 }

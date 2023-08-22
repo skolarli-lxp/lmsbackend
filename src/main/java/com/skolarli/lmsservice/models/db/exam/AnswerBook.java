@@ -49,23 +49,23 @@ public class AnswerBook extends Tenantable {
 
     AnswerBookStatus status;
 
-    private Integer totalMarks;
+    private int totalMarks;
 
-    private Integer obtainedMarks;
+    private int obtainedMarks;
 
-    private Integer additionalMarks;
+    private int additionalMarks;
 
-    private Integer totalQuestions;
+    private int totalQuestions;
 
-    private Integer attemptedQuestions;
+    private int attemptedQuestions;
 
-    private Integer correctAnswers;
+    private int correctAnswers;
 
-    private Integer incorrectAnswers;
+    private int incorrectAnswers;
 
-    private Integer totalDuration;
+    private int totalDuration;
 
-    private Integer timeTaken;
+    private int timeTaken;
 
     private ZonedDateTime sessionStartTime;
 
@@ -131,31 +131,31 @@ public class AnswerBook extends Tenantable {
         if (answerBook.getStatus() != null) {
             this.setStatus(answerBook.getStatus());
         }
-        if (answerBook.getTotalMarks() != null) {
+        if (answerBook.getTotalMarks() != 0) {
             this.setTotalMarks(answerBook.getTotalMarks());
         }
-        if (answerBook.getObtainedMarks() != null) {
+        if (answerBook.getObtainedMarks() != 0) {
             this.setObtainedMarks(answerBook.getObtainedMarks());
         }
-        if (answerBook.getAdditionalMarks() != null) {
+        if (answerBook.getAdditionalMarks() != 0) {
             this.setAdditionalMarks(answerBook.getAdditionalMarks());
         }
-        if (answerBook.getTotalQuestions() != null) {
+        if (answerBook.getTotalQuestions() != 0) {
             this.setTotalQuestions(answerBook.getTotalQuestions());
         }
-        if (answerBook.getAttemptedQuestions() != null) {
+        if (answerBook.getAttemptedQuestions() != 0) {
             this.setAttemptedQuestions(answerBook.getAttemptedQuestions());
         }
-        if (answerBook.getCorrectAnswers() != null) {
+        if (answerBook.getCorrectAnswers() != 0) {
             this.setCorrectAnswers(answerBook.getCorrectAnswers());
         }
-        if (answerBook.getIncorrectAnswers() != null) {
+        if (answerBook.getIncorrectAnswers() != 0) {
             this.setIncorrectAnswers(answerBook.getIncorrectAnswers());
         }
-        if (answerBook.getTotalDuration() != null) {
+        if (answerBook.getTotalDuration() != 0) {
             this.setTotalDuration(answerBook.getTotalDuration());
         }
-        if (answerBook.getTimeTaken() != null) {
+        if (answerBook.getTimeTaken() != 0) {
             this.setTimeTaken(answerBook.getTimeTaken());
         }
         if (answerBook.getSessionStartTime() != null) {

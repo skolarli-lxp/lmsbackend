@@ -7,9 +7,7 @@ import com.skolarli.lmsservice.models.db.exam.AnswerBook;
 import com.skolarli.lmsservice.models.db.exam.AnswerMcq;
 import com.skolarli.lmsservice.models.db.exam.AnswerSubjective;
 import com.skolarli.lmsservice.models.db.exam.AnswerTrueFalse;
-import com.skolarli.lmsservice.models.dto.exam.AddAnswerBookAnswerRequest;
-import com.skolarli.lmsservice.models.dto.exam.AnswerBookEvaulationRequest;
-import com.skolarli.lmsservice.models.dto.exam.NewAnswerBookRequest;
+import com.skolarli.lmsservice.models.dto.exam.*;
 import com.skolarli.lmsservice.repository.exam.AnswerBookRepository;
 import com.skolarli.lmsservice.repository.exam.AnswerMcqRepository;
 import com.skolarli.lmsservice.repository.exam.AnswerSubjectiveRepository;
@@ -178,6 +176,45 @@ public class AnswerBookServiceImpl implements AnswerBookService {
     }
 
     @Override
+    public NewAnswerResponse addAnswerToAnswerBook(NewAnswerMcqRequest newAnswerMcqRequest, Long id) {
+        AnswerBook existingAnswerBook = getAnswerBookById(id);
+        if (existingAnswerBook == null) {
+            throw new ResourceNotFoundException("Answer Book not found with id " + id);
+        }
+
+        AnswerMcq answerMcq = answerBookAnswerService.toAnswerMcq(newAnswerMcqRequest, existingAnswerBook);
+        AnswerMcq savedAnswer = answerMcqRepository.save(answerMcq);
+        return savedAnswer.toNewAnswerResponse();
+
+    }
+
+    @Override
+    public NewAnswerResponse addAnswerToAnswerBook(NewAnswerSubjectiveRequest newAnswerSubjectiveRequest, Long id) {
+        AnswerBook existingAnswerBook = getAnswerBookById(id);
+        if (existingAnswerBook == null) {
+            throw new ResourceNotFoundException("Answer Book not found with id " + id);
+        }
+
+        AnswerSubjective answerSubjective = answerBookAnswerService.toAnswerSubjective(
+                newAnswerSubjectiveRequest, existingAnswerBook);
+        AnswerSubjective savedAnswer = answerSubjectiveRepository.save(answerSubjective);
+        return savedAnswer.toNewAnswerResponse();
+    }
+
+    @Override
+    public NewAnswerResponse addAnswerToAnswerBook(NewAnswerTrueFalseRequest newAnswerTrueFalseRequest, Long id) {
+        AnswerBook existingAnswerBook = getAnswerBookById(id);
+        if (existingAnswerBook == null) {
+            throw new ResourceNotFoundException("Answer Book not found with id " + id);
+        }
+
+        AnswerTrueFalse answerTrueFalse = answerBookAnswerService.toAnswerTrueFalse(
+                newAnswerTrueFalseRequest, existingAnswerBook);
+        AnswerTrueFalse savedAnswer = answerTrueFalseRepository.save(answerTrueFalse);
+        return savedAnswer.toNewAnswerResponse();
+    }
+
+    @Override
     public void addMcqAnswers(List<AnswerMcq> answerMcqs, AnswerBook answerBook) {
 
         if (answerBook.getMcqAnswers() == null) {
@@ -262,6 +299,87 @@ public class AnswerBookServiceImpl implements AnswerBookService {
                     request.getTrueFalseAnswerEvaluations());
         }
         answerBookRepository.save(answerBook);
+    }
+
+    @Override
+    public NewAnswerResponse updateAnswerBookAnswer(UpdateAnswerMcqRequest updateAnswerMcqRequest,
+                                                    Long answerBookId, Long answerId) {
+        AnswerBook existingAnswerBook = getAnswerBookById(answerBookId);
+        if (existingAnswerBook == null) {
+            throw new ResourceNotFoundException("Answer Book not found with id " + answerBookId);
+        }
+        List<AnswerMcq> answerMcqs = existingAnswerBook.getMcqAnswers();
+        if (answerMcqs == null) {
+            throw new ResourceNotFoundException("Answer not found with id " + answerId);
+        }
+        AnswerMcq existingAnswer = null;
+        for (AnswerMcq answerMcq : answerMcqs) {
+            if (answerMcq.getId().equals(answerId)) {
+                existingAnswer = answerMcq;
+                break;
+            }
+        }
+        if (existingAnswer == null) {
+            throw new ResourceNotFoundException("Answer not found with id " + answerId);
+        }
+        existingAnswer.update(updateAnswerMcqRequest.toAnswerMcq());
+        existingAnswer.setUpdatedBy(userUtils.getCurrentUser());
+        answerMcqRepository.save(existingAnswer);
+        return existingAnswer.toNewAnswerResponse();
+    }
+
+    @Override
+    public NewAnswerResponse updateAnswerBookAnswer(UpdateAnswerSubjectiveRequest updateAnswerMcqRequest,
+                                                    Long answerBookId, Long answerId) {
+        AnswerBook existingAnswerBook = getAnswerBookById(answerBookId);
+        if (existingAnswerBook == null) {
+            throw new ResourceNotFoundException("Answer Book not found with id " + answerBookId);
+        }
+        List<AnswerSubjective> answerSubjectives = existingAnswerBook.getSubjectiveAnswers();
+        if (answerSubjectives == null) {
+            throw new ResourceNotFoundException("Answer not found with id " + answerId);
+        }
+        AnswerSubjective existingAnswer = null;
+        for (AnswerSubjective answerSubjective : answerSubjectives) {
+            if (answerSubjective.getId().equals(answerId)) {
+                existingAnswer = answerSubjective;
+                break;
+            }
+        }
+        if (existingAnswer == null) {
+            throw new ResourceNotFoundException("Answer not found with id " + answerId);
+        }
+        existingAnswer.update(updateAnswerMcqRequest.toAnswerSubjective());
+        existingAnswer.setUpdatedBy(userUtils.getCurrentUser());
+        answerSubjectiveRepository.save(existingAnswer);
+        return existingAnswer.toNewAnswerResponse();
+    }
+
+    @Override
+    public NewAnswerResponse updateAnswerBookAnswer(UpdateAnswerTrueFalseRequest updateAnswerMcqRequest,
+                                                    Long answerBookId, Long answerId) {
+        AnswerBook existingAnswerBook = getAnswerBookById(answerBookId);
+        if (existingAnswerBook == null) {
+            throw new ResourceNotFoundException("Answer Book not found with id " + answerBookId);
+        }
+        List<AnswerTrueFalse> answerTrueFalses = existingAnswerBook.getTrueFalseAnswers();
+        if (answerTrueFalses == null) {
+            throw new ResourceNotFoundException("Answer not found with id " + answerId);
+        }
+        AnswerTrueFalse existingAnswer = null;
+        for (AnswerTrueFalse answerTrueFalse : answerTrueFalses) {
+            if (answerTrueFalse.getId().equals(answerId)) {
+                existingAnswer = answerTrueFalse;
+                break;
+            }
+        }
+        if (existingAnswer == null) {
+            throw new ResourceNotFoundException("Answer not found with id " + answerId);
+        }
+        existingAnswer.update(updateAnswerMcqRequest.toAnswerTrueOrFalse());
+        existingAnswer.setUpdatedBy(userUtils.getCurrentUser());
+        answerTrueFalseRepository.save(existingAnswer);
+        return existingAnswer.toNewAnswerResponse();
     }
 
     @Override

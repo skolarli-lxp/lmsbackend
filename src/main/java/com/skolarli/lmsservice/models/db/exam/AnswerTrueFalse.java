@@ -7,6 +7,7 @@ import com.skolarli.lmsservice.exception.OperationNotSupportedException;
 import com.skolarli.lmsservice.models.EvaluationResult;
 import com.skolarli.lmsservice.models.db.core.LmsUser;
 import com.skolarli.lmsservice.models.db.core.Tenantable;
+import com.skolarli.lmsservice.models.dto.exam.NewAnswerResponse;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -21,7 +22,9 @@ import javax.persistence.*;
 @Getter
 @Setter
 @Entity
-@Table(name = "truefalse_answers")
+@Table(name = "truefalse_answers", uniqueConstraints = {
+    @UniqueConstraint(name = "uniqquestion", columnNames = {"answer_book_id", "question_id"})
+})
 public class AnswerTrueFalse extends Tenantable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,11 +38,13 @@ public class AnswerTrueFalse extends Tenantable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "question_id")
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+    @JsonIdentityReference(alwaysAsId = true)
     ExamQuestionTrueOrFalse question;
 
-    private Integer answer;
+    private int answer;
 
-    private Double marksGiven;
+    private double marksGiven;
 
     private String evaluatorRemarks;
 
@@ -70,10 +75,10 @@ public class AnswerTrueFalse extends Tenantable {
     private Date lastUpdatedTime;
 
     public void update(AnswerTrueFalse answerTrueFalse) {
-        if (answerTrueFalse.getAnswer() != null) {
+        if (answerTrueFalse.getAnswer() != 0) {
             this.answer = answerTrueFalse.getAnswer();
         }
-        if (answerTrueFalse.getMarksGiven() != null) {
+        if (answerTrueFalse.getMarksGiven() != 0) {
             this.marksGiven = answerTrueFalse.getMarksGiven();
         }
         if (answerTrueFalse.getEvaluatorRemarks() != null) {
@@ -88,15 +93,15 @@ public class AnswerTrueFalse extends Tenantable {
     }
 
     public void autoEvaluate() {
-        if (this.answer == null) {
+        if (this.answer == 0) {
             this.evaluationResult = EvaluationResult.INCORRECT;
             this.evaluatorRemarks = "No answer provided";
             this.marksGiven = 0.0;
             return;
         }
-        if (this.answer.equals(this.question.getCorrectAnswer())) {
+        if (this.answer == this.question.getCorrectAnswer()) {
             this.evaluationResult = EvaluationResult.CORRECT;
-            this.marksGiven = this.question.getMarks().doubleValue();
+            this.marksGiven = this.question.getMarks() == null ? 0.0 : this.question.getMarks().doubleValue();
         } else {
             this.evaluationResult = EvaluationResult.INCORRECT;
             this.marksGiven = 0.0;
@@ -110,9 +115,18 @@ public class AnswerTrueFalse extends Tenantable {
             this.marksGiven = marksGiven;
         } else {
             throw new OperationNotSupportedException(
-                    "Marks given cannot be greater than total marks");
+                "Marks given cannot be greater than total marks");
         }
         this.evaluatorRemarks = evaluatorRemarks;
         this.evaluationResult = evaluationResult;
+    }
+
+    public NewAnswerResponse toNewAnswerResponse() {
+        NewAnswerResponse newAnswerResponse = new NewAnswerResponse();
+        newAnswerResponse.setAnswerBookId(this.answerBook.getId());
+        newAnswerResponse.setQuestionId(this.question.getId());
+        newAnswerResponse.setAnswerId(this.id);
+        newAnswerResponse.setAnswer(String.valueOf(this.answer));
+        return newAnswerResponse;
     }
 }
