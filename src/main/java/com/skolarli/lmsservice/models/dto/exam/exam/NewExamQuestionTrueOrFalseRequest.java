@@ -1,4 +1,4 @@
-package com.skolarli.lmsservice.models.dto.exam;
+package com.skolarli.lmsservice.models.dto.exam.exam;
 
 import com.skolarli.lmsservice.models.constraints.ValidTrueFalseValue;
 import com.skolarli.lmsservice.models.db.exam.ExamQuestionTrueOrFalse;

@@ -3,7 +3,7 @@ package com.skolarli.lmsservice.controller.exam;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.skolarli.lmsservice.models.db.exam.Exam;
-import com.skolarli.lmsservice.models.dto.exam.*;
+import com.skolarli.lmsservice.models.dto.exam.exam.*;
 import com.skolarli.lmsservice.services.exam.ExamService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

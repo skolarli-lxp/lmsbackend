@@ -8,7 +8,7 @@ import com.skolarli.lmsservice.models.db.core.LmsUser;
 import com.skolarli.lmsservice.models.db.core.Tenantable;
 import com.skolarli.lmsservice.models.db.course.Batch;
 import com.skolarli.lmsservice.models.db.course.Course;
-import com.skolarli.lmsservice.models.dto.exam.*;
+import com.skolarli.lmsservice.models.dto.exam.exam.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;

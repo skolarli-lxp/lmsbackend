@@ -7,7 +7,6 @@ import com.skolarli.lmsservice.models.db.core.LmsUser;
 import com.skolarli.lmsservice.models.db.exam.Exam;
 import com.skolarli.lmsservice.models.db.exam.ExamQuestionMcq;
 import com.skolarli.lmsservice.models.db.questionbank.BankQuestionMcq;
-import com.skolarli.lmsservice.models.dto.exam.NewExamQuestionMcqRequest;
 import com.skolarli.lmsservice.repository.exam.ExamQuestionMcqRepository;
 import com.skolarli.lmsservice.services.exam.ExamQuestionMcqService;
 import com.skolarli.lmsservice.utils.UserUtils;

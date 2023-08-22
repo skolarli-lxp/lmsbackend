@@ -4,10 +4,10 @@ import com.skolarli.lmsservice.models.db.exam.AnswerBook;
 import com.skolarli.lmsservice.models.db.exam.AnswerMcq;
 import com.skolarli.lmsservice.models.db.exam.AnswerSubjective;
 import com.skolarli.lmsservice.models.db.exam.AnswerTrueFalse;
-import com.skolarli.lmsservice.models.dto.exam.AnswerEvaulationRequest;
-import com.skolarli.lmsservice.models.dto.exam.NewAnswerMcqRequest;
-import com.skolarli.lmsservice.models.dto.exam.NewAnswerSubjectiveRequest;
-import com.skolarli.lmsservice.models.dto.exam.NewAnswerTrueFalseRequest;
+import com.skolarli.lmsservice.models.dto.exam.answerbook.AnswerEvaulationRequest;
+import com.skolarli.lmsservice.models.dto.exam.answerbook.NewAnswerMcqRequest;
+import com.skolarli.lmsservice.models.dto.exam.answerbook.NewAnswerSubjectiveRequest;
+import com.skolarli.lmsservice.models.dto.exam.answerbook.NewAnswerTrueFalseRequest;
 
 import java.util.List;
 

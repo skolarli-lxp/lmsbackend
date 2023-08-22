@@ -1,4 +1,4 @@
-package com.skolarli.lmsservice.models.dto.exam;
+package com.skolarli.lmsservice.models.dto.exam.exam;
 
 import com.skolarli.lmsservice.models.AnswerFormat;
 import com.skolarli.lmsservice.models.DifficultyLevel;

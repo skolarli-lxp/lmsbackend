@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.skolarli.lmsservice.models.AnswerBookStatus;
 import com.skolarli.lmsservice.models.db.exam.AnswerBook;
-import com.skolarli.lmsservice.models.dto.exam.*;
+import com.skolarli.lmsservice.models.dto.exam.answerbook.*;
 import com.skolarli.lmsservice.services.exam.AnswerBookService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -7,7 +7,7 @@ import com.skolarli.lmsservice.models.db.exam.AnswerBook;
 import com.skolarli.lmsservice.models.db.exam.AnswerMcq;
 import com.skolarli.lmsservice.models.db.exam.AnswerSubjective;
 import com.skolarli.lmsservice.models.db.exam.AnswerTrueFalse;
-import com.skolarli.lmsservice.models.dto.exam.*;
+import com.skolarli.lmsservice.models.dto.exam.answerbook.*;
 import com.skolarli.lmsservice.repository.exam.AnswerBookRepository;
 import com.skolarli.lmsservice.repository.exam.AnswerMcqRepository;
 import com.skolarli.lmsservice.repository.exam.AnswerSubjectiveRepository;

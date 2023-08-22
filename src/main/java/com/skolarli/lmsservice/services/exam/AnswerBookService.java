@@ -5,7 +5,7 @@ import com.skolarli.lmsservice.models.db.exam.AnswerBook;
 import com.skolarli.lmsservice.models.db.exam.AnswerMcq;
 import com.skolarli.lmsservice.models.db.exam.AnswerSubjective;
 import com.skolarli.lmsservice.models.db.exam.AnswerTrueFalse;
-import com.skolarli.lmsservice.models.dto.exam.*;
+import com.skolarli.lmsservice.models.dto.exam.answerbook.*;
 
 import java.util.List;
 

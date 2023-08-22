@@ -1,4 +1,4 @@
-package com.skolarli.lmsservice.models.dto.exam;
+package com.skolarli.lmsservice.models.dto.exam.answerbook;
 
 import com.skolarli.lmsservice.models.db.exam.AnswerMcq;
 import lombok.*;

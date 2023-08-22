@@ -3,7 +3,6 @@ package com.skolarli.lmsservice.services.exam;
 import com.skolarli.lmsservice.models.db.exam.Exam;
 import com.skolarli.lmsservice.models.db.exam.ExamQuestionTrueOrFalse;
 import com.skolarli.lmsservice.models.db.questionbank.BankQuestionTrueOrFalse;
-import com.skolarli.lmsservice.models.dto.exam.NewExamQuestionTrueOrFalseRequest;
 
 import java.util.List;
 

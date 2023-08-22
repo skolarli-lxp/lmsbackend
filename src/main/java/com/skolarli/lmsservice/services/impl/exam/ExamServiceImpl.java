@@ -11,7 +11,7 @@ import com.skolarli.lmsservice.models.db.exam.ExamQuestionTrueOrFalse;
 import com.skolarli.lmsservice.models.db.questionbank.BankQuestionMcq;
 import com.skolarli.lmsservice.models.db.questionbank.BankQuestionSubjective;
 import com.skolarli.lmsservice.models.db.questionbank.BankQuestionTrueOrFalse;
-import com.skolarli.lmsservice.models.dto.exam.*;
+import com.skolarli.lmsservice.models.dto.exam.exam.*;
 import com.skolarli.lmsservice.repository.exam.ExamRepository;
 import com.skolarli.lmsservice.repository.questionbank.QuestionBankMcqRepository;
 import com.skolarli.lmsservice.repository.questionbank.QuestionBankSubjectiveRepository;

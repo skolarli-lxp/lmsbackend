@@ -7,7 +7,7 @@ import com.skolarli.lmsservice.exception.OperationNotSupportedException;
 import com.skolarli.lmsservice.models.EvaluationResult;
 import com.skolarli.lmsservice.models.db.core.LmsUser;
 import com.skolarli.lmsservice.models.db.core.Tenantable;
-import com.skolarli.lmsservice.models.dto.exam.NewAnswerResponse;
+import com.skolarli.lmsservice.models.dto.exam.answerbook.NewAnswerResponse;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;

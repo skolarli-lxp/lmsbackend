@@ -1,4 +1,4 @@
-package com.skolarli.lmsservice.models.dto.exam;
+package com.skolarli.lmsservice.models.dto.exam.answerbook;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -1,4 +1,4 @@
-package com.skolarli.lmsservice.models.dto.exam;
+package com.skolarli.lmsservice.models.dto.exam.answerbook;
 
 import lombok.*;
 import org.slf4j.Logger;

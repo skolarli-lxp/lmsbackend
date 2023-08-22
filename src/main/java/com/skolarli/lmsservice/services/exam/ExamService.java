@@ -1,7 +1,7 @@
 package com.skolarli.lmsservice.services.exam;
 
 import com.skolarli.lmsservice.models.db.exam.Exam;
-import com.skolarli.lmsservice.models.dto.exam.*;
+import com.skolarli.lmsservice.models.dto.exam.exam.*;
 
 import java.util.List;
 

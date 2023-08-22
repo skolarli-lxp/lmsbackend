@@ -1,4 +1,4 @@
-package com.skolarli.lmsservice.models.dto.exam;
+package com.skolarli.lmsservice.models.dto.exam.exam;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,7 +12,8 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @Getter
 @Setter
-public class QuestionSortOrderRequest {
+public class QuestionSortOrderResponse {
+    Long examId;
     @NotNull
     List<IndividualQuestionSortOrder> mcqQuestions;
     @NotNull
