@@ -14,6 +14,12 @@ import java.util.List;
 public interface AnswerBookAnswerService {
     AnswerMcq toAnswerMcq(NewAnswerMcqRequest newAnswerMcqRequest, AnswerBook answerBook);
 
+    AnswerMcq getAnswerMcqByQuestionId(Long answerBookId, Long questionId);
+
+    AnswerTrueFalse getAnswerTrueFalseByQuestionId(Long answerBookId, Long questionId);
+
+    AnswerSubjective getAnswerSubjectiveByQuestionId(Long answerBookId, Long questionId);
+
     AnswerSubjective toAnswerSubjective(NewAnswerSubjectiveRequest newAnswerSubjectiveRequest, AnswerBook answerBook);
 
     void manualEvaluateTrueFalseAnswers(AnswerBook answerBook,
@@ -25,5 +31,11 @@ public interface AnswerBookAnswerService {
     void manualEvaluateMcqAnswers(AnswerBook answerBook, List<AnswerEvaulationRequest> mcqEvaluationRequests);
 
     AnswerTrueFalse toAnswerTrueFalse(NewAnswerTrueFalseRequest newAnswerTrueFalseRequest, AnswerBook answerBook);
+
+    void calculateMcqScores(AnswerBook answerBook);
+
+    void calculateSubjectiveScores(AnswerBook answerBook);
+
+    void calculateTrueOrFalseScores(AnswerBook answerBook);
 
 }

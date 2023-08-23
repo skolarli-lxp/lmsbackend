@@ -73,32 +73,32 @@ public class AnswerBookServiceImpl implements AnswerBookService {
         }
         if (newAnswerBookRequest.getStudentId() != null) {
             answerBook.setStudent(lmsUserService.getLmsUserById(newAnswerBookRequest
-                    .getStudentId()));
+                .getStudentId()));
         }
         answerBook.setRemarks(newAnswerBookRequest.getRemarks());
         answerBook.setMcqAnswers(
-                newAnswerBookRequest.getMcqAnswers() != null ? newAnswerBookRequest.getMcqAnswers()
-                        .stream()
-                        .map(newAnswerMcqRequest -> answerBookAnswerService
-                                .toAnswerMcq(newAnswerMcqRequest, answerBook))
-                        .collect(Collectors.toList())
-                        : null);
+            newAnswerBookRequest.getMcqAnswers() != null ? newAnswerBookRequest.getMcqAnswers()
+                .stream()
+                .map(newAnswerMcqRequest -> answerBookAnswerService
+                    .toAnswerMcq(newAnswerMcqRequest, answerBook))
+                .collect(Collectors.toList())
+                : null);
         answerBook.setSubjectiveAnswers(
-                newAnswerBookRequest.getSubjectiveAnswers() != null ? newAnswerBookRequest
-                        .getSubjectiveAnswers()
-                        .stream()
-                        .map(newAnswerSubjectiveRequest -> answerBookAnswerService
-                                .toAnswerSubjective(newAnswerSubjectiveRequest, answerBook))
-                        .collect(Collectors.toList())
-                        : null);
+            newAnswerBookRequest.getSubjectiveAnswers() != null ? newAnswerBookRequest
+                .getSubjectiveAnswers()
+                .stream()
+                .map(newAnswerSubjectiveRequest -> answerBookAnswerService
+                    .toAnswerSubjective(newAnswerSubjectiveRequest, answerBook))
+                .collect(Collectors.toList())
+                : null);
         answerBook.setTrueFalseAnswers(
-                newAnswerBookRequest.getTrueFalseAnswers() != null ? newAnswerBookRequest
-                        .getTrueFalseAnswers()
-                        .stream()
-                        .map(newAnswerTrueFalseRequest -> answerBookAnswerService
-                                .toAnswerTrueFalse(newAnswerTrueFalseRequest, answerBook))
-                        .collect(Collectors.toList())
-                        : null);
+            newAnswerBookRequest.getTrueFalseAnswers() != null ? newAnswerBookRequest
+                .getTrueFalseAnswers()
+                .stream()
+                .map(newAnswerTrueFalseRequest -> answerBookAnswerService
+                    .toAnswerTrueFalse(newAnswerTrueFalseRequest, answerBook))
+                .collect(Collectors.toList())
+                : null);
 
         answerBook.setSessionStartTime(newAnswerBookRequest.getSessionStartTime());
         answerBook.setSessionEndTime(newAnswerBookRequest.getSessionEndTime());
@@ -139,6 +139,47 @@ public class AnswerBookServiceImpl implements AnswerBookService {
     @Override
     public List<AnswerBook> getAllAnswerBooks() {
         return answerBookRepository.findAll();
+    }
+
+    @Override
+    public GetAllAnswersResponse getAnswersByAnswerBookId(Long id) {
+        AnswerBook answerBook = getAnswerBookById(id);
+        if (answerBook == null) {
+            throw new ResourceNotFoundException("Answer Book not found with id " + id);
+        }
+        GetAllAnswersResponse getAllAnswersResponse = new GetAllAnswersResponse();
+        getAllAnswersResponse.setAnswerBookId(id);
+        getAllAnswersResponse.setMcqAnswers(answerBook.getMcqAnswers() != null ? answerBook
+            .getMcqAnswers().stream().map(AnswerMcq::toGetAnswerResponse)
+            .collect(Collectors.toList()) : null);
+        getAllAnswersResponse.setSubjectiveAnswers(answerBook.getSubjectiveAnswers() != null
+            ? answerBook.getSubjectiveAnswers().stream().map(AnswerSubjective::toGetAnswerResponse)
+            .collect(Collectors.toList()) : null);
+        getAllAnswersResponse.setTrueFalseAnswers(answerBook.getTrueFalseAnswers() != null
+            ? answerBook.getTrueFalseAnswers().stream().map(AnswerTrueFalse::toGetAnswerResponse)
+            .collect(Collectors.toList()) : null);
+        return getAllAnswersResponse;
+    }
+
+    @Override
+    public GetAnswerResponse getAnswerByAnswerBookIdAndQuestionId(Long answerBookId, Long questionId,
+                                                                  String questionType) {
+        AnswerBook answerBook = getAnswerBookById(answerBookId);
+        if (answerBook == null) {
+            throw new ResourceNotFoundException("Answer Book not found with id " + answerBookId);
+        }
+        if (questionType.equalsIgnoreCase("MCQ")) {
+            return answerBookAnswerService.getAnswerMcqByQuestionId(answerBookId, questionId)
+                .toGetAnswerResponse();
+        } else if (questionType.equalsIgnoreCase("Subjective")) {
+            return answerBookAnswerService.getAnswerSubjectiveByQuestionId(answerBookId, questionId)
+                .toGetAnswerResponse();
+        } else if (questionType.equalsIgnoreCase("TrueFalse")) {
+            return answerBookAnswerService.getAnswerTrueFalseByQuestionId(answerBookId, questionId)
+                .toGetAnswerResponse();
+        } else {
+            throw new ValidationFailureException("Invalid Question Type");
+        }
     }
 
     @Override
@@ -196,7 +237,7 @@ public class AnswerBookServiceImpl implements AnswerBookService {
         }
 
         AnswerSubjective answerSubjective = answerBookAnswerService.toAnswerSubjective(
-                newAnswerSubjectiveRequest, existingAnswerBook);
+            newAnswerSubjectiveRequest, existingAnswerBook);
         AnswerSubjective savedAnswer = answerSubjectiveRepository.save(answerSubjective);
         return savedAnswer.toNewAnswerResponse();
     }
@@ -209,7 +250,7 @@ public class AnswerBookServiceImpl implements AnswerBookService {
         }
 
         AnswerTrueFalse answerTrueFalse = answerBookAnswerService.toAnswerTrueFalse(
-                newAnswerTrueFalseRequest, existingAnswerBook);
+            newAnswerTrueFalseRequest, existingAnswerBook);
         AnswerTrueFalse savedAnswer = answerTrueFalseRepository.save(answerTrueFalse);
         return savedAnswer.toNewAnswerResponse();
     }
@@ -253,25 +294,25 @@ public class AnswerBookServiceImpl implements AnswerBookService {
         }
         if (addAnswerBookAnswerRequest.getMcqAnswers() != null) {
             List<AnswerMcq> answerMcqs = addAnswerBookAnswerRequest.getMcqAnswers().stream()
-                    .map(newAnswerMcqRequest -> answerBookAnswerService
-                            .toAnswerMcq(newAnswerMcqRequest, existingAnswerBook))
-                    .collect(Collectors.toList());
+                .map(newAnswerMcqRequest -> answerBookAnswerService
+                    .toAnswerMcq(newAnswerMcqRequest, existingAnswerBook))
+                .collect(Collectors.toList());
             addMcqAnswers(answerMcqs, existingAnswerBook);
         }
         if (addAnswerBookAnswerRequest.getTrueFalseAnswers() != null) {
             List<AnswerTrueFalse> answerTrueFalses = addAnswerBookAnswerRequest
-                    .getTrueFalseAnswers().stream()
-                    .map(newAnswerTrueFalseRequest -> answerBookAnswerService
-                            .toAnswerTrueFalse(newAnswerTrueFalseRequest, existingAnswerBook))
-                    .collect(Collectors.toList());
+                .getTrueFalseAnswers().stream()
+                .map(newAnswerTrueFalseRequest -> answerBookAnswerService
+                    .toAnswerTrueFalse(newAnswerTrueFalseRequest, existingAnswerBook))
+                .collect(Collectors.toList());
             addTrueFalseAnswers(answerTrueFalses, existingAnswerBook);
         }
         if (addAnswerBookAnswerRequest.getSubjectiveAnswers() != null) {
             List<AnswerSubjective> answerSubjectives = addAnswerBookAnswerRequest
-                    .getSubjectiveAnswers().stream()
-                    .map(newAnswerSubjectiveRequest -> answerBookAnswerService
-                            .toAnswerSubjective(newAnswerSubjectiveRequest, existingAnswerBook))
-                    .collect(Collectors.toList());
+                .getSubjectiveAnswers().stream()
+                .map(newAnswerSubjectiveRequest -> answerBookAnswerService
+                    .toAnswerSubjective(newAnswerSubjectiveRequest, existingAnswerBook))
+                .collect(Collectors.toList());
             addSubjectiveAnswers(answerSubjectives, existingAnswerBook);
         }
 
@@ -288,17 +329,55 @@ public class AnswerBookServiceImpl implements AnswerBookService {
         }
         if (request.getMcqAnswerEvaluations() != null) {
             answerBookAnswerService.manualEvaluateMcqAnswers(answerBook,
-                    request.getMcqAnswerEvaluations());
+                request.getMcqAnswerEvaluations());
         }
         if (request.getSubjectiveAnswerEvaluations() != null) {
             answerBookAnswerService.manualEvaluateSubjectiveAnswers(answerBook,
-                    request.getSubjectiveAnswerEvaluations());
+                request.getSubjectiveAnswerEvaluations());
         }
         if (request.getTrueFalseAnswerEvaluations() != null) {
             answerBookAnswerService.manualEvaluateTrueFalseAnswers(answerBook,
-                    request.getTrueFalseAnswerEvaluations());
+                request.getTrueFalseAnswerEvaluations());
         }
         answerBookRepository.save(answerBook);
+    }
+
+    private void clearMarks(AnswerBook answerBook) {
+        answerBook.setTotalMarks(0);
+        answerBook.setObtainedMarks(0);
+        answerBook.setTotalQuestions(0);
+        answerBook.setAttemptedQuestions(0);
+        answerBook.setCorrectAnswers(0);
+        answerBook.setIncorrectAnswers(0);
+        answerBook.setPartiallyCorrectAnswers(0);
+
+        int totalQuestions = 0;
+        totalQuestions += answerBook.getExam().getExamQuestionMcqs().size();
+        totalQuestions += answerBook.getExam().getExamQuestionSubjectives().size();
+        totalQuestions += answerBook.getExam().getExamQuestionTrueOrFalses().size();
+        answerBook.setTotalQuestions(totalQuestions);
+    }
+
+    @Override
+    public GetScoresResponse calculateFinalScores(Long answerBookId) {
+        AnswerBook answerBook = getAnswerBookById(answerBookId);
+        if (answerBook == null) {
+            throw new ResourceNotFoundException("Answer Book not found with id " + answerBookId);
+        }
+
+        clearMarks(answerBook);
+
+        if (answerBook.getMcqAnswers() != null) {
+            answerBookAnswerService.calculateMcqScores(answerBook);
+        }
+        if (answerBook.getSubjectiveAnswers() != null) {
+            answerBookAnswerService.calculateSubjectiveScores(answerBook);
+        }
+        if (answerBook.getTrueFalseAnswers() != null) {
+            answerBookAnswerService.calculateTrueOrFalseScores(answerBook);
+        }
+        answerBookRepository.save(answerBook);
+        return answerBook.toGetScoresResponse();
     }
 
     @Override
@@ -389,5 +468,18 @@ public class AnswerBookServiceImpl implements AnswerBookService {
             throw new ResourceNotFoundException("Answer Book not found with id " + id);
         }
         answerBookRepository.delete(answerBook);
+    }
+
+    public void deleteAnswerBookAnswer(Long answerId,
+                                       String questionType) {
+        if (questionType.equalsIgnoreCase("MCQ")) {
+            answerMcqRepository.deleteById(answerId);
+        } else if (questionType.equalsIgnoreCase("Subjective")) {
+            answerSubjectiveRepository.deleteById(answerId);
+        } else if (questionType.equalsIgnoreCase("TrueFalse")) {
+            answerTrueFalseRepository.deleteById(answerId);
+        } else {
+            throw new ValidationFailureException("Invalid Question Type");
+        }
     }
 }

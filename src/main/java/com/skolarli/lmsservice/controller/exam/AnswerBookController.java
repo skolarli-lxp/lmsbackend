@@ -36,8 +36,8 @@ public class AnswerBookController {
         UUID uuid = UUID.randomUUID();
         MDC.put("requestId", uuid.toString());
         logger.info("Received request for getAllAnswerBooks"
-                + (examId != null ? " for examId: " + examId : "")
-                + (studentId != null ? " for studentId: " + studentId : ""));
+            + (examId != null ? " for examId: " + examId : "")
+            + (studentId != null ? " for studentId: " + studentId : ""));
 
         if (examId != null) {
             if (studentId != null) {
@@ -95,6 +95,44 @@ public class AnswerBookController {
             MDC.remove("requestId");
         }
     }
+
+    @RequestMapping(method = RequestMethod.GET, path = "/{id}/singleanswer")
+    public ResponseEntity<GetAnswerResponse> getSingleAnswerFromAnswerBook(@PathVariable Long id,
+                                                                           @RequestParam String questionType,
+                                                                           @RequestParam Long questionId) {
+        UUID uuid = UUID.randomUUID();
+        MDC.put("requestId", uuid.toString());
+        logger.info("Received request for getSingleAnswerFromAnswerBook for id: " + id);
+
+        try {
+            GetAnswerResponse response = answerBookService.getAnswerByAnswerBookIdAndQuestionId(id,
+                questionId, questionType);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            logger.error("Error in getSingleAnswerFromAnswerBook: " + e.getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        } finally {
+            MDC.remove("requestId");
+        }
+    }
+
+    @RequestMapping(method = RequestMethod.GET, path = "/{id}/allanswers")
+    public ResponseEntity<GetAllAnswersResponse> getAllAnswersFromAnswerBook(@PathVariable Long id) {
+        UUID uuid = UUID.randomUUID();
+        MDC.put("requestId", uuid.toString());
+        logger.info("Received request for getAllAnswersFromAnswerBook for id: " + id);
+
+        try {
+            GetAllAnswersResponse response = answerBookService.getAnswersByAnswerBookId(id);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            logger.error("Error in getAllAnswersFromAnswerBook: " + e.getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        } finally {
+            MDC.remove("requestId");
+        }
+    }
+
 
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<AnswerBook> createAnswerBook(@Valid @RequestBody NewAnswerBookRequest request) {
@@ -200,6 +238,22 @@ public class AnswerBookController {
         }
     }
 
+    @RequestMapping(method = RequestMethod.PUT, path = "/{id}/finalscores")
+    public ResponseEntity<GetScoresResponse> calculateFinalScores(@PathVariable Long id) {
+        UUID uuid = UUID.randomUUID();
+        MDC.put("requestId", uuid.toString());
+        logger.info("Received request for calculateFinalScores for id: " + id);
+
+        try {
+            return ResponseEntity.ok(answerBookService.calculateFinalScores(id));
+        } catch (Exception e) {
+            logger.error("Error in calculateFinalScores: " + e.getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        } finally {
+            MDC.remove("requestId");
+        }
+    }
+
     @RequestMapping(method = RequestMethod.PUT, path = "/{id}")
     public ResponseEntity<AnswerBook> updateAnswerBook(@RequestBody NewAnswerBookRequest request,
                                                        @PathVariable Long id) {
@@ -238,9 +292,9 @@ public class AnswerBookController {
 
     @RequestMapping(method = RequestMethod.PUT, path = "/{id}/answer")
     public ResponseEntity<NewAnswerResponse> updateAnswerBookAnswer(@PathVariable Long id,
-                                                             @RequestParam String questionType,
-                                                             @RequestParam Long answerId,
-                                                             @RequestBody String answer) {
+                                                                    @RequestParam String questionType,
+                                                                    @RequestParam Long answerId,
+                                                                    @RequestBody String answer) {
         UUID uuid = UUID.randomUUID();
         MDC.put("requestId", uuid.toString());
         logger.info("Received request for updateAnswerBookAnswer for id: " + id);
@@ -269,13 +323,13 @@ public class AnswerBookController {
         try {
             if (questionType.equalsIgnoreCase("MCQ")) {
                 return ResponseEntity.ok(answerBookService.updateAnswerBookAnswer(updateAnswerMcqRequest, id,
-                        answerId));
+                    answerId));
             } else if (questionType.equalsIgnoreCase("Subjective")) {
                 return ResponseEntity.ok(answerBookService.updateAnswerBookAnswer(updateAnswerSubjectiveRequest, id,
-                        answerId));
+                    answerId));
             } else if (questionType.equalsIgnoreCase("TrueOrFalse")) {
                 return ResponseEntity.ok(answerBookService.updateAnswerBookAnswer(updateAnswerTrueFalseRequest, id,
-                        answerId));
+                    answerId));
             } else {
                 throw new Exception("Invalid question type");
             }
@@ -286,6 +340,7 @@ public class AnswerBookController {
             MDC.remove("requestId");
         }
     }
+
 
     @RequestMapping(method = RequestMethod.DELETE, path = "/{id}")
     public ResponseEntity<String> deleteAnswerBook(@PathVariable Long id) {
@@ -298,6 +353,24 @@ public class AnswerBookController {
             return ResponseEntity.ok("AnswerBook deleted successfully");
         } catch (Exception e) {
             logger.error("Error in deleteAnswerBook: " + e.getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        } finally {
+            MDC.remove("requestId");
+        }
+    }
+
+    @RequestMapping(method = RequestMethod.DELETE, path = "/answer")
+    public ResponseEntity<String> deleteAnswer(@RequestParam Long answerId,
+                                               @RequestParam String questionType) {
+        UUID uuid = UUID.randomUUID();
+        MDC.put("requestId", uuid.toString());
+        logger.info("Received request for deleteAnswer for id: " + answerId);
+
+        try {
+            answerBookService.deleteAnswerBookAnswer(answerId, questionType);
+            return ResponseEntity.ok("Answer deleted successfully");
+        } catch (Exception e) {
+            logger.error("Error in deleteAnswer: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         } finally {
             MDC.remove("requestId");

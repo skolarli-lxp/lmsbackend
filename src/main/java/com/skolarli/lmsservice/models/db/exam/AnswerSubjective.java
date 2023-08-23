@@ -7,6 +7,7 @@ import com.skolarli.lmsservice.exception.OperationNotSupportedException;
 import com.skolarli.lmsservice.models.EvaluationResult;
 import com.skolarli.lmsservice.models.db.core.LmsUser;
 import com.skolarli.lmsservice.models.db.core.Tenantable;
+import com.skolarli.lmsservice.models.dto.exam.answerbook.GetAnswerResponse;
 import com.skolarli.lmsservice.models.dto.exam.answerbook.NewAnswerResponse;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -113,5 +114,13 @@ public class AnswerSubjective extends Tenantable {
         newAnswerResponse.setAnswerId(this.id);
         newAnswerResponse.setAnswer(this.answer);
         return newAnswerResponse;
+    }
+
+    public GetAnswerResponse toGetAnswerResponse() {
+        GetAnswerResponse getAnswerResponse = new GetAnswerResponse();
+        getAnswerResponse.setQuestionId(this.question.getId());
+        getAnswerResponse.setAnswerId(this.id);
+        getAnswerResponse.setAnswer(this.answer);
+        return getAnswerResponse;
     }
 }

@@ -9,6 +9,7 @@ import com.skolarli.lmsservice.models.db.core.LmsUser;
 import com.skolarli.lmsservice.models.db.core.Tenantable;
 import com.skolarli.lmsservice.models.db.course.Batch;
 import com.skolarli.lmsservice.models.db.course.Course;
+import com.skolarli.lmsservice.models.dto.exam.answerbook.GetScoresResponse;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -51,7 +52,7 @@ public class AnswerBook extends Tenantable {
 
     private int totalMarks;
 
-    private int obtainedMarks;
+    private double obtainedMarks;
 
     private int additionalMarks;
 
@@ -62,6 +63,8 @@ public class AnswerBook extends Tenantable {
     private int correctAnswers;
 
     private int incorrectAnswers;
+
+    private int partiallyCorrectAnswers;
 
     private int totalDuration;
 
@@ -152,6 +155,9 @@ public class AnswerBook extends Tenantable {
         if (answerBook.getIncorrectAnswers() != 0) {
             this.setIncorrectAnswers(answerBook.getIncorrectAnswers());
         }
+        if (answerBook.getPartiallyCorrectAnswers() != 0) {
+            this.setPartiallyCorrectAnswers(answerBook.getPartiallyCorrectAnswers());
+        }
         if (answerBook.getTotalDuration() != 0) {
             this.setTotalDuration(answerBook.getTotalDuration());
         }
@@ -198,5 +204,24 @@ public class AnswerBook extends Tenantable {
         if (answerBook.getUpdatedBy() != null) {
             this.setUpdatedBy(answerBook.getUpdatedBy());
         }
+    }
+
+    public GetScoresResponse toGetScoresResponse() {
+        GetScoresResponse getScoresResponse = new GetScoresResponse();
+        getScoresResponse.setId(this.getId());
+        getScoresResponse.setTotalMarks(this.getTotalMarks());
+        getScoresResponse.setObtainedMarks(this.getObtainedMarks());
+        getScoresResponse.setAdditionalMarks(this.getAdditionalMarks());
+        getScoresResponse.setTotalQuestions(this.getTotalQuestions());
+        getScoresResponse.setAttemptedQuestions(this.getAttemptedQuestions());
+        getScoresResponse.setCorrectAnswers(this.getCorrectAnswers());
+        getScoresResponse.setIncorrectAnswers(this.getIncorrectAnswers());
+        getScoresResponse.setPartialCorrectAnswers(this.getPartiallyCorrectAnswers());
+        getScoresResponse.setTotalDuration(this.getTotalDuration());
+        getScoresResponse.setTimeTaken(this.getTimeTaken());
+        getScoresResponse.setSessionStartTime(this.getSessionStartTime());
+        getScoresResponse.setSessionEndTime(this.getSessionEndTime());
+        getScoresResponse.setRemarks(this.getRemarks());
+        return getScoresResponse;
     }
 }

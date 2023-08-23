@@ -23,6 +23,11 @@ public interface AnswerBookService {
 
     List<AnswerBook> getAllAnswerBooks();
 
+    GetAllAnswersResponse getAnswersByAnswerBookId(Long id);
+
+    GetAnswerResponse getAnswerByAnswerBookIdAndQuestionId(Long answerBookId, Long questionId, String questionType);
+
+
     AnswerBook saveAnswerBook(AnswerBook answerBook);
 
     AnswerBook updateAnswerBook(AnswerBook answerBook, Long id);
@@ -45,6 +50,8 @@ public interface AnswerBookService {
 
     void evaluateAnswerBook(Long answerBookId, AnswerBookEvaulationRequest request);
 
+    GetScoresResponse calculateFinalScores(Long answerBookId);
+
     NewAnswerResponse updateAnswerBookAnswer(UpdateAnswerMcqRequest updateAnswerMcqRequest, Long answerBookId,
                                              Long answerId);
 
@@ -55,4 +62,6 @@ public interface AnswerBookService {
                                              Long answerId);
 
     void deleteAnswerBook(Long id);
+
+    void deleteAnswerBookAnswer(Long answerId, String questionType);
 }
