@@ -4,6 +4,7 @@ package com.skolarli.lmsservice.models.db.exam;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.skolarli.lmsservice.models.ExamStatus;
 import com.skolarli.lmsservice.models.db.core.LmsUser;
 import com.skolarli.lmsservice.models.db.core.Tenantable;
 import com.skolarli.lmsservice.models.db.course.Batch;
@@ -64,12 +65,15 @@ public class Exam extends Tenantable {
 
     private String durationMins;
 
+    private ExamStatus status;
+
     private ZonedDateTime examPublishDate;
     private ZonedDateTime examExpiryDate;
 
     private Integer totalMarks;
 
     private Integer passingMarks;
+
 
 
     @OneToMany(mappedBy = "exam", cascade = CascadeType.ALL)
@@ -251,5 +255,10 @@ public class Exam extends Tenantable {
         questionSortOrderResponse.setSubjectiveQuestions(subjectiveQuestions);
         questionSortOrderResponse.setTrueOrFalseQuestions(trueOrFalseQuestions);
         return questionSortOrderResponse;
+    }
+
+    public void changeExamStatus(ExamStatus status) {
+        this.status = status;
+        //TODO: Exam status should be deactivated only if there are no AnswerBooks in the DRAFT state
     }
 }

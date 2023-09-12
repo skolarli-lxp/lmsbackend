@@ -224,4 +224,8 @@ public class AnswerBook extends Tenantable {
         getScoresResponse.setRemarks(this.getRemarks());
         return getScoresResponse;
     }
+
+    public void changeStatus(AnswerBookStatus status) {
+        this.setStatus(status);
+    }
 }

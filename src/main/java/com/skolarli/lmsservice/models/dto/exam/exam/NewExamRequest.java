@@ -1,6 +1,7 @@
 package com.skolarli.lmsservice.models.dto.exam.exam;
 
 
+import com.skolarli.lmsservice.models.ExamStatus;
 import com.skolarli.lmsservice.models.db.exam.ExamQuestionMcq;
 import com.skolarli.lmsservice.models.db.exam.ExamQuestionSubjective;
 import com.skolarli.lmsservice.models.db.exam.ExamQuestionTrueOrFalse;
@@ -35,6 +36,8 @@ public class NewExamRequest {
     private Integer totalMarks;
 
     private Integer passingMarks;
+
+    private ExamStatus examStatus;
 
     private List<NewExamQuestionMcqRequest> mcqQuestions;
 

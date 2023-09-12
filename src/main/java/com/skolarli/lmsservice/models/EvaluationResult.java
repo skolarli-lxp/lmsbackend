@@ -4,5 +4,6 @@ public enum EvaluationResult {
     CORRECT,
     INCORRECT,
     PARTIALLY_CORRECT,
-    NOT_EVALUATED
+    NOT_EVALUATED,
+    NOT_ATTENDED
 }

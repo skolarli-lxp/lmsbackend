@@ -1,5 +1,6 @@
 package com.skolarli.lmsservice.services.exam;
 
+import com.skolarli.lmsservice.models.ExamStatus;
 import com.skolarli.lmsservice.models.db.exam.Exam;
 import com.skolarli.lmsservice.models.dto.exam.exam.*;
 
@@ -21,6 +22,8 @@ public interface ExamService {
     Exam saveExam(Exam exam);
 
     Exam addQuestionsToExam(NewExamQuestionsAllTypesRequest newExamQuestionRequest, long id);
+
+    Exam updateExamStatus(ExamStatus examStatus, long id);
 
     Exam updateExams(Exam exam, long id);
 

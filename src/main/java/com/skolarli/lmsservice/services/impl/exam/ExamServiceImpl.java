@@ -3,6 +3,7 @@ package com.skolarli.lmsservice.services.impl.exam;
 import com.skolarli.lmsservice.exception.OperationNotSupportedException;
 import com.skolarli.lmsservice.exception.ResourceNotFoundException;
 import com.skolarli.lmsservice.exception.ValidationFailureException;
+import com.skolarli.lmsservice.models.ExamStatus;
 import com.skolarli.lmsservice.models.db.core.LmsUser;
 import com.skolarli.lmsservice.models.db.exam.Exam;
 import com.skolarli.lmsservice.models.db.exam.ExamQuestionMcq;
@@ -95,6 +96,7 @@ public class ExamServiceImpl implements ExamService {
         exam.setExamExpiryDate(request.getExamExpiryDate());
         exam.setTotalMarks(request.getTotalMarks());
         exam.setPassingMarks(request.getPassingMarks());
+        exam.setStatus(request.getExamStatus());
 
         if (request.getMcqQuestions() != null) {
             exam.setExamQuestionMcqs(request.toExamQuestionMcqList());
@@ -103,12 +105,12 @@ public class ExamServiceImpl implements ExamService {
         if (request.getSubjectiveQuestions() != null) {
             exam.setExamQuestionSubjectives(request.toExamQuestionSubjectiveList());
             exam.getExamQuestionSubjectives().forEach(examQuestionSubjective
-                    -> examQuestionSubjective.setExam(exam));
+                -> examQuestionSubjective.setExam(exam));
         }
         if (request.getTrueOrFalseQuestions() != null) {
             exam.setExamQuestionTrueOrFalses(request.toExamQuestionTrueOrFalseList());
             exam.getExamQuestionTrueOrFalses().forEach(examQuestionTrueOrFalse
-                    -> examQuestionTrueOrFalse.setExam(exam));
+                -> examQuestionTrueOrFalse.setExam(exam));
         }
         return exam;
     }
@@ -117,7 +119,7 @@ public class ExamServiceImpl implements ExamService {
     @Override
     public Exam getExam(long id) {
         List<Exam> exams =
-                examRepository.findAllById(new ArrayList<>(List.of(id)));
+            examRepository.findAllById(new ArrayList<>(List.of(id)));
         if (exams.size() == 0) {
             throw new ResourceNotFoundException("Exam with Id " + id + " not found");
         }
@@ -159,10 +161,11 @@ public class ExamServiceImpl implements ExamService {
         if (!checkPermission()) {
             logger.error("User does not have permission to perform this operation");
             throw new OperationNotSupportedException("User does not have permission to perform "
-                    + "this operation");
+                + "this operation");
         }
 
         exam.setCreatedBy(currentUser);
+        exam.setStatus(ExamStatus.DRAFT);
         return examRepository.save(exam);
     }
 
@@ -177,7 +180,12 @@ public class ExamServiceImpl implements ExamService {
         if (!checkPermission()) {
             logger.error("User does not have permission to perform this operation");
             throw new OperationNotSupportedException("User does not have permission to perform "
-                    + "this operation");
+                + "this operation");
+        }
+
+        if (existingExam.getStatus() != ExamStatus.DRAFT) {
+            logger.error("Exam is not in draft mode");
+            throw new OperationNotSupportedException("Exam should be DRAFT mode to add questions");
         }
 
         if (newExamQuestionRequest.getMcqQuestions() != null) {
@@ -198,7 +206,7 @@ public class ExamServiceImpl implements ExamService {
         if (newExamQuestionRequest.getSubjectiveQuestions() != null) {
             Integer subjectiveMaxSortOrder = examQuestionSubjectiveService.getMaxQuestionSortOrder(id);
             for (NewExamQuestionSubjectiveRequest newExamQuestionSubjectiveRequest :
-                    newExamQuestionRequest.getSubjectiveQuestions()) {
+                newExamQuestionRequest.getSubjectiveQuestions()) {
                 if (newExamQuestionSubjectiveRequest.getQuestionSortOrder() == null) {
                     newExamQuestionSubjectiveRequest.setQuestionSortOrder(subjectiveMaxSortOrder + 1);
                     subjectiveMaxSortOrder++;
@@ -213,7 +221,7 @@ public class ExamServiceImpl implements ExamService {
         if (newExamQuestionRequest.getTrueOrFalseQuestions() != null) {
             Integer trueOrFalseMaxSortOrder = examQuestionTrueOrFalseService.getMaxQuestionSortOrder(id);
             for (NewExamQuestionTrueOrFalseRequest newExamQuestionTrueOrFalseRequest :
-                    newExamQuestionRequest.getTrueOrFalseQuestions()) {
+                newExamQuestionRequest.getTrueOrFalseQuestions()) {
                 if (newExamQuestionTrueOrFalseRequest.getQuestionSortOrder() == null) {
                     newExamQuestionTrueOrFalseRequest.setQuestionSortOrder(trueOrFalseMaxSortOrder + 1);
                     trueOrFalseMaxSortOrder++;
@@ -238,12 +246,35 @@ public class ExamServiceImpl implements ExamService {
     }
 
     @Override
+    public Exam updateExamStatus(ExamStatus examStatus, long id) {
+        Exam existingExam = getExam(id);
+        if (existingExam == null) {
+            logger.error("Exam with Id " + id + " not found");
+            throw new ResourceNotFoundException("Exam with Id " + id + " not found");
+        }
+        if (!checkPermission()) {
+            logger.error("User does not have permission to perform this operation");
+            throw new OperationNotSupportedException("User does not have permission to perform "
+                + "this operation");
+        }
+        existingExam.setStatus(examStatus);
+        LmsUser currentUser = userUtils.getCurrentUser();
+        existingExam.setUpdatedBy(currentUser);
+        return examRepository.save(existingExam);
+    }
+
+    @Override
     public Exam updateExams(Exam exam, long id) {
         Exam existingExam = getExam(id);
         if (existingExam == null) {
             logger.error("Exam with Id " + id + " not found");
             throw new ResourceNotFoundException("Exam with Id " + id + " not found");
         }
+        if (existingExam.getStatus() != ExamStatus.DRAFT) {
+            logger.error("Exam is not in draft mode");
+            throw new OperationNotSupportedException("Exam should be DRAFT mode to update");
+        }
+
         existingExam.update(exam);
         if (!existingExam.validateFields()) {
             logger.error("Exam fields validation failed");
@@ -252,7 +283,7 @@ public class ExamServiceImpl implements ExamService {
         if (!checkPermission()) {
             logger.error("User does not have permission to perform this operation");
             throw new OperationNotSupportedException("User does not have permission to perform "
-                    + "this operation");
+                + "this operation");
         }
 
         LmsUser currentUser = userUtils.getCurrentUser();
@@ -264,6 +295,11 @@ public class ExamServiceImpl implements ExamService {
     @Override
     public Exam updateSortOrder(QuestionSortOrderRequest questionSortOrderRequest, Long examId) {
         Exam existingExam = getExam(examId);
+
+        if (existingExam.getStatus() != ExamStatus.DRAFT) {
+            logger.error("Exam is not in draft mode");
+            throw new OperationNotSupportedException("Exam should be DRAFT mode to update");
+        }
 
         List<ExamQuestionMcq> examQuestionMcqs = existingExam.getExamQuestionMcqs();
         List<IndividualQuestionSortOrder> mcqSortOrderList = questionSortOrderRequest.getMcqQuestions();
@@ -298,7 +334,7 @@ public class ExamServiceImpl implements ExamService {
                 for (ExamQuestionTrueOrFalse examQuestionTrueOrFalse : examQuestionTrueOrFalses) {
                     if (examQuestionTrueOrFalse.getId() == individualQuestionSortOrder.getQuestionId()) {
                         examQuestionTrueOrFalse.setQuestionSortOrder(individualQuestionSortOrder
-                                .getQuestionSortOrder());
+                            .getQuestionSortOrder());
                         break;
                     }
                 }
@@ -321,14 +357,19 @@ public class ExamServiceImpl implements ExamService {
         if (!checkPermission()) {
             logger.error("User does not have permission to perform this operation");
             throw new OperationNotSupportedException("User does not have permission to perform "
-                    + "this operation");
+                + "this operation");
+        }
+
+        if (existingExam.getStatus() != ExamStatus.DRAFT) {
+            logger.error("Exam is not in draft mode");
+            throw new OperationNotSupportedException("Exam should be DRAFT mode to update");
         }
 
         if (questionType.equalsIgnoreCase("MCQ")) {
             for (ExamQuestionMcq examQuestionMcq : existingExam.getExamQuestionMcqs()) {
                 if (examQuestionMcq.getId() == questionId) {
                     ExamQuestionMcq newExamQuestionMcq =
-                            ((NewExamQuestionMcqRequest) newExamQuestionRequest).toExamQuestionMcq();
+                        ((NewExamQuestionMcqRequest) newExamQuestionRequest).toExamQuestionMcq();
                     examQuestionMcq.update(newExamQuestionMcq);
                 }
             }
@@ -336,7 +377,7 @@ public class ExamServiceImpl implements ExamService {
             for (ExamQuestionSubjective examQuestionSubjective : existingExam.getExamQuestionSubjectives()) {
                 if (examQuestionSubjective.getId() == questionId) {
                     ExamQuestionSubjective newExamQuestionSubjective =
-                            ((NewExamQuestionSubjectiveRequest) newExamQuestionRequest).toExamQuestionSubjective();
+                        ((NewExamQuestionSubjectiveRequest) newExamQuestionRequest).toExamQuestionSubjective();
                     examQuestionSubjective.update(newExamQuestionSubjective);
                 }
             }
@@ -344,7 +385,7 @@ public class ExamServiceImpl implements ExamService {
             for (ExamQuestionTrueOrFalse examQuestionTrueOrFalse : existingExam.getExamQuestionTrueOrFalses()) {
                 if (examQuestionTrueOrFalse.getId() == questionId) {
                     ExamQuestionTrueOrFalse newExamQuestionTrueOrFalse =
-                            ((NewExamQuestionTrueOrFalseRequest) newExamQuestionRequest).toExamQuestionTrueOrFalse();
+                        ((NewExamQuestionTrueOrFalseRequest) newExamQuestionRequest).toExamQuestionTrueOrFalse();
                     examQuestionTrueOrFalse.update(newExamQuestionTrueOrFalse);
                 }
             }
@@ -366,7 +407,11 @@ public class ExamServiceImpl implements ExamService {
         if (!checkPermission()) {
             logger.error("User does not have permission to perform this operation");
             throw new OperationNotSupportedException("User does not have permission to perform "
-                    + "this operation");
+                + "this operation");
+        }
+        if (existingExam.getStatus() != ExamStatus.DRAFT) {
+            logger.error("Exam is not in draft mode");
+            throw new OperationNotSupportedException("Exam should be DRAFT mode to update");
         }
         if (fieldNames.contains("courseId")) {
             existingExam.setCourse(null);
@@ -388,7 +433,7 @@ public class ExamServiceImpl implements ExamService {
         if (!checkPermission()) {
             logger.error("User does not have permission to perform this operation");
             throw new OperationNotSupportedException("User does not have permission to perform "
-                    + "this operation");
+                + "this operation");
         }
         examRepository.delete(existingExam);
     }
@@ -403,18 +448,22 @@ public class ExamServiceImpl implements ExamService {
         if (!checkPermission()) {
             logger.error("User does not have permission to perform this operation");
             throw new OperationNotSupportedException("User does not have permission to perform "
-                    + "this operation");
+                + "this operation");
+        }
+        if (existingExam.getStatus() != ExamStatus.DRAFT) {
+            logger.error("Exam is not in draft mode");
+            throw new OperationNotSupportedException("Exam should be DRAFT mode to update");
         }
         examQuestionMcqService.hardDeleteQuestions(questionIds.getMcqQuestionsIds(), existingExam);
         examQuestionSubjectiveService.hardDeleteQuestions(questionIds.getSubjectiveQuestionsIds(),
-                existingExam);
+            existingExam);
         examQuestionTrueOrFalseService.hardDeleteQuestions(questionIds.getTrueOrFalseQuestionsIds(),
-                existingExam);
+            existingExam);
     }
 
     @Override
     public AddExamQuestionToQbResponse addExamQuestionToQuestionBank(AddExamQuestionToQbRequest
-                                                                             request) {
+                                                                         request) {
         List<Long> mcqQuestions = request.getMcqQuestionsList();
         List<Long> subjectiveQuestions = request.getSubjectiveQuestionsList();
         List<Long> trueOrFalseQuestions = request.getTrueOrFalseQuestionsList();
@@ -423,25 +472,25 @@ public class ExamServiceImpl implements ExamService {
 
         if (mcqQuestions != null) {
             List<BankQuestionMcq> bankQuestionMcqs = examQuestionMcqService
-                    .toBankQuestionMcq(mcqQuestions);
+                .toBankQuestionMcq(mcqQuestions);
             List<BankQuestionMcq> savedQuestions = questionBankMcqRepository
-                    .saveAll(bankQuestionMcqs);
+                .saveAll(bankQuestionMcqs);
             response.setMcqQuestionsList(savedQuestions);
         }
 
         if (subjectiveQuestions != null) {
             List<BankQuestionSubjective> bankQuestionSubjectives = examQuestionSubjectiveService
-                    .toBankQuestionSubjective(subjectiveQuestions);
+                .toBankQuestionSubjective(subjectiveQuestions);
             List<BankQuestionSubjective> savedQuestions = questionBankSubjectiveRepository
-                    .saveAll(bankQuestionSubjectives);
+                .saveAll(bankQuestionSubjectives);
             response.setSubjectiveQuestionsList(savedQuestions);
         }
 
         if (trueOrFalseQuestions != null) {
             List<BankQuestionTrueOrFalse> bankQuestionTrueOrFalses = examQuestionTrueOrFalseService
-                    .toBankQuestionTrueOrFalse(trueOrFalseQuestions);
+                .toBankQuestionTrueOrFalse(trueOrFalseQuestions);
             List<BankQuestionTrueOrFalse> savedQuestions = questionBankTrueOrFalseRepository
-                    .saveAll(bankQuestionTrueOrFalses);
+                .saveAll(bankQuestionTrueOrFalses);
             response.setTrueOrFalseQuestionsList(savedQuestions);
         }
 

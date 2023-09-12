@@ -2,6 +2,7 @@ package com.skolarli.lmsservice.controller.exam;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.skolarli.lmsservice.models.ExamStatus;
 import com.skolarli.lmsservice.models.db.exam.Exam;
 import com.skolarli.lmsservice.models.dto.exam.exam.*;
 import com.skolarli.lmsservice.services.exam.ExamService;
@@ -240,6 +241,24 @@ public class ExamController {
             return new ResponseEntity<>(savedExam.toQuestionSortOrderResponse(), HttpStatus.OK);
         } catch (Exception e) {
             logger.error("Error in updateSortOrder: " + e.getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        } finally {
+            MDC.remove("requestId");
+        }
+    }
+
+    @RequestMapping(method = RequestMethod.PUT, value = "/{id}/updatestatus")
+    public ResponseEntity<String> updateExamStatus(@RequestParam ExamStatus status,
+                                                 @PathVariable Long id) {
+        UUID uuid = UUID.randomUUID();
+        MDC.put("requestId", uuid.toString());
+        logger.info("Received request updating exam status for id: " + id);
+
+        try {
+            Exam savedExam = examService.updateExamStatus(status, id);
+            return new ResponseEntity<>(savedExam.getStatus().toString(), HttpStatus.OK);
+        } catch (Exception e) {
+            logger.error("Error in updateExamStatus: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         } finally {
             MDC.remove("requestId");

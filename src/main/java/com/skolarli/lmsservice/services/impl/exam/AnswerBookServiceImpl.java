@@ -3,6 +3,7 @@ package com.skolarli.lmsservice.services.impl.exam;
 import com.skolarli.lmsservice.exception.ResourceNotFoundException;
 import com.skolarli.lmsservice.exception.ValidationFailureException;
 import com.skolarli.lmsservice.models.AnswerBookStatus;
+import com.skolarli.lmsservice.models.ExamStatus;
 import com.skolarli.lmsservice.models.db.exam.AnswerBook;
 import com.skolarli.lmsservice.models.db.exam.AnswerMcq;
 import com.skolarli.lmsservice.models.db.exam.AnswerSubjective;
@@ -187,6 +188,13 @@ public class AnswerBookServiceImpl implements AnswerBookService {
         if (!answerBook.validate()) {
             throw new ValidationFailureException("Invalid Answer Book");
         }
+        if (answerBook.getExam() == null) {
+            throw new ValidationFailureException("Exam is required");
+        }
+        if (answerBook.getExam().getStatus() != ExamStatus.PUBLISHED) {
+            throw new ValidationFailureException("Exam should be in PUBLISHED status to start answering");
+        }
+        answerBook.setStatus(AnswerBookStatus.DRAFT);
         answerBook.setCreatedBy(userUtils.getCurrentUser());
         return answerBookRepository.save(answerBook);
     }
@@ -196,6 +204,9 @@ public class AnswerBookServiceImpl implements AnswerBookService {
         AnswerBook existingAnswerBook = getAnswerBookById(id);
         if (existingAnswerBook == null) {
             throw new ResourceNotFoundException("Answer Book not found with id " + id);
+        }
+        if (existingAnswerBook.getStatus() != AnswerBookStatus.DRAFT) {
+            throw new ValidationFailureException("Answer Book can only be updated in DRAFT status");
         }
         existingAnswerBook.update(answerBook);
         existingAnswerBook.setUpdatedBy(userUtils.getCurrentUser());
@@ -222,6 +233,9 @@ public class AnswerBookServiceImpl implements AnswerBookService {
         if (existingAnswerBook == null) {
             throw new ResourceNotFoundException("Answer Book not found with id " + id);
         }
+        if (existingAnswerBook.getStatus() != AnswerBookStatus.DRAFT) {
+            throw new ValidationFailureException("Answerbook Should be in DRAFT status to add answers");
+        }
 
         AnswerMcq answerMcq = answerBookAnswerService.toAnswerMcq(newAnswerMcqRequest, existingAnswerBook);
         AnswerMcq savedAnswer = answerMcqRepository.save(answerMcq);
@@ -234,6 +248,9 @@ public class AnswerBookServiceImpl implements AnswerBookService {
         AnswerBook existingAnswerBook = getAnswerBookById(id);
         if (existingAnswerBook == null) {
             throw new ResourceNotFoundException("Answer Book not found with id " + id);
+        }
+        if (existingAnswerBook.getStatus() != AnswerBookStatus.DRAFT) {
+            throw new ValidationFailureException("Answerbook Should be in DRAFT status to add answers");
         }
 
         AnswerSubjective answerSubjective = answerBookAnswerService.toAnswerSubjective(
@@ -248,6 +265,9 @@ public class AnswerBookServiceImpl implements AnswerBookService {
         if (existingAnswerBook == null) {
             throw new ResourceNotFoundException("Answer Book not found with id " + id);
         }
+        if (existingAnswerBook.getStatus() != AnswerBookStatus.DRAFT) {
+            throw new ValidationFailureException("Answerbook Should be in DRAFT status to add answers");
+        }
 
         AnswerTrueFalse answerTrueFalse = answerBookAnswerService.toAnswerTrueFalse(
             newAnswerTrueFalseRequest, existingAnswerBook);
@@ -257,6 +277,9 @@ public class AnswerBookServiceImpl implements AnswerBookService {
 
     @Override
     public void addMcqAnswers(List<AnswerMcq> answerMcqs, AnswerBook answerBook) {
+        if (answerBook.getStatus() != AnswerBookStatus.DRAFT) {
+            throw new ValidationFailureException("Answerbook Should be in DRAFT status to add answers");
+        }
 
         if (answerBook.getMcqAnswers() == null) {
             answerBook.setMcqAnswers(answerMcqs);
@@ -268,6 +291,10 @@ public class AnswerBookServiceImpl implements AnswerBookService {
     @Override
     public void addTrueFalseAnswers(List<AnswerTrueFalse> answerTrueFalses,
                                     AnswerBook answerBook) {
+        if (answerBook.getStatus() != AnswerBookStatus.DRAFT) {
+            throw new ValidationFailureException("Answerbook Should be in DRAFT status to add answers");
+        }
+
         if (answerBook.getTrueFalseAnswers() == null) {
             answerBook.setTrueFalseAnswers(answerTrueFalses);
         } else {
@@ -278,6 +305,9 @@ public class AnswerBookServiceImpl implements AnswerBookService {
     @Override
     public void addSubjectiveAnswers(List<AnswerSubjective> answerSubjectives,
                                      AnswerBook answerBook) {
+        if (answerBook.getStatus() != AnswerBookStatus.DRAFT) {
+            throw new ValidationFailureException("Answerbook Should be in DRAFT status to add answers");
+        }
         if (answerBook.getSubjectiveAnswers() == null) {
             answerBook.setSubjectiveAnswers(answerSubjectives);
         } else {
@@ -291,6 +321,9 @@ public class AnswerBookServiceImpl implements AnswerBookService {
         AnswerBook existingAnswerBook = getAnswerBookById(answerBookId);
         if (existingAnswerBook == null) {
             throw new ResourceNotFoundException("Answer Book not found with id " + answerBookId);
+        }
+        if (existingAnswerBook.getStatus() != AnswerBookStatus.DRAFT) {
+            throw new ValidationFailureException("Answerbook Should be in DRAFT status to add answers");
         }
         if (addAnswerBookAnswerRequest.getMcqAnswers() != null) {
             List<AnswerMcq> answerMcqs = addAnswerBookAnswerRequest.getMcqAnswers().stream()
@@ -326,6 +359,12 @@ public class AnswerBookServiceImpl implements AnswerBookService {
         AnswerBook answerBook = getAnswerBookById(answerBookId);
         if (answerBook == null) {
             throw new ResourceNotFoundException("Answer Book not found with id " + answerBookId);
+        }
+        if (answerBook.getStatus() != AnswerBookStatus.SUBMITTED
+            || answerBook.getStatus() != AnswerBookStatus.EVALUATION_IN_PROGRESS
+            || answerBook.getStatus() != AnswerBookStatus.REEVALUATION_REQUESTED
+            || answerBook.getStatus() != AnswerBookStatus.REEVALUATION_IN_PROGRESS) {
+            throw new ValidationFailureException("Answerbook status does not allow evaluation");
         }
         if (request.getMcqAnswerEvaluations() != null) {
             answerBookAnswerService.manualEvaluateMcqAnswers(answerBook,
@@ -364,6 +403,12 @@ public class AnswerBookServiceImpl implements AnswerBookService {
         if (answerBook == null) {
             throw new ResourceNotFoundException("Answer Book not found with id " + answerBookId);
         }
+        if (answerBook.getStatus() != AnswerBookStatus.SUBMITTED
+            || answerBook.getStatus() != AnswerBookStatus.EVALUATION_IN_PROGRESS
+            || answerBook.getStatus() != AnswerBookStatus.REEVALUATION_REQUESTED
+            || answerBook.getStatus() != AnswerBookStatus.REEVALUATION_IN_PROGRESS) {
+            throw new ValidationFailureException("Answerbook status does not allow evaluation");
+        }
 
         clearMarks(answerBook);
 
@@ -386,6 +431,9 @@ public class AnswerBookServiceImpl implements AnswerBookService {
         AnswerBook existingAnswerBook = getAnswerBookById(answerBookId);
         if (existingAnswerBook == null) {
             throw new ResourceNotFoundException("Answer Book not found with id " + answerBookId);
+        }
+        if (existingAnswerBook.getStatus() != AnswerBookStatus.DRAFT) {
+            throw new ValidationFailureException("Answerbook Should be in DRAFT status to update answers");
         }
         List<AnswerMcq> answerMcqs = existingAnswerBook.getMcqAnswers();
         if (answerMcqs == null) {
@@ -414,6 +462,9 @@ public class AnswerBookServiceImpl implements AnswerBookService {
         if (existingAnswerBook == null) {
             throw new ResourceNotFoundException("Answer Book not found with id " + answerBookId);
         }
+        if (existingAnswerBook.getStatus() != AnswerBookStatus.DRAFT) {
+            throw new ValidationFailureException("Answerbook Should be in DRAFT status to update answers");
+        }
         List<AnswerSubjective> answerSubjectives = existingAnswerBook.getSubjectiveAnswers();
         if (answerSubjectives == null) {
             throw new ResourceNotFoundException("Answer not found with id " + answerId);
@@ -440,6 +491,9 @@ public class AnswerBookServiceImpl implements AnswerBookService {
         AnswerBook existingAnswerBook = getAnswerBookById(answerBookId);
         if (existingAnswerBook == null) {
             throw new ResourceNotFoundException("Answer Book not found with id " + answerBookId);
+        }
+        if (existingAnswerBook.getStatus() != AnswerBookStatus.DRAFT) {
+            throw new ValidationFailureException("Answerbook Should be in DRAFT status to update answers");
         }
         List<AnswerTrueFalse> answerTrueFalses = existingAnswerBook.getTrueFalseAnswers();
         if (answerTrueFalses == null) {
