@@ -7,6 +7,8 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.skolarli.lmsservice.models.FeedbackType;
 import com.skolarli.lmsservice.models.db.core.LmsUser;
 import com.skolarli.lmsservice.models.db.core.Tenantable;
+import com.skolarli.lmsservice.models.db.course.Batch;
+import com.skolarli.lmsservice.models.db.course.BatchSchedule;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -32,8 +34,29 @@ public class Feedback extends Tenantable {
     @Enumerated(EnumType.STRING)
     private FeedbackType feedbackType;
 
-    // Id of entity giving feedback to
-    private Long relatedId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "batch_id")
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+    @JsonIdentityReference(alwaysAsId = true)
+    Batch batch;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "trainer_id")
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+    @JsonIdentityReference(alwaysAsId = true)
+    LmsUser trainer;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "batch_schedule_id")
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+    @JsonIdentityReference(alwaysAsId = true)
+    BatchSchedule batchSchedule;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "student_id")
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+    @JsonIdentityReference(alwaysAsId = true)
+    LmsUser student;
 
     @OneToMany(cascade = CascadeType.ALL)
     @JsonIgnoreProperties("feedback")
@@ -67,4 +90,25 @@ public class Feedback extends Tenantable {
     @Column(name = "last_updated_time", nullable = false)
     @UpdateTimestamp
     private Date lastUpdatedTime;
+
+    public void update(Feedback feedback) {
+        if (feedback.getFeedbackType() != null) {
+            this.setFeedbackType(feedback.getFeedbackType());
+        }
+        if (feedback.getBatch() != null) {
+            this.setBatch(feedback.getBatch());
+        }
+        if (feedback.getBatchSchedule() != null) {
+            this.setBatchSchedule(feedback.getBatchSchedule());
+        }
+        if (feedback.getStudent() != null) {
+            this.setStudent(feedback.getStudent());
+        }
+        if (feedback.getTrainer() != null) {
+            this.setTrainer(feedback.getTrainer());
+        }
+        if (feedback.getGivenBy() != null) {
+            this.setGivenBy(feedback.getGivenBy());
+        }
+    }
 }

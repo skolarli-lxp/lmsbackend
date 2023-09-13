@@ -4,6 +4,5 @@ public enum FeedbackType {
     TRAINER,
     BATCH,
     BATCH_SESSION,
-    STUDENT,
-    ASSIGNMENT
+    STUDENT
 }

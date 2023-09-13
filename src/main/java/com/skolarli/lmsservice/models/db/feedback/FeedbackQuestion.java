@@ -46,4 +46,16 @@ public class FeedbackQuestion extends Tenantable {
     @Column(name = "last_updated_time", nullable = false)
     @UpdateTimestamp
     private Date lastUpdatedTime;
+
+    public void update(FeedbackQuestion feedbackQuestion) {
+        if (feedbackQuestion.getQuestionText() != null) {
+            this.setQuestionText(feedbackQuestion.getQuestionText());
+        }
+        if (feedbackQuestion.getStarRating() != 0) {
+            this.setStarRating(feedbackQuestion.getStarRating());
+        }
+        if (feedbackQuestion.getTextRemark() != null) {
+            this.setTextRemark(feedbackQuestion.getTextRemark());
+        }
+    }
 }
