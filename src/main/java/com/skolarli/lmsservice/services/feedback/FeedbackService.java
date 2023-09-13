@@ -20,13 +20,15 @@ public interface FeedbackService {
 
     List<Feedback> getAllFeedbacks();
 
-    List<Feedback> getFeedbacksByRelatedIdAndType(Long relatedId, FeedbackType type);
+
+    List<Feedback> queryFeedbacks(Long targetId, FeedbackType feedbackType, Long givenByUserId);
 
     List<Feedback> getAllFeedbacksGivenByUser(Long userId);
 
     Feedback createFeedback(Feedback feedback);
 
-    Feedback updateFeedback(Feedback feedback);
+
+    Feedback updateFeedback(Feedback feedback, Long id);
 
     Feedback addQuestionToFeedback(Long feedbackId, FeedbackQuestion question);
 

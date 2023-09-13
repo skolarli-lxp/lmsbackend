@@ -26,7 +26,7 @@ public class NewFeedbackRequest {
 
     private List<NewFeedbackQuestionRequest> questions;
 
-    private Boolean validateFields() {
+    public Boolean validateFields() {
         if (feedbackType == null) {
             return false;
         }
@@ -51,6 +51,9 @@ public class NewFeedbackRequest {
         }
         if (questions != null && !questions.isEmpty()) {
             for (NewFeedbackQuestionRequest question : questions) {
+                if (question.getQuestionText() == null || question.getQuestionText().isEmpty()) {
+                    return false;
+                }
                 if (question.getStarRating() < 0 || question.getStarRating() > 5) {
                     return false;
                 }

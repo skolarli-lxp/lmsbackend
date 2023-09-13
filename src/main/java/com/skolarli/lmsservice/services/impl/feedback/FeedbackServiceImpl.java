@@ -95,18 +95,59 @@ public class FeedbackServiceImpl implements FeedbackService {
         return feedbackRepository.findAll();
     }
 
-    @Override
-    public List<Feedback> getFeedbacksByRelatedIdAndType(Long relatedId, FeedbackType type) {
+
+    private List<Feedback> getFeedbacksByTargetIdAndType(Long targetId, FeedbackType type) {
         if (type == FeedbackType.BATCH) {
-            return feedbackRepository.findAllByBatch_IdAndFeedbackType(relatedId, type);
+            return feedbackRepository.findAllByBatch_IdAndFeedbackType(targetId, type);
         } else if (type == FeedbackType.BATCH_SESSION) {
-            return feedbackRepository.findAllByBatchSchedule_IdAndFeedbackType(relatedId, type);
+            return feedbackRepository.findAllByBatchSchedule_IdAndFeedbackType(targetId, type);
         } else if (type == FeedbackType.STUDENT) {
-            return feedbackRepository.findAllByStudent_IdAndFeedbackType(relatedId, type);
+            return feedbackRepository.findAllByStudent_IdAndFeedbackType(targetId, type);
         } else if (type == FeedbackType.TRAINER) {
-            return feedbackRepository.findAllByTrainer_IdAndFeedbackType(relatedId, type);
+            return feedbackRepository.findAllByTrainer_IdAndFeedbackType(targetId, type);
         } else {
             throw new ResourceNotFoundException("Type " + type + " not supported");
+        }
+    }
+
+    private List<Feedback> getFeedbacksByUserIdTargetIdAndType(Long targetId, FeedbackType type,
+                                                               Long userId) {
+        if (type == FeedbackType.BATCH) {
+            return feedbackRepository.findAllByGivenBy_IdAndFeedbackTypeAndBatch_Id(userId, type, targetId);
+        } else if (type == FeedbackType.BATCH_SESSION) {
+            return feedbackRepository.findAllByGivenBy_IdAndFeedbackTypeAndBatchSchedule_Id(userId, type, targetId);
+        } else if (type == FeedbackType.STUDENT) {
+            return feedbackRepository.findAllByGivenBy_IdAndFeedbackTypeAndStudent_Id(userId, type, targetId);
+        } else if (type == FeedbackType.TRAINER) {
+            return feedbackRepository.findAllByGivenBy_IdAndFeedbackTypeAndTrainer_Id(userId, type, targetId);
+        } else {
+            throw new ResourceNotFoundException("Type " + type + " not supported");
+        }
+    }
+
+    @Override
+    public List<Feedback> queryFeedbacks(Long targetId, FeedbackType feedbackType, Long givenByUserId) {
+        if (feedbackType != null) {
+            if (givenByUserId != null) {
+                if (targetId != null) {
+                    return getFeedbacksByUserIdTargetIdAndType(targetId, feedbackType, givenByUserId);
+                } else {
+                    return feedbackRepository.findAllByGivenBy_IdAndFeedbackType(givenByUserId, feedbackType);
+                }
+            } else {
+                if (targetId != null) {
+                    return getFeedbacksByTargetIdAndType(targetId, feedbackType);
+                } else {
+                    return feedbackRepository.findAllByFeedbackType(feedbackType);
+                }
+            }
+
+        } else {
+            if (givenByUserId != null) {
+                return getAllFeedbacksGivenByUser(givenByUserId);
+            } else {
+                return getAllFeedbacks();
+            }
         }
     }
 
@@ -122,8 +163,11 @@ public class FeedbackServiceImpl implements FeedbackService {
     }
 
     @Override
-    public Feedback updateFeedback(Feedback feedback) {
-        Feedback existingFeedback = getFeedbackById(feedback.getId());
+    public Feedback updateFeedback(Feedback feedback, Long id) {
+        Feedback existingFeedback = getFeedbackById(id);
+        if (existingFeedback == null) {
+            throw new ResourceNotFoundException("Feedback with Id " + id + " not found");
+        }
         existingFeedback.update(feedback);
         existingFeedback.setUpdatedBy(userUtils.getCurrentUser());
         return feedbackRepository.save(existingFeedback);
