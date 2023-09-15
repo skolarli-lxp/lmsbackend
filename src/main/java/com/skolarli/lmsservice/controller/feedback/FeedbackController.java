@@ -1,12 +1,11 @@
 package com.skolarli.lmsservice.controller.feedback;
 
 import com.skolarli.lmsservice.models.FeedbackType;
-import com.skolarli.lmsservice.models.db.exam.Exam;
-import com.skolarli.lmsservice.models.db.feedback.Feedback;
 import com.skolarli.lmsservice.models.db.feedback.FeedbackQuestion;
+import com.skolarli.lmsservice.models.db.feedback.FeedbackQuestionnaire;
 import com.skolarli.lmsservice.models.dto.feedback.NewFeedbackQuestionRequest;
-import com.skolarli.lmsservice.models.dto.feedback.NewFeedbackRequest;
-import com.skolarli.lmsservice.services.feedback.FeedbackService;
+import com.skolarli.lmsservice.models.dto.feedback.NewFeedbackQuestionnaireRequest;
+import com.skolarli.lmsservice.services.feedback.FeedbackQuestionnaireService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -24,16 +23,18 @@ import java.util.stream.Collectors;
 public class FeedbackController {
     final Logger logger = LoggerFactory.getLogger(FeedbackController.class);
 
-    FeedbackService feedbackService;
+    FeedbackQuestionnaireService feedbackQuestionnaireService;
 
-    public FeedbackController(FeedbackService feedbackService) {
-        this.feedbackService = feedbackService;
+    public FeedbackController(FeedbackQuestionnaireService feedbackQuestionnaireService) {
+        this.feedbackQuestionnaireService = feedbackQuestionnaireService;
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity<List<Feedback>> getAllFeedbacks(@RequestParam(required = false) Long targetId,
-                                                          @RequestParam(required = false) FeedbackType feedbackType,
-                                                          @RequestParam(required = false) Long givenByUserId) {
+    public ResponseEntity<List<FeedbackQuestionnaire>> getAllFeedbacks(@RequestParam(required = false) Long targetId,
+                                                                       @RequestParam(required = false) FeedbackType
+                                                                           feedbackType,
+                                                                       @RequestParam(required = false) Long
+                                                                           givenByUserId) {
         UUID uuid = UUID.randomUUID();
         MDC.put("requestId", uuid.toString());
         logger.info("Received request for getAllFeedbacks"
@@ -42,22 +43,25 @@ public class FeedbackController {
             + (givenByUserId != null ? " for givenByUserId: " + givenByUserId : ""));
 
 
-        List<Feedback> feedbacks = feedbackService.queryFeedbacks(targetId, feedbackType, givenByUserId);
-        return ResponseEntity.ok(feedbacks);
+        //List<FeedbackQuestionnaire> feedbackQuestionnaires = feedbackQuestionnaireService.queryFeedbacks(targetId,
+        //feedbackType, givenByUserId);
+        //return ResponseEntity.ok(feedbackQuestionnaires);
+        return ResponseEntity.ok().build();
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/{id}")
-    public ResponseEntity<Feedback> getFeedbackById(@PathVariable Long id) {
+    public ResponseEntity<FeedbackQuestionnaire> getFeedbackById(@PathVariable Long id) {
         UUID uuid = UUID.randomUUID();
         MDC.put("requestId", uuid.toString());
         logger.info("Received request for getFeedbackById for id: " + id);
 
-        Feedback feedback = feedbackService.getFeedbackById(id);
-        return ResponseEntity.ok(feedback);
+        //FeedbackQuestionnaire feedbackQuestionnaire = feedbackQuestionnaireService.getFeedbackById(id);
+        //return ResponseEntity.ok(feedbackQuestionnaire);
+        return ResponseEntity.ok().build();
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<Feedback> createFeedback(@RequestBody NewFeedbackRequest request) {
+    public ResponseEntity<FeedbackQuestionnaire> createFeedback(@RequestBody NewFeedbackQuestionnaireRequest request) {
         UUID uuid = UUID.randomUUID();
         MDC.put("requestId", uuid.toString());
         logger.info("Received request for createFeedback for : " + request.getFeedbackType());
@@ -65,24 +69,28 @@ public class FeedbackController {
         if (!request.validateFields()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid request");
         }
-        Feedback newFeedback = feedbackService.toFeedback(request);
-        feedbackService.createFeedback(newFeedback);
-        return ResponseEntity.ok(newFeedback);
+        FeedbackQuestionnaire newFeedbackQuestionnaire = feedbackQuestionnaireService.toFeedbackQuestionnaire(request);
+        feedbackQuestionnaireService.createFeedbackQuestionnaire(newFeedbackQuestionnaire);
+        return ResponseEntity.ok(newFeedbackQuestionnaire);
     }
 
     @RequestMapping(method = RequestMethod.PUT, value = "/{id}")
-    public ResponseEntity<Feedback> updateFeedback(@PathVariable Long id, @RequestBody NewFeedbackRequest request) {
+    public ResponseEntity<FeedbackQuestionnaire> updateFeedback(@PathVariable Long id,
+                                                                @RequestBody NewFeedbackQuestionnaireRequest request) {
         UUID uuid = UUID.randomUUID();
         MDC.put("requestId", uuid.toString());
         logger.info("Received request for updateFeedback for id: " + id);
 
-        Feedback updatedFeedback = feedbackService.toFeedback(request);
-        return ResponseEntity.ok(feedbackService.updateFeedback(updatedFeedback, id));
+        FeedbackQuestionnaire updatedFeedbackQuestionnaire = feedbackQuestionnaireService.toFeedbackQuestionnaire(
+            request);
+        return ResponseEntity.ok(feedbackQuestionnaireService.updateFeedbackQuestionnaire(updatedFeedbackQuestionnaire,
+            id));
     }
 
     @RequestMapping(method = RequestMethod.PUT, value = "/{id}/addQuestion")
-    public ResponseEntity<Feedback> addQuestionToFeedback(@PathVariable Long id,
-                                                          @RequestBody NewFeedbackQuestionRequest request) {
+    public ResponseEntity<FeedbackQuestionnaire> addQuestionToFeedback(@PathVariable Long id,
+                                                                       @RequestBody NewFeedbackQuestionRequest
+                                                                           request) {
         UUID uuid = UUID.randomUUID();
         MDC.put("requestId", uuid.toString());
         logger.info("Received request for addQuestionToFeedback for id: " + id);
@@ -90,13 +98,14 @@ public class FeedbackController {
         if (!request.validate()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid request");
         }
-        FeedbackQuestion question = feedbackService.toFeedbackQuestion(request);
-        return ResponseEntity.ok(feedbackService.addQuestionToFeedback(id, question));
+        FeedbackQuestion question = feedbackQuestionnaireService.toFeedbackQuestion(request);
+        return ResponseEntity.ok(feedbackQuestionnaireService.addQuestionToFeedbackQuestionnaire(id, question));
     }
 
     @RequestMapping(method = RequestMethod.PUT, value = "/{id}/addQuestions")
-    public ResponseEntity<Feedback> addQuestionsToFeedback(@PathVariable Long id,
-                                                           @RequestBody List<NewFeedbackQuestionRequest> request) {
+    public ResponseEntity<FeedbackQuestionnaire> addQuestionsToFeedback(@PathVariable Long id,
+                                                                        @RequestBody List<NewFeedbackQuestionRequest>
+                                                                            request) {
         UUID uuid = UUID.randomUUID();
         MDC.put("requestId", uuid.toString());
         logger.info("Received request for addQuestionsToFeedback for id: " + id);
@@ -106,15 +115,16 @@ public class FeedbackController {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid request");
             }
         }
-        List<FeedbackQuestion> questions = request.stream().map(feedbackService::toFeedbackQuestion).collect(
-            Collectors.toList());
-        return ResponseEntity.ok(feedbackService.addQuestionsToFeedback(id, questions));
+        List<FeedbackQuestion> questions = request.stream().map(feedbackQuestionnaireService::toFeedbackQuestion)
+            .collect(Collectors.toList());
+        return ResponseEntity.ok(feedbackQuestionnaireService.addQuestionsToFeedbackQuestionnaire(id, questions));
     }
 
     @RequestMapping(method = RequestMethod.PUT, value = "/{id}/updateQuestion")
-    public ResponseEntity<Feedback> updateQuestionInFeedback(@PathVariable Long feedbackId,
-                                                             @RequestParam Long questionId,
-                                                             @RequestBody NewFeedbackQuestionRequest request) {
+    public ResponseEntity<FeedbackQuestionnaire> updateQuestionInFeedback(@PathVariable Long feedbackId,
+                                                                          @RequestParam Long questionId,
+                                                                          @RequestBody NewFeedbackQuestionRequest
+                                                                              request) {
         UUID uuid = UUID.randomUUID();
         MDC.put("requestId", uuid.toString());
         logger.info("Received request for updateQuestionInFeedback for id: " + feedbackId);
@@ -122,9 +132,10 @@ public class FeedbackController {
         if (!request.validate()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid request");
         }
-        FeedbackQuestion question = feedbackService.toFeedbackQuestion(request);
+        FeedbackQuestion question = feedbackQuestionnaireService.toFeedbackQuestion(request);
         question.setId(questionId);
-        return ResponseEntity.ok(feedbackService.updateQuestionInFeedback(feedbackId, question));
+        return ResponseEntity.ok(feedbackQuestionnaireService.updateQuestionInFeedbackQuestionnaire(feedbackId,
+            question));
     }
 
     @RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
@@ -133,7 +144,7 @@ public class FeedbackController {
         MDC.put("requestId", uuid.toString());
         logger.info("Received request for deleteFeedback for id: " + id);
 
-        feedbackService.deleteFeedback(id);
+        //feedbackQuestionnaireService.deleteFeedback(id);
         return ResponseEntity.ok().build();
     }
 }

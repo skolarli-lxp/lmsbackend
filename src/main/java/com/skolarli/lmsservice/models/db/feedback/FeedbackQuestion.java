@@ -27,15 +27,11 @@ public class FeedbackQuestion extends Tenantable {
 
     private String questionText;
 
-    private int starRating; // 1 to 5
-
-    private String textRemark;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "feedback_id")
     @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
     @JsonIdentityReference(alwaysAsId = true)
-    private Feedback feedback;
+    private FeedbackQuestionnaire feedbackQuestionnaire;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_time", nullable = false, updatable = false)
@@ -50,12 +46,6 @@ public class FeedbackQuestion extends Tenantable {
     public void update(FeedbackQuestion feedbackQuestion) {
         if (feedbackQuestion.getQuestionText() != null) {
             this.setQuestionText(feedbackQuestion.getQuestionText());
-        }
-        if (feedbackQuestion.getStarRating() != 0) {
-            this.setStarRating(feedbackQuestion.getStarRating());
-        }
-        if (feedbackQuestion.getTextRemark() != null) {
-            this.setTextRemark(feedbackQuestion.getTextRemark());
         }
     }
 }

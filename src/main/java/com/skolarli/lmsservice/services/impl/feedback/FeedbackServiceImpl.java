@@ -1,159 +1,81 @@
 package com.skolarli.lmsservice.services.impl.feedback;
 
 import com.skolarli.lmsservice.exception.ResourceNotFoundException;
-import com.skolarli.lmsservice.models.FeedbackType;
 import com.skolarli.lmsservice.models.db.feedback.Feedback;
 import com.skolarli.lmsservice.models.db.feedback.FeedbackQuestion;
-import com.skolarli.lmsservice.models.dto.feedback.NewFeedbackQuestionRequest;
 import com.skolarli.lmsservice.models.dto.feedback.NewFeedbackRequest;
 import com.skolarli.lmsservice.repository.feedback.FeedbackRepository;
 import com.skolarli.lmsservice.services.core.LmsUserService;
-import com.skolarli.lmsservice.services.course.BatchScheduleService;
-import com.skolarli.lmsservice.services.course.BatchService;
+import com.skolarli.lmsservice.services.feedback.FeedbackQuestionnaireService;
 import com.skolarli.lmsservice.services.feedback.FeedbackService;
 import com.skolarli.lmsservice.utils.UserUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class FeedbackServiceImpl implements FeedbackService {
 
     FeedbackRepository feedbackRepository;
 
-    BatchService batchService;
+    FeedbackQuestionnaireService feedbackQuestionnaireService;
 
-    BatchScheduleService batchScheduleService;
 
     LmsUserService lmsUserService;
     UserUtils userUtils;
 
     public FeedbackServiceImpl(FeedbackRepository feedbackRepository, UserUtils userUtils,
-                               BatchService batchService, BatchScheduleService batchScheduleService,
+                               FeedbackQuestionnaireService feedbackQuestionnaireService,
                                LmsUserService lmsUserService) {
         this.feedbackRepository = feedbackRepository;
         this.userUtils = userUtils;
-        this.batchService = batchService;
-        this.batchScheduleService = batchScheduleService;
         this.lmsUserService = lmsUserService;
+        this.feedbackQuestionnaireService = feedbackQuestionnaireService;
     }
+
 
     @Override
     public Feedback toFeedback(NewFeedbackRequest feedbackRequest) {
         Feedback feedback = new Feedback();
-        feedback.setFeedbackType(feedbackRequest.getFeedbackType());
-        if (feedbackRequest.getBatchId() == null) {
-            feedback.setBatch(batchService.getBatch(feedbackRequest.getBatchId()));
-        }
-        if (feedbackRequest.getBatchScheduleId() == null) {
-            feedback.setBatchSchedule(batchScheduleService.getBatchSchedule(feedbackRequest.getBatchScheduleId()));
-        }
-        if (feedbackRequest.getStudentId() == null) {
-            feedback.setStudent(lmsUserService.getLmsUserById(feedbackRequest.getStudentId()));
-        }
-        if (feedbackRequest.getTrainerId() == null) {
-            feedback.setTrainer(lmsUserService.getLmsUserById(feedbackRequest.getTrainerId()));
-        }
-        feedback.setGivenBy(lmsUserService.getLmsUserById(feedbackRequest.getGivenByUserId()));
-        feedback.setQuestions(
-            feedbackRequest.getQuestions().stream().map(question -> toFeedbackQuestion(question, feedback))
-                .collect(Collectors.toList())
-        );
+        FeedbackQuestion feedbackQuestion = feedbackQuestionnaireService.getFeedbackQuestionById(
+            feedbackRequest.getFeedbackQuestionId());
+        feedback.setFeedbackQuestion(feedbackQuestion);
+        feedback.setFeedbackQuestionnaire(feedbackQuestion.getFeedbackQuestionnaire());
+        feedback.setStarRating(feedbackRequest.getStarRating());
+        feedback.setTextRemark(feedbackRequest.getTextRemarks());
         return feedback;
     }
 
     @Override
-    public FeedbackQuestion toFeedbackQuestion(NewFeedbackQuestionRequest question, Feedback feedback) {
-        FeedbackQuestion feedbackQuestion = toFeedbackQuestion(question);
-        feedbackQuestion.setFeedback(feedback);
-        return feedbackQuestion;
-    }
-
-    @Override
-    public FeedbackQuestion toFeedbackQuestion(NewFeedbackQuestionRequest question) {
-        FeedbackQuestion feedbackQuestion = new FeedbackQuestion();
-        feedbackQuestion.setQuestionText(question.getQuestionText());
-        feedbackQuestion.setStarRating(question.getStarRating());
-        feedbackQuestion.setTextRemark(question.getTextRemark());
-        return feedbackQuestion;
-    }
-
-    @Override
     public Feedback getFeedbackById(Long id) {
-        List<Feedback> feedbacks =
-            feedbackRepository.findAllById(new ArrayList<>(List.of(id)));
+        List<Feedback> feedbacks = feedbackRepository.findAllById(new ArrayList<>(List.of(id)));
         if (feedbacks.size() == 0) {
             throw new ResourceNotFoundException("Feedback with Id " + id + " not found");
         }
         return feedbacks.get(0);
     }
 
+
     @Override
     public List<Feedback> getAllFeedbacks() {
         return feedbackRepository.findAll();
     }
 
-
-    private List<Feedback> getFeedbacksByTargetIdAndType(Long targetId, FeedbackType type) {
-        if (type == FeedbackType.BATCH) {
-            return feedbackRepository.findAllByBatch_IdAndFeedbackType(targetId, type);
-        } else if (type == FeedbackType.BATCH_SESSION) {
-            return feedbackRepository.findAllByBatchSchedule_IdAndFeedbackType(targetId, type);
-        } else if (type == FeedbackType.STUDENT) {
-            return feedbackRepository.findAllByStudent_IdAndFeedbackType(targetId, type);
-        } else if (type == FeedbackType.TRAINER) {
-            return feedbackRepository.findAllByTrainer_IdAndFeedbackType(targetId, type);
-        } else {
-            throw new ResourceNotFoundException("Type " + type + " not supported");
-        }
-    }
-
-    private List<Feedback> getFeedbacksByUserIdTargetIdAndType(Long targetId, FeedbackType type,
-                                                               Long userId) {
-        if (type == FeedbackType.BATCH) {
-            return feedbackRepository.findAllByGivenBy_IdAndFeedbackTypeAndBatch_Id(userId, type, targetId);
-        } else if (type == FeedbackType.BATCH_SESSION) {
-            return feedbackRepository.findAllByGivenBy_IdAndFeedbackTypeAndBatchSchedule_Id(userId, type, targetId);
-        } else if (type == FeedbackType.STUDENT) {
-            return feedbackRepository.findAllByGivenBy_IdAndFeedbackTypeAndStudent_Id(userId, type, targetId);
-        } else if (type == FeedbackType.TRAINER) {
-            return feedbackRepository.findAllByGivenBy_IdAndFeedbackTypeAndTrainer_Id(userId, type, targetId);
-        } else {
-            throw new ResourceNotFoundException("Type " + type + " not supported");
-        }
-    }
-
-    @Override
-    public List<Feedback> queryFeedbacks(Long targetId, FeedbackType feedbackType, Long givenByUserId) {
-        if (feedbackType != null) {
-            if (givenByUserId != null) {
-                if (targetId != null) {
-                    return getFeedbacksByUserIdTargetIdAndType(targetId, feedbackType, givenByUserId);
-                } else {
-                    return feedbackRepository.findAllByGivenBy_IdAndFeedbackType(givenByUserId, feedbackType);
-                }
-            } else {
-                if (targetId != null) {
-                    return getFeedbacksByTargetIdAndType(targetId, feedbackType);
-                } else {
-                    return feedbackRepository.findAllByFeedbackType(feedbackType);
-                }
-            }
-
-        } else {
-            if (givenByUserId != null) {
-                return getAllFeedbacksGivenByUser(givenByUserId);
-            } else {
-                return getAllFeedbacks();
-            }
-        }
-    }
-
     @Override
     public List<Feedback> getAllFeedbacksGivenByUser(Long userId) {
-        return feedbackRepository.findAllByGivenBy_Id(userId);
+        return feedbackRepository.findAllByCreatedBy_Id(userId);
+    }
+
+    @Override
+    public List<Feedback> getAllFeedbackForFeedbackQuestionnaire(Long feedbackQuestionnaireId) {
+        return feedbackRepository.findAllByFeedbackQuestionnaire_Id(feedbackQuestionnaireId);
+    }
+
+    @Override
+    public List<Feedback> getAllFeedbacksGivenByUserForFeedbackQuestionnaire(Long userId,
+                                                                             Long feedbackQuestionnaireId) {
+        return feedbackRepository.findAllByFeedbackQuestionnaire_IdAndCreatedBy_Id(feedbackQuestionnaireId, userId);
     }
 
     @Override
@@ -165,66 +87,7 @@ public class FeedbackServiceImpl implements FeedbackService {
     @Override
     public Feedback updateFeedback(Feedback feedback, Long id) {
         Feedback existingFeedback = getFeedbackById(id);
-        if (existingFeedback == null) {
-            throw new ResourceNotFoundException("Feedback with Id " + id + " not found");
-        }
         existingFeedback.update(feedback);
-        existingFeedback.setUpdatedBy(userUtils.getCurrentUser());
-        return feedbackRepository.save(existingFeedback);
-    }
-
-    @Override
-    public Feedback addQuestionToFeedback(Long feedbackId, FeedbackQuestion question) {
-        Feedback existingFeedback = getFeedbackById(feedbackId);
-        if (existingFeedback == null) {
-            throw new ResourceNotFoundException("Feedback with Id " + feedbackId + " not found");
-        }
-        question.setFeedback(existingFeedback);
-        existingFeedback.getQuestions().add(question);
-        existingFeedback.setUpdatedBy(userUtils.getCurrentUser());
-        return feedbackRepository.save(existingFeedback);
-    }
-
-    @Override
-    public Feedback addQuestionsToFeedback(Long feedbackId, List<FeedbackQuestion> questions) {
-        Feedback existingFeedback = getFeedbackById(feedbackId);
-        if (existingFeedback == null) {
-            throw new ResourceNotFoundException("Feedback with Id " + feedbackId + " not found");
-        }
-        questions.forEach(question -> question.setFeedback(existingFeedback));
-        existingFeedback.getQuestions().addAll(questions);
-        existingFeedback.setUpdatedBy(userUtils.getCurrentUser());
-        return feedbackRepository.save(existingFeedback);
-    }
-
-    @Override
-    public Feedback updateQuestionInFeedback(Long feedbackId, FeedbackQuestion question) {
-        Feedback existingFeedback = getFeedbackById(feedbackId);
-        if (existingFeedback == null) {
-            throw new ResourceNotFoundException("Feedback with Id " + feedbackId + " not found");
-        }
-        FeedbackQuestion existingQuestion = existingFeedback.getQuestions().stream()
-            .filter(q -> q.getId() == question.getId()).findFirst().orElse(null);
-        if (existingQuestion == null) {
-            throw new ResourceNotFoundException("Question with Id " + question.getId() + " not found");
-        }
-        existingQuestion.update(question);
-        existingFeedback.setUpdatedBy(userUtils.getCurrentUser());
-        return feedbackRepository.save(existingFeedback);
-    }
-
-    @Override
-    public Feedback removeQuestionFromFeedback(Long feedbackId, Long questionId) {
-        Feedback existingFeedback = getFeedbackById(feedbackId);
-        if (existingFeedback == null) {
-            throw new ResourceNotFoundException("Feedback with Id " + feedbackId + " not found");
-        }
-        FeedbackQuestion existingQuestion = existingFeedback.getQuestions().stream()
-            .filter(q -> q.getId() == questionId).findFirst().orElse(null);
-        if (existingQuestion == null) {
-            throw new ResourceNotFoundException("Question with Id " + questionId + " not found");
-        }
-        existingFeedback.getQuestions().remove(existingQuestion);
         existingFeedback.setUpdatedBy(userUtils.getCurrentUser());
         return feedbackRepository.save(existingFeedback);
     }
@@ -232,9 +95,6 @@ public class FeedbackServiceImpl implements FeedbackService {
     @Override
     public void deleteFeedback(Long id) {
         Feedback existingFeedback = getFeedbackById(id);
-        if (existingFeedback == null) {
-            throw new ResourceNotFoundException("Feedback with Id " + id + " not found");
-        }
         feedbackRepository.delete(existingFeedback);
     }
 }
