@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.skolarli.lmsservice.models.db.core.LmsUser;
 import com.skolarli.lmsservice.models.db.core.Tenantable;
+import com.skolarli.lmsservice.models.dto.feedback.FeedbackAnswerResponse;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -71,5 +72,14 @@ public class Feedback extends Tenantable {
         if (feedback.getTextRemark() != null) {
             this.setTextRemark(feedback.getTextRemark());
         }
+    }
+
+    public FeedbackAnswerResponse toFeedbackAnswerResponse() {
+        FeedbackAnswerResponse feedbackAnswerResponse = new FeedbackAnswerResponse();
+        feedbackAnswerResponse.setFeedbackQuestionId(feedbackQuestion.getId());
+        feedbackAnswerResponse.setFeedbackAnswerId(id);
+        feedbackAnswerResponse.setStarRating(starRating);
+        feedbackAnswerResponse.setTextRemarks(textRemark);
+        return feedbackAnswerResponse;
     }
 }
