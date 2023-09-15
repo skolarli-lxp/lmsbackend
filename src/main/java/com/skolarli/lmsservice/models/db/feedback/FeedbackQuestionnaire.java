@@ -60,8 +60,8 @@ public class FeedbackQuestionnaire extends Tenantable {
     @JsonIdentityReference(alwaysAsId = true)
     LmsUser student;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JsonIgnoreProperties("feedback")
+    @OneToMany(mappedBy = "feedbackQuestionnaire", cascade = CascadeType.ALL)
+    @JsonIgnoreProperties("feedbackQuestionnaire")
     private List<FeedbackQuestion> questions;
 
     @ManyToOne(fetch = FetchType.LAZY)

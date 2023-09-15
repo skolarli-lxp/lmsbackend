@@ -38,4 +38,7 @@ public interface FeedbackService {
     void deleteFeedback(Long id);
 
 
+    void deleteFeedbackForQuestionnaire(Long questionnaireId);
+
+    void deletFeedbackForQuestionnaireAndUser(Long questionnaireId, Long userId);
 }

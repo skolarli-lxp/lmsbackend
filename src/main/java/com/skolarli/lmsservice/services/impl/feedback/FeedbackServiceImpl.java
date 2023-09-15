@@ -40,10 +40,12 @@ public class FeedbackServiceImpl implements FeedbackService {
     @Override
     public Feedback toFeedback(NewFeedbackRequest feedbackRequest) {
         Feedback feedback = new Feedback();
-        FeedbackQuestion feedbackQuestion = feedbackQuestionnaireService.getFeedbackQuestionById(
-            feedbackRequest.getFeedbackQuestionId());
-        feedback.setFeedbackQuestion(feedbackQuestion);
-        feedback.setFeedbackQuestionnaire(feedbackQuestion.getFeedbackQuestionnaire());
+        if (feedbackRequest.getFeedbackQuestionId() != null) {
+            FeedbackQuestion feedbackQuestion = feedbackQuestionnaireService.getFeedbackQuestionById(
+                feedbackRequest.getFeedbackQuestionId());
+            feedback.setFeedbackQuestion(feedbackQuestion);
+            feedback.setFeedbackQuestionnaire(feedbackQuestion.getFeedbackQuestionnaire());
+        }
         feedback.setStarRating(feedbackRequest.getStarRating());
         feedback.setTextRemark(feedbackRequest.getTextRemarks());
         return feedback;
@@ -97,6 +99,9 @@ public class FeedbackServiceImpl implements FeedbackService {
 
     @Override
     public List<Feedback> createFeedbacks(List<Feedback> feedbacks) {
+        for (Feedback feedback : feedbacks) {
+            feedback.setCreatedBy(userUtils.getCurrentUser());
+        }
         return feedbackRepository.saveAll(feedbacks);
     }
 
@@ -118,12 +123,16 @@ public class FeedbackServiceImpl implements FeedbackService {
             Long questionnaireId = feedback.getFeedbackQuestionnaire().getId();
             Long userId = feedback.getCreatedBy().getId();
 
+            Boolean found = false;
             for (GetFeedbacksResponse feedbackResponse : feedbackResponses) {
                 if (feedbackResponse.getFeedbackQuestionnaireId().equals(questionnaireId)
                     && feedbackResponse.getUserId().equals(userId)) {
                     feedbackResponse.getFeedbackAnswers().add(feedback.toFeedbackAnswerResponse());
+                    found = true;
                     break;
                 }
+            }
+            if (!found) {
                 GetFeedbacksResponse newFeedbackResponse = new GetFeedbacksResponse();
                 newFeedbackResponse.setFeedbackQuestionnaireId(questionnaireId);
                 newFeedbackResponse.setUserId(userId);
@@ -138,5 +147,17 @@ public class FeedbackServiceImpl implements FeedbackService {
     public void deleteFeedback(Long id) {
         Feedback existingFeedback = getFeedbackById(id);
         feedbackRepository.delete(existingFeedback);
+    }
+
+    @Override
+    public void deleteFeedbackForQuestionnaire(Long questionnaireId) {
+        List<Feedback> feedbacks = getAllFeedbackForFeedbackQuestionnaire(questionnaireId);
+        feedbackRepository.deleteAll(feedbacks);
+    }
+
+    @Override
+    public void deletFeedbackForQuestionnaireAndUser(Long questionnaireId, Long userId) {
+        List<Feedback> feedbacks = getAllFeedbacksGivenByUserForFeedbackQuestionnaire(userId, questionnaireId);
+        feedbackRepository.deleteAll(feedbacks);
     }
 }

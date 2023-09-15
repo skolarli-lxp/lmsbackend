@@ -106,9 +106,6 @@ public class FeedbackController {
         MDC.put("requestId", uuid.toString());
         logger.info("Received request for updateFeedback for id: " + id);
 
-        if (!request.validate()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid request");
-        }
         Feedback newFeedback = feedbackService.toFeedback(request);
         Feedback updated = feedbackService.updateFeedback(newFeedback, id);
         return ResponseEntity.ok(updated);
@@ -121,6 +118,29 @@ public class FeedbackController {
         logger.info("Received request for deleteFeedback for id: " + id);
 
         feedbackService.deleteFeedback(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @RequestMapping(method = RequestMethod.DELETE, value = "/forquestionnaire/{id}")
+    public ResponseEntity<Void> deleteFeedbackForQuestionnaire(@PathVariable Long id) {
+        UUID uuid = UUID.randomUUID();
+        MDC.put("requestId", uuid.toString());
+        logger.info("Received request for deleteFeedbackForQuestionnaire for id: " + id);
+
+        feedbackService.deleteFeedbackForQuestionnaire(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @RequestMapping(method = RequestMethod.DELETE, value = "/forquestionnaireforuser")
+    public ResponseEntity<Void> deleteFeedbackForQuestionnaireForUser(@RequestParam Long questionnaireId,
+                                                                       @RequestParam Long userId) {
+        UUID uuid = UUID.randomUUID();
+        MDC.put("requestId", uuid.toString());
+        logger.info("Received request for deleteFeedbackForQuestionnaireForUser for id: "
+            + questionnaireId + " and userId: "
+            + userId);
+
+        feedbackService.deletFeedbackForQuestionnaireAndUser(questionnaireId, userId);
         return ResponseEntity.ok().build();
     }
 }

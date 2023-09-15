@@ -148,6 +148,16 @@ public class FeedbackQuestionnaireController {
             question));
     }
 
+    @RequestMapping(method = RequestMethod.PUT, value = "/{id}/removeQuestion")
+    public ResponseEntity<FeedbackQuestionnaire> removeQuestionFromFeedback(@PathVariable Long id,
+                                                                             @RequestParam Long questionId) {
+        UUID uuid = UUID.randomUUID();
+        MDC.put("requestId", uuid.toString());
+        logger.info("Received request for removeQuestionFromFeedback for id: " + id);
+
+        return ResponseEntity.ok(feedbackQuestionnaireService.removeQuestionFromFeedbackQuestionnaire(id, questionId));
+    }
+
     @RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
     public ResponseEntity<Void> deleteFeedback(@PathVariable Long id) {
         UUID uuid = UUID.randomUUID();

@@ -28,7 +28,7 @@ public class FeedbackQuestion extends Tenantable {
     private String questionText;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "feedback_id")
+    @JoinColumn(name = "feedback_questionnaire_id")
     @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
     @JsonIdentityReference(alwaysAsId = true)
     private FeedbackQuestionnaire feedbackQuestionnaire;
