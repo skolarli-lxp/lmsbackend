@@ -21,6 +21,9 @@ public class NewDomainRequest {
     private String tagLine;
 
     private String corporateEmail;
+
+    private String employeeId;
+
     private String logoUrl;
     @NotNull
     private String countryCode;

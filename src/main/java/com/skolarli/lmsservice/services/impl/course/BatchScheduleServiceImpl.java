@@ -40,34 +40,41 @@ public class BatchScheduleServiceImpl implements BatchScheduleService {
     private Boolean checkPermissions(BatchSchedule existingBatchSchedule) {
         LmsUser currentUser = userUtils.getCurrentUser();
         return currentUser.getIsAdmin()
-                || currentUser == existingBatchSchedule.getBatch().getCourse().getCourseOwner();
+            || currentUser == existingBatchSchedule.getBatch().getCourse().getCourseOwner();
     }
 
     private Boolean checkPermissions(Batch existingBatch) {
         LmsUser currentUser = userUtils.getCurrentUser();
         return currentUser.getIsAdmin()
-                || currentUser == existingBatch.getCourse().getCourseOwner();
+            || currentUser == existingBatch.getCourse().getCourseOwner();
     }
 
     @Override
     public BatchSchedule toBatchSchedule(
-            NewBatchSchedulesForBatchRequest newBatchSchedulesForBatchRequest) {
+        NewBatchSchedulesForBatchRequest newBatchSchedulesForBatchRequest) {
         if (newBatchSchedulesForBatchRequest.getEndDateTime().isBefore(
-                newBatchSchedulesForBatchRequest.getStartDateTime())) {
+            newBatchSchedulesForBatchRequest.getStartDateTime())) {
             throw new OperationNotSupportedException(
-                    "End date time cannot be before start date time");
+                "End date time cannot be before start date time");
         }
         BatchSchedule batchSchedule = new BatchSchedule();
         if (newBatchSchedulesForBatchRequest.getStartDateTime() != null) {
             batchSchedule.setStartDateTime(newBatchSchedulesForBatchRequest.getStartDateTime()
-                    .toInstant());
+                .toInstant());
         }
         if (newBatchSchedulesForBatchRequest.getEndDateTime() != null) {
             batchSchedule.setEndDateTime(newBatchSchedulesForBatchRequest.getEndDateTime()
-                    .toInstant());
+                .toInstant());
         }
         if (newBatchSchedulesForBatchRequest.getMeetingLink() != null) {
             batchSchedule.setMeetingLink(newBatchSchedulesForBatchRequest.getMeetingLink());
+        }
+
+        if (newBatchSchedulesForBatchRequest.getResourceFileUrl() != null) {
+            batchSchedule.setResourceFileUrl(newBatchSchedulesForBatchRequest.getResourceFileUrl());
+        }
+        if (newBatchSchedulesForBatchRequest.getTrainerInstructionsText() != null) {
+            batchSchedule.setTrainerInstructionsText(newBatchSchedulesForBatchRequest.getTrainerInstructionsText());
         }
         if (newBatchSchedulesForBatchRequest.getTitle() != null) {
             batchSchedule.setTitle(newBatchSchedulesForBatchRequest.getTitle());
@@ -81,16 +88,16 @@ public class BatchScheduleServiceImpl implements BatchScheduleService {
     @Override
     public BatchSchedule toBatchSchedule(NewBatchScheduleRequest newBatchScheduleRequest) {
         if (newBatchScheduleRequest.getEndDateTime().isBefore(newBatchScheduleRequest
-                .getStartDateTime())) {
+            .getStartDateTime())) {
             throw new OperationNotSupportedException(
-                    "End date time cannot be before start date time");
+                "End date time cannot be before start date time");
         }
 
         Batch batch = batchService.getBatch(newBatchScheduleRequest.getBatchId());
         // TODO: throw BAD REQUEST from controller in this case
         if (batch == null) {
             throw new ResourceNotFoundException("Batch", "Id",
-                    newBatchScheduleRequest.getBatchId());
+                newBatchScheduleRequest.getBatchId());
         }
         BatchSchedule batchSchedule = new BatchSchedule();
         batchSchedule.setBatch(batch);
@@ -101,14 +108,16 @@ public class BatchScheduleServiceImpl implements BatchScheduleService {
             batchSchedule.setDescription(newBatchScheduleRequest.getDescription());
         }
         batchSchedule.setMeetingLink(newBatchScheduleRequest.getMeetingLink());
+        batchSchedule.setResourceFileUrl(newBatchScheduleRequest.getResourceFileUrl());
+        batchSchedule.setTrainerInstructionsText(newBatchScheduleRequest.getTrainerInstructionsText());
 
         if (newBatchScheduleRequest.getStartDateTime() != null) {
             batchSchedule.setStartDateTime(newBatchScheduleRequest.getStartDateTime()
-                    .toInstant());
+                .toInstant());
         }
         if (newBatchScheduleRequest.getEndDateTime() != null) {
             batchSchedule.setEndDateTime(newBatchScheduleRequest.getEndDateTime()
-                    .toInstant());
+                .toInstant());
         }
         batchSchedule.setBatchScheduleIsDeleted(false);
         return batchSchedule;
@@ -116,15 +125,15 @@ public class BatchScheduleServiceImpl implements BatchScheduleService {
 
     @Override
     public List<BatchSchedule> toBatchScheduleList(
-            List<NewBatchSchedulesForBatchRequest> newBatchSchedulesForBatchRequests) {
+        List<NewBatchSchedulesForBatchRequest> newBatchSchedulesForBatchRequests) {
         return newBatchSchedulesForBatchRequests.stream().map(
-                this::toBatchSchedule).collect(Collectors.toList());
+            this::toBatchSchedule).collect(Collectors.toList());
     }
 
     @Override
     public BatchSchedule getBatchSchedule(long id) {
         List<BatchSchedule> existingBatchSchedule = batchScheduleRepository.findAllById(
-                new ArrayList<>(List.of(id)));
+            new ArrayList<>(List.of(id)));
         if (existingBatchSchedule.size() == 0) {
             throw new ResourceNotFoundException("BatchSchedule", "Id", id);
         }
@@ -146,19 +155,19 @@ public class BatchScheduleServiceImpl implements BatchScheduleService {
         if (queryStartDate != null && queryEndDate != null) {
             if (queryStartDate.isAfter(queryEndDate)) {
                 throw new OperationNotSupportedException(
-                        "Query start date cannot be after query end date");
+                    "Query start date cannot be after query end date");
             }
             return batchScheduleRepository.findAllByStartDateTimeBetweenAndBatch_Id(
-                    queryStartDate, queryEndDate, batchId);
+                queryStartDate, queryEndDate, batchId);
         } else if (queryStartDate != null) {
             return batchScheduleRepository.findAllByStartDateTimeAfterAndBatch_Id(
-                    queryStartDate, batchId);
+                queryStartDate, batchId);
         } else if (queryEndDate != null) {
             return batchScheduleRepository.findAllByStartDateTimeBeforeAndBatch_Id(
-                    queryEndDate, batchId);
+                queryEndDate, batchId);
         } else {
             throw new OperationNotSupportedException(
-                    "Query start date and query end date cannot be null");
+                "Query start date and query end date cannot be null");
         }
     }
 
@@ -167,19 +176,19 @@ public class BatchScheduleServiceImpl implements BatchScheduleService {
         if (queryStartDate != null && queryEndDate != null) {
             if (queryStartDate.isAfter(queryEndDate)) {
                 throw new OperationNotSupportedException(
-                        "Query start date cannot be after query end date");
+                    "Query start date cannot be after query end date");
             }
             return batchScheduleRepository.findAllByStartDateTimeBetween(
-                    queryStartDate, queryEndDate);
+                queryStartDate, queryEndDate);
         } else if (queryStartDate != null) {
             return batchScheduleRepository.findAllByStartDateTimeAfter(
-                    queryStartDate);
+                queryStartDate);
         } else if (queryEndDate != null) {
             return batchScheduleRepository.findAllByStartDateTimeBefore(
-                    queryEndDate);
+                queryEndDate);
         } else {
             throw new OperationNotSupportedException(
-                    "Query start date and query end date cannot be null");
+                "Query start date and query end date cannot be null");
         }
     }
 
@@ -196,7 +205,7 @@ public class BatchScheduleServiceImpl implements BatchScheduleService {
         } else {
             if (queryStartDate != null || queryEndDate != null) {
                 return getAllBatchSchedulesForTimePeriodAndBatch(queryStartDate, queryEndDate,
-                        batchId);
+                    batchId);
             } else {
                 return batchScheduleRepository.findByBatch_Id(batchId);
             }
@@ -228,12 +237,12 @@ public class BatchScheduleServiceImpl implements BatchScheduleService {
     @Override
     public BatchSchedule updateBatchSchedule(BatchSchedule batchSchedule, long id) {
         BatchSchedule existingBatchSchedule = batchScheduleRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("BatchSchedule", "Id", id));
+            .orElseThrow(() -> new ResourceNotFoundException("BatchSchedule", "Id", id));
         LmsUser currentUser = userUtils.getCurrentUser();
         if (!currentUser.getIsAdmin() && currentUser
-                != existingBatchSchedule.getBatch().getCourse().getCourseOwner()) {
+            != existingBatchSchedule.getBatch().getCourse().getCourseOwner()) {
             throw new OperationNotSupportedException(
-                    "Operation not supported: Permission Denied");
+                "Operation not supported: Permission Denied");
         }
         if (batchSchedule.getBatchScheduleIsDeleted() != null) {
             logger.error("Cannot change deleted status. Use Delete API");
@@ -248,16 +257,16 @@ public class BatchScheduleServiceImpl implements BatchScheduleService {
             throw new OperationNotSupportedException("Operation not supported: Permission Denied");
         }
         if (existingBatchSchedule.getAttendanceList() != null && !existingBatchSchedule
-                .getAttendanceList().isEmpty()) {
+            .getAttendanceList().isEmpty()) {
             throw new OperationNotSupportedException(
-                    "Cannot delete batch schedule with attendance");
+                "Cannot delete batch schedule with attendance");
         }
     }
 
     @Override
     public void softDeleteBatchSchedule(long id) {
         BatchSchedule existingBatchSchedule = batchScheduleRepository.findById(id).orElseThrow(
-                () -> new ResourceNotFoundException("BatchSchedule", "Id", id));
+            () -> new ResourceNotFoundException("BatchSchedule", "Id", id));
         try {
             canDelete(existingBatchSchedule);
         } catch (OperationNotSupportedException e) {
@@ -271,7 +280,7 @@ public class BatchScheduleServiceImpl implements BatchScheduleService {
     @Override
     public void hardDeleteBatchSchedule(long id) {
         BatchSchedule existingBatchSchedule = batchScheduleRepository.findById(id).orElseThrow(
-                () -> new ResourceNotFoundException("BatchSchedule", "Id", id));
+            () -> new ResourceNotFoundException("BatchSchedule", "Id", id));
         try {
             canDelete(existingBatchSchedule);
         } catch (OperationNotSupportedException e) {

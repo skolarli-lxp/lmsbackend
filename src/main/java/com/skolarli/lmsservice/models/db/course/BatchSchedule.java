@@ -45,6 +45,13 @@ public class BatchSchedule extends Tenantable {
     @Column(columnDefinition = "VARCHAR(1024)")
     private String meetingLink;
 
+    @Column(columnDefinition = "VARCHAR(1024)")
+    private String resourceFileUrl;
+
+    @Column(columnDefinition = "TEXT")
+    private String trainerInstructionsText;
+
+
     private Instant startDateTime;
     private Instant endDateTime;
 
@@ -63,6 +70,12 @@ public class BatchSchedule extends Tenantable {
         }
         if (newBatchSchedule.getMeetingLink() != null) {
             this.meetingLink = newBatchSchedule.getMeetingLink();
+        }
+        if (newBatchSchedule.getResourceFileUrl() != null) {
+            this.resourceFileUrl = newBatchSchedule.getResourceFileUrl();
+        }
+        if (newBatchSchedule.getTrainerInstructionsText() != null) {
+            this.trainerInstructionsText = newBatchSchedule.getTrainerInstructionsText();
         }
         if (newBatchSchedule.getTitle() != null) {
             this.title = newBatchSchedule.getTitle();

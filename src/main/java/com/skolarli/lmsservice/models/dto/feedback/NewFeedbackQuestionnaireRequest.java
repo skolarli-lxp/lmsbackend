@@ -1,5 +1,6 @@
 package com.skolarli.lmsservice.models.dto.feedback;
 
+import com.skolarli.lmsservice.models.FeedbackFrom;
 import com.skolarli.lmsservice.models.FeedbackType;
 import lombok.*;
 
@@ -14,6 +15,10 @@ public class NewFeedbackQuestionnaireRequest {
 
     private FeedbackType feedbackType;
 
+    private FeedbackFrom feedbackFrom;
+
+    private Long courseId;
+
     private Long batchId;
 
     private Long batchScheduleId;
@@ -26,25 +31,6 @@ public class NewFeedbackQuestionnaireRequest {
 
     public Boolean validateFields() {
         if (feedbackType == null) {
-            return false;
-        }
-        if (feedbackType == FeedbackType.STUDENT) {
-            if (studentId == null) {
-                return false;
-            }
-        } else if (feedbackType == FeedbackType.TRAINER) {
-            if (trainerId == null) {
-                return false;
-            }
-        } else if (feedbackType == FeedbackType.BATCH) {
-            if (batchId == null) {
-                return false;
-            }
-        } else if (feedbackType == FeedbackType.BATCH_SESSION) {
-            if (batchScheduleId == null) {
-                return false;
-            }
-        } else {
             return false;
         }
         if (questions != null && !questions.isEmpty()) {

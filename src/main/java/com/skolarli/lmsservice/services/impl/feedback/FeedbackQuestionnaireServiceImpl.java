@@ -11,6 +11,7 @@ import com.skolarli.lmsservice.repository.feedback.FeedbackQuestionnaireReposito
 import com.skolarli.lmsservice.services.core.LmsUserService;
 import com.skolarli.lmsservice.services.course.BatchScheduleService;
 import com.skolarli.lmsservice.services.course.BatchService;
+import com.skolarli.lmsservice.services.course.CourseService;
 import com.skolarli.lmsservice.services.feedback.FeedbackQuestionnaireService;
 import com.skolarli.lmsservice.utils.UserUtils;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,8 @@ public class FeedbackQuestionnaireServiceImpl implements FeedbackQuestionnaireSe
 
     FeedbackQuestionRepository  feedbackQuestionRepository;
 
+    CourseService courseService;
+
     BatchService batchService;
 
     BatchScheduleService batchScheduleService;
@@ -34,6 +37,7 @@ public class FeedbackQuestionnaireServiceImpl implements FeedbackQuestionnaireSe
     UserUtils userUtils;
 
     public FeedbackQuestionnaireServiceImpl(FeedbackQuestionnaireRepository feedbackQuestionnaireRepository,
+                                            CourseService courseService,
                                             UserUtils userUtils, BatchService batchService,
                                             BatchScheduleService batchScheduleService,
                                             FeedbackQuestionRepository feedbackQuestionRepository,
@@ -41,6 +45,7 @@ public class FeedbackQuestionnaireServiceImpl implements FeedbackQuestionnaireSe
         this.feedbackQuestionnaireRepository = feedbackQuestionnaireRepository;
         this.feedbackQuestionRepository = feedbackQuestionRepository;
         this.userUtils = userUtils;
+        this.courseService = courseService;
         this.batchService = batchService;
         this.batchScheduleService = batchScheduleService;
         this.lmsUserService = lmsUserService;
@@ -50,6 +55,10 @@ public class FeedbackQuestionnaireServiceImpl implements FeedbackQuestionnaireSe
     public FeedbackQuestionnaire toFeedbackQuestionnaire(NewFeedbackQuestionnaireRequest feedbackQuestionnaireRequest) {
         FeedbackQuestionnaire feedbackQuestionnaire = new FeedbackQuestionnaire();
         feedbackQuestionnaire.setFeedbackType(feedbackQuestionnaireRequest.getFeedbackType());
+        feedbackQuestionnaire.setFeedbackFrom(feedbackQuestionnaireRequest.getFeedbackFrom());
+        if (feedbackQuestionnaireRequest.getCourseId() != null) {
+            feedbackQuestionnaire.setCourse(courseService.getCourseById(feedbackQuestionnaireRequest.getCourseId()));
+        }
         if (feedbackQuestionnaireRequest.getBatchId() != null) {
             feedbackQuestionnaire.setBatch(batchService.getBatch(feedbackQuestionnaireRequest.getBatchId()));
         }

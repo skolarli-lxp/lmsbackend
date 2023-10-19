@@ -11,10 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.UUID;
@@ -26,14 +23,22 @@ Controller for changing the data related to a domain for a logged in tenant
 @RequestMapping(value = "/domain")
 public class DomainController {
     final Logger logger = LoggerFactory.getLogger(DomainController.class);
-
-    private final UserUtils userUtils;
-
     final TenantService tenantService;
+    private final UserUtils userUtils;
 
     public DomainController(TenantService tenantService, UserUtils userUtils) {
         this.tenantService = tenantService;
         this.userUtils = userUtils;
+    }
+
+    @GetMapping
+    public ResponseEntity<Tenant> getDomain() {
+        UUID uuid = UUID.randomUUID();
+        MDC.put("requestId", uuid.toString());
+        logger.info("Received request for getCurrentDomain:");
+
+        Tenant currentTenant = tenantService.getCurrentTenant();
+        return new ResponseEntity<>(currentTenant, HttpStatus.OK);
     }
 
     @PutMapping
@@ -46,7 +51,7 @@ public class DomainController {
         LmsUser currentUser = userUtils.getCurrentUser();
         if (!currentUser.getIsAdmin()) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN,
-                    "This user does not have permission to update the domain");
+                "This user does not have permission to update the domain");
         }
 
         try {

@@ -48,6 +48,8 @@ public class LmsUser extends Tenantable {
 
     private String companyName;
 
+    private String employeeId;
+
     private int experience;
     private String occupation;
     private String education;
@@ -115,6 +117,20 @@ public class LmsUser extends Tenantable {
 
     private ZonedDateTime passwordResetTokenExpiry;
 
+    public LmsUser(NewDomainRequest newDomainRequest) {
+        this.firstName = newDomainRequest.getFirstName();
+        this.lastName = newDomainRequest.getLastName();
+        this.email = newDomainRequest.getEmail();
+        this.setPassword(newDomainRequest.getPassword());
+        this.employeeId = newDomainRequest.getEmployeeId();
+        this.isAdmin = true;
+        this.isStudent = false;
+        this.isInstructor = false;
+        this.isSuperAdmin = false;
+        this.userIsDeleted = false;
+        this.emailVerified = false;
+    }
+
     public void setPassword(String password) {
         //This is used by default during Json deserialization
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
@@ -123,19 +139,6 @@ public class LmsUser extends Tenantable {
 
     public void setPasswordWithoutEncoding(String password) {
         this.password = password;
-    }
-
-    public LmsUser(NewDomainRequest newDomainRequest) {
-        this.firstName = newDomainRequest.getFirstName();
-        this.lastName = newDomainRequest.getLastName();
-        this.email = newDomainRequest.getEmail();
-        this.setPassword(newDomainRequest.getPassword());
-        this.isAdmin = true;
-        this.isStudent = false;
-        this.isInstructor = false;
-        this.isSuperAdmin = false;
-        this.userIsDeleted = false;
-        this.emailVerified = false;
     }
 
     public void update(LmsUser lmsUser) {
@@ -156,6 +159,9 @@ public class LmsUser extends Tenantable {
         }
         if (lmsUser.getCompanyName() != null && !lmsUser.getCompanyName().isEmpty()) {
             this.setCompanyName(lmsUser.getCompanyName());
+        }
+        if (lmsUser.getEmployeeId() != null && !lmsUser.getEmployeeId().isEmpty()) {
+            this.setEmployeeId(lmsUser.getEmployeeId());
         }
         if (lmsUser.getExperience() != 0) {
             this.setExperience(lmsUser.getExperience());

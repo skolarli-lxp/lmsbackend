@@ -56,6 +56,15 @@ public class TenantServiceImpl implements TenantService {
     }
 
     @Override
+    public Tenant getCurrentTenant() {
+        long id = tenantContext.getTenantId();
+        Tenant existingTenant = tenantRepository.findById(id).orElseThrow(
+            () -> new ResourceNotFoundException("Tenant", "Id", id)
+        );
+        return existingTenant;
+    }
+
+    @Override
     public Tenant getTenantByDomainName(String domainName) {
         Tenant tenant = tenantRepository.findByDomainName(domainName);
         if (tenant != null) {

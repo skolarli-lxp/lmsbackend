@@ -4,11 +4,13 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.skolarli.lmsservice.models.FeedbackFrom;
 import com.skolarli.lmsservice.models.FeedbackType;
 import com.skolarli.lmsservice.models.db.core.LmsUser;
 import com.skolarli.lmsservice.models.db.core.Tenantable;
 import com.skolarli.lmsservice.models.db.course.Batch;
 import com.skolarli.lmsservice.models.db.course.BatchSchedule;
+import com.skolarli.lmsservice.models.db.course.Course;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -35,6 +37,15 @@ public class FeedbackQuestionnaire extends Tenantable {
     @Enumerated(EnumType.STRING)
     @NotNull
     private FeedbackType feedbackType;
+
+    @Enumerated(EnumType.STRING)
+    private FeedbackFrom feedbackFrom;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "course_id")
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+    @JsonIdentityReference(alwaysAsId = true)
+    Course course;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "batch_id")
@@ -89,6 +100,12 @@ public class FeedbackQuestionnaire extends Tenantable {
     public void update(FeedbackQuestionnaire feedbackQuestionnaire) {
         if (feedbackQuestionnaire.getFeedbackType() != null) {
             this.setFeedbackType(feedbackQuestionnaire.getFeedbackType());
+        }
+        if (feedbackQuestionnaire.getFeedbackFrom() != null) {
+            this.setFeedbackFrom(feedbackQuestionnaire.getFeedbackFrom());
+        }
+        if (feedbackQuestionnaire.getCourse() != null) {
+            this.setCourse(feedbackQuestionnaire.getCourse());
         }
         if (feedbackQuestionnaire.getBatch() != null) {
             this.setBatch(feedbackQuestionnaire.getBatch());

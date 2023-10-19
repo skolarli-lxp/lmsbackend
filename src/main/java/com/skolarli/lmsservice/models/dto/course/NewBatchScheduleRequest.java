@@ -21,6 +21,8 @@ public class NewBatchScheduleRequest {
     private ZonedDateTime endDateTime;
 
     private String meetingLink;
+    private String resourceFileUrl;
+    private String trainerInstructionsText;
 
     private String title;
     private String description;

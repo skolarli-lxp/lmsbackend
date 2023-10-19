@@ -9,6 +9,8 @@ public interface TenantService {
 
     Tenant getTenantById(long id);
 
+    Tenant getCurrentTenant();
+
     Tenant getTenantByDomainName(String domainName);
 
     List<String> getAllDomainNames();
