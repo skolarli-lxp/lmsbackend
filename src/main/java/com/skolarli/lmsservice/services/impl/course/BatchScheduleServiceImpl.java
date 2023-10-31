@@ -87,20 +87,18 @@ public class BatchScheduleServiceImpl implements BatchScheduleService {
 
     @Override
     public BatchSchedule toBatchSchedule(NewBatchScheduleRequest newBatchScheduleRequest) {
-        if (newBatchScheduleRequest.getEndDateTime().isBefore(newBatchScheduleRequest
-            .getStartDateTime())) {
+        if (newBatchScheduleRequest.getStartDateTime() != null
+            && newBatchScheduleRequest.getEndDateTime() != null
+            && newBatchScheduleRequest.getEndDateTime().isBefore(newBatchScheduleRequest.getStartDateTime())) {
             throw new OperationNotSupportedException(
                 "End date time cannot be before start date time");
         }
 
-        Batch batch = batchService.getBatch(newBatchScheduleRequest.getBatchId());
-        // TODO: throw BAD REQUEST from controller in this case
-        if (batch == null) {
-            throw new ResourceNotFoundException("Batch", "Id",
-                newBatchScheduleRequest.getBatchId());
-        }
         BatchSchedule batchSchedule = new BatchSchedule();
-        batchSchedule.setBatch(batch);
+
+        if (newBatchScheduleRequest.getBatchId() != 0) {
+            batchSchedule.setBatch(batchService.getBatch(newBatchScheduleRequest.getBatchId()));
+        }
         if (newBatchScheduleRequest.getTitle() != null) {
             batchSchedule.setTitle(newBatchScheduleRequest.getTitle());
         }

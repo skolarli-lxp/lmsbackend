@@ -90,7 +90,7 @@ public class BatchSchedule extends Tenantable {
             this.endDateTime = newBatchSchedule.getEndDateTime();
         }
         if (newBatchSchedule.getAttendanceList() != null
-                && !newBatchSchedule.getAttendanceList().isEmpty()) {
+            && !newBatchSchedule.getAttendanceList().isEmpty()) {
             newBatchSchedule.getAttendanceList().forEach(attendance -> {
                 if (!this.getAttendanceList().contains(attendance)) {
                     this.getAttendanceList().add(attendance);
@@ -101,14 +101,16 @@ public class BatchSchedule extends Tenantable {
 
     public String toString() {
         return "BatchSchedule(id=" + this.getId()
-                + ", batch=" + this.getBatch().getId()
-                + ", title=" + this.getTitle()
-                + ", description=" + this.getDescription()
-                + ", meetingLink=" + this.getMeetingLink()
-                + ", startDateTime=" + this.getStartDateTime()
-                + ", endDateTime=" + this.getEndDateTime()
-                + ", attendanceList=" + this.getAttendanceList()
-                + ", batchScheduleIsDeleted=" + this.getBatchScheduleIsDeleted() + ")";
+            + ", batch=" + this.getBatch().getId()
+            + ", title=" + this.getTitle()
+            + ", description=" + this.getDescription()
+            + ", meetingLink=" + this.getMeetingLink()
+            + ", resourceFileUrl=" + this.getResourceFileUrl()
+            + ", trainerInstructionsText=" + this.getTrainerInstructionsText()
+            + ", startDateTime=" + this.getStartDateTime()
+            + ", endDateTime=" + this.getEndDateTime()
+            + ", attendanceList=" + this.getAttendanceList()
+            + ", batchScheduleIsDeleted=" + this.getBatchScheduleIsDeleted() + ")";
     }
 }
 

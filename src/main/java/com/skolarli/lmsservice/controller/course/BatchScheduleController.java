@@ -40,21 +40,21 @@ public class BatchScheduleController {
 
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<List<BatchSchedule>> getAllBatchSchedules(
-            @RequestParam(required = false) Long batchId,
-            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd")
-            LocalDate queryStartDate,
-            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd")
-            LocalDate queryEndDate) {
+        @RequestParam(required = false) Long batchId,
+        @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd")
+        LocalDate queryStartDate,
+        @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd")
+        LocalDate queryEndDate) {
 
         UUID uuid = UUID.randomUUID();
         MDC.put("requestId", uuid.toString());
         logger.info("Received request for getAllBatchSchedules" + (batchId != null
-                ? " for batchId: " + batchId
-                : "") + (queryStartDate != null
-                ? " for queryStartDate: " + queryStartDate
-                : "") + (queryEndDate != null
-                ? " for queryEndDate: " + queryEndDate
-                : ""));
+            ? " for batchId: " + batchId
+            : "") + (queryStartDate != null
+            ? " for queryStartDate: " + queryStartDate
+            : "") + (queryEndDate != null
+            ? " for queryEndDate: " + queryEndDate
+            : ""));
 
 
         Instant queryStartDateInstant = null;
@@ -62,20 +62,20 @@ public class BatchScheduleController {
 
         if (queryStartDate != null) {
             queryStartDateInstant = queryStartDate.atStartOfDay().toInstant(
-                    java.time.ZoneOffset.UTC);
+                java.time.ZoneOffset.UTC);
         }
         if (queryEndDate != null) {
             queryEndDateAsDate = queryEndDate.atStartOfDay().toInstant(
-                    java.time.ZoneOffset.UTC);
+                java.time.ZoneOffset.UTC);
             // Make it end of day
             queryEndDateAsDate = queryEndDateAsDate.plusSeconds(86399);
         }
 
         try {
             return new ResponseEntity<>(
-                    batchScheduleService.getSchedulesWithCriteria(
-                            batchId, queryStartDateInstant, queryEndDateAsDate),
-                    HttpStatus.OK);
+                batchScheduleService.getSchedulesWithCriteria(
+                    batchId, queryStartDateInstant, queryEndDateAsDate),
+                HttpStatus.OK);
         } catch (Exception e) {
             logger.error("Error in getAllBatchSchedules: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
@@ -103,7 +103,7 @@ public class BatchScheduleController {
 
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<BatchSchedule> addBatchSchedule(
-            @Valid @RequestBody NewBatchScheduleRequest request) {
+        @Valid @RequestBody NewBatchScheduleRequest request) {
 
         UUID uuid = UUID.randomUUID();
         MDC.put("requestId", uuid.toString());
@@ -113,7 +113,7 @@ public class BatchScheduleController {
 
         try {
             return new ResponseEntity<>(batchScheduleService.saveBatchSchedule(batchSchedule),
-                    HttpStatus.OK);
+                HttpStatus.OK);
         } catch (OperationNotSupportedException e) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
         } catch (Exception e) {
@@ -126,8 +126,8 @@ public class BatchScheduleController {
 
     @RequestMapping(method = RequestMethod.POST, value = "/forbatch")
     public ResponseEntity<List<BatchSchedule>> addBatchSchedules(
-            @Valid @RequestBody List<NewBatchSchedulesForBatchRequest> request,
-            @RequestParam Long batchId) {
+        @Valid @RequestBody List<NewBatchSchedulesForBatchRequest> request,
+        @RequestParam Long batchId) {
 
         UUID uuid = UUID.randomUUID();
         MDC.put("requestId", uuid.toString());
@@ -137,7 +137,7 @@ public class BatchScheduleController {
 
         try {
             return new ResponseEntity<>(batchScheduleService.saveAllBatchSchedules(
-                    batchSchedules, batchId), HttpStatus.OK);
+                batchSchedules, batchId), HttpStatus.OK);
         } catch (OperationNotSupportedException e) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
         } catch (Exception e) {
@@ -150,30 +150,18 @@ public class BatchScheduleController {
 
     @RequestMapping(method = RequestMethod.PUT, value = "{id}")
     public ResponseEntity<BatchSchedule> updateBatchSchedule(
-            @PathVariable Long id,
-            @RequestBody NewBatchScheduleRequest request) {
+        @PathVariable Long id,
+        @RequestBody NewBatchScheduleRequest request) {
 
         UUID uuid = UUID.randomUUID();
         MDC.put("requestId", uuid.toString());
         logger.info("Received request for updateBatchSchedule for id: " + id);
 
-        BatchSchedule batchSchedule = new BatchSchedule();
-        if (request.getBatchId() != 0) {
-            batchSchedule.setBatch(batchService.getBatch(request.getBatchId()));
-        }
-        if (request.getStartDateTime() != null) {
-            batchSchedule.setStartDateTime(request.getStartDateTime().toInstant());
-        }
-        if (request.getEndDateTime() != null) {
-            batchSchedule.setEndDateTime(request.getEndDateTime().toInstant());
-        }
-        batchSchedule.setTitle(request.getTitle());
-        batchSchedule.setDescription(request.getDescription());
-        batchSchedule.setMeetingLink(request.getMeetingLink());
+        BatchSchedule batchSchedule = batchScheduleService.toBatchSchedule(request);
 
         try {
             return new ResponseEntity<>(batchScheduleService.updateBatchSchedule(batchSchedule,
-                    id), HttpStatus.OK);
+                id), HttpStatus.OK);
         } catch (Exception e) {
             logger.error("Error in updateBatchSchedule: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
@@ -192,7 +180,7 @@ public class BatchScheduleController {
         BatchSchedule batchSchedule = batchScheduleService.getBatchSchedule(id);
         LmsUser currentUser = userUtils.getCurrentUser();
         if (!currentUser.getIsAdmin() && currentUser
-                != batchSchedule.getBatch().getCourse().getCourseOwner()) {
+            != batchSchedule.getBatch().getCourse().getCourseOwner()) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "");
         }
         try {
@@ -218,7 +206,7 @@ public class BatchScheduleController {
         BatchSchedule batchSchedule = batchScheduleService.getBatchSchedule(id);
         LmsUser currentUser = userUtils.getCurrentUser();
         if (!currentUser.getIsAdmin() && currentUser
-                != batchSchedule.getBatch().getCourse().getCourseOwner()) {
+            != batchSchedule.getBatch().getCourse().getCourseOwner()) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "");
         }
         try {

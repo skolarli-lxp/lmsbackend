@@ -13,6 +13,9 @@ public class GetLmsUserResponse {
     private final String email;
     private final String phoneNumber;
 
+    private String companyName;
+    private String employeeId;
+
     private final int experience;
     private final String occupation;
     private final String education;
@@ -39,6 +42,8 @@ public class GetLmsUserResponse {
         this.lastName = lmsUser.getLastName();
         this.email = lmsUser.getEmail();
         this.phoneNumber = lmsUser.getPhoneNumber();
+        this.companyName = lmsUser.getCompanyName();
+        this.employeeId = lmsUser.getEmployeeId();
         this.experience = lmsUser.getExperience();
         this.occupation = lmsUser.getOccupation();
         this.education = lmsUser.getEducation();
