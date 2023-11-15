@@ -198,7 +198,9 @@ public class AnswerBookAnswerServiceImpl implements AnswerBookAnswerService {
 
 
         for (AnswerMcq answerMcq : mcqAnswers) {
-            totalMarks += answerMcq.getQuestion().getMarks();
+            if (answerMcq.getQuestion().getMarks() != null) {
+                totalMarks += answerMcq.getQuestion().getMarks();
+            }
             marksObtained += answerMcq.getMarksGiven();
             if (answerMcq.getEvaluationResult() == null) {
                 continue;
@@ -231,7 +233,9 @@ public class AnswerBookAnswerServiceImpl implements AnswerBookAnswerService {
         int partiallyCorrectAnswers = answerBook.getPartiallyCorrectAnswers();
 
         for (AnswerSubjective answerSubjective : subjectiveAnswers) {
-            totalMarks += answerSubjective.getQuestion().getMarks();
+            if (answerSubjective.getQuestion() != null && answerSubjective.getQuestion().getMarks() != null) {
+                totalMarks += answerSubjective.getQuestion().getMarks();
+            }
             marksObtained += answerSubjective.getMarksGiven();
             if (answerSubjective.getEvaluationResult() == null) {
                 continue;
@@ -265,7 +269,9 @@ public class AnswerBookAnswerServiceImpl implements AnswerBookAnswerService {
         int partiallyCorrectAnswers = answerBook.getPartiallyCorrectAnswers();
 
         for (AnswerTrueFalse answerTrueFalse : trueFalseAnswers) {
-            totalMarks += answerTrueFalse.getQuestion().getMarks();
+            if (answerTrueFalse.getQuestion().getMarks() != null) {
+                totalMarks += answerTrueFalse.getQuestion().getMarks();
+            }
             marksObtained += answerTrueFalse.getMarksGiven();
             if (answerTrueFalse.getEvaluationResult() == null) {
                 continue;
