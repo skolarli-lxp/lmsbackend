@@ -23,6 +23,7 @@ import com.skolarli.lmsservice.utils.UserUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -181,6 +182,45 @@ public class AnswerBookServiceImpl implements AnswerBookService {
         } else {
             throw new ValidationFailureException("Invalid Question Type");
         }
+    }
+
+    @Override
+    public Map<Long, Map<AnswerBookStatus, Long>> getAllAnswerBookStatuses() {
+        List<AnswerBook> answerBooks = getAllAnswerBooks();
+        if (answerBooks == null || answerBooks.isEmpty()) {
+            throw new ResourceNotFoundException("No answerbook found");
+        }
+        Map<Long, Map<AnswerBookStatus, Long>> statusMap =
+            answerBooks.stream().collect(Collectors.groupingBy(answerBook -> answerBook.getExam().getId(),
+                Collectors.groupingBy(AnswerBook::getStatus, Collectors.counting())));
+        for (Map<AnswerBookStatus, Long> examStatusMap : statusMap.values()) {
+            for (AnswerBookStatus status : AnswerBookStatus.values()) {
+                if (!examStatusMap.containsKey(status)) {
+                    examStatusMap.put(status, 0L);
+                }
+            }
+        }
+        return statusMap;
+
+    }
+
+    @Override
+    public Map<AnswerBookStatus, Long> getAllAnswerBookStatusesForExam(Long examId) {
+        List<AnswerBook> answerBooks = answerBookRepository.findAllByExam_Id(examId);
+        if (answerBooks == null || answerBooks.isEmpty()) {
+            throw new ResourceNotFoundException("Answer Books not found for exam with id " + examId);
+        }
+        Map<AnswerBookStatus, Long> statusMap =
+            answerBooks.stream().collect(Collectors.groupingBy(AnswerBook::getStatus,
+                Collectors.counting()));
+
+        for (AnswerBookStatus status : AnswerBookStatus.values()) {
+            if (!statusMap.containsKey(status)) {
+                statusMap.put(status, 0L);
+            }
+        }
+
+        return statusMap;
     }
 
     @Override

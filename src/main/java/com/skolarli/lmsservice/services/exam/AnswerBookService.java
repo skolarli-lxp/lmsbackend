@@ -8,6 +8,7 @@ import com.skolarli.lmsservice.models.db.exam.AnswerTrueFalse;
 import com.skolarli.lmsservice.models.dto.exam.answerbook.*;
 
 import java.util.List;
+import java.util.Map;
 
 public interface AnswerBookService {
 
@@ -27,6 +28,10 @@ public interface AnswerBookService {
 
     GetAnswerResponse getAnswerByAnswerBookIdAndQuestionId(Long answerBookId, Long questionId, String questionType);
 
+
+    Map<Long, Map<AnswerBookStatus, Long>> getAllAnswerBookStatuses();
+
+    Map<AnswerBookStatus, Long> getAllAnswerBookStatusesForExam(Long examId);
 
     AnswerBook saveAnswerBook(AnswerBook answerBook);
 

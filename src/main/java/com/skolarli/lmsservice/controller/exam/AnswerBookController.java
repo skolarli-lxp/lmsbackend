@@ -14,7 +14,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import javax.validation.Valid;
 
@@ -90,6 +92,31 @@ public class AnswerBookController {
             return ResponseEntity.ok(answerBookService.getAnswerBookById(id));
         } catch (Exception e) {
             logger.error("Error in getAnswerBook: " + e.getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        } finally {
+            MDC.remove("requestId");
+        }
+    }
+
+    @RequestMapping(method = RequestMethod.GET, path = "/getStatusForExamId")
+    public ResponseEntity<Map<Long, Map<AnswerBookStatus, Long>>> getAllAnswerBookStatus(@RequestParam(required = false)
+                                                                                  Long examId) {
+        UUID uuid = UUID.randomUUID();
+        MDC.put("requestId", uuid.toString());
+        logger.info("Received request for getAllAnswerBookStatus for examId: " + examId);
+
+        try {
+            if (examId == null) {
+                return ResponseEntity.ok(answerBookService.getAllAnswerBookStatuses());
+            } else {
+                Map<AnswerBookStatus, Long> statusMap = answerBookService.getAllAnswerBookStatusesForExam(examId);
+                HashMap<Long, Map<AnswerBookStatus, Long>> response = new HashMap<>();
+                response.put(examId, statusMap);
+                return ResponseEntity.ok(response);
+            }
+
+        } catch (Exception e) {
+            logger.error("Error in getAllAnswerBookStatus: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         } finally {
             MDC.remove("requestId");
@@ -255,13 +282,13 @@ public class AnswerBookController {
     }
 
     @RequestMapping(method = RequestMethod.PUT, path = "/{id}")
-    public ResponseEntity<AnswerBook> updateAnswerBook(@RequestBody NewAnswerBookRequest request,
+    public ResponseEntity<AnswerBook> updateAnswerBook(@RequestBody UpdateAnswerBookRequest request,
                                                        @PathVariable Long id) {
         UUID uuid = UUID.randomUUID();
         MDC.put("requestId", uuid.toString());
         logger.info("Received request for updateAnswerBook for id: " + id);
 
-        AnswerBook answerBook = answerBookService.toAnswerBook(request);
+        AnswerBook answerBook = request.toAnswerBook();
 
         try {
             return ResponseEntity.ok(answerBookService.updateAnswerBook(answerBook, id));
