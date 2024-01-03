@@ -54,6 +54,7 @@ public class Course extends Tenantable {
     @JoinColumn(name = "owner_user_id")
     @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
     @JsonIdentityReference(alwaysAsId = true)
+    @JsonIgnoreProperties("courses")
     private LmsUser courseOwner;
 
     private CourseStatus courseStatus;

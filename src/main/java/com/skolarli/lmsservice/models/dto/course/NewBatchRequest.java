@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.ZonedDateTime;
+import java.util.List;
 import javax.validation.constraints.NotNull;
 
 @Getter
@@ -19,8 +20,9 @@ public class NewBatchRequest {
 
     @NotNull(message = "courseId cannot be empty")
     private long courseId;
-    @NotNull(message = "instructorId cannot be empty")
-    private long instructorId;
+
+    @NotNull(message = "instructorIds cannot be empty")
+    private List<Long> instructorIds;
 
     @NotNull(message = "batchName cannot be empty")
     private String batchName;

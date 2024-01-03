@@ -37,7 +37,7 @@ public class LmsUserServiceImpl implements LmsUserService {
 
     private LmsUser getCurrentUser() {
         String userName = (String) SecurityContextHolder.getContext()
-                .getAuthentication().getPrincipal();
+            .getAuthentication().getPrincipal();
         return getLmsUserByEmail(userName);
     }
 
@@ -130,7 +130,7 @@ public class LmsUserServiceImpl implements LmsUserService {
         } else {
             List<Enrollment> enrollments = student.getEnrollments();
             return enrollments.stream().map(
-                    Enrollment::getBatch).collect(Collectors.toList());
+                Enrollment::getBatch).collect(Collectors.toList());
         }
     }
 
@@ -158,9 +158,25 @@ public class LmsUserServiceImpl implements LmsUserService {
     }
 
     @Override
+    public List<LmsUser> saveLmsUsers(List<LmsUser> lmsUsers) {
+        for (LmsUser lmsUser : lmsUsers) {
+            if (lmsUser.getUserIsDeleted() == null) {
+                lmsUser.setUserIsDeleted(false);
+            }
+            if (lmsUser.getEmailVerified() == null) {
+                lmsUser.setEmailVerified(false);
+            }
+            if (lmsUser.getIsSuperAdmin() == null) {
+                lmsUser.setIsSuperAdmin(false);
+            }
+        }
+        return lmsUserRepository.saveAll(lmsUsers);
+    }
+
+    @Override
     public LmsUser updateLmsUser(LmsUser lmsUser, long id) {
         LmsUser existingUser = lmsUserRepository.findById(id).orElseThrow(
-                () -> new ResourceNotFoundException("LmsUser", "Id", id));
+            () -> new ResourceNotFoundException("LmsUser", "Id", id));
         existingUser.update(lmsUser);
         lmsUserRepository.save(existingUser);
         return existingUser;
@@ -170,7 +186,7 @@ public class LmsUserServiceImpl implements LmsUserService {
     public PasswordResetTokenResponse createAndGetPasswordResetToken(LmsUser lmsUser) {
         String token = RandomString.make(64);
         ZonedDateTime expiryDate = Instant.now().plusSeconds(24 * 60 * 60)
-                .atZone(ZoneId.systemDefault());
+            .atZone(ZoneId.systemDefault());
 
         lmsUser.setPasswordResetToken(token);
         lmsUser.setPasswordResetTokenExpiry(expiryDate);
@@ -188,11 +204,11 @@ public class LmsUserServiceImpl implements LmsUserService {
         }
         if (lmsUser.getPasswordResetRequested()) {
             if (lmsUser.getPasswordResetTokenExpiry().isAfter(Instant.now().atZone(
-                    ZoneId.systemDefault()))) {
+                ZoneId.systemDefault()))) {
                 String oldPasswordEncoded = lmsUser.getPassword();
                 if (oldPasswordEncoded.equals(new BCryptPasswordEncoder().encode(newPassword))) {
                     throw new OperationNotSupportedException("New password cannot "
-                            + "be same as old password");
+                        + "be same as old password");
                 }
                 lmsUser.setPassword(newPassword);
                 lmsUser.setPasswordResetRequested(false);
@@ -208,23 +224,23 @@ public class LmsUserServiceImpl implements LmsUserService {
     @Override
     public void deleteLmsUser(long id) {
         LmsUser existingUser = lmsUserRepository.findById(id).orElseThrow(
-                () -> new ResourceNotFoundException("LmsUser", "Id", id));
+            () -> new ResourceNotFoundException("LmsUser", "Id", id));
         if (getCurrentUser().getIsAdmin()) {
             existingUser.setUserIsDeleted(true);
             lmsUserRepository.save(existingUser);
         } else {
             throw new OperationNotSupportedException("User does not have permission to perform "
-                    + "Delete operation");
+                + "Delete operation");
         }
     }
 
     @Override
     public void hardDeleteLmsUser(long id) {
         LmsUser existingUser = lmsUserRepository.findById(id).orElseThrow(
-                () -> new ResourceNotFoundException("LmsUser", "Id", id));
+            () -> new ResourceNotFoundException("LmsUser", "Id", id));
         if (!getCurrentUser().getIsAdmin()) {
             throw new OperationNotSupportedException("User does not have permission to perform "
-                    + "Delete operation");
+                + "Delete operation");
         }
         lmsUserRepository.delete(existingUser);
     }

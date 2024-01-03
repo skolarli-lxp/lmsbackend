@@ -401,9 +401,9 @@ public class AnswerBookServiceImpl implements AnswerBookService {
             throw new ResourceNotFoundException("Answer Book not found with id " + answerBookId);
         }
         if (answerBook.getStatus() != AnswerBookStatus.SUBMITTED
-            || answerBook.getStatus() != AnswerBookStatus.EVALUATION_IN_PROGRESS
-            || answerBook.getStatus() != AnswerBookStatus.REEVALUATION_REQUESTED
-            || answerBook.getStatus() != AnswerBookStatus.REEVALUATION_IN_PROGRESS) {
+            && answerBook.getStatus() != AnswerBookStatus.EVALUATION_IN_PROGRESS
+            && answerBook.getStatus() != AnswerBookStatus.REEVALUATION_REQUESTED
+            && answerBook.getStatus() != AnswerBookStatus.REEVALUATION_IN_PROGRESS) {
             throw new ValidationFailureException("Answerbook status does not allow evaluation");
         }
         if (request.getMcqAnswerEvaluations() != null) {

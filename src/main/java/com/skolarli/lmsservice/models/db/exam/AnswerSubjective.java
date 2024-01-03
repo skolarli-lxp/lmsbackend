@@ -97,12 +97,13 @@ public class AnswerSubjective extends Tenantable {
     public void manualEvaluate(Double marksGiven,
                                String evaluatorRemarks,
                                EvaluationResult evaluationResult) {
-        if (marksGiven <= this.question.getMarks().doubleValue()) {
-            this.marksGiven = marksGiven;
-        } else {
-            throw new OperationNotSupportedException(
-                    "Marks given cannot be greater than total marks");
-        }
+        //if (this.question.getMarks() != null && marksGiven <= this.question.getMarks().doubleValue()) {
+        //    this.marksGiven = marksGiven;
+        //} else {
+        //    throw new OperationNotSupportedException(
+        //            "Marks given cannot be greater than total marks");
+        //}
+        this.marksGiven = marksGiven;
         this.evaluatorRemarks = evaluatorRemarks;
         this.evaluationResult = evaluationResult;
     }

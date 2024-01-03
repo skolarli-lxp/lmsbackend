@@ -1,9 +1,6 @@
 package com.skolarli.lmsservice.models.db.course;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIdentityReference;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.*;
 import com.skolarli.lmsservice.models.BatchStatus;
 import com.skolarli.lmsservice.models.DeliveryFormat;
 import com.skolarli.lmsservice.models.DiscountType;
@@ -41,11 +38,12 @@ public class Batch extends Tenantable {
     @JsonIdentityReference(alwaysAsId = true)
     private Course course;
 
-    @ManyToOne
-    @JoinColumn(name = "instructor_id")
-    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-    @JsonIdentityReference(alwaysAsId = true)
-    private LmsUser instructor;
+    @ManyToMany
+    @JoinTable(name = "batch_instructor",
+            joinColumns = @JoinColumn(name = "batch_id"),
+            inverseJoinColumns = @JoinColumn(name = "instructor_id"))
+    @JsonIgnoreProperties({"batches", "courses"})
+    private List<LmsUser> instructors;
 
     @OneToMany(mappedBy = "batch", cascade = CascadeType.ALL)
     @JsonIgnoreProperties("batch")
@@ -100,8 +98,12 @@ public class Batch extends Tenantable {
         if (newBatch.getBatchName() != null) {
             this.batchName = newBatch.getBatchName();
         }
-        if (newBatch.getInstructor() != null) {
-            this.instructor = newBatch.getInstructor();
+        if (newBatch.getInstructors() != null && !newBatch.getInstructors().isEmpty()) {
+            newBatch.getInstructors().forEach(currentInstructor -> {
+                if (!this.getInstructors().contains(currentInstructor)) {
+                    this.getInstructors().add(currentInstructor);
+                }
+            });
         }
         if (newBatch.getBatchSchedules() != null && !newBatch.getBatchSchedules().isEmpty()) {
             newBatch.getBatchSchedules().forEach(currentSchedule -> {

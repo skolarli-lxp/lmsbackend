@@ -11,6 +11,7 @@ import com.skolarli.lmsservice.models.db.course.Batch;
 import com.skolarli.lmsservice.models.db.course.Course;
 import com.skolarli.lmsservice.models.dto.exam.exam.*;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.slf4j.Logger;
@@ -21,6 +22,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -74,7 +76,13 @@ public class Exam extends Tenantable {
 
     private Integer passingMarks;
 
+    @NotNull
+    @Column(columnDefinition = "bit(1) default false")
+    Boolean blockDevTools;
 
+    @NotNull
+    @Column(columnDefinition = "bit(1) default false")
+    Boolean randomizeQuestions;
 
     @OneToMany(mappedBy = "exam", cascade = CascadeType.ALL)
     private List<ExamQuestionMcq> examQuestionMcqs;
@@ -123,6 +131,12 @@ public class Exam extends Tenantable {
         }
         if (exam.getPassingMarks() != null) {
             this.passingMarks = exam.getPassingMarks();
+        }
+        if (exam.blockDevTools !=  null) {
+            this.blockDevTools = exam.blockDevTools;
+        }
+        if (exam.randomizeQuestions != null) {
+            this.randomizeQuestions = exam.randomizeQuestions;
         }
         if (exam.getExamQuestionMcqs() != null) {
             if (this.examQuestionMcqs != null) {

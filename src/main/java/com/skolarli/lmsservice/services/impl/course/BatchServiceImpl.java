@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class BatchServiceImpl implements BatchService {
@@ -35,11 +36,18 @@ public class BatchServiceImpl implements BatchService {
         this.lmsUserService = lmsUserService;
     }
 
-    private Boolean validate(Batch batch) {
-        LmsUser instructor = batch.getInstructor();
+    private Boolean validateInstructor(LmsUser instructor) {
         if (instructor.getIsInstructor() == null || !instructor.getIsInstructor()) {
             logger.error("Batch instructor not valid");
             return false;
+        }
+        return true;
+    }
+
+    private Boolean validate(Batch batch) {
+        List<LmsUser> instructors = batch.getInstructors();
+        if (instructors != null && !instructors.isEmpty()) {
+            return instructors.stream().allMatch(this::validateInstructor);
         }
         return true;
     }
@@ -56,8 +64,10 @@ public class BatchServiceImpl implements BatchService {
         if (newBatchRequest.getCourseId() != 0) {
             batch.setCourse(courseService.getCourseById(newBatchRequest.getCourseId()));
         }
-        if (newBatchRequest.getInstructorId() != 0) {
-            batch.setInstructor(lmsUserService.getLmsUserById(newBatchRequest.getInstructorId()));
+        if (newBatchRequest.getInstructorIds() != null) {
+            List<LmsUser> instructors = newBatchRequest.getInstructorIds().stream()
+                    .map(lmsUserService::getLmsUserById).collect(Collectors.toList());
+            batch.setInstructors(instructors);
         }
         batch.setBatchName(newBatchRequest.getBatchName());
         batch.setBatchEnrollmentCapacity(newBatchRequest.getBatchEnrollmentCapacity());
@@ -132,7 +142,7 @@ public class BatchServiceImpl implements BatchService {
             logger.error("Cannot change deleted status. Use Delete API");
             existingBatch.setBatchIsDeleted(null);
         }
-        if (newBatch.getInstructor() != null && !validate(newBatch)) {
+        if (newBatch.getInstructors() != null && !validate(newBatch)) {
             throw new OperationNotSupportedException("Operation not supported");
         }
         existingBatch.update(newBatch);

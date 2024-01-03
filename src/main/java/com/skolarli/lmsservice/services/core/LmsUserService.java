@@ -28,6 +28,8 @@ public interface LmsUserService {
 
     LmsUser saveLmsUser(LmsUser lmsUser);
 
+    List<LmsUser> saveLmsUsers(List<LmsUser> lmsUsers);
+
     LmsUser updateLmsUser(LmsUser lmsUser, long id);
 
     PasswordResetTokenResponse createAndGetPasswordResetToken(LmsUser lmsUser);

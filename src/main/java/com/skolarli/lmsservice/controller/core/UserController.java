@@ -75,7 +75,7 @@ public class UserController {
 
         long tenantId = tenantContext.getTenantId();
         return new ResponseEntity<>(lmsUserService.getLmsUserByEmailAndTenantId(email, tenantId),
-                HttpStatus.OK);
+            HttpStatus.OK);
     }
 
     @GetMapping(value = "email/{email}")
@@ -102,31 +102,31 @@ public class UserController {
 
     @GetMapping(value = "getAllEnrolledBatches")
     public ResponseEntity<List<Batch>> getAllEnrolledBatches(
-            @RequestParam(required = false) Long studentId,
-            @RequestParam(required = false) String studentEmail) {
+        @RequestParam(required = false) Long studentId,
+        @RequestParam(required = false) String studentEmail) {
 
         UUID uuid = UUID.randomUUID();
         MDC.put("requestId", uuid.toString());
 
         logger.info("Received getAllEnrolledBatches request" + (studentId != null ? " studentId: "
-                + studentId : " studentEmail: " + studentEmail));
+            + studentId : " studentEmail: " + studentEmail));
 
         LmsUser currentUser = userUtils.getCurrentUser();
         if (!currentUser.getIsAdmin() && currentUser.getId() != studentId && !currentUser.getEmail()
-                .equals(studentEmail)) {
+            .equals(studentEmail)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Permission denied");
         }
         if (studentId == null && (studentEmail == null || studentEmail.isEmpty())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    "Request should contain either studentId or studentEmail");
+                "Request should contain either studentId or studentEmail");
         }
         try {
             if (studentId != null) {
                 return new ResponseEntity<>(
-                        lmsUserService.getBatchesEnrolledForStudent(studentId), HttpStatus.OK);
+                    lmsUserService.getBatchesEnrolledForStudent(studentId), HttpStatus.OK);
             } else if (studentEmail != null && !studentEmail.isEmpty()) {
                 return new ResponseEntity<>(
-                        lmsUserService.getBatchesEnrolledForStudent(studentEmail), HttpStatus.OK);
+                    lmsUserService.getBatchesEnrolledForStudent(studentEmail), HttpStatus.OK);
             }
         } catch (OperationNotSupportedException | ResourceNotFoundException e) {
             logger.error(e.getMessage());
@@ -139,32 +139,32 @@ public class UserController {
 
     @GetMapping(value = "getAllBatchesTaught")
     public ResponseEntity<List<Batch>> getAllTaughtBatches(
-            @RequestParam(required = false) Long instructorId,
-            @RequestParam(required = false) String instructorEmail) {
+        @RequestParam(required = false) Long instructorId,
+        @RequestParam(required = false) String instructorEmail) {
 
         UUID uuid = UUID.randomUUID();
         MDC.put("requestId", uuid.toString());
         logger.info("Received getAllBatchesTaught request "
-                + (instructorId != null ? " instructorId: " + instructorId : ""
-                + (instructorEmail != null ? "instructorEmail: " + instructorEmail : "")));
+            + (instructorId != null ? " instructorId: "
+            + instructorId : instructorEmail != null ? "instructorEmail: " + instructorEmail : ""));
 
         LmsUser currentUser = userUtils.getCurrentUser();
         if (!currentUser.getIsAdmin() && currentUser.getId() != instructorId
-                && !currentUser.getEmail().equals(instructorEmail)) {
+            && !currentUser.getEmail().equals(instructorEmail)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Permission denied");
         }
         if (instructorId == null && (instructorEmail == null || instructorEmail.isEmpty())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    "Request should contain either instructorId or instructorEmail");
+                "Request should contain either instructorId or instructorEmail");
         }
         try {
             if (instructorId != null) {
                 return new ResponseEntity<>(
-                        lmsUserService.getBatchesTaughtByInstructor(instructorId), HttpStatus.OK);
+                    lmsUserService.getBatchesTaughtByInstructor(instructorId), HttpStatus.OK);
             } else if (null != instructorEmail && !instructorEmail.isEmpty()) {
                 return new ResponseEntity<>(
-                        lmsUserService.getBatchesTaughtByInstructor(instructorEmail),
-                        HttpStatus.OK);
+                    lmsUserService.getBatchesTaughtByInstructor(instructorEmail),
+                    HttpStatus.OK);
             }
         } catch (OperationNotSupportedException | ResourceNotFoundException e) {
             logger.error(e.getMessage());
@@ -195,6 +195,27 @@ public class UserController {
         MDC.remove("requestId");
 
         return new ResponseEntity<LmsUser>(savedUser, HttpStatus.CREATED);
+    }
+
+    @PostMapping(value = "addMultiple")
+    public ResponseEntity<List<LmsUser>> addMultipleUsers(@Valid @RequestBody List<LmsUser> lmsUsers) {
+        UUID uuid = UUID.randomUUID();
+        MDC.put("requestId", uuid.toString());
+        logger.info("Received request to add multiple users");
+
+        LmsUser currentUser = userUtils.getCurrentUser();
+        if (!currentUser.getIsAdmin()) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Permission denied");
+        }
+
+        List<LmsUser> savedUsers = lmsUserService.saveLmsUsers(lmsUsers);
+        for (LmsUser savedUser : savedUsers) {
+            VerificationCode code = verificationService.generateAndSaveVerificationCode(savedUser);
+            savedUser.setVerificationCode(code);
+        }
+
+        MDC.remove("requestId");
+        return new ResponseEntity(savedUsers, HttpStatus.CREATED);
     }
 
     @PutMapping(value = "{id}")

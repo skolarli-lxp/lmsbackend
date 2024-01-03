@@ -66,7 +66,6 @@ public class LmsUser extends Tenantable {
     private String country;
 
 
-    //TODO: Better password storage
     @NotNull
     @JsonProperty(value = "password", access = JsonProperty.Access.WRITE_ONLY)
     private String password;
@@ -93,8 +92,11 @@ public class LmsUser extends Tenantable {
     @JsonIgnoreProperties("courseOwner") // To avoid infinite recursion during serialization
     private List<Course> courses;
 
-    @OneToMany(mappedBy = "instructor", fetch = FetchType.LAZY)
-    @JsonIgnoreProperties("instructor")
+    @ManyToMany
+    @JoinTable(name = "batch_instructor",
+            joinColumns = @JoinColumn(name = "instructor_id"),
+            inverseJoinColumns = @JoinColumn(name = "batch_id"))
+    @JsonIgnoreProperties("instructors")
     private List<Batch> batches;
 
     @OneToMany(mappedBy = "student", fetch = FetchType.LAZY)
@@ -129,6 +131,17 @@ public class LmsUser extends Tenantable {
         this.isSuperAdmin = false;
         this.userIsDeleted = false;
         this.emailVerified = false;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof LmsUser)) {
+            return false;
+        }
+        return id != 0 && id == ((LmsUser) o).getId();
     }
 
     public void setPassword(String password) {
