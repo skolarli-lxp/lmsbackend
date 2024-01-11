@@ -17,6 +17,14 @@ import javax.validation.constraints.NotNull;
 public class NewQuestionBankQuestionRequest {
     Long courseId;
 
+    Long batchId;
+
+    Long chapterId;
+
+    Long lessonId;
+
+    Long studentId;
+
     @NotNull
     private String question;
 

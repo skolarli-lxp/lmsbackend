@@ -26,21 +26,25 @@ public class QuestionBankTrueOrFalseController {
     final QuestionBankTrueOrFalseService questionBankTrueOrFalseService;
 
     public QuestionBankTrueOrFalseController(QuestionBankTrueOrFalseService
-                                                     questionBankTrueOrFalseService) {
+                                                 questionBankTrueOrFalseService) {
         this.questionBankTrueOrFalseService = questionBankTrueOrFalseService;
     }
 
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<List<BankQuestionTrueOrFalse>> getAllQuestions(
-            @RequestParam(required = false) Long courseId) {
+        @RequestParam(required = false) Long courseId,
+        @RequestParam(required = false) Long batchId,
+        @RequestParam(required = false) Long lessonId,
+        @RequestParam(required = false) Long chapterId,
+        @RequestParam(required = false) Long studentId) {
         UUID uuid = UUID.randomUUID();
         MDC.put("requestId", uuid.toString());
         logger.info("Received request for getAllquestions" + (courseId != null
-                ? " for courseId: " + courseId
-                : ""));
+            ? " for courseId: " + courseId
+            : ""));
         try {
             List<BankQuestionTrueOrFalse> questions = questionBankTrueOrFalseService
-                    .getAllQuestions();
+                .getQuestionsByParameters(courseId, batchId, lessonId, chapterId, studentId);
             return new ResponseEntity<>(questions, HttpStatus.OK);
         } catch (Exception e) {
             logger.error("Error in getAllquestions: " + e.getMessage());
@@ -69,7 +73,7 @@ public class QuestionBankTrueOrFalseController {
 
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<BankQuestionTrueOrFalse> saveQuestion(
-            @Valid @RequestBody NewBankQuestionTrueOrFalseRequest request) {
+        @Valid @RequestBody NewBankQuestionTrueOrFalseRequest request) {
         UUID uuid = UUID.randomUUID();
         MDC.put("requestId", uuid.toString());
         logger.info("Received request for save question");
@@ -86,7 +90,7 @@ public class QuestionBankTrueOrFalseController {
 
         try {
             BankQuestionTrueOrFalse savedQuestion = questionBankTrueOrFalseService
-                    .saveQuestion(question);
+                .saveQuestion(question);
             return new ResponseEntity<>(savedQuestion, HttpStatus.OK);
         } catch (Exception e) {
             logger.error("Error in saveQuestion: " + e.getMessage());
@@ -98,7 +102,7 @@ public class QuestionBankTrueOrFalseController {
 
     @RequestMapping(value = "/saveall", method = RequestMethod.POST)
     public ResponseEntity<List<BankQuestionTrueOrFalse>> saveQuestions(
-            @Valid @RequestBody List<NewBankQuestionTrueOrFalseRequest> request) {
+        @Valid @RequestBody List<NewBankQuestionTrueOrFalseRequest> request) {
         UUID uuid = UUID.randomUUID();
         MDC.put("requestId", uuid.toString());
         logger.info("Received request for save questions");
@@ -107,8 +111,8 @@ public class QuestionBankTrueOrFalseController {
 
         try {
             questions = request.stream()
-                    .map(questionBankTrueOrFalseService::toBankQuestionTrueOrFalse)
-                    .collect(java.util.stream.Collectors.toList());
+                .map(questionBankTrueOrFalseService::toBankQuestionTrueOrFalse)
+                .collect(java.util.stream.Collectors.toList());
         } catch (Exception e) {
             logger.error("Error in saveQuestion: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
@@ -119,7 +123,7 @@ public class QuestionBankTrueOrFalseController {
 
         try {
             List<BankQuestionTrueOrFalse> savedQuestions =
-                    questionBankTrueOrFalseService.saveAllQuestions(questions);
+                questionBankTrueOrFalseService.saveAllQuestions(questions);
             return new ResponseEntity<>(savedQuestions, HttpStatus.OK);
         } catch (Exception e) {
             logger.error("Error in saveQuestion: " + e.getMessage());
@@ -131,22 +135,22 @@ public class QuestionBankTrueOrFalseController {
 
     @RequestMapping(value = "/addtoexam", method = RequestMethod.POST)
     public ResponseEntity<List<ExamQuestionTrueOrFalse>> addQuestionsToExam(
-            @RequestParam Long examId, @Valid @RequestBody ToExamQuestionRequest request) {
+        @RequestParam Long examId, @Valid @RequestBody ToExamQuestionRequest request) {
         UUID uuid = UUID.randomUUID();
         MDC.put("requestId", uuid.toString());
         logger.info("Received request for add questions to exam with id: " + examId);
 
         if (!request.isValid()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    "Invalid request. Number of questions should be equal to number of marks");
+                "Invalid request. Number of questions should be equal to number of marks");
         }
 
         List<ExamQuestionTrueOrFalse> questions = null;
         try {
             questions = questionBankTrueOrFalseService.toExamQuestionTrueOrFalse(
-                    request.getBankQuestionIds(),
-                    request.getMarks(),
-                    examId);
+                request.getBankQuestionIds(),
+                request.getMarks(),
+                examId);
         } catch (Exception e) {
             logger.error("Error in addQuestionsToExam: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
@@ -159,7 +163,7 @@ public class QuestionBankTrueOrFalseController {
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
     public ResponseEntity<BankQuestionTrueOrFalse> updateQuestion(
-            @RequestBody NewBankQuestionTrueOrFalseRequest request, @PathVariable long id) {
+        @RequestBody NewBankQuestionTrueOrFalseRequest request, @PathVariable long id) {
         UUID uuid = UUID.randomUUID();
         MDC.put("requestId", uuid.toString());
         logger.info("Received request for update question with id: " + id);
@@ -176,7 +180,7 @@ public class QuestionBankTrueOrFalseController {
 
         try {
             BankQuestionTrueOrFalse updatedQuestion = questionBankTrueOrFalseService
-                    .updateQuestion(question, id);
+                .updateQuestion(question, id);
             return new ResponseEntity<>(updatedQuestion, HttpStatus.OK);
         } catch (Exception e) {
             logger.error("Error in updateQuestion: " + e.getMessage());

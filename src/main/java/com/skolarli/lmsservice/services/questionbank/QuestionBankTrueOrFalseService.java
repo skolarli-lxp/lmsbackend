@@ -9,15 +9,19 @@ import java.util.List;
 public interface QuestionBankTrueOrFalseService {
 
     BankQuestionTrueOrFalse toBankQuestionTrueOrFalse(
-            NewBankQuestionTrueOrFalseRequest newBankQuestionTrueOrFalseRequest);
+        NewBankQuestionTrueOrFalseRequest newBankQuestionTrueOrFalseRequest);
 
     List<ExamQuestionTrueOrFalse> toExamQuestionTrueOrFalse(
-            List<Long> bankQuestionTrueOrFalse, List<Integer> marks,
-            Long examId);
+        List<Long> bankQuestionTrueOrFalse, List<Integer> marks,
+        Long examId);
 
     BankQuestionTrueOrFalse getQuestion(long id);
 
     List<BankQuestionTrueOrFalse> getAllQuestions();
+
+    List<BankQuestionTrueOrFalse> getQuestionsByParameters(Long courseId, Long batchId,
+                                                           Long lessonId, Long chapterId,
+                                                           Long studentId);
 
 
     BankQuestionTrueOrFalse saveQuestion(BankQuestionTrueOrFalse question);

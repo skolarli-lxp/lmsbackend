@@ -26,21 +26,25 @@ public class QuestionBankSubjectiveController {
     final QuestionBankSubjectiveService questionBankSubjectiveService;
 
     public QuestionBankSubjectiveController(QuestionBankSubjectiveService
-                                                    questionBankSubjectiveService) {
+                                                questionBankSubjectiveService) {
         this.questionBankSubjectiveService = questionBankSubjectiveService;
     }
 
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<List<BankQuestionSubjective>> getAllQuestions(
-            @RequestParam(required = false) Long courseId) {
+        @RequestParam(required = false) Long courseId,
+        @RequestParam(required = false) Long batchId,
+        @RequestParam(required = false) Long lessonId,
+        @RequestParam(required = false) Long chapterId,
+        @RequestParam(required = false) Long studentId) {
         UUID uuid = UUID.randomUUID();
         MDC.put("requestId", uuid.toString());
         logger.info("Received request for getAllquestions" + (courseId != null
-                ? " for courseId: " + courseId
-                : ""));
+            ? " for courseId: " + courseId
+            : ""));
         try {
             List<BankQuestionSubjective> questions = questionBankSubjectiveService
-                    .getAllQuestions();
+                .getQuestionsByParameters(courseId, batchId, lessonId, chapterId, studentId);
             return new ResponseEntity<>(questions, HttpStatus.OK);
         } catch (Exception e) {
             logger.error("Error in getAllquestions: " + e.getMessage());
@@ -69,7 +73,7 @@ public class QuestionBankSubjectiveController {
 
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<BankQuestionSubjective> saveQuestion(
-            @Valid @RequestBody NewBankQuestionSubjectiveRequest request) {
+        @Valid @RequestBody NewBankQuestionSubjectiveRequest request) {
         UUID uuid = UUID.randomUUID();
         MDC.put("requestId", uuid.toString());
         logger.info("Received request for save question");
@@ -86,7 +90,7 @@ public class QuestionBankSubjectiveController {
 
         try {
             BankQuestionSubjective savedQuestion = questionBankSubjectiveService
-                    .saveQuestion(question);
+                .saveQuestion(question);
             return new ResponseEntity<>(savedQuestion, HttpStatus.OK);
         } catch (Exception e) {
             logger.error("Error in saveQuestion: " + e.getMessage());
@@ -98,7 +102,7 @@ public class QuestionBankSubjectiveController {
 
     @RequestMapping(value = "/saveall", method = RequestMethod.POST)
     public ResponseEntity<List<BankQuestionSubjective>> saveQuestions(
-            @Valid @RequestBody List<NewBankQuestionSubjectiveRequest> request) {
+        @Valid @RequestBody List<NewBankQuestionSubjectiveRequest> request) {
         UUID uuid = UUID.randomUUID();
         MDC.put("requestId", uuid.toString());
         logger.info("Received request for save questions");
@@ -107,8 +111,8 @@ public class QuestionBankSubjectiveController {
 
         try {
             questions = request.stream()
-                    .map(questionBankSubjectiveService::toBankQuestionSubjective)
-                    .collect(java.util.stream.Collectors.toList());
+                .map(questionBankSubjectiveService::toBankQuestionSubjective)
+                .collect(java.util.stream.Collectors.toList());
         } catch (Exception e) {
             logger.error("Error in saveQuestion: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
@@ -119,7 +123,7 @@ public class QuestionBankSubjectiveController {
 
         try {
             List<BankQuestionSubjective> savedQuestions =
-                    questionBankSubjectiveService.saveAllQuestions(questions);
+                questionBankSubjectiveService.saveAllQuestions(questions);
             return new ResponseEntity<>(savedQuestions, HttpStatus.OK);
         } catch (Exception e) {
             logger.error("Error in saveQuestion: " + e.getMessage());
@@ -131,22 +135,22 @@ public class QuestionBankSubjectiveController {
 
     @RequestMapping(value = "/addtoexam", method = RequestMethod.POST)
     public ResponseEntity<List<ExamQuestionSubjective>> addQuestionsToExam(
-            @RequestParam Long examId, @Valid @RequestBody ToExamQuestionRequest request) {
+        @RequestParam Long examId, @Valid @RequestBody ToExamQuestionRequest request) {
         UUID uuid = UUID.randomUUID();
         MDC.put("requestId", uuid.toString());
         logger.info("Received request for add questions to exam with id: " + examId);
 
         if (!request.isValid()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    "Invalid request. Number of questions should be equal to number of marks");
+                "Invalid request. Number of questions should be equal to number of marks");
         }
 
         List<ExamQuestionSubjective> questions = null;
         try {
             questions = questionBankSubjectiveService.toExamQuestionSubjective(
-                    request.getBankQuestionIds(),
-                    request.getMarks(),
-                    examId);
+                request.getBankQuestionIds(),
+                request.getMarks(),
+                examId);
         } catch (Exception e) {
             logger.error("Error in addQuestionsToExam: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
@@ -159,7 +163,7 @@ public class QuestionBankSubjectiveController {
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
     public ResponseEntity<BankQuestionSubjective> updateQuestion(
-            @RequestBody NewBankQuestionSubjectiveRequest request, @PathVariable long id) {
+        @RequestBody NewBankQuestionSubjectiveRequest request, @PathVariable long id) {
         UUID uuid = UUID.randomUUID();
         MDC.put("requestId", uuid.toString());
         logger.info("Received request for update question with id: " + id);
@@ -176,7 +180,7 @@ public class QuestionBankSubjectiveController {
 
         try {
             BankQuestionSubjective updatedQuestion = questionBankSubjectiveService
-                    .updateQuestion(question, id);
+                .updateQuestion(question, id);
             return new ResponseEntity<>(updatedQuestion, HttpStatus.OK);
         } catch (Exception e) {
             logger.error("Error in updateQuestion: " + e.getMessage());

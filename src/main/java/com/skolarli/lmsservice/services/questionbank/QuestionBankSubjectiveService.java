@@ -20,6 +20,10 @@ public interface QuestionBankSubjectiveService {
 
     List<BankQuestionSubjective> getAllQuestions();
 
+    List<BankQuestionSubjective> getQuestionsByParameters(Long courseId, Long batchId,
+                                                           Long lessonId, Long chapterId,
+                                                           Long studentId);
+
 
     BankQuestionSubjective saveQuestion(BankQuestionSubjective question);
 

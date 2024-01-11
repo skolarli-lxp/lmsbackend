@@ -4,6 +4,7 @@ import com.skolarli.lmsservice.exception.OperationNotSupportedException;
 import com.skolarli.lmsservice.exception.ResourceNotFoundException;
 import com.skolarli.lmsservice.exception.ValidationFailureException;
 import com.skolarli.lmsservice.models.db.core.LmsUser;
+import com.skolarli.lmsservice.models.db.course.Batch;
 import com.skolarli.lmsservice.models.db.course.Course;
 import com.skolarli.lmsservice.models.db.exam.Exam;
 import com.skolarli.lmsservice.models.db.exam.ExamQuestionMcq;
@@ -11,7 +12,11 @@ import com.skolarli.lmsservice.models.db.questionbank.BankQuestionMcq;
 import com.skolarli.lmsservice.models.dto.questionbank.NewBankQuestionMcqRequest;
 import com.skolarli.lmsservice.repository.exam.ExamQuestionMcqRepository;
 import com.skolarli.lmsservice.repository.questionbank.QuestionBankMcqRepository;
+import com.skolarli.lmsservice.services.core.LmsUserService;
+import com.skolarli.lmsservice.services.course.BatchService;
+import com.skolarli.lmsservice.services.course.ChapterService;
 import com.skolarli.lmsservice.services.course.CourseService;
+import com.skolarli.lmsservice.services.course.LessonService;
 import com.skolarli.lmsservice.services.exam.ExamService;
 import com.skolarli.lmsservice.services.questionbank.QuestionBankMcqService;
 import com.skolarli.lmsservice.utils.UserUtils;
@@ -30,19 +35,32 @@ public class QuestionBankMcqServiceImpl implements QuestionBankMcqService {
     final ExamQuestionMcqRepository examQuestionMcqRepository;
     final CourseService courseService;
 
+    final BatchService batchService;
+
+    final ChapterService chapterService;
+
+    final LessonService lessonService;
+
+    final LmsUserService lmsUserService;
+
     final UserUtils userUtils;
 
     final ExamService examService;
 
     public QuestionBankMcqServiceImpl(QuestionBankMcqRepository questionBankMcqRepository,
-                                        ExamQuestionMcqRepository examQuestionMcqRepository,
-                                      UserUtils userUtils,
-                                      CourseService courseService,
+                                      ExamQuestionMcqRepository examQuestionMcqRepository,
+                                      UserUtils userUtils, CourseService courseService,
+                                      BatchService batchService, ChapterService chapterService,
+                                      LessonService lessonService, LmsUserService lmsUserService,
                                       ExamService examService) {
         this.questionBankMcqRepository = questionBankMcqRepository;
         this.examQuestionMcqRepository = examQuestionMcqRepository;
         this.userUtils = userUtils;
         this.courseService = courseService;
+        this.batchService = batchService;
+        this.chapterService = chapterService;
+        this.lessonService = lessonService;
+        this.lmsUserService = lmsUserService;
         this.examService = examService;
     }
 
@@ -52,10 +70,26 @@ public class QuestionBankMcqServiceImpl implements QuestionBankMcqService {
             Course course = courseService.getCourseById(newBankQuestionMcqRequest.getCourseId());
             bankQuestionMcq.setCourse(course);
         }
+        if (newBankQuestionMcqRequest.getBatchId() != null) {
+            Batch batch = batchService.getBatch(newBankQuestionMcqRequest.getBatchId());
+            bankQuestionMcq.setBatch(batch);
+        }
+        if (newBankQuestionMcqRequest.getChapterId() != null) {
+            bankQuestionMcq.setChapter(chapterService.getChapterById(newBankQuestionMcqRequest
+                .getChapterId()));
+        }
+        if (newBankQuestionMcqRequest.getLessonId() != null) {
+            bankQuestionMcq.setLesson(lessonService.getLessonById(newBankQuestionMcqRequest
+                .getLessonId()));
+        }
+        if (newBankQuestionMcqRequest.getStudentId() != null) {
+            bankQuestionMcq.setStudent(lmsUserService.getLmsUserById(newBankQuestionMcqRequest
+                .getStudentId()));
+        }
         bankQuestionMcq.setQuestion(newBankQuestionMcqRequest.getQuestion());
         if (newBankQuestionMcqRequest.getResourceFileRequest() != null) {
             bankQuestionMcq.setQuestionResourceFile(newBankQuestionMcqRequest
-                    .getResourceFileRequest().toResourceFile());
+                .getResourceFileRequest().toResourceFile());
         }
         bankQuestionMcq.setQuestionType(newBankQuestionMcqRequest.getQuestionType());
         bankQuestionMcq.setDifficultyLevel(newBankQuestionMcqRequest.getDifficultyLevel());
@@ -72,7 +106,7 @@ public class QuestionBankMcqServiceImpl implements QuestionBankMcqService {
 
         if (newBankQuestionMcqRequest.getCorrectAnswer() != null) {
             bankQuestionMcq.setCorrectAnswer(newBankQuestionMcqRequest.getCorrectAnswer()
-                    .stream().map(String::valueOf).collect(Collectors.joining(",")));
+                .stream().map(String::valueOf).collect(Collectors.joining(",")));
         } else {
             bankQuestionMcq.setCorrectAnswer("");
         }
@@ -80,7 +114,7 @@ public class QuestionBankMcqServiceImpl implements QuestionBankMcqService {
         bankQuestionMcq.setSampleAnswerText(newBankQuestionMcqRequest.getSampleAnswerText());
         bankQuestionMcq.setSampleAnswerUrl(newBankQuestionMcqRequest.getSampleAnswerUrl());
         bankQuestionMcq.setNumberOfCorrectAnswers(newBankQuestionMcqRequest
-                .getNumberOfCorrectAnswers());
+            .getNumberOfCorrectAnswers());
 
         return bankQuestionMcq;
     }
@@ -111,12 +145,12 @@ public class QuestionBankMcqServiceImpl implements QuestionBankMcqService {
         }
 
         List<BankQuestionMcq> bankQuestionMcqs =
-                questionBankMcqRepository.findAllById(bankQuestionMcqIds);
+            questionBankMcqRepository.findAllById(bankQuestionMcqIds);
 
         List<ExamQuestionMcq> examQuestionMcqs = new ArrayList<>();
         for (int i = 0; i < bankQuestionMcqs.size(); i++) {
             examQuestionMcqs.add(toExamQuestionMcq(bankQuestionMcqs.get(i), marks.get(i),
-                    existingExam));
+                existingExam));
         }
         List<ExamQuestionMcq> savedQuestions = examQuestionMcqRepository.saveAll(examQuestionMcqs);
         return savedQuestions;
@@ -125,7 +159,7 @@ public class QuestionBankMcqServiceImpl implements QuestionBankMcqService {
     @Override
     public BankQuestionMcq getQuestion(long id) {
         List<BankQuestionMcq> bankQuestionMcqs =
-                questionBankMcqRepository.findAllById(new ArrayList<>(List.of(id)));
+            questionBankMcqRepository.findAllById(new ArrayList<>(List.of(id)));
         if (bankQuestionMcqs.size() == 0) {
             throw new ResourceNotFoundException("Question with Id " + id + " not found");
         }
@@ -135,6 +169,22 @@ public class QuestionBankMcqServiceImpl implements QuestionBankMcqService {
     @Override
     public List<BankQuestionMcq> getAllQuestions() {
         return questionBankMcqRepository.findAll();
+    }
+
+    @Override
+    public List<BankQuestionMcq> getQuestionsByParameters(Long courseId, Long batchId,
+                                                          Long lessonId, Long chapterId,
+                                                          Long studentId) {
+
+        Double courseIdDouble = courseId != null ? courseId.doubleValue() : null;
+        Double batchIdDouble = batchId != null ? batchId.doubleValue() : null;
+        Double lessonIdDouble = lessonId != null ? lessonId.doubleValue() : null;
+        Double chapterIdDouble = chapterId != null ? chapterId.doubleValue() : null;
+        Double studentIdDouble = studentId != null ? studentId.doubleValue() : null;
+
+        return questionBankMcqRepository.findQuestionsByParameters(courseIdDouble,
+            batchIdDouble, lessonIdDouble, chapterIdDouble, studentIdDouble);
+
     }
 
     @Override
@@ -148,7 +198,7 @@ public class QuestionBankMcqServiceImpl implements QuestionBankMcqService {
             return questionBankMcqRepository.save(question);
         } else {
             throw new OperationNotSupportedException("User does not have permission to perform "
-                    + "this operation");
+                + "this operation");
         }
     }
 
@@ -165,7 +215,7 @@ public class QuestionBankMcqServiceImpl implements QuestionBankMcqService {
             return questionBankMcqRepository.saveAll(questions);
         } else {
             throw new OperationNotSupportedException("User does not have permission to perform "
-                    + "this operation");
+                + "this operation");
         }
     }
 
@@ -175,7 +225,7 @@ public class QuestionBankMcqServiceImpl implements QuestionBankMcqService {
         BankQuestionMcq existingQuestion = getQuestion(id);
         if (!currentUser.getIsAdmin() && existingQuestion.getCreatedBy() != currentUser) {
             throw new OperationNotSupportedException("User does not have permission to perform "
-                    + "this operation");
+                + "this operation");
         }
         existingQuestion.setUpdatedBy(currentUser);
         existingQuestion.update(question);
@@ -191,7 +241,7 @@ public class QuestionBankMcqServiceImpl implements QuestionBankMcqService {
         BankQuestionMcq existingQuestion = getQuestion(id);
         if (!currentUser.getIsAdmin() && existingQuestion.getCreatedBy() != currentUser) {
             throw new OperationNotSupportedException("User does not have permission to perform "
-                    + "this operation");
+                + "this operation");
         }
         questionBankMcqRepository.deleteById(id);
     }

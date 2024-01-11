@@ -18,6 +18,10 @@ public interface QuestionBankMcqService {
 
     List<BankQuestionMcq> getAllQuestions();
 
+    List<BankQuestionMcq> getQuestionsByParameters(Long courseId, Long batchId,
+                                                   Long lessonId, Long chapterId,
+                                                   Long studentId);
+
     BankQuestionMcq saveQuestion(BankQuestionMcq question);
 
     List<BankQuestionMcq> saveAllQuestions(List<BankQuestionMcq> questions);

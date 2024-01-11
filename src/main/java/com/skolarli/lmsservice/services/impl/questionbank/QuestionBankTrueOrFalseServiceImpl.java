@@ -3,6 +3,7 @@ package com.skolarli.lmsservice.services.impl.questionbank;
 import com.skolarli.lmsservice.exception.OperationNotSupportedException;
 import com.skolarli.lmsservice.exception.ResourceNotFoundException;
 import com.skolarli.lmsservice.models.db.core.LmsUser;
+import com.skolarli.lmsservice.models.db.course.Batch;
 import com.skolarli.lmsservice.models.db.course.Course;
 import com.skolarli.lmsservice.models.db.exam.Exam;
 import com.skolarli.lmsservice.models.db.exam.ExamQuestionTrueOrFalse;
@@ -10,7 +11,11 @@ import com.skolarli.lmsservice.models.db.questionbank.BankQuestionTrueOrFalse;
 import com.skolarli.lmsservice.models.dto.questionbank.NewBankQuestionTrueOrFalseRequest;
 import com.skolarli.lmsservice.repository.exam.ExamQuestionTrueOrFalseRepository;
 import com.skolarli.lmsservice.repository.questionbank.QuestionBankTrueOrFalseRepository;
+import com.skolarli.lmsservice.services.core.LmsUserService;
+import com.skolarli.lmsservice.services.course.BatchService;
+import com.skolarli.lmsservice.services.course.ChapterService;
 import com.skolarli.lmsservice.services.course.CourseService;
+import com.skolarli.lmsservice.services.course.LessonService;
 import com.skolarli.lmsservice.services.exam.ExamService;
 import com.skolarli.lmsservice.services.questionbank.QuestionBankTrueOrFalseService;
 import com.skolarli.lmsservice.utils.UserUtils;
@@ -30,19 +35,34 @@ public class QuestionBankTrueOrFalseServiceImpl implements QuestionBankTrueOrFal
 
     final CourseService courseService;
 
+    final BatchService batchService;
+
+    final ChapterService chapterService;
+
+    final LessonService lessonService;
+
+    final LmsUserService lmsUserService;
+
     ExamService examService;
 
     public QuestionBankTrueOrFalseServiceImpl(QuestionBankTrueOrFalseRepository
-                                                      questionBankTrueOrFalseRepository,
+                                                  questionBankTrueOrFalseRepository,
                                               ExamQuestionTrueOrFalseRepository
-                                                      examQuestionTrueOrFalseRepository,
-                                              UserUtils userUtils,
-                                              CourseService courseService,
+                                                  examQuestionTrueOrFalseRepository,
+                                              UserUtils userUtils, CourseService courseService,
+                                              BatchService batchService,
+                                              ChapterService chapterService,
+                                              LessonService lessonService,
+                                              LmsUserService lmsUserService,
                                               ExamService examService) {
         this.questionBankTrueOrFalseRepository = questionBankTrueOrFalseRepository;
         this.examQuestionTrueOrFalseRepository = examQuestionTrueOrFalseRepository;
         this.userUtils = userUtils;
         this.courseService = courseService;
+        this.batchService = batchService;
+        this.chapterService = chapterService;
+        this.lessonService = lessonService;
+        this.lmsUserService = lmsUserService;
         this.examService = examService;
     }
 
@@ -54,71 +74,88 @@ public class QuestionBankTrueOrFalseServiceImpl implements QuestionBankTrueOrFal
 
     @Override
     public BankQuestionTrueOrFalse toBankQuestionTrueOrFalse(
-            NewBankQuestionTrueOrFalseRequest newBankQuestionTrueOrFalseRequest) {
+        NewBankQuestionTrueOrFalseRequest newBankQuestionTrueOrFalseRequest) {
         BankQuestionTrueOrFalse bankQuestionTrueOrFalse = new BankQuestionTrueOrFalse();
 
         if (newBankQuestionTrueOrFalseRequest.getCourseId() != null) {
             Course course = courseService.getCourseById(
-                    newBankQuestionTrueOrFalseRequest.getCourseId());
+                newBankQuestionTrueOrFalseRequest.getCourseId());
             bankQuestionTrueOrFalse.setCourse(course);
+        }
+        if (newBankQuestionTrueOrFalseRequest.getBatchId() != null) {
+            Batch batch = batchService.getBatch(
+                newBankQuestionTrueOrFalseRequest.getBatchId());
+            bankQuestionTrueOrFalse.setBatch(batch);
+        }
+        if (newBankQuestionTrueOrFalseRequest.getChapterId() != null) {
+            bankQuestionTrueOrFalse.setChapter(chapterService.getChapterById(
+                newBankQuestionTrueOrFalseRequest.getChapterId()));
+        }
+        if (newBankQuestionTrueOrFalseRequest.getLessonId() != null) {
+            bankQuestionTrueOrFalse.setLesson(lessonService.getLessonById(
+                newBankQuestionTrueOrFalseRequest.getLessonId()));
+        }
+        if (newBankQuestionTrueOrFalseRequest.getStudentId() != null) {
+            bankQuestionTrueOrFalse.setStudent(lmsUserService.getLmsUserById(
+                newBankQuestionTrueOrFalseRequest.getStudentId()));
         }
         bankQuestionTrueOrFalse.setQuestion(newBankQuestionTrueOrFalseRequest.getQuestion());
         bankQuestionTrueOrFalse.setQuestionType(
-                newBankQuestionTrueOrFalseRequest.getQuestionType());
+            newBankQuestionTrueOrFalseRequest.getQuestionType());
         bankQuestionTrueOrFalse.setDifficultyLevel(newBankQuestionTrueOrFalseRequest
-                .getDifficultyLevel());
+            .getDifficultyLevel());
 
         bankQuestionTrueOrFalse.setQuestionFormat(
-                newBankQuestionTrueOrFalseRequest.getQuestionFormat());
+            newBankQuestionTrueOrFalseRequest.getQuestionFormat());
         bankQuestionTrueOrFalse.setAnswerFormat(
-                newBankQuestionTrueOrFalseRequest.getAnswerFormat());
+            newBankQuestionTrueOrFalseRequest.getAnswerFormat());
         bankQuestionTrueOrFalse.setSampleAnswerText(newBankQuestionTrueOrFalseRequest
-                .getSampleAnswerText());
+            .getSampleAnswerText());
         bankQuestionTrueOrFalse.setSampleAnswerUrl(newBankQuestionTrueOrFalseRequest
-                .getSampleAnswerUrl());
+            .getSampleAnswerUrl());
 
         bankQuestionTrueOrFalse.setOption1(newBankQuestionTrueOrFalseRequest.getOption1());
         bankQuestionTrueOrFalse.setOption2(newBankQuestionTrueOrFalseRequest.getOption2());
         bankQuestionTrueOrFalse.setCorrectAnswer(
-                newBankQuestionTrueOrFalseRequest.getCorrectAnswer());
+            newBankQuestionTrueOrFalseRequest.getCorrectAnswer());
 
         return bankQuestionTrueOrFalse;
     }
 
     public ExamQuestionTrueOrFalse toExamQuestionTrueOrFalse(
-            BankQuestionTrueOrFalse bankQuestionTrueOrFalse, Integer marks,
-            Exam existingExam) {
+        BankQuestionTrueOrFalse bankQuestionTrueOrFalse, Integer marks,
+        Exam existingExam) {
 
         ExamQuestionTrueOrFalse examQuestionTrueOrFalse = new ExamQuestionTrueOrFalse(
-                bankQuestionTrueOrFalse, marks, existingExam);
+            bankQuestionTrueOrFalse, marks, existingExam);
         return examQuestionTrueOrFalse;
     }
 
     @Override
     public List<ExamQuestionTrueOrFalse> toExamQuestionTrueOrFalse(
-            List<Long> bankQuestionTrueOrFalseIds, List<Integer> marks,
-            Long examId) {
+        List<Long> bankQuestionTrueOrFalseIds, List<Integer> marks,
+        Long examId) {
         Exam existingExam = examService.getExam(examId);
         if (existingExam == null) {
             throw new ResourceNotFoundException("Exam with Id " + examId + " not found");
         }
         List<BankQuestionTrueOrFalse> bankQuestionTrueOrFalse =
-                questionBankTrueOrFalseRepository.findAllById(bankQuestionTrueOrFalseIds);
+            questionBankTrueOrFalseRepository.findAllById(bankQuestionTrueOrFalseIds);
         List<ExamQuestionTrueOrFalse> examQuestionTrueOrFalses = new ArrayList<>();
         for (int i = 0; i < bankQuestionTrueOrFalse.size(); i++) {
             examQuestionTrueOrFalses.add(toExamQuestionTrueOrFalse(
-                    bankQuestionTrueOrFalse.get(i), marks.get(i), existingExam));
+                bankQuestionTrueOrFalse.get(i), marks.get(i), existingExam));
         }
 
         List<ExamQuestionTrueOrFalse> savedQuestions =
-                examQuestionTrueOrFalseRepository.saveAll(examQuestionTrueOrFalses);
+            examQuestionTrueOrFalseRepository.saveAll(examQuestionTrueOrFalses);
         return savedQuestions;
     }
 
     @Override
     public BankQuestionTrueOrFalse getQuestion(long id) {
         List<BankQuestionTrueOrFalse> bankQuestionTrueOrFalses =
-                questionBankTrueOrFalseRepository.findAllById(new ArrayList<>(List.of(id)));
+            questionBankTrueOrFalseRepository.findAllById(new ArrayList<>(List.of(id)));
         if (bankQuestionTrueOrFalses.size() == 0) {
             throw new ResourceNotFoundException("Question with Id " + id + " not found");
         }
@@ -131,6 +168,20 @@ public class QuestionBankTrueOrFalseServiceImpl implements QuestionBankTrueOrFal
     }
 
     @Override
+    public List<BankQuestionTrueOrFalse> getQuestionsByParameters(Long courseId, Long batchId,
+                                                                  Long lessonId, Long chapterId,
+                                                                  Long studentId) {
+        Double courseIdDouble = courseId != null ? courseId.doubleValue() : null;
+        Double batchIdDouble = batchId != null ? batchId.doubleValue() : null;
+        Double lessonIdDouble = lessonId != null ? lessonId.doubleValue() : null;
+        Double chapterIdDouble = chapterId != null ? chapterId.doubleValue() : null;
+        Double studentIdDouble = studentId != null ? studentId.doubleValue() : null;
+
+        return questionBankTrueOrFalseRepository.findQuestionsByParameters(courseIdDouble,
+            batchIdDouble, lessonIdDouble, chapterIdDouble, studentIdDouble);
+    }
+
+    @Override
     public BankQuestionTrueOrFalse saveQuestion(BankQuestionTrueOrFalse question) {
         LmsUser currentUser = userUtils.getCurrentUser();
         question.setCreatedBy(currentUser);
@@ -138,7 +189,7 @@ public class QuestionBankTrueOrFalseServiceImpl implements QuestionBankTrueOrFal
             return questionBankTrueOrFalseRepository.save(question);
         } else {
             throw new OperationNotSupportedException("User does not have permission to perform "
-                    + "this operation");
+                + "this operation");
         }
     }
 
@@ -150,7 +201,7 @@ public class QuestionBankTrueOrFalseServiceImpl implements QuestionBankTrueOrFal
             return questionBankTrueOrFalseRepository.saveAll(questions);
         } else {
             throw new OperationNotSupportedException("User does not have permission to perform "
-                    + "this operation");
+                + "this operation");
         }
     }
 
@@ -160,7 +211,7 @@ public class QuestionBankTrueOrFalseServiceImpl implements QuestionBankTrueOrFal
         BankQuestionTrueOrFalse existingQuestion = getQuestion(id);
         if (!currentUser.getIsAdmin() && existingQuestion.getCreatedBy() != currentUser) {
             throw new OperationNotSupportedException("User does not have permission to perform "
-                    + "this operation");
+                + "this operation");
         }
         existingQuestion.setUpdatedBy(currentUser);
         existingQuestion.update(question);
@@ -173,7 +224,7 @@ public class QuestionBankTrueOrFalseServiceImpl implements QuestionBankTrueOrFal
         BankQuestionTrueOrFalse existingQuestion = getQuestion(id);
         if (!currentUser.getIsAdmin() && existingQuestion.getCreatedBy() != currentUser) {
             throw new OperationNotSupportedException("User does not have permission to perform "
-                    + "this operation");
+                + "this operation");
         }
         questionBankTrueOrFalseRepository.delete(existingQuestion);
     }

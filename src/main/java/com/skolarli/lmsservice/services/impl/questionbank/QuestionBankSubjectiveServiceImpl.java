@@ -10,7 +10,11 @@ import com.skolarli.lmsservice.models.db.questionbank.BankQuestionSubjective;
 import com.skolarli.lmsservice.models.dto.questionbank.NewBankQuestionSubjectiveRequest;
 import com.skolarli.lmsservice.repository.exam.ExamQuestionSubjectiveRepository;
 import com.skolarli.lmsservice.repository.questionbank.QuestionBankSubjectiveRepository;
+import com.skolarli.lmsservice.services.core.LmsUserService;
+import com.skolarli.lmsservice.services.course.BatchService;
+import com.skolarli.lmsservice.services.course.ChapterService;
 import com.skolarli.lmsservice.services.course.CourseService;
+import com.skolarli.lmsservice.services.course.LessonService;
 import com.skolarli.lmsservice.services.exam.ExamService;
 import com.skolarli.lmsservice.services.questionbank.QuestionBankSubjectiveService;
 import com.skolarli.lmsservice.utils.UserUtils;
@@ -30,19 +34,34 @@ public class QuestionBankSubjectiveServiceImpl implements QuestionBankSubjective
 
     final CourseService courseService;
 
+    final BatchService batchService;
+
+    final ChapterService chapterService;
+
+    final LessonService lessonService;
+
+    final LmsUserService lmsUserService;
+
     final ExamService examService;
 
     public QuestionBankSubjectiveServiceImpl(QuestionBankSubjectiveRepository
-                                                     questionBankSubjectiveRepository,
+                                                 questionBankSubjectiveRepository,
                                              ExamQuestionSubjectiveRepository
-                                                     examQuestionSubjectiveRepository,
+                                                 examQuestionSubjectiveRepository,
                                              UserUtils userUtils,
-                                             CourseService courseService,
+                                             CourseService courseService, BatchService batchService,
+                                             ChapterService chapterService,
+                                             LessonService lessonService,
+                                             LmsUserService lmsUserService,
                                              ExamService examService) {
         this.questionBankSubjectiveRepository = questionBankSubjectiveRepository;
         this.examQuestionSubjectiveRepository = examQuestionSubjectiveRepository;
         this.userUtils = userUtils;
         this.courseService = courseService;
+        this.batchService = batchService;
+        this.chapterService = chapterService;
+        this.lessonService = lessonService;
+        this.lmsUserService = lmsUserService;
         this.examService = examService;
     }
 
@@ -54,50 +73,66 @@ public class QuestionBankSubjectiveServiceImpl implements QuestionBankSubjective
 
     @Override
     public BankQuestionSubjective toBankQuestionSubjective(
-            NewBankQuestionSubjectiveRequest newBankQuestionSubjectiveRequest) {
+        NewBankQuestionSubjectiveRequest newBankQuestionSubjectiveRequest) {
         BankQuestionSubjective bankQuestionSubjective = new BankQuestionSubjective();
 
         if (newBankQuestionSubjectiveRequest.getCourseId() != null) {
             Course course = courseService.getCourseById(
-                    newBankQuestionSubjectiveRequest.getCourseId());
+                newBankQuestionSubjectiveRequest.getCourseId());
             bankQuestionSubjective.setCourse(course);
+        }
+        if (newBankQuestionSubjectiveRequest.getBatchId() != null) {
+            bankQuestionSubjective.setBatch(batchService.getBatch(
+                newBankQuestionSubjectiveRequest.getBatchId()));
+        }
+        if (newBankQuestionSubjectiveRequest.getChapterId() != null) {
+            bankQuestionSubjective.setChapter(chapterService.getChapterById(
+                newBankQuestionSubjectiveRequest.getChapterId()));
+        }
+        if (newBankQuestionSubjectiveRequest.getLessonId() != null) {
+            bankQuestionSubjective.setLesson(lessonService.getLessonById(
+                newBankQuestionSubjectiveRequest.getLessonId()));
+        }
+        if (newBankQuestionSubjectiveRequest.getStudentId() != null) {
+            bankQuestionSubjective.setStudent(lmsUserService.getLmsUserById(
+                newBankQuestionSubjectiveRequest.getStudentId()));
         }
         bankQuestionSubjective.setQuestion(newBankQuestionSubjectiveRequest.getQuestion());
         bankQuestionSubjective.setQuestionType(newBankQuestionSubjectiveRequest.getQuestionType());
         bankQuestionSubjective.setDifficultyLevel(newBankQuestionSubjectiveRequest
-                .getDifficultyLevel());
+            .getDifficultyLevel());
 
         bankQuestionSubjective.setQuestionFormat(newBankQuestionSubjectiveRequest
-                .getQuestionFormat());
+            .getQuestionFormat());
         bankQuestionSubjective.setAnswerFormat(newBankQuestionSubjectiveRequest.getAnswerFormat());
         bankQuestionSubjective.setSampleAnswerText(newBankQuestionSubjectiveRequest
-                .getSampleAnswerText());
+            .getSampleAnswerText());
         bankQuestionSubjective.setSampleAnswerUrl(newBankQuestionSubjectiveRequest
-                .getSampleAnswerUrl());
+            .getSampleAnswerUrl());
 
 
         bankQuestionSubjective.setWordCount(newBankQuestionSubjectiveRequest.getWordCount());
         bankQuestionSubjective.setCorrectAnswer(newBankQuestionSubjectiveRequest
-                .getCorrectAnswer());
+            .getCorrectAnswer());
 
         return bankQuestionSubjective;
     }
 
     public ExamQuestionSubjective toExamQuestionSubjective(
-            BankQuestionSubjective bankQuestionSubjective,
-            Integer marks,
-            Exam existingExam) {
+        BankQuestionSubjective bankQuestionSubjective,
+        Integer marks,
+        Exam existingExam) {
 
         ExamQuestionSubjective examQuestionSubjective = new ExamQuestionSubjective(
-                bankQuestionSubjective, marks, existingExam);
+            bankQuestionSubjective, marks, existingExam);
         return examQuestionSubjective;
     }
 
     @Override
     public List<ExamQuestionSubjective> toExamQuestionSubjective(
-            List<Long> bankQuestionSubjectiveIds,
-            List<Integer> marks,
-            Long examId) {
+        List<Long> bankQuestionSubjectiveIds,
+        List<Integer> marks,
+        Long examId) {
 
         Exam existingExam = examService.getExam(examId);
         if (existingExam == null) {
@@ -105,22 +140,22 @@ public class QuestionBankSubjectiveServiceImpl implements QuestionBankSubjective
         }
 
         List<BankQuestionSubjective> bankQuestionSubjective =
-                questionBankSubjectiveRepository.findAllById(bankQuestionSubjectiveIds);
+            questionBankSubjectiveRepository.findAllById(bankQuestionSubjectiveIds);
 
         List<ExamQuestionSubjective> examQuestionSubjectives = new ArrayList<>();
         for (int i = 0; i < bankQuestionSubjective.size(); i++) {
             examQuestionSubjectives.add(toExamQuestionSubjective(
-                    bankQuestionSubjective.get(i), marks.get(i), existingExam));
+                bankQuestionSubjective.get(i), marks.get(i), existingExam));
         }
         List<ExamQuestionSubjective> savedExamQuestionSubjectives =
-                examQuestionSubjectiveRepository.saveAll(examQuestionSubjectives);
+            examQuestionSubjectiveRepository.saveAll(examQuestionSubjectives);
         return savedExamQuestionSubjectives;
     }
 
     @Override
     public BankQuestionSubjective getQuestion(long id) {
         List<BankQuestionSubjective> bankQuestionMcqs =
-                questionBankSubjectiveRepository.findAllById(new ArrayList<>(List.of(id)));
+            questionBankSubjectiveRepository.findAllById(new ArrayList<>(List.of(id)));
         if (bankQuestionMcqs.size() == 0) {
             throw new ResourceNotFoundException("Question with Id " + id + " not found");
         }
@@ -133,6 +168,20 @@ public class QuestionBankSubjectiveServiceImpl implements QuestionBankSubjective
     }
 
     @Override
+    public List<BankQuestionSubjective> getQuestionsByParameters(Long courseId, Long batchId,
+                                                                 Long lessonId, Long chapterId,
+                                                                 Long studentId) {
+        Double courseIdDouble = courseId != null ? courseId.doubleValue() : null;
+        Double batchIdDouble = batchId != null ? batchId.doubleValue() : null;
+        Double lessonIdDouble = lessonId != null ? lessonId.doubleValue() : null;
+        Double chapterIdDouble = chapterId != null ? chapterId.doubleValue() : null;
+        Double studentIdDouble = studentId != null ? studentId.doubleValue() : null;
+
+        return questionBankSubjectiveRepository.findQuestionsByParameters(courseIdDouble,
+            batchIdDouble, lessonIdDouble, chapterIdDouble, studentIdDouble);
+    }
+
+    @Override
     public BankQuestionSubjective saveQuestion(BankQuestionSubjective question) {
         LmsUser currentUser = userUtils.getCurrentUser();
         question.setCreatedBy(currentUser);
@@ -140,7 +189,7 @@ public class QuestionBankSubjectiveServiceImpl implements QuestionBankSubjective
             return questionBankSubjectiveRepository.save(question);
         } else {
             throw new UnsupportedOperationException("User does not have permission to perform "
-                    + "this operation");
+                + "this operation");
         }
     }
 
@@ -152,7 +201,7 @@ public class QuestionBankSubjectiveServiceImpl implements QuestionBankSubjective
             return questionBankSubjectiveRepository.saveAll(questions);
         } else {
             throw new OperationNotSupportedException("User does not have permission to perform "
-                    + "this operation");
+                + "this operation");
         }
     }
 
@@ -162,7 +211,7 @@ public class QuestionBankSubjectiveServiceImpl implements QuestionBankSubjective
         BankQuestionSubjective existingQuestion = getQuestion(id);
         if (!currentUser.getIsAdmin() && existingQuestion.getCreatedBy() != currentUser) {
             throw new OperationNotSupportedException("User does not have permission to perform "
-                    + "this operation");
+                + "this operation");
         }
         existingQuestion.update(question);
         return questionBankSubjectiveRepository.save(existingQuestion);
@@ -174,7 +223,7 @@ public class QuestionBankSubjectiveServiceImpl implements QuestionBankSubjective
         BankQuestionSubjective existingQuestion = getQuestion(id);
         if (!currentUser.getIsAdmin() && existingQuestion.getCreatedBy() != currentUser) {
             throw new OperationNotSupportedException("User does not have permission to perform "
-                    + "this operation");
+                + "this operation");
         }
         questionBankSubjectiveRepository.delete(existingQuestion);
     }

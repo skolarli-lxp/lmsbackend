@@ -32,14 +32,23 @@ public class QuestionBankMcqController {
 
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<List<BankQuestionMcq>> getAllQuestions(@RequestParam(required = false)
-                                                                 Long courseId) {
+                                                                 Long courseId,
+                                                                 @RequestParam(required = false)
+                                                                 Long batchId,
+                                                                 @RequestParam(required = false)
+                                                                     Long lessonId,
+                                                                 @RequestParam(required = false)
+                                                                     Long chapterId,
+                                                                 @RequestParam(required = false)
+                                                                     Long studentId) {
         UUID uuid = UUID.randomUUID();
         MDC.put("requestId", uuid.toString());
         logger.info("Received request for getAllquestions" + (courseId != null
                 ? " for courseId: " + courseId
                 : ""));
         try {
-            List<BankQuestionMcq> questions = questionBankMcqService.getAllQuestions();
+            List<BankQuestionMcq> questions = questionBankMcqService.getQuestionsByParameters(
+                    courseId, batchId, lessonId, chapterId, studentId);
             return new ResponseEntity<>(questions, HttpStatus.OK);
         } catch (Exception e) {
             logger.error("Error in getAllquestions: " + e.getMessage());
