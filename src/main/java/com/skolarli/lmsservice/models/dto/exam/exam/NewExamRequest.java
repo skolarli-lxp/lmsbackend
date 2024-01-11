@@ -10,6 +10,7 @@ import lombok.*;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.persistence.Column;
 import javax.validation.constraints.NotNull;
 
 @Data
@@ -22,6 +23,12 @@ public class NewExamRequest {
     Long courseId;
 
     Long batchId;
+
+    Long studentId;
+
+    Long chapterId;
+
+    Long lessonId;
 
     @NotNull
     private String examName;
@@ -38,6 +45,10 @@ public class NewExamRequest {
     private Integer passingMarks;
 
     private ExamStatus examStatus;
+
+    Boolean blockDevTools;
+
+    Boolean randomizeQuestions;
 
     private List<NewExamQuestionMcqRequest> mcqQuestions;
 

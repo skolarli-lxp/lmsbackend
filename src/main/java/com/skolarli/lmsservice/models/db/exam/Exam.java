@@ -8,7 +8,9 @@ import com.skolarli.lmsservice.models.ExamStatus;
 import com.skolarli.lmsservice.models.db.core.LmsUser;
 import com.skolarli.lmsservice.models.db.core.Tenantable;
 import com.skolarli.lmsservice.models.db.course.Batch;
+import com.skolarli.lmsservice.models.db.course.Chapter;
 import com.skolarli.lmsservice.models.db.course.Course;
+import com.skolarli.lmsservice.models.db.course.Lesson;
 import com.skolarli.lmsservice.models.dto.exam.exam.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
@@ -47,6 +49,24 @@ public class Exam extends Tenantable {
     Batch batch;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "student_id")
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+    @JsonIdentityReference(alwaysAsId = true)
+    LmsUser student;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "lesson_id")
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+    @JsonIdentityReference(alwaysAsId = true)
+    Lesson lesson;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "chapter_id")
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+    @JsonIdentityReference(alwaysAsId = true)
+    Chapter chapter;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "created_by")
     @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
     @JsonIdentityReference(alwaysAsId = true)
@@ -76,11 +96,9 @@ public class Exam extends Tenantable {
 
     private Integer passingMarks;
 
-    @NotNull
     @Column(columnDefinition = "bit(1) default false")
     Boolean blockDevTools;
 
-    @NotNull
     @Column(columnDefinition = "bit(1) default false")
     Boolean randomizeQuestions;
 
@@ -110,6 +128,15 @@ public class Exam extends Tenantable {
         }
         if (exam.getBatch() != null) {
             this.batch = exam.getBatch();
+        }
+        if (exam.getStudent() != null) {
+            this.student = exam.getStudent();
+        }
+        if (exam.getLesson() != null) {
+            this.lesson = exam.getLesson();
+        }
+        if (exam.getChapter() != null) {
+            this.chapter = exam.getChapter();
         }
         if (exam.getExamName() != null) {
             this.examName = exam.getExamName();

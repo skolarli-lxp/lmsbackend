@@ -17,8 +17,11 @@ import com.skolarli.lmsservice.repository.exam.ExamRepository;
 import com.skolarli.lmsservice.repository.questionbank.QuestionBankMcqRepository;
 import com.skolarli.lmsservice.repository.questionbank.QuestionBankSubjectiveRepository;
 import com.skolarli.lmsservice.repository.questionbank.QuestionBankTrueOrFalseRepository;
+import com.skolarli.lmsservice.services.core.LmsUserService;
 import com.skolarli.lmsservice.services.course.BatchService;
+import com.skolarli.lmsservice.services.course.ChapterService;
 import com.skolarli.lmsservice.services.course.CourseService;
+import com.skolarli.lmsservice.services.course.LessonService;
 import com.skolarli.lmsservice.services.exam.ExamQuestionMcqService;
 import com.skolarli.lmsservice.services.exam.ExamQuestionSubjectiveService;
 import com.skolarli.lmsservice.services.exam.ExamQuestionTrueOrFalseService;
@@ -45,6 +48,12 @@ public class ExamServiceImpl implements ExamService {
 
     BatchService batchService;
 
+    LmsUserService lmsUserService;
+
+    ChapterService chapterService;
+
+    LessonService lessonService;
+
     ExamQuestionMcqService examQuestionMcqService;
 
     ExamQuestionTrueOrFalseService examQuestionTrueOrFalseService;
@@ -56,8 +65,9 @@ public class ExamServiceImpl implements ExamService {
                            QuestionBankMcqRepository questionBankMcqRepository,
                            QuestionBankSubjectiveRepository questionBankSubjectiveRepository,
                            QuestionBankTrueOrFalseRepository questionBankTrueOrFalseRepository,
-                           CourseService courseService,
-                           BatchService batchService,
+                           CourseService courseService, BatchService batchService,
+                           LmsUserService lmsUserService, ChapterService chapterService,
+                           LessonService lessonService,
                            ExamQuestionMcqService examQuestionMcqService,
                            ExamQuestionTrueOrFalseService examQuestionTrueOrFalseService,
                            ExamQuestionSubjectiveService examQuestionSubjectiveService,
@@ -68,6 +78,9 @@ public class ExamServiceImpl implements ExamService {
         this.questionBankTrueOrFalseRepository = questionBankTrueOrFalseRepository;
         this.courseService = courseService;
         this.batchService = batchService;
+        this.lmsUserService = lmsUserService;
+        this.chapterService = chapterService;
+        this.lessonService = lessonService;
         this.examQuestionMcqService = examQuestionMcqService;
         this.examQuestionTrueOrFalseService = examQuestionTrueOrFalseService;
         this.examQuestionSubjectiveService = examQuestionSubjectiveService;
@@ -88,6 +101,15 @@ public class ExamServiceImpl implements ExamService {
         if (request.getBatchId() != null) {
             exam.setBatch(batchService.getBatch(request.getBatchId()));
         }
+        if (request.getStudentId() != null) {
+            exam.setStudent(lmsUserService.getLmsUserById(request.getStudentId()));
+        }
+        if (request.getLessonId() != null) {
+            exam.setLesson(lessonService.getLessonById(request.getLessonId()));
+        }
+        if (request.getChapterId() != null) {
+            exam.setChapter(chapterService.getChapterById(request.getChapterId()));
+        }
 
         exam.setExamName(request.getExamName());
         exam.setExamType(request.getExamType());
@@ -97,6 +119,16 @@ public class ExamServiceImpl implements ExamService {
         exam.setTotalMarks(request.getTotalMarks());
         exam.setPassingMarks(request.getPassingMarks());
         exam.setStatus(request.getExamStatus());
+        if (request.getBlockDevTools() != null) {
+            exam.setBlockDevTools(request.getBlockDevTools());
+        } else {
+            exam.setBlockDevTools(false);
+        }
+        if (request.getRandomizeQuestions() != null) {
+            exam.setRandomizeQuestions(request.getRandomizeQuestions());
+        } else {
+            exam.setRandomizeQuestions(false);
+        }
 
         if (request.getMcqQuestions() != null) {
             exam.setExamQuestionMcqs(request.toExamQuestionMcqList());
