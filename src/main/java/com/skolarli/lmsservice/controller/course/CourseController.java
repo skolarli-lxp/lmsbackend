@@ -2,6 +2,7 @@ package com.skolarli.lmsservice.controller.course;
 
 import com.skolarli.lmsservice.exception.OperationNotSupportedException;
 import com.skolarli.lmsservice.models.db.course.Course;
+import com.skolarli.lmsservice.models.dto.course.CourseResponse;
 import com.skolarli.lmsservice.services.course.CourseService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import javax.validation.Valid;
@@ -26,14 +28,23 @@ public class CourseController {
     private CourseService courseService;
 
     @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity<List<Course>> getAllCourses() {
+    public ResponseEntity<?> getAllCourses(@RequestParam(required = false) Boolean condensed) {
 
         UUID uuid = UUID.randomUUID();
         MDC.put("requestId", uuid.toString());
         logger.info("Received request for getAllCourses");
 
         try {
-            return new ResponseEntity<List<Course>>(courseService.getAllCourses(), HttpStatus.OK);
+            List<Course> response = courseService.getAllCourses();
+            if (condensed != null && condensed == Boolean.TRUE) {
+                List<CourseResponse> condensedResponse = new ArrayList<>();
+                for (Course course : response) {
+                    condensedResponse.add(new CourseResponse(course));
+                }
+                return new ResponseEntity<>(condensedResponse, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         } finally {
@@ -42,14 +53,20 @@ public class CourseController {
     }
 
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
-    public ResponseEntity<Course> getCourse(@PathVariable long id) {
+    public ResponseEntity<?> getCourse(@PathVariable long id,
+                                       @RequestParam(required = false) Boolean condense) {
 
         UUID uuid = UUID.randomUUID();
         MDC.put("requestId", uuid.toString());
         logger.info("Received request for getCourse with id: " + id);
 
         try {
-            return new ResponseEntity<Course>(courseService.getCourseById(id), HttpStatus.OK);
+            Course response = courseService.getCourseById(id);
+            if (condense != null && condense == Boolean.TRUE) {
+                return new ResponseEntity<>(new CourseResponse(response), HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         } finally {
@@ -76,15 +93,20 @@ public class CourseController {
     }
 
     @RequestMapping(value = "{id}", method = RequestMethod.PUT)
-    public ResponseEntity<Course> updateCourse(@PathVariable long id, @RequestBody Course course) {
+    public ResponseEntity<?> updateCourse(@PathVariable long id, @RequestBody Course course,
+                                               @RequestParam(required = false) Boolean condense) {
 
         UUID uuid = UUID.randomUUID();
         MDC.put("requestId", uuid.toString());
         logger.info("Received request for updateCourse with id: " + id);
 
         try {
-            return new ResponseEntity<Course>(courseService.updateCourse(course, id),
-                    HttpStatus.OK);
+            Course response = courseService.updateCourse(course, id);
+            if (condense != null && condense == Boolean.TRUE) {
+                return new ResponseEntity<>(new CourseResponse(response), HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         } finally {

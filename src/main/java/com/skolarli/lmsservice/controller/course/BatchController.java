@@ -3,6 +3,7 @@ package com.skolarli.lmsservice.controller.course;
 import com.skolarli.lmsservice.exception.OperationNotSupportedException;
 import com.skolarli.lmsservice.models.db.course.Batch;
 import com.skolarli.lmsservice.models.db.course.BatchSchedule;
+import com.skolarli.lmsservice.models.dto.course.BatchResponse;
 import com.skolarli.lmsservice.models.dto.course.NewBatchRequest;
 import com.skolarli.lmsservice.services.course.BatchService;
 import org.slf4j.Logger;
@@ -13,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import javax.validation.Valid;
@@ -28,18 +30,28 @@ public class BatchController {
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity<List<Batch>> getAllBatches(@RequestParam(required = false)
-                                                     Long courseId) {
+    public ResponseEntity<?> getAllBatches(@RequestParam(required = false)
+                                           Long courseId,
+                                           @RequestParam(required = false)
+                                           Boolean condensed) {
         UUID uuid = UUID.randomUUID();
         MDC.put("requestId", uuid.toString());
         logger.info("Received request for getAllBatches" + (courseId != null
-                ? " for courseId: " + courseId
-                : ""));
+            ? " for courseId: " + courseId
+            : ""));
 
         if (courseId != null) {
             try {
-                return new ResponseEntity<>(batchService.getBatchesForCourse(courseId),
-                        HttpStatus.OK);
+                List<Batch> response = batchService.getBatchesForCourse(courseId);
+                if (condensed != null && condensed == Boolean.TRUE) {
+                    List<BatchResponse> condensedResponse = new ArrayList<>();
+                    for (Batch batch : response) {
+                        condensedResponse.add(new BatchResponse(batch));
+                    }
+                    return new ResponseEntity<>(condensedResponse, HttpStatus.OK);
+                } else {
+                    return new ResponseEntity<>(response, HttpStatus.OK);
+                }
             } catch (Exception e) {
                 logger.error("Error in getAllBatches: " + e.getMessage());
                 throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
@@ -49,7 +61,16 @@ public class BatchController {
         }
 
         try {
-            return new ResponseEntity<>(batchService.getAllBatches(), HttpStatus.OK);
+            List<Batch> response = batchService.getAllBatches();
+            if (condensed != null && condensed == Boolean.TRUE) {
+                List<BatchResponse> condensedResponse = new ArrayList<>();
+                for (Batch batch : response) {
+                    condensedResponse.add(new BatchResponse(batch));
+                }
+                return new ResponseEntity<>(condensedResponse, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
         } catch (Exception e) {
             logger.error("Error in getAllBatches: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
@@ -59,14 +80,20 @@ public class BatchController {
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "{id}")
-    public ResponseEntity<Batch> getBatch(@PathVariable long id) {
+    public ResponseEntity<?> getBatch(@PathVariable long id,
+                                      @RequestParam(required = false) Boolean condensed) {
 
         UUID uuid = UUID.randomUUID();
         MDC.put("requestId", uuid.toString());
         logger.info("Received request for getBatch for id: " + id);
 
         try {
-            return new ResponseEntity<>(batchService.getBatch(id), HttpStatus.OK);
+            Batch response = batchService.getBatch(id);
+            if (condensed != null && condensed == Boolean.TRUE) {
+                return new ResponseEntity<>(new BatchResponse(response), HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
         } catch (Exception e) {
             logger.error("Error in getBatch: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
@@ -94,19 +121,25 @@ public class BatchController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<Batch> addBatch(@Valid @RequestBody NewBatchRequest batchRequest) {
+    public ResponseEntity<?> addBatch(@Valid @RequestBody NewBatchRequest batchRequest,
+                                      @RequestParam(required = false) Boolean condensed) {
 
         UUID uuid = UUID.randomUUID();
         MDC.put("requestId", uuid.toString());
         logger.info("Received request for new batch for course"
-                + batchRequest.getCourseId());
+            + batchRequest.getCourseId());
 
         Batch batch = batchService.toBatch(batchRequest);
         logger.info("Received request for new batch for course"
-                + batch.getCourse().getCourseName());
+            + batch.getCourse().getCourseName());
 
         try {
-            return new ResponseEntity<>(batchService.saveBatch(batch), HttpStatus.CREATED);
+            Batch response = batchService.saveBatch(batch);
+            if (condensed != null && condensed == Boolean.TRUE) {
+                return new ResponseEntity<>(new BatchResponse(response), HttpStatus.CREATED);
+            } else {
+                return new ResponseEntity<>(response, HttpStatus.CREATED);
+            }
         } catch (OperationNotSupportedException e) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
         } catch (Exception e) {
@@ -118,8 +151,9 @@ public class BatchController {
     }
 
     @RequestMapping(method = RequestMethod.PUT, value = "{id}")
-    public ResponseEntity<Batch> updateBatch(@PathVariable long id,
-                                             @RequestBody NewBatchRequest batchRequest) {
+    public ResponseEntity<?> updateBatch(@PathVariable long id,
+                                         @RequestBody NewBatchRequest batchRequest,
+                                         @RequestParam(required = false) Boolean condensed) {
         UUID uuid = UUID.randomUUID();
         MDC.put("requestId", uuid.toString());
         logger.info("Received request for updating batch batchID: " + id);
@@ -128,7 +162,12 @@ public class BatchController {
         logger.info("Received request for updating batch batchID: " + id);
 
         try {
-            return new ResponseEntity<>(batchService.updateBatch(batch, id), HttpStatus.OK);
+            Batch response = batchService.updateBatch(batch, id);
+            if (condensed != null && condensed == Boolean.TRUE) {
+                return new ResponseEntity<>(new BatchResponse(response), HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
         } catch (OperationNotSupportedException e) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
         } catch (Exception e) {
@@ -148,7 +187,7 @@ public class BatchController {
 
         Batch batch = batchService.getBatch(id);
         logger.info("Received request for deleting batch for course"
-                + batch.getCourse().getCourseName());
+            + batch.getCourse().getCourseName());
 
         try {
             batchService.softDeleteBatch(id);
@@ -172,7 +211,7 @@ public class BatchController {
 
         Batch batch = batchService.getBatch(id);
         logger.info("Received request for deleting batch for course"
-                + batch.getCourse().getCourseName());
+            + batch.getCourse().getCourseName());
 
         try {
             batchService.hardDeleteBatch(id);
