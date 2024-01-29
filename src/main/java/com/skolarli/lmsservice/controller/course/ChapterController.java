@@ -2,6 +2,7 @@ package com.skolarli.lmsservice.controller.course;
 
 import com.skolarli.lmsservice.exception.OperationNotSupportedException;
 import com.skolarli.lmsservice.models.db.course.Chapter;
+import com.skolarli.lmsservice.models.dto.course.ChapterResponse;
 import com.skolarli.lmsservice.models.dto.course.ChapterSortOrderRequest;
 import com.skolarli.lmsservice.models.dto.course.ChapterSortOrderResponse;
 import com.skolarli.lmsservice.models.dto.course.NewChapterRequest;
@@ -14,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import javax.validation.Valid;
@@ -30,14 +32,27 @@ public class ChapterController {
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity<List<Chapter>> getAllChapters() {
+    public ResponseEntity<?> getAllChapters(@RequestParam(required = false)
+                                            Boolean condensed) {
 
         UUID uuid = UUID.randomUUID();
         MDC.put("requestId", uuid.toString());
         logger.info("Received request for getAllChapters");
 
+        List<Chapter> response = null;
+        List<ChapterResponse> condensedResponse = new ArrayList<>();
+
         try {
-            return new ResponseEntity<>(chapterService.getAllChapters(), HttpStatus.OK);
+            response = chapterService.getAllChapters();
+            if (condensed != null && condensed == Boolean.TRUE) {
+                for (Chapter chapter : response) {
+                    condensedResponse.add(new ChapterResponse(chapter));
+                }
+                return new ResponseEntity<>(condensedResponse, HttpStatus.OK);
+
+            } else {
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
         } catch (Exception e) {
             logger.error("Error in getAllChapters: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
@@ -47,14 +62,21 @@ public class ChapterController {
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "{id}")
-    public ResponseEntity<Chapter> getChapter(@PathVariable long id) {
+    public ResponseEntity<?> getChapter(@PathVariable long id,
+                                        @RequestParam(required = false)
+                                        Boolean condensed) {
 
         UUID uuid = UUID.randomUUID();
         MDC.put("requestId", uuid.toString());
         logger.info("Received request for getChapter with id: " + id);
 
         try {
-            return new ResponseEntity<>(chapterService.getChapterById(id), HttpStatus.OK);
+            Chapter response = chapterService.getChapterById(id);
+            if (condensed != null && condensed == Boolean.TRUE) {
+                return new ResponseEntity<>(new ChapterResponse(response), HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
         } catch (Exception e) {
             logger.error("Error in getChapter: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
@@ -64,14 +86,28 @@ public class ChapterController {
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "course/{id}")
-    public ResponseEntity<List<Chapter>> getChaptersByCourseId(@PathVariable long id) {
+    public ResponseEntity<?> getChaptersByCourseId(@PathVariable long id,
+                                                   @RequestParam(required = false)
+                                                   Boolean condensed) {
 
         UUID uuid = UUID.randomUUID();
         MDC.put("requestId", uuid.toString());
         logger.info("Received request for getChaptersByCourseId with id: " + id);
 
+        List<Chapter> response = null;
+        List<ChapterResponse> condensedResponse = new ArrayList<>();
+
         try {
-            return new ResponseEntity<>(chapterService.getChaptersByCourseId(id), HttpStatus.OK);
+            response = chapterService.getChaptersByCourseId(id);
+            if (condensed != null && condensed == Boolean.TRUE) {
+                for (Chapter chapter : response) {
+                    condensedResponse.add(new ChapterResponse(chapter));
+                }
+                return new ResponseEntity<>(condensedResponse, HttpStatus.OK);
+
+            } else {
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
         } catch (Exception e) {
             logger.error("Error in getChaptersByCourseId: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
@@ -82,7 +118,7 @@ public class ChapterController {
 
     @RequestMapping(method = RequestMethod.GET, value = "sortorder/{courseId}")
     public ResponseEntity<List<ChapterSortOrderResponse>> getChaptersSortOrder(
-            @PathVariable long courseId) {
+        @PathVariable long courseId) {
 
         UUID uuid = UUID.randomUUID();
         MDC.put("requestId", uuid.toString());
@@ -90,7 +126,7 @@ public class ChapterController {
 
         try {
             return new ResponseEntity<>(chapterService.getChaptersSortOrder(courseId),
-                    HttpStatus.OK);
+                HttpStatus.OK);
         } catch (Exception e) {
             logger.error("Error in getChaptersSortOrder: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
@@ -100,16 +136,22 @@ public class ChapterController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<Chapter> addChapter(@RequestBody NewChapterRequest newChapterRequest) {
+    public ResponseEntity<?> addChapter(@RequestBody NewChapterRequest newChapterRequest,
+                                        @RequestParam(required = false) Boolean condensed) {
 
         UUID uuid = UUID.randomUUID();
         MDC.put("requestId", uuid.toString());
         logger.info("Received request for addChapter for course: "
-                + newChapterRequest.getCourseId());
+            + newChapterRequest.getCourseId());
 
         Chapter chapter = chapterService.toChapter(newChapterRequest);
         try {
-            return new ResponseEntity<>(chapterService.saveChapter(chapter), HttpStatus.OK);
+            Chapter response = chapterService.saveChapter(chapter);
+            if (condensed != null && condensed == Boolean.TRUE) {
+                return new ResponseEntity<>(new ChapterResponse(response), HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
         } catch (Exception e) {
             logger.error("Error in addChapter: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
@@ -119,16 +161,21 @@ public class ChapterController {
     }
 
     @RequestMapping(method = RequestMethod.PUT, value = "{id}")
-    public ResponseEntity<Chapter> updateChapter(@RequestBody NewChapterRequest newChapterRequest,
-                                                 @PathVariable long id) {
+    public ResponseEntity<?> updateChapter(@RequestBody NewChapterRequest newChapterRequest,
+                                                 @PathVariable long id,
+                                                 @RequestParam(required = false) Boolean condensed) {
 
         UUID uuid = UUID.randomUUID();
         MDC.put("requestId", uuid.toString());
         logger.info("Received request for updateChapter with id: " + id);
 
         try {
-            return new ResponseEntity<>(chapterService.updateChapter(newChapterRequest, id),
-                    HttpStatus.OK);
+            Chapter response = chapterService.updateChapter(newChapterRequest, id);
+            if (condensed != null && condensed == Boolean.TRUE) {
+                return new ResponseEntity<>(new ChapterResponse(response), HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
         } catch (Exception e) {
             logger.error("Error in updateChapter: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
@@ -139,8 +186,8 @@ public class ChapterController {
 
     @RequestMapping(method = RequestMethod.PUT, value = "sortorder/{courseId}")
     public ResponseEntity<List<ChapterSortOrderResponse>> updateChaptersSortOrder(
-            @Valid @RequestBody List<ChapterSortOrderRequest> chaptersSortOrder,
-            @PathVariable long courseId) {
+        @Valid @RequestBody List<ChapterSortOrderRequest> chaptersSortOrder,
+        @PathVariable long courseId) {
 
         UUID uuid = UUID.randomUUID();
         MDC.put("requestId", uuid.toString());
@@ -148,7 +195,7 @@ public class ChapterController {
 
         try {
             return new ResponseEntity<>(chapterService.updateChaptersSortOrder(courseId,
-                    chaptersSortOrder), HttpStatus.OK);
+                chaptersSortOrder), HttpStatus.OK);
         } catch (Exception e) {
             logger.error("Error in updateChaptersSortOrder: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());

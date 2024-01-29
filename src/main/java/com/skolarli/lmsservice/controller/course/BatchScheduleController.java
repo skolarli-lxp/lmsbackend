@@ -3,6 +3,7 @@ package com.skolarli.lmsservice.controller.course;
 import com.skolarli.lmsservice.exception.OperationNotSupportedException;
 import com.skolarli.lmsservice.models.db.core.LmsUser;
 import com.skolarli.lmsservice.models.db.course.BatchSchedule;
+import com.skolarli.lmsservice.models.dto.course.BatchScheduleResponse;
 import com.skolarli.lmsservice.models.dto.course.NewBatchScheduleRequest;
 import com.skolarli.lmsservice.models.dto.course.NewBatchSchedulesForBatchRequest;
 import com.skolarli.lmsservice.services.course.BatchScheduleService;
@@ -19,6 +20,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.time.Instant;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import javax.validation.Valid;
@@ -39,12 +41,13 @@ public class BatchScheduleController {
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity<List<BatchSchedule>> getAllBatchSchedules(
+    public ResponseEntity<?> getAllBatchSchedules(
         @RequestParam(required = false) Long batchId,
         @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd")
         LocalDate queryStartDate,
         @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd")
-        LocalDate queryEndDate) {
+        LocalDate queryEndDate,
+        @RequestParam(required = false) Boolean condensed) {
 
         UUID uuid = UUID.randomUUID();
         MDC.put("requestId", uuid.toString());
@@ -56,6 +59,8 @@ public class BatchScheduleController {
             ? " for queryEndDate: " + queryEndDate
             : ""));
 
+        List<BatchSchedule> response = null;
+        List<BatchScheduleResponse> condensedResponse = new ArrayList<>();
 
         Instant queryStartDateInstant = null;
         Instant queryEndDateAsDate = null;
@@ -72,10 +77,16 @@ public class BatchScheduleController {
         }
 
         try {
-            return new ResponseEntity<>(
-                batchScheduleService.getSchedulesWithCriteria(
-                    batchId, queryStartDateInstant, queryEndDateAsDate),
-                HttpStatus.OK);
+            response = batchScheduleService.getSchedulesWithCriteria(
+                batchId, queryStartDateInstant, queryEndDateAsDate);
+            if (condensed != null && condensed == Boolean.TRUE) {
+                for (BatchSchedule schedule : response) {
+                    condensedResponse.add(new BatchScheduleResponse(schedule));
+                }
+                return new ResponseEntity<>(condensedResponse, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
         } catch (Exception e) {
             logger.error("Error in getAllBatchSchedules: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
@@ -85,14 +96,25 @@ public class BatchScheduleController {
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "{id}")
-    public ResponseEntity<BatchSchedule> getBatchSchedule(@PathVariable long id) {
+    public ResponseEntity<?> getBatchSchedule(@PathVariable long id,
+                                                          @RequestParam(required = false)
+                                                          Boolean condensed) {
 
         UUID uuid = UUID.randomUUID();
         MDC.put("requestId", uuid.toString());
         logger.info("Received request for getBatchSchedule for id: " + id);
 
+        BatchSchedule response = null;
+        BatchScheduleResponse condensedResponse = null;
+
         try {
-            return new ResponseEntity<>(batchScheduleService.getBatchSchedule(id), HttpStatus.OK);
+            response = batchScheduleService.getBatchSchedule(id);
+            if (condensed != null && condensed == Boolean.TRUE) {
+                condensedResponse = new BatchScheduleResponse(response);
+                return new ResponseEntity<>(condensedResponse, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
         } catch (Exception e) {
             logger.error("Error in getBatchSchedule: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
@@ -102,8 +124,9 @@ public class BatchScheduleController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<BatchSchedule> addBatchSchedule(
-        @Valid @RequestBody NewBatchScheduleRequest request) {
+    public ResponseEntity<?> addBatchSchedule(
+        @Valid @RequestBody NewBatchScheduleRequest request,
+        @RequestParam Boolean condensed) {
 
         UUID uuid = UUID.randomUUID();
         MDC.put("requestId", uuid.toString());
@@ -112,8 +135,12 @@ public class BatchScheduleController {
         BatchSchedule batchSchedule = batchScheduleService.toBatchSchedule(request);
 
         try {
-            return new ResponseEntity<>(batchScheduleService.saveBatchSchedule(batchSchedule),
-                HttpStatus.OK);
+            BatchSchedule response = batchScheduleService.saveBatchSchedule(batchSchedule);
+            if (condensed != null && condensed == Boolean.TRUE) {
+                return new ResponseEntity<>(new BatchScheduleResponse(response), HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
         } catch (OperationNotSupportedException e) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
         } catch (Exception e) {
@@ -125,9 +152,10 @@ public class BatchScheduleController {
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/forbatch")
-    public ResponseEntity<List<BatchSchedule>> addBatchSchedules(
+    public ResponseEntity<?> addBatchSchedules(
         @Valid @RequestBody List<NewBatchSchedulesForBatchRequest> request,
-        @RequestParam Long batchId) {
+        @RequestParam Long batchId,
+        @RequestParam Boolean condensed) {
 
         UUID uuid = UUID.randomUUID();
         MDC.put("requestId", uuid.toString());
@@ -135,9 +163,19 @@ public class BatchScheduleController {
 
         List<BatchSchedule> batchSchedules = batchScheduleService.toBatchScheduleList(request);
 
+        List<BatchSchedule> response = null;
+        List<BatchScheduleResponse> condensedResponse = new ArrayList<>();
+
         try {
-            return new ResponseEntity<>(batchScheduleService.saveAllBatchSchedules(
-                batchSchedules, batchId), HttpStatus.OK);
+            response = batchScheduleService.saveAllBatchSchedules(batchSchedules, batchId);
+            if (condensed != null && condensed == Boolean.TRUE) {
+                for (BatchSchedule schedule : response) {
+                    condensedResponse.add(new BatchScheduleResponse(schedule));
+                }
+                return new ResponseEntity<>(condensedResponse, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
         } catch (OperationNotSupportedException e) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
         } catch (Exception e) {
@@ -149,9 +187,10 @@ public class BatchScheduleController {
     }
 
     @RequestMapping(method = RequestMethod.PUT, value = "{id}")
-    public ResponseEntity<BatchSchedule> updateBatchSchedule(
+    public ResponseEntity<?> updateBatchSchedule(
         @PathVariable Long id,
-        @RequestBody NewBatchScheduleRequest request) {
+        @RequestBody NewBatchScheduleRequest request,
+        @RequestParam(required = false) Boolean condensed) {
 
         UUID uuid = UUID.randomUUID();
         MDC.put("requestId", uuid.toString());
@@ -160,8 +199,13 @@ public class BatchScheduleController {
         BatchSchedule batchSchedule = batchScheduleService.toBatchSchedule(request);
 
         try {
-            return new ResponseEntity<>(batchScheduleService.updateBatchSchedule(batchSchedule,
-                id), HttpStatus.OK);
+            BatchSchedule response = batchScheduleService.updateBatchSchedule(batchSchedule,
+                id);
+            if (condensed != null && condensed == Boolean.TRUE) {
+                return new ResponseEntity<>(new BatchScheduleResponse(response), HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
         } catch (Exception e) {
             logger.error("Error in updateBatchSchedule: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
