@@ -8,20 +8,22 @@ import com.skolarli.lmsservice.models.db.core.LmsUser;
 import com.skolarli.lmsservice.models.db.core.VerificationCode;
 import com.skolarli.lmsservice.models.db.course.Batch;
 import com.skolarli.lmsservice.models.dto.core.GetLmsUserResponse;
+import com.skolarli.lmsservice.models.dto.course.BatchResponse;
 import com.skolarli.lmsservice.services.core.LmsUserService;
 import com.skolarli.lmsservice.services.core.VerificationService;
 import com.skolarli.lmsservice.utils.UserUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import javax.validation.Valid;
 
 @RestController
@@ -29,17 +31,21 @@ import javax.validation.Valid;
 public class UserController {
 
     final Logger logger = LoggerFactory.getLogger(UserController.class);
-    @Autowired
+    private final UserUtils userUtils;
+    private final LmsUserService lmsUserService;
     TenantContext tenantContext;
-    @Autowired
     VerificationService verificationService;
-    @Autowired
-    private UserUtils userUtils;
-    @Autowired
-    private LmsUserService lmsUserService;
+
+    public UserController(UserUtils userUtils, LmsUserService lmsUserService,
+                          VerificationService verificationService, TenantContext tenantContext) {
+        this.userUtils = userUtils;
+        this.lmsUserService = lmsUserService;
+        this.verificationService = verificationService;
+        this.tenantContext = tenantContext;
+    }
 
     @GetMapping
-    public ResponseEntity<List<LmsUser>> getAllUsers() {
+    public ResponseEntity<?> getAllUsers(@RequestParam(required = false) Boolean condensed) {
 
         UUID uuid = UUID.randomUUID();
         MDC.put("requestId", uuid.toString());
@@ -49,11 +55,19 @@ public class UserController {
         if (!currentUser.getIsAdmin()) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Permission denied");
         }
-        return new ResponseEntity<>(lmsUserService.getAllLmsUsers(), HttpStatus.OK);
+
+        List<LmsUser> response = lmsUserService.getAllLmsUsers();
+        if (condensed != null && condensed == Boolean.TRUE) {
+            List<GetLmsUserResponse> getLmsUserResponses = response.stream()
+                .map(GetLmsUserResponse::new).collect(Collectors.toList());
+            return new ResponseEntity<>(getLmsUserResponses, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping(value = "{id}")
-    public ResponseEntity<LmsUser> getUser(@PathVariable long id) {
+    public ResponseEntity<?> getUser(@PathVariable long id,
+                                     @RequestParam(required = false) Boolean condensed) {
 
         UUID uuid = UUID.randomUUID();
         MDC.put("requestId", uuid.toString());
@@ -63,19 +77,28 @@ public class UserController {
         if (!currentUser.getIsAdmin() && currentUser.getId() != id) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Permission denied");
         }
-        return new ResponseEntity<>(lmsUserService.getLmsUserById(id), HttpStatus.OK);
+        LmsUser response = lmsUserService.getLmsUserById(id);
+        if (condensed != null && condensed == Boolean.TRUE) {
+            return new ResponseEntity<>(new GetLmsUserResponse(response), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping(value = "email2/{email}")
-    public ResponseEntity<LmsUser> getUserByEmail2(@PathVariable String email) {
+    public ResponseEntity<?> getUserByEmail2(@PathVariable String email,
+                                             @RequestParam(required = false)
+                                             Boolean condensed) {
 
         UUID uuid = UUID.randomUUID();
         MDC.put("requestId", uuid.toString());
         logger.info("Received Get User request Email: " + email);
 
         long tenantId = tenantContext.getTenantId();
-        return new ResponseEntity<>(lmsUserService.getLmsUserByEmailAndTenantId(email, tenantId),
-            HttpStatus.OK);
+        LmsUser response = lmsUserService.getLmsUserByEmailAndTenantId(email, tenantId);
+        if (condensed != null && condensed == Boolean.TRUE) {
+            return new ResponseEntity<>(new GetLmsUserResponse(response), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping(value = "email/{email}")
@@ -91,22 +114,33 @@ public class UserController {
     }
 
     @GetMapping(value = "role")
-    public ResponseEntity<List<LmsUser>> getUserByRole(@RequestParam("role") Role role) {
+    public ResponseEntity<?> getUserByRole(@RequestParam("role") Role role,
+                                           @RequestParam(required = false) Boolean condensed) {
 
         UUID uuid = UUID.randomUUID();
         MDC.put("requestId", uuid.toString());
         logger.info("Received getUserByRole request " + role);
 
-        return new ResponseEntity<>(lmsUserService.getLmsUsersByRole(role), HttpStatus.OK);
+        List<LmsUser> response = lmsUserService.getLmsUsersByRole(role);
+        if (condensed != null && condensed == Boolean.TRUE) {
+            List<GetLmsUserResponse> getLmsUserResponses = response.stream()
+                .map(GetLmsUserResponse::new).collect(Collectors.toList());
+            return new ResponseEntity<>(getLmsUserResponses, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping(value = "getAllEnrolledBatches")
-    public ResponseEntity<List<Batch>> getAllEnrolledBatches(
+    public ResponseEntity<?> getAllEnrolledBatches(
         @RequestParam(required = false) Long studentId,
-        @RequestParam(required = false) String studentEmail) {
+        @RequestParam(required = false) String studentEmail,
+        @RequestParam(required = false) Boolean condensed) {
 
         UUID uuid = UUID.randomUUID();
         MDC.put("requestId", uuid.toString());
+
+        List<Batch> response = null;
+        List<BatchResponse> condensedResponse = new ArrayList<>();
 
         logger.info("Received getAllEnrolledBatches request" + (studentId != null ? " studentId: "
             + studentId : " studentEmail: " + studentEmail));
@@ -122,11 +156,17 @@ public class UserController {
         }
         try {
             if (studentId != null) {
-                return new ResponseEntity<>(
-                    lmsUserService.getBatchesEnrolledForStudent(studentId), HttpStatus.OK);
+                response = lmsUserService.getBatchesEnrolledForStudent(studentId);
             } else if (studentEmail != null && !studentEmail.isEmpty()) {
-                return new ResponseEntity<>(
-                    lmsUserService.getBatchesEnrolledForStudent(studentEmail), HttpStatus.OK);
+                response = lmsUserService.getBatchesEnrolledForStudent(studentEmail);
+            }
+            if (condensed != null && condensed == Boolean.TRUE) {
+                for (Batch batch : response) {
+                    condensedResponse.add(new BatchResponse(batch));
+                }
+                return new ResponseEntity<>(condensedResponse, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(response, HttpStatus.OK);
             }
         } catch (OperationNotSupportedException | ResourceNotFoundException e) {
             logger.error(e.getMessage());
@@ -134,19 +174,22 @@ public class UserController {
         } finally {
             MDC.remove("requestId");
         }
-        return null;
     }
 
     @GetMapping(value = "getAllBatchesTaught")
-    public ResponseEntity<List<Batch>> getAllTaughtBatches(
+    public ResponseEntity<?> getAllTaughtBatches(
         @RequestParam(required = false) Long instructorId,
-        @RequestParam(required = false) String instructorEmail) {
+        @RequestParam(required = false) String instructorEmail,
+        @RequestParam(required = false) Boolean condensed) {
 
         UUID uuid = UUID.randomUUID();
         MDC.put("requestId", uuid.toString());
         logger.info("Received getAllBatchesTaught request "
             + (instructorId != null ? " instructorId: "
             + instructorId : instructorEmail != null ? "instructorEmail: " + instructorEmail : ""));
+
+        List<Batch> response = null;
+        List<BatchResponse> condensedResponse = new ArrayList<>();
 
         LmsUser currentUser = userUtils.getCurrentUser();
         if (!currentUser.getIsAdmin() && currentUser.getId() != instructorId
@@ -159,12 +202,17 @@ public class UserController {
         }
         try {
             if (instructorId != null) {
-                return new ResponseEntity<>(
-                    lmsUserService.getBatchesTaughtByInstructor(instructorId), HttpStatus.OK);
+                response = lmsUserService.getBatchesTaughtByInstructor(instructorId);
             } else if (null != instructorEmail && !instructorEmail.isEmpty()) {
-                return new ResponseEntity<>(
-                    lmsUserService.getBatchesTaughtByInstructor(instructorEmail),
-                    HttpStatus.OK);
+                response = lmsUserService.getBatchesTaughtByInstructor(instructorEmail);
+            }
+            if (condensed != null && condensed == Boolean.TRUE) {
+                for (Batch batch : response) {
+                    condensedResponse.add(new BatchResponse(batch));
+                }
+                return new ResponseEntity<>(condensedResponse, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(response, HttpStatus.OK);
             }
         } catch (OperationNotSupportedException | ResourceNotFoundException e) {
             logger.error(e.getMessage());
@@ -172,11 +220,11 @@ public class UserController {
         } finally {
             MDC.remove("requestId");
         }
-        return null;
     }
 
     @PostMapping
-    public ResponseEntity<LmsUser> addNewUser(@Valid @RequestBody LmsUser lmsUser) {
+    public ResponseEntity<?> addNewUser(@Valid @RequestBody LmsUser lmsUser,
+                                        @RequestParam(required = false) Boolean condensed) {
 
         UUID uuid = UUID.randomUUID();
         MDC.put("requestId", uuid.toString());
@@ -194,11 +242,15 @@ public class UserController {
         savedUser.setVerificationCode(code);
         MDC.remove("requestId");
 
+        if (condensed != null && condensed == Boolean.TRUE) {
+            return new ResponseEntity<>(new GetLmsUserResponse(savedUser), HttpStatus.CREATED);
+        }
         return new ResponseEntity<LmsUser>(savedUser, HttpStatus.CREATED);
     }
 
     @PostMapping(value = "addMultiple")
-    public ResponseEntity<List<LmsUser>> addMultipleUsers(@Valid @RequestBody List<LmsUser> lmsUsers) {
+    public ResponseEntity<?> addMultipleUsers(@Valid @RequestBody List<LmsUser> lmsUsers,
+                                              @RequestParam(required = false) Boolean condensed) {
         UUID uuid = UUID.randomUUID();
         MDC.put("requestId", uuid.toString());
         logger.info("Received request to add multiple users");
@@ -215,11 +267,18 @@ public class UserController {
         }
 
         MDC.remove("requestId");
+
+        if (condensed != null && condensed == Boolean.TRUE) {
+            List<GetLmsUserResponse> condensedResponse = savedUsers.stream()
+                .map(GetLmsUserResponse::new).collect(Collectors.toList());
+            return new ResponseEntity<>(condensedResponse, HttpStatus.CREATED);
+        }
         return new ResponseEntity(savedUsers, HttpStatus.CREATED);
     }
 
     @PutMapping(value = "{id}")
-    public ResponseEntity<LmsUser> updateUser(@PathVariable long id, @RequestBody LmsUser lmsUser) {
+    public ResponseEntity<?> updateUser(@PathVariable long id, @RequestBody LmsUser lmsUser,
+                                        @RequestParam(required = false) Boolean condensed) {
 
         UUID uuid = UUID.randomUUID();
         MDC.put("requestId", uuid.toString());
@@ -231,7 +290,11 @@ public class UserController {
         }
 
         try {
-            return new ResponseEntity<>(lmsUserService.updateLmsUser(lmsUser, id), HttpStatus.OK);
+            LmsUser response = lmsUserService.updateLmsUser(lmsUser, id);
+            if (condensed != null && condensed == Boolean.TRUE) {
+                return new ResponseEntity<>(new GetLmsUserResponse(response), HttpStatus.OK);
+            }
+            return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (OperationNotSupportedException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         } finally {

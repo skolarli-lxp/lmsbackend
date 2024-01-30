@@ -1,8 +1,11 @@
 package com.skolarli.lmsservice.models.dto.core;
 
 import com.skolarli.lmsservice.models.db.core.LmsUser;
+import com.skolarli.lmsservice.models.db.core.VerificationCode;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.time.ZonedDateTime;
 
 @Getter
 @Setter
@@ -12,29 +15,32 @@ public class GetLmsUserResponse {
     private final String lastName;
     private final String email;
     private final String phoneNumber;
-
-    private String companyName;
-    private String employeeId;
-
     private final int experience;
     private final String occupation;
     private final String education;
-
     private final String userBio;
-
     private final String profilePicUrl;
-
     private final String address;
-
     private final String country;
-
     private final Boolean isAdmin;
     private final Boolean isInstructor;
+    private String companyName;
+    private String employeeId;
+    private Boolean isStudent;
 
-    private final Boolean isStudent;
-    private final Boolean emailVerified;
+    private Boolean isSuperAdmin;
 
-    private final Boolean passwordResetRequested;
+    private Boolean emailVerified;
+
+    private VerificationCode verificationCode;
+
+    private Boolean userIsDeleted;
+
+    private Boolean passwordResetRequested;
+
+    private String passwordResetToken;
+
+    private ZonedDateTime passwordResetTokenExpiry;
 
     public GetLmsUserResponse(LmsUser lmsUser) {
         this.id = lmsUser.getId();
@@ -54,7 +60,12 @@ public class GetLmsUserResponse {
         this.isAdmin = lmsUser.getIsAdmin();
         this.isInstructor = lmsUser.getIsInstructor();
         this.isStudent = lmsUser.getIsStudent();
+        this.isSuperAdmin = lmsUser.getIsSuperAdmin();
         this.emailVerified = lmsUser.getEmailVerified();
+        this.verificationCode = lmsUser.getVerificationCode();
+        this.userIsDeleted = lmsUser.getUserIsDeleted();
         this.passwordResetRequested = lmsUser.getPasswordResetRequested();
+        this.passwordResetToken = lmsUser.getPasswordResetToken();
+        this.passwordResetTokenExpiry = lmsUser.getPasswordResetTokenExpiry();
     }
 }
