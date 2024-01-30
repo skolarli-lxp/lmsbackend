@@ -14,6 +14,8 @@ public interface BatchService {
 
     List<Batch> getBatchesForCourse(long courseId);
 
+    Long getBatchCount();
+
     Batch saveBatch(Batch batch);
 
     Batch updateBatch(Batch batch, long id);

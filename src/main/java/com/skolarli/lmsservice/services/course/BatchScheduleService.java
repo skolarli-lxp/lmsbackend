@@ -17,6 +17,8 @@ public interface BatchScheduleService {
     List<BatchSchedule> getSchedulesWithCriteria(Long batchId,
                                                  Instant queryStartDate, Instant queryEndDate);
 
+    Long getBatchScheduleCount();
+
     //CREATE
     BatchSchedule saveBatchSchedule(BatchSchedule batchSchedule);
 

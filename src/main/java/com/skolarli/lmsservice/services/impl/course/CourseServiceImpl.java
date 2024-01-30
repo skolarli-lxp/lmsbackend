@@ -2,6 +2,7 @@ package com.skolarli.lmsservice.services.impl.course;
 
 import com.skolarli.lmsservice.exception.OperationNotSupportedException;
 import com.skolarli.lmsservice.exception.ResourceNotFoundException;
+import com.skolarli.lmsservice.models.CourseStatus;
 import com.skolarli.lmsservice.models.db.core.LmsUser;
 import com.skolarli.lmsservice.models.db.course.Course;
 import com.skolarli.lmsservice.models.db.course.CourseTag;
@@ -49,6 +50,15 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
+    public Long getCourseCount(CourseStatus courseStatus) {
+        if (courseStatus == null) {
+            return courseRepository.findCourseCount();
+        } else {
+            return courseRepository.findCourseCountByCourseStatus(courseStatus);
+        }
+    }
+
+    @Override
     public Course saveCourse(Course course) {
         if (course.getCourseOwner() == null) {
             course.setCourseOwner(userUtils.getCurrentUser());
@@ -60,11 +70,11 @@ public class CourseServiceImpl implements CourseService {
     public Course updateCourse(Course newCourse, long id) {
         LmsUser currentUser = userUtils.getCurrentUser();
         Course existingCourse = courseRepository.findById(id).orElseThrow(
-                () -> new ResourceNotFoundException("Course", "Id", id));
+            () -> new ResourceNotFoundException("Course", "Id", id));
 
         if (!currentUser.getIsAdmin() && currentUser != existingCourse.getCourseOwner()) {
             throw new OperationNotSupportedException("User does not have permission to perform "
-                    + "Update operation");
+                + "Update operation");
         }
         if (!currentUser.getIsAdmin() && newCourse.getCourseOwner() != null) {
             logger.error("Only admin can change course owner");
@@ -81,23 +91,23 @@ public class CourseServiceImpl implements CourseService {
         LmsUser currentUser = userUtils.getCurrentUser();
         if (!currentUser.getIsAdmin() && currentUser != existingCourse.getCourseOwner()) {
             throw new OperationNotSupportedException("User does not have permission to perform "
-                    + "Delete operation");
+                + "Delete operation");
         }
         if (existingCourse.getCourseBatches() != null
-                && !existingCourse.getCourseBatches().isEmpty()) {
+            && !existingCourse.getCourseBatches().isEmpty()) {
             throw new OperationNotSupportedException("Course cannot be deleted as it has batches "
-                    + "associated with it");
+                + "associated with it");
         }
         if (existingCourse.getCourseChapters() != null
-                && !existingCourse.getCourseChapters().isEmpty()) {
+            && !existingCourse.getCourseChapters().isEmpty()) {
             throw new OperationNotSupportedException("Course cannot be deleted as it has chapters "
-                    + "associated with it");
+                + "associated with it");
         }
     }
 
     private void deleteCourseTags(Course existingCourse) {
         if (existingCourse.getCourseTagList() != null
-                && !existingCourse.getCourseTagList().isEmpty()) {
+            && !existingCourse.getCourseTagList().isEmpty()) {
 
             List<CourseTag> courseTagList = existingCourse.getCourseTagList();
             List<CourseTag> courseTagListCopy = new ArrayList<>(courseTagList);
@@ -113,7 +123,7 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public void softDeleteCourse(long id) {
         Course existingCourse = courseRepository.findById(id).orElseThrow(
-                () -> new ResourceNotFoundException("Course", "Id", id));
+            () -> new ResourceNotFoundException("Course", "Id", id));
         try {
             canDelete(existingCourse);
         } catch (OperationNotSupportedException e) {
@@ -129,7 +139,7 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public void hardDeleteCourse(long id) {
         Course existingCourse = courseRepository.findById(id).orElseThrow(
-                () -> new ResourceNotFoundException("Course", "Id", id));
+            () -> new ResourceNotFoundException("Course", "Id", id));
         try {
             canDelete(existingCourse);
         } catch (OperationNotSupportedException e) {

@@ -2,6 +2,7 @@ package com.skolarli.lmsservice.repository.course;
 
 import com.skolarli.lmsservice.models.db.course.BatchSchedule;
 import com.skolarli.lmsservice.repository.core.TenantableRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.time.Instant;
 import java.util.List;
@@ -24,4 +25,7 @@ public interface BatchScheduleRepository extends TenantableRepository<BatchSched
     List<BatchSchedule> findAllByStartDateTimeBeforeAndBatch_Id(Instant queryEndDate, Long batchId);
 
     List<BatchSchedule> findAllByStartDateTimeBefore(Instant queryEndDate);
+
+    @Query(value = "SELECT count(*) FROM BatchSchedule")
+    long findBatchScheduleCount();
 }

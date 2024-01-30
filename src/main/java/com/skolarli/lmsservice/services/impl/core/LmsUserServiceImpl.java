@@ -124,6 +124,22 @@ public class LmsUserServiceImpl implements LmsUserService {
         return getBatchesTaughtByInstructor(user);
     }
 
+    @Override
+    public Long getLmsUserCount(Role role) {
+        if (role == null) {
+            return lmsUserRepository.findLmsUserCount();
+        } else if (role == Role.ADMIN) {
+            return lmsUserRepository.findAdminUserCount();
+        } else if (role == Role.STUDENT) {
+            return lmsUserRepository.findStudentUserCount();
+        } else if (role == Role.INSTRUCTOR) {
+            return lmsUserRepository.findInstructorUserCount();
+        } else {
+            logger.error("Role not found");
+            throw new ResourceNotFoundException("Role", "role", role);
+        }
+    }
+
     private List<Batch> getBatchesEnrolledForStudent(LmsUser student) {
         if (!student.getIsStudent()) {
             throw new OperationNotSupportedException("User is not an student");

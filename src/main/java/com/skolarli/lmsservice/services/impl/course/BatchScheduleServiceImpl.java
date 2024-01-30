@@ -210,6 +210,11 @@ public class BatchScheduleServiceImpl implements BatchScheduleService {
         }
     }
 
+    @Override
+    public Long getBatchScheduleCount() {
+        return batchScheduleRepository.findBatchScheduleCount();
+    }
+
 
     @Override
     public BatchSchedule saveBatchSchedule(BatchSchedule batchSchedule) {

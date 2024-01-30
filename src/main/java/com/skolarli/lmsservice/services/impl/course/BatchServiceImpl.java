@@ -116,6 +116,11 @@ public class BatchServiceImpl implements BatchService {
     }
 
     @Override
+    public Long getBatchCount() {
+        return batchRepository.findBatchCount();
+    }
+
+    @Override
     public Batch saveBatch(Batch batch) {
         LmsUser currentUser = userUtils.getCurrentUser();
         if (!currentUser.getIsAdmin() && currentUser != batch.getCourse().getCourseOwner()) {

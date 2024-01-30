@@ -26,6 +26,8 @@ public interface LmsUserService {
 
     List<Batch> getBatchesTaughtByInstructor(String email);
 
+    Long getLmsUserCount(Role role);
+
     LmsUser saveLmsUser(LmsUser lmsUser);
 
     List<LmsUser> saveLmsUsers(List<LmsUser> lmsUsers);
