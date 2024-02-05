@@ -12,8 +12,13 @@ import org.slf4j.MDC;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.UUID;
 import javax.validation.Valid;
@@ -22,9 +27,10 @@ import javax.validation.Valid;
 @RequestMapping("/questionbankmcq")
 public class QuestionBankMcqController {
 
+    static final String TEMP_STORAGE = "/tmp/lmsservice/";
     final Logger logger = LoggerFactory.getLogger(QuestionBankMcqController.class);
-
     final QuestionBankMcqService questionBankMcqService;
+
 
     public QuestionBankMcqController(QuestionBankMcqService questionBankMcqService) {
         this.questionBankMcqService = questionBankMcqService;
@@ -36,19 +42,19 @@ public class QuestionBankMcqController {
                                                                  @RequestParam(required = false)
                                                                  Long batchId,
                                                                  @RequestParam(required = false)
-                                                                     Long lessonId,
+                                                                 Long lessonId,
                                                                  @RequestParam(required = false)
-                                                                     Long chapterId,
+                                                                 Long chapterId,
                                                                  @RequestParam(required = false)
-                                                                     Long studentId) {
+                                                                 Long studentId) {
         UUID uuid = UUID.randomUUID();
         MDC.put("requestId", uuid.toString());
         logger.info("Received request for getAllquestions" + (courseId != null
-                ? " for courseId: " + courseId
-                : ""));
+            ? " for courseId: " + courseId
+            : ""));
         try {
             List<BankQuestionMcq> questions = questionBankMcqService.getQuestionsByParameters(
-                    courseId, batchId, lessonId, chapterId, studentId);
+                courseId, batchId, lessonId, chapterId, studentId);
             return new ResponseEntity<>(questions, HttpStatus.OK);
         } catch (Exception e) {
             logger.error("Error in getAllquestions: " + e.getMessage());
@@ -77,7 +83,7 @@ public class QuestionBankMcqController {
 
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<BankQuestionMcq> saveQuestion(
-            @Valid @RequestBody NewBankQuestionMcqRequest request) {
+        @Valid @RequestBody NewBankQuestionMcqRequest request) {
         UUID uuid = UUID.randomUUID();
         MDC.put("requestId", uuid.toString());
         logger.info("Received request for save question");
@@ -106,7 +112,7 @@ public class QuestionBankMcqController {
 
     @RequestMapping(value = "/saveall", method = RequestMethod.POST)
     public ResponseEntity<List<BankQuestionMcq>> saveQuestions(
-            @Valid @RequestBody List<NewBankQuestionMcqRequest> request) {
+        @Valid @RequestBody List<NewBankQuestionMcqRequest> request) {
         UUID uuid = UUID.randomUUID();
         MDC.put("requestId", uuid.toString());
         logger.info("Received request for save questions");
@@ -115,8 +121,8 @@ public class QuestionBankMcqController {
 
         try {
             questions = request.stream()
-                    .map(questionBankMcqService::toBankQuestionMcq)
-                    .collect(java.util.stream.Collectors.toList());
+                .map(questionBankMcqService::toBankQuestionMcq)
+                .collect(java.util.stream.Collectors.toList());
         } catch (Exception e) {
             logger.error("Error in saveQuestion: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
@@ -127,7 +133,7 @@ public class QuestionBankMcqController {
 
         try {
             List<BankQuestionMcq> savedQuestions =
-                    questionBankMcqService.saveAllQuestions(questions);
+                questionBankMcqService.saveAllQuestions(questions);
             return new ResponseEntity<>(savedQuestions, HttpStatus.OK);
         } catch (ValidationFailureException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
@@ -141,20 +147,20 @@ public class QuestionBankMcqController {
 
     @RequestMapping(value = "/addtoexam", method = RequestMethod.POST)
     public ResponseEntity<List<ExamQuestionMcq>> addQuestionsToExam(
-            @RequestParam Long examId, @Valid @RequestBody ToExamQuestionRequest request) {
+        @RequestParam Long examId, @Valid @RequestBody ToExamQuestionRequest request) {
         UUID uuid = UUID.randomUUID();
         MDC.put("requestId", uuid.toString());
         logger.info("Received request for add questions to exam with id: " + examId);
 
         if (!request.isValid()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    "Invalid request. Number of questions should be equal to number of marks");
+                "Invalid request. Number of questions should be equal to number of marks");
         }
 
         List<ExamQuestionMcq> questions = null;
         try {
             questions = questionBankMcqService.toExamQuestionMcq(request.getBankQuestionIds(),
-                    request.getMarks(), examId);
+                request.getMarks(), examId);
         } catch (Exception e) {
             logger.error("Error in addQuestionsToExam: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
@@ -167,7 +173,7 @@ public class QuestionBankMcqController {
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
     public ResponseEntity<BankQuestionMcq> updateQuestion(
-            @RequestBody NewBankQuestionMcqRequest request, @PathVariable long id) {
+        @RequestBody NewBankQuestionMcqRequest request, @PathVariable long id) {
         UUID uuid = UUID.randomUUID();
         MDC.put("requestId", uuid.toString());
         logger.info("Received request for update question with id: " + id);
@@ -206,6 +212,35 @@ public class QuestionBankMcqController {
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception e) {
             logger.error("Error in deleteQuestion: " + e.getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        } finally {
+            MDC.remove("requestId");
+        }
+    }
+
+
+    @RequestMapping(value = "upload", method = RequestMethod.POST)
+    public ResponseEntity<Long> uploadQuestions(@RequestParam MultipartFile
+                                                    file) {
+        UUID uuid = UUID.randomUUID();
+        MDC.put("requestId", uuid.toString());
+        logger.info("Received request for upload questions from file : "
+            + file.getOriginalFilename());
+
+        String originalFileName = file.getOriginalFilename();
+
+        try {
+            Path directory = Paths.get(TEMP_STORAGE);
+            Files.createDirectories(directory);
+
+            File fileToImport = new File(TEMP_STORAGE + originalFileName);
+            file.transferTo(fileToImport);
+
+            Long jobId = questionBankMcqService.uploadQuestionsFromCsvBatchJob(fileToImport.getPath());
+
+            return new ResponseEntity<>(jobId, HttpStatus.OK);
+        } catch (Exception e) {
+            logger.error("Error in uploadQuestions: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         } finally {
             MDC.remove("requestId");

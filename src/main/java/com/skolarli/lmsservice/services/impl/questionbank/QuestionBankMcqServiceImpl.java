@@ -20,15 +20,26 @@ import com.skolarli.lmsservice.services.course.LessonService;
 import com.skolarli.lmsservice.services.exam.ExamService;
 import com.skolarli.lmsservice.services.questionbank.QuestionBankMcqService;
 import com.skolarli.lmsservice.utils.UserUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.batch.core.Job;
+import org.springframework.batch.core.JobExecution;
+import org.springframework.batch.core.JobParameters;
+import org.springframework.batch.core.JobParametersBuilder;
+import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.stereotype.Service;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
 @Service
 public class QuestionBankMcqServiceImpl implements QuestionBankMcqService {
+
+    static final Logger logger = LoggerFactory.getLogger(QuestionBankMcqServiceImpl.class);
 
     final QuestionBankMcqRepository questionBankMcqRepository;
 
@@ -47,12 +58,17 @@ public class QuestionBankMcqServiceImpl implements QuestionBankMcqService {
 
     final ExamService examService;
 
+    final JobLauncher jobLauncher;
+
+    final Job job;
+
     public QuestionBankMcqServiceImpl(QuestionBankMcqRepository questionBankMcqRepository,
                                       ExamQuestionMcqRepository examQuestionMcqRepository,
                                       UserUtils userUtils, CourseService courseService,
                                       BatchService batchService, ChapterService chapterService,
                                       LessonService lessonService, LmsUserService lmsUserService,
-                                      ExamService examService) {
+                                      ExamService examService,
+                                      JobLauncher jobLauncher, Job job) {
         this.questionBankMcqRepository = questionBankMcqRepository;
         this.examQuestionMcqRepository = examQuestionMcqRepository;
         this.userUtils = userUtils;
@@ -62,6 +78,8 @@ public class QuestionBankMcqServiceImpl implements QuestionBankMcqService {
         this.lessonService = lessonService;
         this.lmsUserService = lmsUserService;
         this.examService = examService;
+        this.jobLauncher = jobLauncher;
+        this.job = job;
     }
 
     public BankQuestionMcq toBankQuestionMcq(NewBankQuestionMcqRequest newBankQuestionMcqRequest) {
@@ -217,6 +235,38 @@ public class QuestionBankMcqServiceImpl implements QuestionBankMcqService {
             throw new OperationNotSupportedException("User does not have permission to perform "
                 + "this operation");
         }
+    }
+
+    @Override
+    public Long uploadQuestionsFromCsvBatchJob(String filePath) {
+        logger.info("Uploading questions from csv file: " + filePath);
+
+        File file = Paths.get(filePath).toAbsolutePath().toFile();
+
+        if (!file.exists()) {
+            logger.error("File does not exist: " + filePath);
+            return 0L;
+        }
+        try {
+
+            JobParameters jobParameters = new JobParametersBuilder()
+                .addString("fullPathFileName", filePath)
+                .addLong("startAt", System.currentTimeMillis()).toJobParameters();
+
+            JobExecution execution = jobLauncher.run(job, jobParameters);
+
+
+            BufferedReader bufferedReader = new BufferedReader(new java.io.FileReader(file));
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                logger.info(line);
+            }
+        } catch (Exception e) {
+            logger.error("Error creating file: " + e.getMessage());
+            return 0L;
+        }
+
+        return 1L;
     }
 
     @Override

@@ -24,7 +24,10 @@ public interface QuestionBankMcqService {
 
     BankQuestionMcq saveQuestion(BankQuestionMcq question);
 
+
     List<BankQuestionMcq> saveAllQuestions(List<BankQuestionMcq> questions);
+
+    Long uploadQuestionsFromCsvBatchJob(String filePath);
 
     BankQuestionMcq updateQuestion(BankQuestionMcq question, long id);
 
