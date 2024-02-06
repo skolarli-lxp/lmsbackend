@@ -9,7 +9,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
@@ -22,13 +21,15 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 @AutoConfigureMockMvc(addFilters = false)
 class NewDomainControllerTests extends AbstractContainerBaseTest {
 
-    @Autowired
+    private final ObjectMapper mapper;
     MockMvc mockMvc;
-
     private NewDomainRequest newDomainRequest;
 
-    @Autowired
-    private ObjectMapper mapper;
+    public NewDomainControllerTests(ObjectMapper mapper, MockMvc mockMvc) {
+        super();
+        this.mapper = mapper;
+        this.mockMvc = mockMvc;
+    }
 
     @BeforeAll
     public static void setUp() {
@@ -59,10 +60,10 @@ class NewDomainControllerTests extends AbstractContainerBaseTest {
     void newDomainTestSuccess() throws Exception {
         String requestJson = mapper.writeValueAsString(newDomainRequest);
         mockMvc.perform(
-                MockMvcRequestBuilders.post("/newdomain/add")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestJson)
-                        .accept(MediaType.APPLICATION_JSON)
+            MockMvcRequestBuilders.post("/newdomain/add")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestJson)
+                .accept(MediaType.APPLICATION_JSON)
         ).andExpect(status().isCreated());
 
     }

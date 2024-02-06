@@ -6,21 +6,22 @@ import com.skolarli.lmsservice.services.course.CourseService;
 import org.junit.Rule;
 import org.junit.jupiter.api.*;
 import org.junit.rules.ExpectedException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class UserServiceTests extends AbstractContainerBaseTest {
 
-    @Autowired
-    CourseService courseService;
-
-    @Autowired
-    private ObjectMapper mapper;
-
     @Rule
     public final ExpectedException exception = ExpectedException.none();
+    CourseService courseService;
+    private final ObjectMapper mapper;
+
+    public UserServiceTests(CourseService courseService, ObjectMapper mapper) {
+        super();
+        this.courseService = courseService;
+        this.mapper = mapper;
+    }
 
     @BeforeAll
     public static void setUp() {

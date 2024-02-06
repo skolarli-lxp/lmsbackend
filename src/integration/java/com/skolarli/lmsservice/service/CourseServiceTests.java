@@ -6,7 +6,6 @@ import com.skolarli.lmsservice.services.course.CourseService;
 import org.junit.Rule;
 import org.junit.jupiter.api.*;
 import org.junit.rules.ExpectedException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
@@ -15,10 +14,14 @@ class CourseServiceTests extends AbstractContainerBaseTest {
 
     @Rule
     public final ExpectedException exception = ExpectedException.none();
-    @Autowired
     CourseService courseService;
-    @Autowired
-    private ObjectMapper mapper;
+    private final ObjectMapper mapper;
+
+    public CourseServiceTests(CourseService courseService, ObjectMapper mapper) {
+        super();
+        this.courseService = courseService;
+        this.mapper = mapper;
+    }
 
     @BeforeAll()
     public static void setUp() {

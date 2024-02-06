@@ -15,7 +15,6 @@ import com.skolarli.lmsservice.services.core.TenantService;
 import org.junit.Rule;
 import org.junit.jupiter.api.*;
 import org.junit.rules.ExpectedException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -28,10 +27,14 @@ class TenantServiceTests extends AbstractContainerBaseTest {
 
     @Rule
     public final ExpectedException exception = ExpectedException.none();
-    @Autowired
     TenantService tenantService;
-    @Autowired
-    private ObjectMapper mapper;
+    private final ObjectMapper mapper;
+
+    public TenantServiceTests(TenantService tenantService, ObjectMapper mapper) {
+        super();
+        this.tenantService = tenantService;
+        this.mapper = mapper;
+    }
 
     @BeforeAll
     public static void setUp() {
@@ -71,9 +74,9 @@ class TenantServiceTests extends AbstractContainerBaseTest {
     @Test
     void getTenantById_Failure() {
         ResourceNotFoundException resourceNotFoundException = assertThrows(
-                ResourceNotFoundException.class, () -> {
-                    Tenant tenant = tenantService.getTenantById(2);
-                });
+            ResourceNotFoundException.class, () -> {
+                Tenant tenant = tenantService.getTenantById(2);
+            });
         assertEquals("Tenant not found with Id : '2'", resourceNotFoundException.getMessage());
     }
 
@@ -86,11 +89,11 @@ class TenantServiceTests extends AbstractContainerBaseTest {
     @Test
     void getTenantByDomainName_Failure() {
         ResourceNotFoundException resourceNotFoundException = assertThrows(
-                ResourceNotFoundException.class, () -> {
-                    Tenant tenant = tenantService.getTenantByDomainName("domainName2");
-                });
+            ResourceNotFoundException.class, () -> {
+                Tenant tenant = tenantService.getTenantByDomainName("domainName2");
+            });
         assertEquals("Tenant not found with Domain Name : 'domainName2'",
-                resourceNotFoundException.getMessage());
+            resourceNotFoundException.getMessage());
     }
 
     @Test
@@ -119,7 +122,7 @@ class TenantServiceTests extends AbstractContainerBaseTest {
         tenant.setPhoneNumber("1234567890");
 
         DataIntegrityViolationException e = assertThrows(DataIntegrityViolationException.class,
-                () -> tenantService.saveTenant(tenant));
+            () -> tenantService.saveTenant(tenant));
         assertThat(e.getMessage(), containsString("constraint [tenants.domainname]"));
     }
 
@@ -134,7 +137,7 @@ class TenantServiceTests extends AbstractContainerBaseTest {
         tenant.setPhoneNumber("1234567890");
 
         DataIntegrityViolationException e = assertThrows(
-                DataIntegrityViolationException.class, () -> tenantService.saveTenant(tenant));
+            DataIntegrityViolationException.class, () -> tenantService.saveTenant(tenant));
         assertThat(e.getMessage(), containsString("constraint [tenants.domainname]"));
     }
 
@@ -145,7 +148,7 @@ class TenantServiceTests extends AbstractContainerBaseTest {
         tenant.setCompanyName("updatedCompanyame");
 
         SecurityContextHolder.getContext().setAuthentication(
-                new TenantAuthenticationToken("tenantemail@domain.com", 1));
+            new TenantAuthenticationToken("tenantemail@domain.com", 1));
 
         Tenant updatedTenant = tenantService.updateTenant(tenant);
         assert updatedTenant.getCompanyName().equals("updatedCompanyame");
@@ -159,12 +162,12 @@ class TenantServiceTests extends AbstractContainerBaseTest {
         tenant.setCompanyName("updatedCompanyame");
 
         SecurityContextHolder.getContext().setAuthentication(
-                new TenantAuthenticationToken("tenantemail@domain.com", 1));
+            new TenantAuthenticationToken("tenantemail@domain.com", 1));
 
         OperationNotSupportedException e = assertThrows(
-                OperationNotSupportedException.class, () -> {
-                    Tenant updatedTenant = tenantService.updateTenant(tenant);
-                });
+            OperationNotSupportedException.class, () -> {
+                Tenant updatedTenant = tenantService.updateTenant(tenant);
+            });
 
         assertEquals("Cannot change tenant id", e.getMessage());
     }
@@ -176,12 +179,12 @@ class TenantServiceTests extends AbstractContainerBaseTest {
         tenant.setCompanyName("updatedCompanyame");
 
         SecurityContextHolder.getContext().setAuthentication(
-                new TenantAuthenticationToken("tenantemail@domain.com", 1));
+            new TenantAuthenticationToken("tenantemail@domain.com", 1));
 
         OperationNotSupportedException e = assertThrows(OperationNotSupportedException.class,
-                () -> {
-                    Tenant updatedTenant = tenantService.updateTenant(tenant);
-                });
+            () -> {
+                Tenant updatedTenant = tenantService.updateTenant(tenant);
+            });
 
         assertEquals("Cannot update domainname for existing tenant", e.getMessage());
     }
