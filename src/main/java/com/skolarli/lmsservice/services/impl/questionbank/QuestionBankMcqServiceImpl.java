@@ -1,5 +1,7 @@
 package com.skolarli.lmsservice.services.impl.questionbank;
 
+import com.skolarli.lmsservice.authentications.TenantAuthenticationToken;
+import com.skolarli.lmsservice.contexts.TenantContext;
 import com.skolarli.lmsservice.exception.OperationNotSupportedException;
 import com.skolarli.lmsservice.exception.ResourceNotFoundException;
 import com.skolarli.lmsservice.exception.ValidationFailureException;
@@ -27,6 +29,9 @@ import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.launch.JobLauncher;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
@@ -58,6 +63,7 @@ public class QuestionBankMcqServiceImpl implements QuestionBankMcqService {
 
     final ExamService examService;
 
+    //@Qualifier("AsyncJobLauncher")
     final JobLauncher jobLauncher;
 
     final Job job;
@@ -68,7 +74,8 @@ public class QuestionBankMcqServiceImpl implements QuestionBankMcqService {
                                       BatchService batchService, ChapterService chapterService,
                                       LessonService lessonService, LmsUserService lmsUserService,
                                       ExamService examService,
-                                      JobLauncher jobLauncher, Job job) {
+                                      @Qualifier("AsyncJobLauncher") JobLauncher jobLauncher,
+                                      Job job) {
         this.questionBankMcqRepository = questionBankMcqRepository;
         this.examQuestionMcqRepository = examQuestionMcqRepository;
         this.userUtils = userUtils;
@@ -238,9 +245,8 @@ public class QuestionBankMcqServiceImpl implements QuestionBankMcqService {
     }
 
     @Override
-    public Long uploadQuestionsFromCsvBatchJob(String filePath) {
+    public Long uploadQuestionsFromCsvBatchJob(String filePath, Long tenantId, String userName) {
         logger.info("Uploading questions from csv file: " + filePath);
-
         File file = Paths.get(filePath).toAbsolutePath().toFile();
 
         if (!file.exists()) {
@@ -251,15 +257,12 @@ public class QuestionBankMcqServiceImpl implements QuestionBankMcqService {
 
             JobParameters jobParameters = new JobParametersBuilder()
                 .addString("fullPathFileName", filePath)
-                .addLong("startAt", System.currentTimeMillis()).toJobParameters();
+                .addLong("startAt", System.currentTimeMillis())
+                .addLong("tenantId", tenantId)
+                .addString("userName", userName)
+                .toJobParameters();
 
             JobExecution execution = jobLauncher.run(job, jobParameters);
-
-            BufferedReader bufferedReader = new BufferedReader(new java.io.FileReader(file));
-            String line;
-            while ((line = bufferedReader.readLine()) != null) {
-                logger.info(line);
-            }
             return execution.getJobId();
         } catch (Exception e) {
             logger.error("Error creating file: " + e.getMessage());

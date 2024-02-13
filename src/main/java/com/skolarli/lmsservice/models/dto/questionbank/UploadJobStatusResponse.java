@@ -26,8 +26,14 @@ public class UploadJobStatusResponse {
         this.jobId = jobExecution.getJobId();
         this.status = jobExecution.getStatus().toString();
         this.errors = jobExecution.getAllFailureExceptions();
-        this.createTime = new Timestamp(jobExecution.getCreateTime().getTime());
-        this.startTime = new Timestamp(jobExecution.getStartTime().getTime());
-        this.endTime = new Timestamp(jobExecution.getEndTime().getTime());
+        if (jobExecution.getCreateTime() != null) {
+            this.createTime = new Timestamp(jobExecution.getCreateTime().getTime());
+        }
+        if (jobExecution.getStartTime() != null) {
+            this.startTime = new Timestamp(jobExecution.getStartTime().getTime());
+        }
+        if (jobExecution.getEndTime() != null) {
+            this.endTime = new Timestamp(jobExecution.getEndTime().getTime());
+        }
     }
 }

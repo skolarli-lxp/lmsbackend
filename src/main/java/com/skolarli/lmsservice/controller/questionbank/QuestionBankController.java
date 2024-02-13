@@ -1,5 +1,6 @@
 package com.skolarli.lmsservice.controller.questionbank;
 
+import com.skolarli.lmsservice.contexts.TenantContext;
 import com.skolarli.lmsservice.models.dto.questionbank.UploadJobStatusResponse;
 import com.skolarli.lmsservice.services.questionbank.QuestionBankMcqService;
 import org.slf4j.Logger;
@@ -9,6 +10,7 @@ import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.explore.JobExplorer;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
@@ -28,21 +30,27 @@ public class QuestionBankController {
     final QuestionBankMcqService questionBankMcqService;
     private final JobExplorer jobExplorer;
 
+    TenantContext tenantContext;
+
 
     public QuestionBankController(QuestionBankMcqService questionBankMcqService,
-                                  JobExplorer jobExplorer) {
+                                  JobExplorer jobExplorer,
+                                  TenantContext tenantContext) {
         this.questionBankMcqService = questionBankMcqService;
         this.jobExplorer = jobExplorer;
+        this.tenantContext = tenantContext;
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<Long> uploadQuestions(@RequestParam MultipartFile file) {
+    public ResponseEntity<UploadJobStatusResponse> uploadQuestions(@RequestParam MultipartFile file) {
         UUID uuid = UUID.randomUUID();
         MDC.put("requestId", uuid.toString());
         logger.info("Received request for upload questions from file : "
             + file.getOriginalFilename());
 
         String originalFileName = file.getOriginalFilename();
+        String currentUserName = (String) SecurityContextHolder.getContext()
+            .getAuthentication().getPrincipal();
 
         try {
             Path directory = Paths.get(TEMP_STORAGE);
@@ -51,9 +59,11 @@ public class QuestionBankController {
             File fileToImport = new File(TEMP_STORAGE + originalFileName);
             file.transferTo(fileToImport);
 
-            Long jobId = questionBankMcqService.uploadQuestionsFromCsvBatchJob(fileToImport.getPath());
+            Long jobId = questionBankMcqService.uploadQuestionsFromCsvBatchJob(fileToImport.getPath(),
+                tenantContext.getTenantId(), currentUserName);
+            JobExecution jobExecution = jobExplorer.getJobExecution(jobId);
 
-            return new ResponseEntity<>(jobId, HttpStatus.OK);
+            return new ResponseEntity<>(new UploadJobStatusResponse(jobExecution), HttpStatus.OK);
         } catch (Exception e) {
             logger.error("Error in uploadQuestions: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
