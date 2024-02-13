@@ -217,33 +217,4 @@ public class QuestionBankMcqController {
             MDC.remove("requestId");
         }
     }
-
-
-    @RequestMapping(value = "upload", method = RequestMethod.POST)
-    public ResponseEntity<Long> uploadQuestions(@RequestParam MultipartFile
-                                                    file) {
-        UUID uuid = UUID.randomUUID();
-        MDC.put("requestId", uuid.toString());
-        logger.info("Received request for upload questions from file : "
-            + file.getOriginalFilename());
-
-        String originalFileName = file.getOriginalFilename();
-
-        try {
-            Path directory = Paths.get(TEMP_STORAGE);
-            Files.createDirectories(directory);
-
-            File fileToImport = new File(TEMP_STORAGE + originalFileName);
-            file.transferTo(fileToImport);
-
-            Long jobId = questionBankMcqService.uploadQuestionsFromCsvBatchJob(fileToImport.getPath());
-
-            return new ResponseEntity<>(jobId, HttpStatus.OK);
-        } catch (Exception e) {
-            logger.error("Error in uploadQuestions: " + e.getMessage());
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
-        } finally {
-            MDC.remove("requestId");
-        }
-    }
 }

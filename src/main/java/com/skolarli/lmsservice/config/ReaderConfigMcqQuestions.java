@@ -1,7 +1,9 @@
 package com.skolarli.lmsservice.config;
 
 import com.skolarli.lmsservice.models.db.questionbank.BankQuestionMcq;
+import com.skolarli.lmsservice.models.dto.questionbank.NewBankQuestionMcqRequest;
 import com.skolarli.lmsservice.repository.questionbank.QuestionBankMcqRepository;
+import com.skolarli.lmsservice.services.impl.questionbank.NewBankQuestionMcqRequestFieldSetMapper;
 import com.skolarli.lmsservice.services.impl.questionbank.QuestionBankMcqProcessor;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
@@ -14,6 +16,7 @@ import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.LineMapper;
 import org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper;
 import org.springframework.batch.item.file.mapping.DefaultLineMapper;
+import org.springframework.batch.item.file.mapping.FieldSetMapper;
 import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -29,22 +32,26 @@ public class ReaderConfigMcqQuestions {
 
     private final StepBuilderFactory stepBuilderFactory;
 
+    private final QuestionBankMcqProcessor questionBankMcqProcessor;
+
     private final QuestionBankMcqRepository questionBankMcqRepository;
 
     public ReaderConfigMcqQuestions(JobBuilderFactory jobBuilderFactory,
                                     StepBuilderFactory stepBuilderFactory,
-                                    QuestionBankMcqRepository questionBankMcqRepository) {
+                                    QuestionBankMcqRepository questionBankMcqRepository,
+                                    QuestionBankMcqProcessor questionBankMcqProcessor) {
         this.jobBuilderFactory = jobBuilderFactory;
         this.stepBuilderFactory = stepBuilderFactory;
         this.questionBankMcqRepository = questionBankMcqRepository;
+        this.questionBankMcqProcessor = questionBankMcqProcessor;
     }
 
 
     @Bean
     @StepScope
-    public FlatFileItemReader<BankQuestionMcq> itemReader(
+    public FlatFileItemReader<NewBankQuestionMcqRequest> itemReader(
         @Value("#{jobParameters[fullPathFileName]}") String pathToFile) {
-        FlatFileItemReader<BankQuestionMcq> flatFileItemReader = new FlatFileItemReader<>();
+        FlatFileItemReader<NewBankQuestionMcqRequest> flatFileItemReader = new FlatFileItemReader<>();
         flatFileItemReader.setResource(new FileSystemResource(new File(pathToFile)));
         flatFileItemReader.setName("CSV-Reader");
         flatFileItemReader.setLinesToSkip(1);
@@ -52,19 +59,20 @@ public class ReaderConfigMcqQuestions {
         return flatFileItemReader;
     }
 
-    private LineMapper<BankQuestionMcq> lineMapper() {
+    private LineMapper<NewBankQuestionMcqRequest> lineMapper() {
         DelimitedLineTokenizer lineTokenizer = new DelimitedLineTokenizer();
         lineTokenizer.setDelimiter(",");
         lineTokenizer.setStrict(false);
-        lineTokenizer.setNames("Question", "numberOfOptions", "Option1", "Option2", "Option3",
-            "Option4", "Option5", "Option6", "Number of Correct Answers",
-            "correctAnswer", "SampleAnswerText");
+        lineTokenizer.setNames("Question", "NumberOfOptions", "Option1", "Option2", "Option3",
+            "Option4", "Option5", "Option6", "NumberOfCorrectAnswers",
+            "CorrectAnswer", "SampleAnswerText", "SampleAnswerUrl", "QuestionType",
+            "DifficultyLevel", "QuestionFormat", "AnswerFormat", "CourseId", "BatchId",
+            "ChapterId", "LessonId", "StudentId");
 
-        BeanWrapperFieldSetMapper<BankQuestionMcq> fieldSetMapper =
-            new BeanWrapperFieldSetMapper<>();
-        fieldSetMapper.setTargetType(BankQuestionMcq.class);
+        FieldSetMapper<NewBankQuestionMcqRequest> fieldSetMapper =
+            new NewBankQuestionMcqRequestFieldSetMapper();
 
-        DefaultLineMapper<BankQuestionMcq> lineMapper = new DefaultLineMapper<>();
+        DefaultLineMapper<NewBankQuestionMcqRequest> lineMapper = new DefaultLineMapper<>();
         lineMapper.setLineTokenizer(lineTokenizer);
         lineMapper.setFieldSetMapper(fieldSetMapper);
         return lineMapper;
@@ -79,23 +87,20 @@ public class ReaderConfigMcqQuestions {
     }
 
     @Bean
-    public QuestionBankMcqProcessor processor() {
-        return new QuestionBankMcqProcessor();
-    }
-
-    @Bean
-    public Step step1(FlatFileItemReader<BankQuestionMcq> itemReader) {
-        return stepBuilderFactory.get("csv-step").<BankQuestionMcq, BankQuestionMcq>chunk(10)
+    public Step step1(FlatFileItemReader<NewBankQuestionMcqRequest> itemReader) {
+        return stepBuilderFactory.get("csv-step").<NewBankQuestionMcqRequest, BankQuestionMcq>chunk(10)
             .reader(itemReader)
-            .processor(processor())
+            .processor(questionBankMcqProcessor)
             .writer(writer())
             .build();
     }
 
     @Bean(name = "importMcqQuestionsJob")
-    public Job runJob(FlatFileItemReader<BankQuestionMcq> itemReader) {
-        return jobBuilderFactory.get("importCustomers")
-            .flow(step1(itemReader)).end().build();
+    public Job runJob(FlatFileItemReader<NewBankQuestionMcqRequest> itemReader) {
+        return jobBuilderFactory.get("importMcQuestions")
+            .flow(step1(itemReader))
+
+            .end().build();
     }
 
     //@Bean
@@ -104,4 +109,5 @@ public class ReaderConfigMcqQuestions {
     //    asyncTaskExecutor.setConcurrencyLimit(10);
     //    return asyncTaskExecutor;
     //}
+
 }

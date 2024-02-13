@@ -255,18 +255,16 @@ public class QuestionBankMcqServiceImpl implements QuestionBankMcqService {
 
             JobExecution execution = jobLauncher.run(job, jobParameters);
 
-
             BufferedReader bufferedReader = new BufferedReader(new java.io.FileReader(file));
             String line;
             while ((line = bufferedReader.readLine()) != null) {
                 logger.info(line);
             }
+            return execution.getJobId();
         } catch (Exception e) {
             logger.error("Error creating file: " + e.getMessage());
             return 0L;
         }
-
-        return 1L;
     }
 
     @Override
