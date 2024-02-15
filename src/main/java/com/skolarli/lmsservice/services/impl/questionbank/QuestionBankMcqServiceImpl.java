@@ -63,7 +63,6 @@ public class QuestionBankMcqServiceImpl implements QuestionBankMcqService {
 
     final ExamService examService;
 
-    //@Qualifier("AsyncJobLauncher")
     final JobLauncher jobLauncher;
 
     final Job job;
@@ -117,6 +116,7 @@ public class QuestionBankMcqServiceImpl implements QuestionBankMcqService {
                 .getResourceFileRequest().toResourceFile());
         }
         bankQuestionMcq.setQuestionType(newBankQuestionMcqRequest.getQuestionType());
+        bankQuestionMcq.setMarks(newBankQuestionMcqRequest.getMarks());
         bankQuestionMcq.setDifficultyLevel(newBankQuestionMcqRequest.getDifficultyLevel());
         bankQuestionMcq.setQuestionFormat(newBankQuestionMcqRequest.getQuestionFormat());
         bankQuestionMcq.setAnswerFormat(newBankQuestionMcqRequest.getAnswerFormat());
@@ -165,8 +165,13 @@ public class QuestionBankMcqServiceImpl implements QuestionBankMcqService {
             throw new ResourceNotFoundException("Exam with Id " + examId + " not found");
         }
 
+        if (marks == null) {
+            marks = new ArrayList<>();
+        }
         if (bankQuestionMcqIds.size() != marks.size()) {
-            throw new ValidationFailureException("Number of questions and marks should be same");
+            for (int i = 0; i < bankQuestionMcqIds.size() - marks.size(); i++) {
+                marks.add(null);
+            }
         }
 
         List<BankQuestionMcq> bankQuestionMcqs =

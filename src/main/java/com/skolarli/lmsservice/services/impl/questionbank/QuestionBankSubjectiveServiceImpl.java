@@ -99,6 +99,7 @@ public class QuestionBankSubjectiveServiceImpl implements QuestionBankSubjective
         }
         bankQuestionSubjective.setQuestion(newBankQuestionSubjectiveRequest.getQuestion());
         bankQuestionSubjective.setQuestionType(newBankQuestionSubjectiveRequest.getQuestionType());
+        bankQuestionSubjective.setMarks(newBankQuestionSubjectiveRequest.getMarks());
         bankQuestionSubjective.setDifficultyLevel(newBankQuestionSubjectiveRequest
             .getDifficultyLevel());
 
@@ -129,14 +130,21 @@ public class QuestionBankSubjectiveServiceImpl implements QuestionBankSubjective
     }
 
     @Override
-    public List<ExamQuestionSubjective> toExamQuestionSubjective(
-        List<Long> bankQuestionSubjectiveIds,
-        List<Integer> marks,
-        Long examId) {
+    public List<ExamQuestionSubjective> toExamQuestionSubjective(List<Long> bankQuestionSubjectiveIds,
+                                                                 List<Integer> marks, Long examId) {
 
         Exam existingExam = examService.getExam(examId);
         if (existingExam == null) {
             throw new ResourceNotFoundException("Exam with Id " + examId + " not found");
+        }
+
+        if (marks == null) {
+            marks = new ArrayList<>();
+        }
+        if (bankQuestionSubjectiveIds.size() != marks.size()) {
+            for (int i = 0; i < bankQuestionSubjectiveIds.size() - marks.size(); i++) {
+                marks.add(null);
+            }
         }
 
         List<BankQuestionSubjective> bankQuestionSubjective =

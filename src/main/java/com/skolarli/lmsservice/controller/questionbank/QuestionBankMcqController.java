@@ -147,15 +147,10 @@ public class QuestionBankMcqController {
 
     @RequestMapping(value = "/addtoexam", method = RequestMethod.POST)
     public ResponseEntity<List<ExamQuestionMcq>> addQuestionsToExam(
-        @RequestParam Long examId, @Valid @RequestBody ToExamQuestionRequest request) {
+        @RequestParam Long examId, @RequestBody ToExamQuestionRequest request) {
         UUID uuid = UUID.randomUUID();
         MDC.put("requestId", uuid.toString());
         logger.info("Received request for add questions to exam with id: " + examId);
-
-        if (!request.isValid()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                "Invalid request. Number of questions should be equal to number of marks");
-        }
 
         List<ExamQuestionMcq> questions = null;
         try {

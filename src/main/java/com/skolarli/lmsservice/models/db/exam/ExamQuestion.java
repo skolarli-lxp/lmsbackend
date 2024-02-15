@@ -65,7 +65,11 @@ public class ExamQuestion extends Tenantable {
         this.answerFormat = bankQuestion.getAnswerFormat();
         this.sampleAnswerText = bankQuestion.getSampleAnswerText();
         this.sampleAnswerUrl = bankQuestion.getSampleAnswerUrl();
-        this.marks = marks;
+        if (marks != null) {
+            this.marks = marks;
+        } else {
+            this.marks = bankQuestion.getMarks();
+        }
         this.exam = exam;
     }
 

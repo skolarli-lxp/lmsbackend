@@ -100,10 +100,9 @@ public class QuestionBankTrueOrFalseServiceImpl implements QuestionBankTrueOrFal
                 newBankQuestionTrueOrFalseRequest.getStudentId()));
         }
         bankQuestionTrueOrFalse.setQuestion(newBankQuestionTrueOrFalseRequest.getQuestion());
-        bankQuestionTrueOrFalse.setQuestionType(
-            newBankQuestionTrueOrFalseRequest.getQuestionType());
-        bankQuestionTrueOrFalse.setDifficultyLevel(newBankQuestionTrueOrFalseRequest
-            .getDifficultyLevel());
+        bankQuestionTrueOrFalse.setQuestionType(newBankQuestionTrueOrFalseRequest.getQuestionType());
+        bankQuestionTrueOrFalse.setMarks(newBankQuestionTrueOrFalseRequest.getMarks());
+        bankQuestionTrueOrFalse.setDifficultyLevel(newBankQuestionTrueOrFalseRequest.getDifficultyLevel());
 
         bankQuestionTrueOrFalse.setQuestionFormat(
             newBankQuestionTrueOrFalseRequest.getQuestionFormat());
@@ -132,12 +131,20 @@ public class QuestionBankTrueOrFalseServiceImpl implements QuestionBankTrueOrFal
     }
 
     @Override
-    public List<ExamQuestionTrueOrFalse> toExamQuestionTrueOrFalse(
-        List<Long> bankQuestionTrueOrFalseIds, List<Integer> marks,
-        Long examId) {
+    public List<ExamQuestionTrueOrFalse> toExamQuestionTrueOrFalse(List<Long> bankQuestionTrueOrFalseIds,
+                                                                   List<Integer> marks, Long examId) {
         Exam existingExam = examService.getExam(examId);
         if (existingExam == null) {
             throw new ResourceNotFoundException("Exam with Id " + examId + " not found");
+        }
+
+        if (marks == null) {
+            marks = new ArrayList<>();
+        }
+        if (bankQuestionTrueOrFalseIds.size() != marks.size()) {
+            for (int i = 0; i < bankQuestionTrueOrFalseIds.size() - marks.size(); i++) {
+                marks.add(1);
+            }
         }
         List<BankQuestionTrueOrFalse> bankQuestionTrueOrFalse =
             questionBankTrueOrFalseRepository.findAllById(bankQuestionTrueOrFalseIds);

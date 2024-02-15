@@ -13,12 +13,7 @@ import javax.validation.constraints.NotNull;
 public class ToExamQuestionRequest {
     @NotNull
     List<Long> bankQuestionIds;
-    @NotNull
     List<Integer> marks;
-
-    public Boolean isValid() {
-        return bankQuestionIds.size() == marks.size();
-    }
 }
 
 

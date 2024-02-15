@@ -32,6 +32,8 @@ public class NewQuestionBankQuestionRequest {
 
     private String questionType;
 
+    private Integer marks;
+
     private DifficultyLevel difficultyLevel;
 
     @NotNull

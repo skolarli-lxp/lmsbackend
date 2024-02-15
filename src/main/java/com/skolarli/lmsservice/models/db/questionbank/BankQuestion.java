@@ -86,6 +86,8 @@ public class BankQuestion extends Tenantable {
 
     private String questionType;
 
+    private Integer marks;
+
     private DifficultyLevel difficultyLevel;
     private QuestionFormat questionFormat;
     private AnswerFormat answerFormat;
@@ -114,6 +116,7 @@ public class BankQuestion extends Tenantable {
         this.question = examQuestion.getQuestion();
         this.questionResourceFile = examQuestion.getQuestionResourceFile();
         this.questionType = examQuestion.getQuestionType();
+        this.marks = examQuestion.getMarks();
         this.difficultyLevel = examQuestion.getDifficultyLevel();
         this.questionFormat = examQuestion.getQuestionFormat();
         this.answerFormat = examQuestion.getAnswerFormat();
@@ -134,6 +137,9 @@ public class BankQuestion extends Tenantable {
         }
         if (question.getQuestionType() != null) {
             this.questionType = question.getQuestionType();
+        }
+        if (question.getMarks() != null) {
+            this.marks = question.getMarks();
         }
         if (question.getDifficultyLevel() != null) {
             this.difficultyLevel = question.getDifficultyLevel();
