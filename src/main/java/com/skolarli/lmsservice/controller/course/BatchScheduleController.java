@@ -126,7 +126,7 @@ public class BatchScheduleController {
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<?> addBatchSchedule(
         @Valid @RequestBody NewBatchScheduleRequest request,
-        @RequestParam Boolean condensed) {
+        @RequestParam (required = false) Boolean condensed) {
 
         UUID uuid = UUID.randomUUID();
         MDC.put("requestId", uuid.toString());
@@ -155,7 +155,7 @@ public class BatchScheduleController {
     public ResponseEntity<?> addBatchSchedules(
         @Valid @RequestBody List<NewBatchSchedulesForBatchRequest> request,
         @RequestParam Long batchId,
-        @RequestParam Boolean condensed) {
+        @RequestParam(required = false) Boolean condensed) {
 
         UUID uuid = UUID.randomUUID();
         MDC.put("requestId", uuid.toString());
