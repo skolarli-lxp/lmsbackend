@@ -14,6 +14,7 @@ import com.skolarli.lmsservice.services.course.EnrollmentService;
 import com.skolarli.lmsservice.utils.UserUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -106,17 +107,34 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
     @Override
     public Enrollment save(Enrollment enrollment) {
-        return enrollmentRepository.save(enrollment);
+        try {
+            return enrollmentRepository.save(enrollment);
+        } catch (DataIntegrityViolationException e) {
+            logger.error("Enrollment already exists");
+            return enrollmentRepository.findByStudent_IdAndBatch_Id(enrollment.getStudent().getId(),
+                    enrollment.getBatch().getId());
+        }
     }
 
     @Override
     public List<Enrollment> saveAllEnrollments(List<Enrollment> enrollments, Long batchId) {
         Batch batch = batchService.getBatch(batchId);
+        List<Enrollment> result = new ArrayList<>();
         for (Enrollment enrollment : enrollments) {
             enrollment.setBatch(batch);
             enrollment.setEnrollmentIsDeleted(false);
         }
-        return enrollmentRepository.saveAll(enrollments);
+        for (Enrollment enrollment : enrollments) {
+            try {
+                Enrollment saved = enrollmentRepository.save(enrollment);
+                result.add(saved);
+            } catch (DataIntegrityViolationException e) {
+                logger.error("Enrollment already exists");
+                result.add(enrollmentRepository.findByStudent_IdAndBatch_Id(enrollment.getStudent().getId(),
+                        enrollment.getBatch().getId()));
+            }
+        }
+        return result;
     }
 
     @Override

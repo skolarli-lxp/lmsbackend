@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface EnrollmentRepository extends TenantableRepository<Enrollment> {
     List<Enrollment> findByBatchId(long batchId);
+
+    Enrollment findByStudent_IdAndBatch_Id(Long studentId, Long batchId);
 }
