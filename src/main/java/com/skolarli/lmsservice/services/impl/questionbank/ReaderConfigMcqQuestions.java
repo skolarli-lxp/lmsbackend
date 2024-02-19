@@ -1,4 +1,4 @@
-package com.skolarli.lmsservice.config;
+package com.skolarli.lmsservice.services.impl.questionbank;
 
 import com.skolarli.lmsservice.authentications.TenantAuthenticationToken;
 import com.skolarli.lmsservice.models.db.questionbank.BankQuestionMcq;
