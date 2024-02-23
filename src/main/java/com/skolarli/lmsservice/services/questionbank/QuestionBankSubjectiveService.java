@@ -29,6 +29,8 @@ public interface QuestionBankSubjectiveService {
 
     List<BankQuestionSubjective> saveAllQuestions(List<BankQuestionSubjective> questions);
 
+    Long uploadQuestionsFromCsvBatchJob(String filePath, Long tenantId, String userName);
+
     BankQuestionSubjective updateQuestion(BankQuestionSubjective question, long id);
 
     void hardDeleteQuestion(long id);

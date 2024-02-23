@@ -74,7 +74,7 @@ public class QuestionBankMcqServiceImpl implements QuestionBankMcqService {
                                       LessonService lessonService, LmsUserService lmsUserService,
                                       ExamService examService,
                                       @Qualifier("AsyncJobLauncher") JobLauncher jobLauncher,
-                                      Job job) {
+                                      @Qualifier("importMcqQuestionsJob") Job job) {
         this.questionBankMcqRepository = questionBankMcqRepository;
         this.examQuestionMcqRepository = examQuestionMcqRepository;
         this.userUtils = userUtils;

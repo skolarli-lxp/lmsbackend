@@ -19,8 +19,18 @@ import com.skolarli.lmsservice.services.course.LessonService;
 import com.skolarli.lmsservice.services.exam.ExamService;
 import com.skolarli.lmsservice.services.questionbank.QuestionBankTrueOrFalseService;
 import com.skolarli.lmsservice.utils.UserUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.batch.core.Job;
+import org.springframework.batch.core.JobExecution;
+import org.springframework.batch.core.JobParameters;
+import org.springframework.batch.core.JobParametersBuilder;
+import org.springframework.batch.core.launch.JobLauncher;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,21 +39,19 @@ import java.util.List;
 public class QuestionBankTrueOrFalseServiceImpl implements QuestionBankTrueOrFalseService {
 
     final QuestionBankTrueOrFalseRepository questionBankTrueOrFalseRepository;
-
     final ExamQuestionTrueOrFalseRepository examQuestionTrueOrFalseRepository;
     final UserUtils userUtils;
-
     final CourseService courseService;
-
     final BatchService batchService;
-
     final ChapterService chapterService;
-
     final LessonService lessonService;
-
     final LmsUserService lmsUserService;
-
+    Logger logger = LoggerFactory.getLogger(QuestionBankTrueOrFalseServiceImpl.class);
     ExamService examService;
+
+    Job job;
+
+    JobLauncher jobLauncher;
 
     public QuestionBankTrueOrFalseServiceImpl(QuestionBankTrueOrFalseRepository
                                                   questionBankTrueOrFalseRepository,
@@ -54,7 +62,9 @@ public class QuestionBankTrueOrFalseServiceImpl implements QuestionBankTrueOrFal
                                               ChapterService chapterService,
                                               LessonService lessonService,
                                               LmsUserService lmsUserService,
-                                              ExamService examService) {
+                                              ExamService examService,
+                                              @Qualifier("importTrueFalseQuestionsJob") Job job,
+                                              @Qualifier("AsyncJobLauncher3") JobLauncher jobLauncher) {
         this.questionBankTrueOrFalseRepository = questionBankTrueOrFalseRepository;
         this.examQuestionTrueOrFalseRepository = examQuestionTrueOrFalseRepository;
         this.userUtils = userUtils;
@@ -209,6 +219,32 @@ public class QuestionBankTrueOrFalseServiceImpl implements QuestionBankTrueOrFal
         } else {
             throw new OperationNotSupportedException("User does not have permission to perform "
                 + "this operation");
+        }
+    }
+
+    @Override
+    public Long uploadQuestionsFromCsvBatchJob(String filePath, Long tenantId, String userName) {
+        logger.info("Uploading questions from csv file: " + filePath);
+        File file = Paths.get(filePath).toAbsolutePath().toFile();
+
+        if (!file.exists()) {
+            logger.error("File does not exist: " + filePath);
+            return 0L;
+        }
+        try {
+
+            JobParameters jobParameters = new JobParametersBuilder()
+                .addString("fullPathFileName", filePath)
+                .addLong("startAt", System.currentTimeMillis())
+                .addLong("tenantId", tenantId)
+                .addString("userName", userName)
+                .toJobParameters();
+
+            JobExecution execution = jobLauncher.run(job, jobParameters);
+            return execution.getJobId();
+        } catch (Exception e) {
+            logger.error("Error creating file: " + e.getMessage());
+            return 0L;
         }
     }
 

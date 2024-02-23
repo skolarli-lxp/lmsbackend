@@ -11,6 +11,8 @@ import com.skolarli.lmsservice.utils.UserUtils;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.stereotype.Component;
 
+import java.util.stream.Collectors;
+
 @Component
 public class QuestionBankMcqProcessor implements ItemProcessor<NewBankQuestionMcqRequest, BankQuestionMcq> {
 
@@ -48,6 +50,13 @@ public class QuestionBankMcqProcessor implements ItemProcessor<NewBankQuestionMc
         bankQuestionMcq.setOption5(question.getOption5());
         bankQuestionMcq.setOption6(question.getOption6());
         bankQuestionMcq.setNumberOfCorrectAnswers(question.getNumberOfCorrectAnswers());
+        if (question.getCorrectAnswer() != null) {
+            bankQuestionMcq.setCorrectAnswer(question.getCorrectAnswer()
+                .stream().map(String::valueOf).collect(Collectors.joining(",")));
+        } else {
+            bankQuestionMcq.setCorrectAnswer("");
+        }
+        bankQuestionMcq.setMarks(question.getMarks());
 
         if (question.getCourseId() != null) {
             bankQuestionMcq.setCourse(courseService.getCourseById(question.getCourseId()));

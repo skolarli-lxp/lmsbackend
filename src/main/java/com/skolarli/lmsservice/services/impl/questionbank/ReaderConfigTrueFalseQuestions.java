@@ -1,11 +1,9 @@
 package com.skolarli.lmsservice.services.impl.questionbank;
 
 import com.skolarli.lmsservice.authentications.TenantAuthenticationToken;
-import com.skolarli.lmsservice.models.db.questionbank.BankQuestionMcq;
-import com.skolarli.lmsservice.models.dto.questionbank.NewBankQuestionMcqRequest;
-import com.skolarli.lmsservice.repository.questionbank.QuestionBankMcqRepository;
-import com.skolarli.lmsservice.services.impl.questionbank.NewBankQuestionMcqRequestFieldSetMapper;
-import com.skolarli.lmsservice.services.impl.questionbank.QuestionBankMcqProcessor;
+import com.skolarli.lmsservice.models.db.questionbank.BankQuestionTrueOrFalse;
+import com.skolarli.lmsservice.models.dto.questionbank.NewBankQuestionTrueOrFalseRequest;
+import com.skolarli.lmsservice.repository.questionbank.QuestionBankTrueOrFalseRepository;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
@@ -18,8 +16,8 @@ import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.item.data.RepositoryItemWriter;
 import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.LineMapper;
+import org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper;
 import org.springframework.batch.item.file.mapping.DefaultLineMapper;
-import org.springframework.batch.item.file.mapping.FieldSetMapper;
 import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -32,29 +30,32 @@ import java.io.File;
 
 @Configuration
 @EnableBatchProcessing
-public class ReaderConfigMcqQuestions {
+public class ReaderConfigTrueFalseQuestions {
     private final JobBuilderFactory jobBuilderFactory;
 
     private final StepBuilderFactory stepBuilderFactory;
 
-    private final QuestionBankMcqProcessor questionBankMcqProcessor;
+    private final QuestionBankTrueFalseProcessor questionBankTrueFalseProcessor;
 
-    private final QuestionBankMcqRepository questionBankMcqRepository;
+    private final QuestionBankTrueOrFalseRepository questionBankTrueFalseRepository;
 
-    public ReaderConfigMcqQuestions(JobBuilderFactory jobBuilderFactory,
-                                    StepBuilderFactory stepBuilderFactory,
-                                    QuestionBankMcqRepository questionBankMcqRepository,
-                                    QuestionBankMcqProcessor questionBankMcqProcessor) {
+
+    public ReaderConfigTrueFalseQuestions(JobBuilderFactory jobBuilderFactory,
+                                          StepBuilderFactory stepBuilderFactory,
+                                          QuestionBankTrueOrFalseRepository questionBankTrueFalseRepository,
+                                          QuestionBankTrueFalseProcessor questionBankTrueFalseProcessor) {
+
+
         this.jobBuilderFactory = jobBuilderFactory;
         this.stepBuilderFactory = stepBuilderFactory;
-        this.questionBankMcqRepository = questionBankMcqRepository;
-        this.questionBankMcqProcessor = questionBankMcqProcessor;
+        this.questionBankTrueFalseRepository = questionBankTrueFalseRepository;
+        this.questionBankTrueFalseProcessor = questionBankTrueFalseProcessor;
     }
 
 
     @Bean
     @StepScope
-    public FlatFileItemReader<NewBankQuestionMcqRequest> itemReader(
+    public FlatFileItemReader<NewBankQuestionTrueOrFalseRequest> trueFalseRequestItemReader(
         @Value("#{jobParameters[fullPathFileName]}") String pathToFile,
         @Value("#{jobParameters[tenantId]}") Long tenantId,
         @Value("#{jobParameters[userName]}") String userName) {
@@ -62,7 +63,7 @@ public class ReaderConfigMcqQuestions {
         SecurityContextHolder.getContext().setAuthentication(
             new TenantAuthenticationToken(userName, tenantId));
 
-        FlatFileItemReader<NewBankQuestionMcqRequest> flatFileItemReader = new FlatFileItemReader<>();
+        FlatFileItemReader<NewBankQuestionTrueOrFalseRequest> flatFileItemReader = new FlatFileItemReader<>();
         flatFileItemReader.setResource(new FileSystemResource(new File(pathToFile)));
         flatFileItemReader.setName("CSV-Reader");
         flatFileItemReader.setLinesToSkip(1);
@@ -70,60 +71,50 @@ public class ReaderConfigMcqQuestions {
         return flatFileItemReader;
     }
 
-    private LineMapper<NewBankQuestionMcqRequest> lineMapper() {
+    private LineMapper<NewBankQuestionTrueOrFalseRequest> lineMapper() {
         DelimitedLineTokenizer lineTokenizer = new DelimitedLineTokenizer();
         lineTokenizer.setDelimiter(",");
         lineTokenizer.setStrict(false);
-        lineTokenizer.setNames("Question", "NumberOfOptions", "Option1", "Option2", "Option3",
-            "Option4", "Option5", "Option6", "NumberOfCorrectAnswers",
-            "CorrectAnswer",  "Marks", "SampleAnswerText", "SampleAnswerUrl", "QuestionType",
-            "DifficultyLevel", "QuestionFormat", "AnswerFormat", "CourseId", "BatchId",
-            "ChapterId", "LessonId", "StudentId");
+        lineTokenizer.setNames("Question", "WordCount", "CorrectAnswer", "Marks", "SampleAnswerText",
+            "SampleAnswerUrl", "QuestionType", "DifficultyLevel", "QuestionFormat",
+            "AnswerFormat", "CourseId", "BatchId", "ChapterId", "LessonId", "StudentId");
 
-        FieldSetMapper<NewBankQuestionMcqRequest> fieldSetMapper =
-            new NewBankQuestionMcqRequestFieldSetMapper();
+        BeanWrapperFieldSetMapper<NewBankQuestionTrueOrFalseRequest> fieldSetMapper = new BeanWrapperFieldSetMapper<>();
+        fieldSetMapper.setTargetType(NewBankQuestionTrueOrFalseRequest.class);
 
-        DefaultLineMapper<NewBankQuestionMcqRequest> lineMapper = new DefaultLineMapper<>();
+        DefaultLineMapper<NewBankQuestionTrueOrFalseRequest> lineMapper = new DefaultLineMapper<>();
         lineMapper.setLineTokenizer(lineTokenizer);
         lineMapper.setFieldSetMapper(fieldSetMapper);
         return lineMapper;
     }
 
     @Bean
-    public RepositoryItemWriter<BankQuestionMcq> writer() {
-        RepositoryItemWriter<BankQuestionMcq> writer = new RepositoryItemWriter<>();
-        writer.setRepository(questionBankMcqRepository);
+    public RepositoryItemWriter<BankQuestionTrueOrFalse> bankQuestionTrueFalseWriter() {
+        RepositoryItemWriter<BankQuestionTrueOrFalse> writer = new RepositoryItemWriter<>();
+        writer.setRepository(questionBankTrueFalseRepository);
         writer.setMethodName("save");
         return writer;
     }
 
     @Bean
-    public Step step1(FlatFileItemReader<NewBankQuestionMcqRequest> itemReader) {
-        return stepBuilderFactory.get("csv-step").<NewBankQuestionMcqRequest, BankQuestionMcq>chunk(10)
+    public Step bankQuestionTrueFalseStep1(FlatFileItemReader<NewBankQuestionTrueOrFalseRequest> itemReader) {
+        return stepBuilderFactory.get("csv-step").<NewBankQuestionTrueOrFalseRequest, BankQuestionTrueOrFalse>chunk(10)
             .reader(itemReader)
-            .processor(questionBankMcqProcessor)
-            .writer(writer())
+            .processor(questionBankTrueFalseProcessor)
+            .writer(bankQuestionTrueFalseWriter())
             .build();
     }
 
-    @Bean(name = "importMcqQuestionsJob")
-    public Job runJob(FlatFileItemReader<NewBankQuestionMcqRequest> itemReader) {
+    @Bean(name = "importTrueFalseQuestionsJob")
+    public Job runJob(FlatFileItemReader<NewBankQuestionTrueOrFalseRequest> itemReader) {
         //TODO: Add a verification step to check if the entries are valid
-        return jobBuilderFactory.get("importMcQuestions")
-            .flow(step1(itemReader))
-
+        return jobBuilderFactory.get("importSubjectiveQuestions")
+            .flow(bankQuestionTrueFalseStep1(itemReader))
             .end().build();
     }
 
-    //@Bean
-    //public TaskExecutor taskExecutor() {
-    //    SimpleAsyncTaskExecutor asyncTaskExecutor = new SimpleAsyncTaskExecutor();
-    //    asyncTaskExecutor.setConcurrencyLimit(10);
-    //    return asyncTaskExecutor;
-    //}
-
-    @Bean(name = "AsyncJobLauncher")
-    public JobLauncher simpleJobLauncher(JobRepository jobRepository) {
+    @Bean(name = "AsyncJobLauncher3")
+    public JobLauncher simpleJobLauncher3(JobRepository jobRepository) {
         SimpleJobLauncher jobLauncher = new SimpleJobLauncher();
         jobLauncher.setJobRepository(jobRepository);
         jobLauncher.setTaskExecutor(new SimpleAsyncTaskExecutor());

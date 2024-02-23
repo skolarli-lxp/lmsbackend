@@ -28,6 +28,8 @@ public interface QuestionBankTrueOrFalseService {
 
     List<BankQuestionTrueOrFalse> saveAllQuestions(List<BankQuestionTrueOrFalse> questions);
 
+    Long uploadQuestionsFromCsvBatchJob(String filePath, Long tenantId, String userName);
+
     BankQuestionTrueOrFalse updateQuestion(BankQuestionTrueOrFalse question, long id);
 
     void hardDeleteQuestion(long id);
