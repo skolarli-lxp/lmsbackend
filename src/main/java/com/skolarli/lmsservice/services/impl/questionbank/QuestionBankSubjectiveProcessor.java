@@ -13,7 +13,6 @@ import org.springframework.batch.item.ItemProcessor;
 import org.springframework.stereotype.Component;
 
 @Component
-@NoArgsConstructor
 public class QuestionBankSubjectiveProcessor extends QuestionBankProcessor
     implements ItemProcessor<NewBankQuestionSubjectiveRequest, BankQuestionSubjective> {
 

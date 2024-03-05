@@ -74,6 +74,8 @@ public class QuestionBankTrueOrFalseServiceImpl implements QuestionBankTrueOrFal
         this.lessonService = lessonService;
         this.lmsUserService = lmsUserService;
         this.examService = examService;
+        this.job = job;
+        this.jobLauncher = jobLauncher;
     }
 
     private Boolean checkPermission() {

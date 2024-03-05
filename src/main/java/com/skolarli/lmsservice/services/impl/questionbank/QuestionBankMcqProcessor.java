@@ -14,15 +14,8 @@ import org.springframework.stereotype.Component;
 import java.util.stream.Collectors;
 
 @Component
-public class QuestionBankMcqProcessor implements ItemProcessor<NewBankQuestionMcqRequest, BankQuestionMcq> {
-
-    CourseService courseService;
-    BatchService batchService;
-    LessonService lessonService;
-    ChapterService chapterService;
-    LmsUserService lmsUserService;
-
-    UserUtils userUtils;
+public class QuestionBankMcqProcessor extends QuestionBankProcessor
+    implements ItemProcessor<NewBankQuestionMcqRequest, BankQuestionMcq> {
 
     public QuestionBankMcqProcessor(CourseService courseService,
                                     BatchService batchService,
@@ -30,18 +23,14 @@ public class QuestionBankMcqProcessor implements ItemProcessor<NewBankQuestionMc
                                     ChapterService chapterService,
                                     LmsUserService lmsUserService,
                                     UserUtils userUtils) {
-        this.courseService = courseService;
-        this.batchService = batchService;
-        this.lessonService = lessonService;
-        this.chapterService = chapterService;
-        this.lmsUserService = lmsUserService;
-        this.userUtils = userUtils;
+        super(courseService, batchService, lessonService, chapterService, lmsUserService, userUtils);
     }
 
     @Override
     public BankQuestionMcq process(NewBankQuestionMcqRequest question) {
         BankQuestionMcq bankQuestionMcq = new BankQuestionMcq();
-        bankQuestionMcq.setQuestion(question.getQuestion());
+        super.process(question, bankQuestionMcq);
+
         bankQuestionMcq.setNumberOfOptions(question.getNumberOfOptions());
         bankQuestionMcq.setOption1(question.getOption1());
         bankQuestionMcq.setOption2(question.getOption2());
@@ -56,24 +45,6 @@ public class QuestionBankMcqProcessor implements ItemProcessor<NewBankQuestionMc
         } else {
             bankQuestionMcq.setCorrectAnswer("");
         }
-        bankQuestionMcq.setMarks(question.getMarks());
-
-        if (question.getCourseId() != null) {
-            bankQuestionMcq.setCourse(courseService.getCourseById(question.getCourseId()));
-        }
-        if (question.getBatchId() != null) {
-            bankQuestionMcq.setBatch(batchService.getBatch(question.getBatchId()));
-        }
-        if (question.getChapterId() != null) {
-            bankQuestionMcq.setChapter(chapterService.getChapterById(question.getChapterId()));
-        }
-        if (question.getLessonId() != null) {
-            bankQuestionMcq.setLesson(lessonService.getLessonById(question.getLessonId()));
-        }
-        if (question.getStudentId() != null) {
-            bankQuestionMcq.setStudent(lmsUserService.getLmsUserById(question.getStudentId()));
-        }
-        bankQuestionMcq.setCreatedBy(userUtils.getCurrentUser());
         return bankQuestionMcq;
     }
 }

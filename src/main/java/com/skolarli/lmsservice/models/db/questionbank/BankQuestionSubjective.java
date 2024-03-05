@@ -17,7 +17,7 @@ import javax.persistence.Table;
 @Table(name = "questionbank_subjective")
 public class BankQuestionSubjective extends BankQuestion {
 
-    private int wordCount;
+    private Integer wordCount;
 
     @Column(columnDefinition = "TEXT")
     private String correctAnswer;

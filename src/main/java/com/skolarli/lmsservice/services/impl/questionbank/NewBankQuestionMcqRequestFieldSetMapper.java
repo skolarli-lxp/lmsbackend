@@ -4,6 +4,8 @@ import com.skolarli.lmsservice.models.AnswerFormat;
 import com.skolarli.lmsservice.models.DifficultyLevel;
 import com.skolarli.lmsservice.models.QuestionFormat;
 import com.skolarli.lmsservice.models.dto.questionbank.NewBankQuestionMcqRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.file.mapping.FieldSetMapper;
 import org.springframework.batch.item.file.transform.FieldSet;
 import org.springframework.validation.BindException;
@@ -13,6 +15,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class NewBankQuestionMcqRequestFieldSetMapper implements FieldSetMapper<NewBankQuestionMcqRequest> {
+    private static final Logger logger = LoggerFactory.getLogger(NewBankQuestionMcqRequestFieldSetMapper.class);
 
     @Override
     public NewBankQuestionMcqRequest mapFieldSet(FieldSet fieldSet) throws BindException {
@@ -34,6 +37,14 @@ public class NewBankQuestionMcqRequestFieldSetMapper implements FieldSetMapper<N
                 .map(Integer::parseInt)
                 .collect(Collectors.toList());
             request.setCorrectAnswer(correctAnswers);
+        }
+        if (fieldSet.readString("Marks") != null && !fieldSet.readString("Marks").isEmpty()) {
+            try {
+                request.setMarks(fieldSet.readInt("Marks"));
+            } catch (NumberFormatException e) {
+                logger.error("Marks is not a number, setting marks to 0");
+                request.setMarks(0);
+            }
         }
         request.setSampleAnswerText(fieldSet.readString("SampleAnswerText"));
         request.setSampleAnswerUrl(fieldSet.readString("SampleAnswerUrl"));

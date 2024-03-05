@@ -4,8 +4,6 @@ import com.skolarli.lmsservice.authentications.TenantAuthenticationToken;
 import com.skolarli.lmsservice.models.db.questionbank.BankQuestionMcq;
 import com.skolarli.lmsservice.models.dto.questionbank.NewBankQuestionMcqRequest;
 import com.skolarli.lmsservice.repository.questionbank.QuestionBankMcqRepository;
-import com.skolarli.lmsservice.services.impl.questionbank.NewBankQuestionMcqRequestFieldSetMapper;
-import com.skolarli.lmsservice.services.impl.questionbank.QuestionBankMcqProcessor;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
@@ -76,7 +74,7 @@ public class ReaderConfigMcqQuestions {
         lineTokenizer.setStrict(false);
         lineTokenizer.setNames("Question", "NumberOfOptions", "Option1", "Option2", "Option3",
             "Option4", "Option5", "Option6", "NumberOfCorrectAnswers",
-            "CorrectAnswer",  "Marks", "SampleAnswerText", "SampleAnswerUrl", "QuestionType",
+            "CorrectAnswer", "Marks", "SampleAnswerText", "SampleAnswerUrl", "QuestionType",
             "DifficultyLevel", "QuestionFormat", "AnswerFormat", "CourseId", "BatchId",
             "ChapterId", "LessonId", "StudentId");
 

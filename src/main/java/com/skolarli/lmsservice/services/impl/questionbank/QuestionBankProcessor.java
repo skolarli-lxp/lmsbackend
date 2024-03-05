@@ -16,7 +16,6 @@ import lombok.NoArgsConstructor;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.stereotype.Component;
 
-@NoArgsConstructor
 public abstract class QuestionBankProcessor {
 
     CourseService courseService;

@@ -8,7 +8,7 @@ import lombok.*;
 @Getter
 @Setter
 public class NewBankQuestionSubjectiveRequest extends NewQuestionBankQuestionRequest {
-    private int wordCount;
+    private Integer wordCount;
 
     private String correctAnswer;
 }

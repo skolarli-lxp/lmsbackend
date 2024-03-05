@@ -75,7 +75,7 @@ public class ReaderConfigTrueFalseQuestions {
         DelimitedLineTokenizer lineTokenizer = new DelimitedLineTokenizer();
         lineTokenizer.setDelimiter(",");
         lineTokenizer.setStrict(false);
-        lineTokenizer.setNames("Question", "WordCount", "CorrectAnswer", "Marks", "SampleAnswerText",
+        lineTokenizer.setNames("Question", "Option1", "Option2", "CorrectAnswer", "Marks", "SampleAnswerText",
             "SampleAnswerUrl", "QuestionType", "DifficultyLevel", "QuestionFormat",
             "AnswerFormat", "CourseId", "BatchId", "ChapterId", "LessonId", "StudentId");
 

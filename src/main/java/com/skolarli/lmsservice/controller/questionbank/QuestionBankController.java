@@ -1,8 +1,11 @@
 package com.skolarli.lmsservice.controller.questionbank;
 
 import com.skolarli.lmsservice.contexts.TenantContext;
+import com.skolarli.lmsservice.models.QuestionType;
 import com.skolarli.lmsservice.models.dto.questionbank.UploadJobStatusResponse;
 import com.skolarli.lmsservice.services.questionbank.QuestionBankMcqService;
+import com.skolarli.lmsservice.services.questionbank.QuestionBankSubjectiveService;
+import com.skolarli.lmsservice.services.questionbank.QuestionBankTrueOrFalseService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -28,21 +31,32 @@ public class QuestionBankController {
     static final String TEMP_STORAGE = "/tmp/lmsservice/";
     final Logger logger = LoggerFactory.getLogger(QuestionBankController.class);
     final QuestionBankMcqService questionBankMcqService;
+
+    final QuestionBankTrueOrFalseService questionBankTrueOrFalseService;
+
+    final QuestionBankSubjectiveService questionBankSubjectiveService;
+
+
     private final JobExplorer jobExplorer;
 
     TenantContext tenantContext;
 
 
     public QuestionBankController(QuestionBankMcqService questionBankMcqService,
+                                  QuestionBankTrueOrFalseService questionBankTrueOrFalseService,
+                                  QuestionBankSubjectiveService questionBankSubjectiveService,
                                   JobExplorer jobExplorer,
                                   TenantContext tenantContext) {
         this.questionBankMcqService = questionBankMcqService;
+        this.questionBankTrueOrFalseService = questionBankTrueOrFalseService;
+        this.questionBankSubjectiveService = questionBankSubjectiveService;
         this.jobExplorer = jobExplorer;
         this.tenantContext = tenantContext;
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<UploadJobStatusResponse> uploadQuestions(@RequestParam MultipartFile file) {
+    public ResponseEntity<UploadJobStatusResponse> uploadQuestions(@RequestParam MultipartFile file,
+                                                                   @RequestParam QuestionType questionType) {
         UUID uuid = UUID.randomUUID();
         MDC.put("requestId", uuid.toString());
         logger.info("Received request for upload questions from file : "
@@ -59,11 +73,23 @@ public class QuestionBankController {
             File fileToImport = new File(TEMP_STORAGE + originalFileName);
             file.transferTo(fileToImport);
 
-            Long jobId = questionBankMcqService.uploadQuestionsFromCsvBatchJob(fileToImport.getPath(),
-                tenantContext.getTenantId(), currentUserName);
-            JobExecution jobExecution = jobExplorer.getJobExecution(jobId);
+            Long jobId = 0L;
+            if (questionType == QuestionType.MCQ) {
+                jobId = questionBankMcqService.uploadQuestionsFromCsvBatchJob(fileToImport.getPath(),
+                    tenantContext.getTenantId(), currentUserName);
+            } else if (questionType == QuestionType.TRUE_FALSE) {
+                jobId = questionBankTrueOrFalseService.uploadQuestionsFromCsvBatchJob(fileToImport.getPath(),
+                    tenantContext.getTenantId(), currentUserName);
+            } else if (questionType == QuestionType.SUBJECTIVE) {
+                jobId = questionBankSubjectiveService.uploadQuestionsFromCsvBatchJob(fileToImport.getPath(),
+                    tenantContext.getTenantId(), currentUserName);
+            } else {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid question type");
+            }
 
+            JobExecution jobExecution = jobExplorer.getJobExecution(jobId);
             return new ResponseEntity<>(new UploadJobStatusResponse(jobExecution), HttpStatus.OK);
+
         } catch (Exception e) {
             logger.error("Error in uploadQuestions: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());

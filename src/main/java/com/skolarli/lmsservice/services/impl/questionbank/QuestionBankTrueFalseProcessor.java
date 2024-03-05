@@ -13,18 +13,8 @@ import org.springframework.batch.item.ItemProcessor;
 import org.springframework.stereotype.Component;
 
 @Component
-@NoArgsConstructor
 public class QuestionBankTrueFalseProcessor extends QuestionBankProcessor
     implements ItemProcessor<NewBankQuestionTrueOrFalseRequest, BankQuestionTrueOrFalse> {
-
-
-    CourseService courseService;
-    BatchService batchService;
-    LessonService lessonService;
-    ChapterService chapterService;
-    LmsUserService lmsUserService;
-
-    UserUtils userUtils;
 
     public QuestionBankTrueFalseProcessor(CourseService courseService,
                                           BatchService batchService,
