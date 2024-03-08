@@ -15,6 +15,8 @@ public class NewFeedbackQuestionnaireRequest {
 
     private FeedbackType feedbackType;
 
+    private String feedbackQuestionnaireName;
+
     private FeedbackFrom feedbackFrom;
 
     private Long courseId;

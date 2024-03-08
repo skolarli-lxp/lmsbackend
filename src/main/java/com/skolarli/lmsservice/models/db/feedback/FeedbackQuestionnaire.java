@@ -38,6 +38,8 @@ public class FeedbackQuestionnaire extends Tenantable {
     @NotNull
     private FeedbackType feedbackType;
 
+    private String feedbackQuestionnaireName;
+
     @Enumerated(EnumType.STRING)
     private FeedbackFrom feedbackFrom;
 
@@ -100,6 +102,9 @@ public class FeedbackQuestionnaire extends Tenantable {
     public void update(FeedbackQuestionnaire feedbackQuestionnaire) {
         if (feedbackQuestionnaire.getFeedbackType() != null) {
             this.setFeedbackType(feedbackQuestionnaire.getFeedbackType());
+        }
+        if (feedbackQuestionnaire.getFeedbackQuestionnaireName() != null) {
+            this.setFeedbackQuestionnaireName(feedbackQuestionnaire.getFeedbackQuestionnaireName());
         }
         if (feedbackQuestionnaire.getFeedbackFrom() != null) {
             this.setFeedbackFrom(feedbackQuestionnaire.getFeedbackFrom());

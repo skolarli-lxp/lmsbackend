@@ -1,5 +1,6 @@
 package com.skolarli.lmsservice.models.dto.course;
 
+import com.skolarli.lmsservice.models.BatchScheduleStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,4 +27,5 @@ public class NewBatchScheduleRequest {
 
     private String title;
     private String description;
+    private BatchScheduleStatus status;
 }

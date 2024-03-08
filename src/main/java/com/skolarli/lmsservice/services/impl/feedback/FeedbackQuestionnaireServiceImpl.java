@@ -55,6 +55,7 @@ public class FeedbackQuestionnaireServiceImpl implements FeedbackQuestionnaireSe
     public FeedbackQuestionnaire toFeedbackQuestionnaire(NewFeedbackQuestionnaireRequest feedbackQuestionnaireRequest) {
         FeedbackQuestionnaire feedbackQuestionnaire = new FeedbackQuestionnaire();
         feedbackQuestionnaire.setFeedbackType(feedbackQuestionnaireRequest.getFeedbackType());
+        feedbackQuestionnaire.setFeedbackQuestionnaireName(feedbackQuestionnaireRequest.getFeedbackQuestionnaireName());
         feedbackQuestionnaire.setFeedbackFrom(feedbackQuestionnaireRequest.getFeedbackFrom());
         if (feedbackQuestionnaireRequest.getCourseId() != null) {
             feedbackQuestionnaire.setCourse(courseService.getCourseById(feedbackQuestionnaireRequest.getCourseId()));

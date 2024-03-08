@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.skolarli.lmsservice.models.BatchScheduleStatus;
 import com.skolarli.lmsservice.models.db.core.Tenantable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import java.time.Instant;
 import java.util.List;
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @Data
 @AllArgsConstructor
@@ -41,6 +43,10 @@ public class BatchSchedule extends Tenantable {
 
     @Column(columnDefinition = "TEXT")
     private String description;
+
+    @Column(columnDefinition = "VARCHAR(25) default 'SCHEDULED'")
+    @Enumerated(EnumType.STRING)
+    private BatchScheduleStatus status;
 
     @Column(columnDefinition = "VARCHAR(1024)")
     private String meetingLink;
@@ -83,6 +89,9 @@ public class BatchSchedule extends Tenantable {
         if (newBatchSchedule.getDescription() != null) {
             this.description = newBatchSchedule.getDescription();
         }
+        if (newBatchSchedule.getStatus() != null) {
+            this.status = newBatchSchedule.getStatus();
+        }
         if (newBatchSchedule.getStartDateTime() != null) {
             this.startDateTime = newBatchSchedule.getStartDateTime();
         }
@@ -104,6 +113,7 @@ public class BatchSchedule extends Tenantable {
             + ", batch=" + this.getBatch().getId()
             + ", title=" + this.getTitle()
             + ", description=" + this.getDescription()
+            + ", status= " + this.getStatus()
             + ", meetingLink=" + this.getMeetingLink()
             + ", resourceFileUrl=" + this.getResourceFileUrl()
             + ", trainerInstructionsText=" + this.getTrainerInstructionsText()

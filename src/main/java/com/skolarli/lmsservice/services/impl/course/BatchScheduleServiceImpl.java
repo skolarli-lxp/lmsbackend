@@ -82,6 +82,9 @@ public class BatchScheduleServiceImpl implements BatchScheduleService {
         if (newBatchSchedulesForBatchRequest.getDescription() != null) {
             batchSchedule.setDescription(newBatchSchedulesForBatchRequest.getDescription());
         }
+        if (newBatchSchedulesForBatchRequest.getStatus() != null) {
+            batchSchedule.setStatus(newBatchSchedulesForBatchRequest.getStatus());
+        }
         return batchSchedule;
     }
 
@@ -104,6 +107,9 @@ public class BatchScheduleServiceImpl implements BatchScheduleService {
         }
         if (newBatchScheduleRequest.getDescription() != null) {
             batchSchedule.setDescription(newBatchScheduleRequest.getDescription());
+        }
+        if (newBatchScheduleRequest.getStatus() != null) {
+            batchSchedule.setStatus(newBatchScheduleRequest.getStatus());
         }
         batchSchedule.setMeetingLink(newBatchScheduleRequest.getMeetingLink());
         batchSchedule.setResourceFileUrl(newBatchScheduleRequest.getResourceFileUrl());
